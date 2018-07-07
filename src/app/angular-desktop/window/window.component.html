@@ -1,0 +1,19 @@
+<div class="window-header drag-handle" >
+  <span class="window-title">{{title}}</span>
+  <div class="icon-bar">
+    <a href="#" (click)="minimize()"><i class="fa fa-window-minimize"></i></a>
+    <a class="" href="#" (click)="maximize()"><i class="fa fa-window-maximize"></i></a>
+    <a href="#" (click)="close()"><i class="fa fa-close"></i></a>
+  </div>
+</div>
+<div class="window-body" >
+
+  <ng-content></ng-content>
+
+</div>
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+<div class="main theme-default">
+
+  <ng-content></ng-content>
+
+  <div *ngFor="let view of views" class="shortcut" (dblclick)="onShortcutClicked(view)"
+       [ngStyle]="{'left':view.reference.index*100+'px'}">
+    <span class="title no-select">{{view.reference.title}}</span>
+  </div>
+
+  <footer class="footer">
+    <table class="table">
+      <tbody>
+      <tr>
+        <td  *ngFor="let view of getActiveReferences()" (click)="onTaskbarClick(view)"><span class="no-select">{{view.reference.title}}</span></td>
+      </tr>
+      </tbody>
+    </table>
+
+
+  </footer>
+</div>

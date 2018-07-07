@@ -1,0 +1,50 @@
+<div class="container-fluid metronome">
+  <div class="row">
+    <div class="col-12">
+      <beatviewer></beatviewer>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <label for="bpm" class="range-label">{{bpm}}</label>
+      <div class="btn-group inc-buttons" role="group">
+        <button type="button" class="btn btn-primary" (click)="increase(1)">+</button>
+        <button type="button" class="btn btn-primary" (click)="increase(-1)">-</button>
+        <button type="button" class="btn btn-primary" (click)="increase(5)">+5</button>
+        <button type="button" class="btn btn-primary" (click)="increase(-5)">-5</button>
+      </div>
+      <input type="range" class="custom-range" [(ngModel)]="bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}" step="1">
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-6">
+          <label for="beats" class="range-label">{{beatUnit}}</label>
+          <input type="range" class="custom-range" [(ngModel)]="beatUnit" name="beats" id="beats" min="1" max="8" step="1">
+        </div>
+        <div class="col-6">
+          <label for="bars" class="range-label">{{barUnit}}</label>
+          <input type="range" class="custom-range" [(ngModel)]="barUnit" name="bars" id="bars" min="1" max="8" step="1">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row btn-row">
+
+      <div class="col-4">
+        <button type="button" class="btn btn-danger btn-start" (click)="start()">Start</button>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-warning" (click)="stop()">Stop</button>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-primary" (click)="pause()">Pause</button>
+      </div>
+
+  </div>
+
+
+</div>

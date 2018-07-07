@@ -1,0 +1,27 @@
+$taskbar-base-color:green;
+@import "ui.variables";
+
+:host{
+  background-color: green;
+}
+
+
+
+.taskbar-entry{
+  &:hover{
+    background-color: lighten($taskbar-base-color,10%);
+  }
+  cursor:pointer;
+  float:left;
+  width:10%;
+  height:100%;
+  background-color: $taskbar-background;
+
+  &.minimized{
+    background-color: red;
+  }
+}
+
+.title{
+  /* pointer-events: none;*/
+}
