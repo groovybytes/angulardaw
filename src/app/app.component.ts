@@ -9,7 +9,12 @@ import {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit{
+
+  constructor(){
+
+  }
   ngOnInit(): void {
+
   }
 
 

@@ -39,6 +39,7 @@
     "sample-player": "^0.5.5",
     "serve-index": "^1.9.1",
     "soundfont-player": "^0.10.6",
+    "toastr": "^2.1.4",
     "webaudiofont": "^2.5.24",
     "webmidi": "^2.0.5",
     "zone.js": "^0.8.26"

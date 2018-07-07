@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AngularDawService} from "../services/angular-daw.service";
+import {SystemMonitorService} from "../services/system-monitor.service";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'angular-daw',
@@ -8,9 +10,15 @@ import {AngularDawService} from "../services/angular-daw.service";
 })
 export class AngularDawComponent implements OnInit {
 
-  constructor(private dawService:AngularDawService) { }
+  constructor(private dawService: AngularDawService,
+              private monitor: SystemMonitorService,
+              private notification: NotificationService) {
+  }
 
   ngOnInit() {
+    this.monitor.events.subscribe(event => {
+        this.notification.info(event.data);
+    })
     this.dawService.bootstrap();
   }
 }

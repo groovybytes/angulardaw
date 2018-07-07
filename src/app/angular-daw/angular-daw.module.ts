@@ -20,12 +20,14 @@ import {MetronomeService} from "./services/metronome.service";
 import {TransportService} from "./services/transport.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {MidiReaderService} from "./services/midi-reader.service";
-import { PlaygroundComponent } from './playground/playground.component';
 import {MidiStreamService} from "./services/midi-stream.service";
 import {MidiPlayerService} from "./services/midi-player.service";
 import {ProjectService} from "./services/project.service";
 import {SamplesService} from "./services/samples.service";
 import {AngularDawApi} from "./angular-daw.api";
+import {LoggingService} from "./services/logging.service";
+import {NotificationService} from "./services/notification.service";
+import { DevelopmentComponent } from './plugins/development/development.component';
 
 @NgModule({
   imports: [
@@ -44,7 +46,7 @@ import {AngularDawApi} from "./angular-daw.api";
     ClockComponent,
     SliderComponent,
     AngularDawComponent,
-    PlaygroundComponent
+    DevelopmentComponent
   ],
   exports:[
     AngularDawComponent
@@ -62,7 +64,9 @@ import {AngularDawApi} from "./angular-daw.api";
     MidiPlayerService,
     ProjectService,
     SamplesService,
-    AngularDawApi
+    AngularDawApi,
+    LoggingService,
+    NotificationService
   ]
 })
 export class AngularDAWModule { }

@@ -15,7 +15,7 @@ export class Note {
   public static notes: any;
 
 
-  public load(): void {
+  public static load(): void {
     let i = 0;
     Object.keys(Note.frequencies).forEach(freq => {
       let note = new Note();
@@ -23,9 +23,9 @@ export class Note {
       note.id = freq.replace("#", "i");
       note.index = i;
       note.midi = i + 21;
-      this[note.id] = note;
+      Note.notes[note.id] = note;
 
-      this["midi_"+note.midi]=note;
+      Note.notes["midi_"+note.midi]=note;
       i++;
     })
   }
@@ -33,7 +33,7 @@ export class Note {
   public move(semitones: number): Note {
     if (!Note.notes) {
       Note.notes = {};
-      Note.notes.load();
+      Note.load();
     }
 
     let key = Object.keys(Note.notes)[this.index + semitones];
@@ -44,7 +44,7 @@ export class Note {
 
     if (!Note.notes) {
       Note.notes = {};
-      Note.notes.load();
+      Note.load();
     }
 
     if (!Note.notes[id]) console.warn("couldnt find note with id "+id);
@@ -55,7 +55,7 @@ export class Note {
 
     if (!Note.notes) {
       Note.notes = {};
-      Note.notes.load();
+      Note.load();
     }
 
     if (!Note.notes["midi_"+id]) console.warn("couldnt find note with id "+id);
