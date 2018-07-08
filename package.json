@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "concurrently  \"ng serve\" \"set NODE_ENV=development&& cd ./server/ && nodemon\"",
+    "server": "set NODE_ENV=development&& cd ./server/ && nodemon\"",
     "hmr": "ng serve --configuration hmr",
     "build": "ng build",
     "test": "ng test",
@@ -22,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
     "bootstrap": "^4.1.1",
+    "concurrently": "^3.6.0",
     "core-js": "^2.5.4",
     "cors": "^2.8.4",
     "d3": "^5.4.0",

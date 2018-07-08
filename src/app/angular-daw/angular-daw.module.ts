@@ -28,6 +28,7 @@ import {AngularDawApi} from "./angular-daw.api";
 import {LoggingService} from "./services/logging.service";
 import {NotificationService} from "./services/notification.service";
 import { DevelopmentComponent } from './plugins/development/development.component';
+import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 
 @NgModule({
   imports: [
@@ -66,7 +67,8 @@ import { DevelopmentComponent } from './plugins/development/development.componen
     SamplesService,
     AngularDawApi,
     LoggingService,
-    NotificationService
+    NotificationService,
+    InstrumentInfoApi
   ]
 })
 export class AngularDAWModule { }

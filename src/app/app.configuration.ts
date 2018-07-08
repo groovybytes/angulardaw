@@ -6,6 +6,6 @@ export class AppConfiguration{
 
 
   getUrl(appendix:string):string{
-    return "http://localhost:3000/api/"+appendix;
+    return "http://localhost:3000/v1/"+appendix;
   }
 }

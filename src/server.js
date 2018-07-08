@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use("/assets",express.static(path.join(__dirname, 'assets')))
 app.use('/api/sounds/', express.static('assets/sounds'), serveIndex('assets/sounds', {'icons': true}))
-/*app.use('/samples', require('./server/samples.api'))*/
+app.use('/api/files', require('./server/files.api'));
 app.use(errorHandler())
 
 

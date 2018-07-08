@@ -7,24 +7,22 @@ declare var MidiConvert: any;
 export class MidiWriterService {
 
 
-  writeProject(project:Project) {
+  writeProject(project:Project):any {
 
-    var midiConverter = MidiConvert.create();
-
-    let midiTrack = midiConverter.track();
-    midiTrack.patch(32)
-    // chain note events: note, time, duration
+    // create a new midi file
+    var midi = MidiConvert.create()
+// add a track
+    midi.track()
+    // select an instrument by its MIDI patch number
+      .patch(32)
+      // chain note events: note, time, duration
       .note(60, 0, 2)
       .note(63, 1, 2)
       .note(60, 2, 2)
 
-    let file = midiConverter.encode();
+// write the output
+    return midi.encode();
 
-
-    project.tracks.forEach((track:MidiTrack)=>{
-
-
-    })
 
 
 
