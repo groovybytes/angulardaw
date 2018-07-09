@@ -14,7 +14,6 @@ import { AngularDawComponent } from './angular-daw/angular-daw.component';
 import {AngularDesktopModule} from "../angular-desktop/angular-desktop.module";
 import {AngularDawService} from "./services/angular-daw.service";
 import {FileService} from "./services/file.service";
-import {SystemMonitorService} from "./services/system-monitor.service";
 import {MidiWriterService} from "./services/midi-writer.service";
 import {TransportService} from "./services/transport.service";
 import {AudioContextService} from "./services/audiocontext.service";
@@ -26,8 +25,6 @@ import {AngularDawApi} from "./angular-daw.api";
 import { DevelopmentComponent } from './plugins/development/development.component';
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {SamplesV2Service} from "./services/samplesV2.service";
-import {LoggingApi} from "./api/logging.api";
-import {ConfigService} from "../../../server/src/services/config.service";
 
 
 @NgModule({
@@ -53,17 +50,9 @@ import {ConfigService} from "../../../server/src/services/config.service";
     AngularDawComponent
   ],
   providers:[
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: SystemMonitorService,
-      multi: true
-    },
-    { provide: ErrorHandler, useClass: SystemMonitorService },
-    { provide: "lodash", useValue: window["_"] },
     AngularDawService,
     AudioContextService,
     FileService,
-    SystemMonitorService,
     MidiWriterService,
     TransportService,
     MidiReaderService,
@@ -72,8 +61,7 @@ import {ConfigService} from "../../../server/src/services/config.service";
     ProjectService,
     AngularDawApi,
     InstrumentInfoApi,
-    SamplesV2Service,
-    LoggingApi
+    SamplesV2Service
   ]
 })
 export class AngularDAWModule { }

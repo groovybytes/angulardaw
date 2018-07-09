@@ -7,6 +7,7 @@ import {
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {WindowState} from "./WindowState";
 import {WindowContent} from "./WindowContent";
+import {DawPlugin} from "../../angular-daw/plugins/DawPlugin";
 
 
 declare var interact: Function;
@@ -24,7 +25,7 @@ export class WindowComponent implements OnInit, AfterContentInit {
   private _y: number;
 
   state: BehaviorSubject<WindowState> = new BehaviorSubject<WindowState>(WindowState.CLOSED);
-  @ContentChild("content") windowContent: WindowContent;
+  @ContentChild("content") content: DawPlugin;// WindowContent;
   @HostBinding('style.z-index') zIndex: number = 1;
 
 
@@ -179,16 +180,12 @@ export class WindowComponent implements OnInit, AfterContentInit {
 
   close(): void {
     this.state.next(WindowState.CLOSED);
-    this.windowContent.active.next(false);
+    this.content.destroy();
 
   }
 
   ngAfterContentInit(): void {
-    this.windowContent.active.subscribe(isActive => {
-      if (isActive) this.state.next(WindowState.NORMAL);
-      else this.state.next(WindowState.CLOSED);
 
-    })
   }
 
 

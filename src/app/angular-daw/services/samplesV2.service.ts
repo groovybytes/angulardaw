@@ -5,9 +5,9 @@ import {FileService} from "./file.service";
 import {Note} from "../model/theory/Note";
 import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../../app.configuration";
-import {SystemMonitorService} from "./system-monitor.service";
 import {Instrument} from "../model/Instrument";
 import {InstrumentInfoApi} from "../api/instrumentinfo.api";
+import {System} from "../../system/System";
 
 declare var Fuse;
 
@@ -17,7 +17,7 @@ export class SamplesV2Service {
 
   constructor(private audioContext: AudioContextService,
               private http: HttpClient,
-              private monitor: SystemMonitorService,
+              private system: System,
               private config: AppConfiguration,
               private instrumentsInfoApi: InstrumentInfoApi,
               @Inject('lodash') private _:any,
@@ -30,13 +30,13 @@ export class SamplesV2Service {
 
     return new Promise((resolve, reject) => {
       this.instrumentsInfoApi.getInfo(name).subscribe(instrumentInfo => {
-        this.monitor.debug("instrument has " + instrumentInfo.samples.length + " samples");
+        this.system.debug("instrument has " + instrumentInfo.samples.length + " samples");
         let provedSamples = [];
         this.getSamples(instrumentInfo.samples)
           .then(results => {
             results.forEach(result => {
 
-              this.monitor.debug("loading sample " + result.id);
+              this.system.debug("loading sample " + result.id);
               try {
                 let parts = result.id.split("/");
                 let sampleName = parts[parts.length - 1].split(".")[0].toLowerCase();
@@ -49,9 +49,9 @@ export class SamplesV2Service {
                   result.baseNote = Note.get(noteName);
                   if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
                   provedSamples.push(result);
-                  this.monitor.debug("success..");
+                  this.system.debug("success..");
                 }
-                else this.monitor.debug("skipped..");
+                else this.system.debug("skipped..");
               } catch (e) {
 
               }

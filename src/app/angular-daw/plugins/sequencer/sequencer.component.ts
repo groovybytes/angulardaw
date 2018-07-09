@@ -49,7 +49,13 @@ export class SequencerComponent extends DawPlugin implements OnInit, OnDestroy {
   destroy(): void {
   }
 
+  defaultWidth(): number {
+    return 600;
+  }
 
+  defaultHeight(): number {
+    return 600;
+  }
 
 }
 

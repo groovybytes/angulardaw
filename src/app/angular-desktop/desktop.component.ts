@@ -11,6 +11,8 @@ import {WindowComponent} from "./window/window.component";
 import {WindowContent} from "./window/WindowContent";
 import {windowCount} from "rxjs/operators";
 import {WindowState} from "./window/WindowState";
+import {DawPlugin} from "../angular-daw/plugins/DawPlugin";
+import {AngularDawService} from "../angular-daw/services/angular-daw.service";
 
 @Component({
   selector: 'desktop',
@@ -20,46 +22,54 @@ import {WindowState} from "./window/WindowState";
 
 export class DesktopComponent implements OnInit, AfterContentInit {
 
-  views: Array<{reference:ViewReference,windowContent:WindowContent}> = [];
+  plugins:Array<DawPlugin>=[];
   @ContentChildren("window") windows: QueryList<WindowComponent>;
 
-  constructor() {
+  activePlugins:Array<DawPlugin>=[];
 
+  constructor(private dawService:AngularDawService) {
+    this.dawService.pluginAdded.subscribe((plugin:DawPlugin)=>{
+      plugin.activate();
+      this.activePlugins.push(plugin);
+      this.plugins.push(plugin)
+    });
   }
 
   ngOnInit() {
 
+    this.plugins.forEach(plugin=>{
+      console.log(plugin);
 
+    })
   }
 
-  getActiveReferences():Array<{reference:ViewReference,windowContent:WindowContent}>{
-    return this.views.filter(view=>view.windowContent.active.getValue()===true);
-  }
   onShortcutClicked(view: {reference:ViewReference,windowContent:WindowContent}): void {
 
-    if (view.windowContent.active.getValue() === false) view.windowContent.active.next(true);
   }
 
   onTaskbarClick(view: {reference:ViewReference,windowContent:WindowContent}): void {
 
-    this.windows.filter(window=>window.windowContent.id()===view.windowContent.id())[0].state.next(WindowState.NORMAL);
+  }
+
+  trackByFn(index, item:DawPlugin) {
+    return item.id();
   }
 
   ngAfterContentInit(): void {
 
-    let i = 0;
-    this.windows.forEach((window: WindowComponent) => {
-      window.y=200;
-      window.x=(i)*400;
-      window.windowContent.active.next(true);
-      window.state.next(WindowState.MAXIMIZED);
-      this.views.push({
-        reference:new ViewReference(window.windowContent.id(), window.windowContent.title(), "", i),
-        windowContent:window.windowContent
-      });
-      i++;
 
+    this.windows.forEach((window: WindowComponent) => {
+      window.y=50;
+      window.x=200;
     })
+
+    this.plugins.forEach(plugin=>{
+      let window = this.windows.filter(window => window.content.id() === plugin.id())[0];
+      window.state.next(WindowState.NORMAL);
+      window.width=plugin.defaultWidth()+"px";
+      window.height=plugin.defaultHeight()+"px";
+    })
+
 
   }
 }

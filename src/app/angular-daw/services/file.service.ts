@@ -1,15 +1,14 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {SystemMonitorService} from "./system-monitor.service";
 import {MidiFile} from "../model/midi/midifilespec/MidiFile";
-import {HttpError} from "../model/system/HttpError";
+import {System} from "../../system/System";
 
 declare var MidiConvert: any;
 
 @Injectable()
 export class FileService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private system:System) {
 
   }
 
@@ -35,7 +34,7 @@ export class FileService {
                   }
                   else resolve(result);
                 },
-                (error) => reject(new HttpError(url,error)))
+                (error) => reject(this.system.httpError(error,url)))
           }
         }
         if (timeout) setTimeout(()=>{

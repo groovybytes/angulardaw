@@ -1,4 +1,4 @@
-export enum SystemEventType{
+export enum Severity{
   INFO="info",WARNING="warning",DEBUG="debug",ERROR="error"
 
 }

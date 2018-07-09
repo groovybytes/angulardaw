@@ -30,6 +30,14 @@ export class SysinfoComponent  extends DawPlugin implements OnInit, OnDestroy {
 
   }
 
+  defaultWidth(): number {
+    return 600;
+  }
+
+  defaultHeight(): number {
+    return 600;
+  }
+
   ngOnDestroy(): void {
 
   }
