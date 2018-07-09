@@ -1,3 +1,4 @@
+/*
 import {Injectable} from "@angular/core";
 import {Sample} from "../model/Sample";
 import {AudioContextService} from "./audiocontext.service";
@@ -25,7 +26,7 @@ export class SamplesService {
 
   }
 
-  /*loadInstruments(instruments: Array<string>): Promise<InstrumentsContext> {
+  /!*loadInstruments(instruments: Array<string>): Promise<InstrumentsContext> {
     let context = new InstrumentsContext();
     return new Promise((resolve, reject) => {
       let promises = [];
@@ -41,7 +42,7 @@ export class SamplesService {
       Promise.all(promises).then(() => resolve(context));
     })
 
-  }*/
+  }*!/
 
   private reject(rejectionHandler, error): void {
     this.log.endGroup();
@@ -148,3 +149,4 @@ export class SamplesService {
   }
 
 }
+*/

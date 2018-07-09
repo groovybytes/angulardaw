@@ -9,9 +9,9 @@ export class Sample implements Playable {
   category: string;
   url: string;
   baseNote: Note;
-  private gainNode:GainNode;
-  private sourceNode:AudioBufferSourceNode;
-  private nodesLoaded:boolean=false;
+  private gainNode: GainNode;
+  private sourceNode: AudioBufferSourceNode;
+  private nodesLoaded: boolean = false;
 
   constructor(id: string, buffer: AudioBuffer, category: string, url: string, private context: AudioContext) {
     this.id = id;
@@ -20,13 +20,13 @@ export class Sample implements Playable {
     this.url = url;
   }
 
-  loadNodes():void{
+  private loadNodes(): void {
     this.sourceNode = this.context.createBufferSource();
     this.sourceNode.buffer = this.buffer;
     this.gainNode = this.context.createGain();
     this.sourceNode.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
-    this.nodesLoaded=true;
+    this.nodesLoaded = true;
   }
 
   public play(when: number, duration: number, notes: Array<Note>, dynamics: Dynamics) {
@@ -34,13 +34,19 @@ export class Sample implements Playable {
     this.loadNodes();
     notes.forEach(note => {
       let detune = 0;
-      if (note && this.baseNote != note) {
+      if (note && this.baseNote && this.baseNote != note) {
         detune = Note.interval(this.baseNote, note) * Frequencies.SEMITONE;
       }
+
       this.sourceNode.detune.value = detune;
       this.gainNode.gain.setValueCurveAtTime(dynamics.getGainCurve(), this.context.currentTime, this.context.currentTime + duration);
       this.sourceNode.start(when, 0, duration && duration != 0 ? duration : undefined);
     })
 
+  }
+
+  public trigger() {
+    this.loadNodes();
+    this.sourceNode.start(0);
   }
 }

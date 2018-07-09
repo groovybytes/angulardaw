@@ -5,6 +5,7 @@ import {InstrumentinfoController} from "./controllers/instrumentinfo.controller"
 import {ConfigService} from "./services/config.service";
 import * as winston from "winston";
 import {format} from "winston";
+import {LoggingController} from "./controllers/logging.controller";
 const Fuse = require("fuse.js");
 const { combine, timestamp, label, printf } = format;
 
@@ -13,6 +14,7 @@ const myFormat = printf(info => {
 });
 
 const logger = winston.createLogger({
+  level: 'debug',
   format: combine(
     timestamp(),
     myFormat
@@ -23,7 +25,7 @@ const logger = winston.createLogger({
 });
 @Module({
   imports: [],
-  controllers: [AppController,InstrumentinfoController],
+  controllers: [AppController,InstrumentinfoController,LoggingController],
   providers: [
     AppService,
     {

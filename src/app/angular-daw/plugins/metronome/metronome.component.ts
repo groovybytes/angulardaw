@@ -1,71 +1,86 @@
-import {Component, ElementRef, HostBinding, Input} from '@angular/core';
+import {Component, HostBinding, Input} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
 import {AngularDawService} from "../../services/angular-daw.service";
-import {MetronomeService} from "../../services/metronome.service";
 import {TimeSignature} from "../../model/theory/TimeSignature";
 import {TransportService} from "../../services/transport.service";
+import {Note} from "../../model/theory/Note";
+import {Dynamics} from "../../model/theory/Dynamics";
+import {SamplesV2Service} from "../../services/samplesV2.service";
+import {AppConfiguration} from "../../../app.configuration";
+import {Sample} from "../../model/Sample";
+import {Subscription} from "rxjs/internal/Subscription";
+import {SystemMonitorService} from "../../services/system-monitor.service";
 
 @Component({
   selector: 'daw-metronome',
   templateUrl: './metronome.component.html',
   styleUrls: ['./metronome.component.scss'],
-  providers: [MetronomeService,TransportService]
+  providers: [TransportService]
 })
 export class MetronomeComponent extends DawPlugin {
 
   @HostBinding('class')
   elementClass = 'plugin';
 
+
   @Input('_bpm')
   get bpm(): number {
-    return this.metronome.bpm;
+    return this.transport.bpm;
   }
 
   set bpm(value: number) {
-    this.metronome.bpm = value;
+    this.transport.bpm = value;
   }
 
   @Input('minBpm') minBpm: number = 40;
   @Input('maxBpm') maxBpm: number = 300;
-  @Input('_beatUnit')
 
+  @Input('_beatUnit')
   get beatUnit(): number {
-    return this.metronome.signature.beatUnit;
+    return this.transport.signature.beatUnit;
   }
   set beatUnit(value: number) {
-    this.metronome.signature = new TimeSignature(value, this.barUnit);
+    this.transport.signature = new TimeSignature(value, this.barUnit);
   }
+
   @Input('_barUnit')
   get barUnit(): number {
-    return this.metronome.signature.barUnit;
+    return this.transport.signature.barUnit;
   }
   set barUnit(value: number) {
-    this.metronome.signature = new TimeSignature(this.beatUnit, value);
+    this.transport.signature = new TimeSignature(this.beatUnit, value);
   }
 
+  private click1: Sample;
+  private click2: Sample;
+  private transportSubscription:Subscription;
 
-
-  constructor(protected dawService: AngularDawService, private metronome: MetronomeService) {
+  constructor(
+    protected dawService: AngularDawService,
+    private sampleService: SamplesV2Service,
+    private monitor: SystemMonitorService,
+    private config: AppConfiguration,
+    private transport: TransportService) {
 
     super(dawService);
   }
 
 
   start(): void {
-    this.metronome.start();
+    this.transport.start();
   }
 
   pause(): void {
-    this.metronome.stop();
+    this.transport.pause();
   }
 
   stop(): void {
-    this.metronome.stop();
+    this.transport.stop();
   }
 
   increase(value:number):void{
-    let newBpm = this.metronome.bpm+value;
-    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.metronome.bpm=newBpm;
+    let newBpm = this.bpm+value;
+    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.bpm=newBpm;
   }
 
 
@@ -78,9 +93,26 @@ export class MetronomeComponent extends DawPlugin {
   }
 
   activate(): void {
+    debugger;
+    this.sampleService.getSamples([
+      this.config.getAssetsUrl("sounds/metronome/click1.wav"),
+      this.config.getAssetsUrl("sounds/metronome/click2.wav")]).then(result => {
+
+      this.click1 = result[0];
+      this.click2 = result[1];
+      this.transportSubscription=this.transport.beat.subscribe(position => {
+        if (position.beat === 0) this.click2.play(0, 0.5, [Note.get("A2")], Dynamics.default());
+        else this.click1.play(0, 0.5, [Note.get("A2")], Dynamics.default());
+
+      })
+    }).catch(error => {
+
+      this.monitor.error(error)
+    })
   }
 
   destroy(): void {
+    this.transportSubscription.unsubscribe();
   }
 
 

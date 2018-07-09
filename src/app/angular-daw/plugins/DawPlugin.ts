@@ -1,6 +1,7 @@
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {AngularDawService} from "../services/angular-daw.service";
 import {WindowContent} from "../../angular-desktop/window/WindowContent";
+import {OnInit} from "@angular/core";
 
 export abstract class DawPlugin implements WindowContent {
 
@@ -21,5 +22,6 @@ export abstract class DawPlugin implements WindowContent {
   abstract activate():void;
 
   abstract destroy():void;
+
 
 }

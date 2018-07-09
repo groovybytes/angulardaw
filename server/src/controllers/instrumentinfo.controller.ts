@@ -46,7 +46,7 @@ export class InstrumentinfoController {
           this.logger.info(path + foundInstrumentName)
           fs.readdir(path + foundInstrumentName, (err, items) => {
             if (this.errorChecked(err, reject)) {
-              info.samples=items.map(item=>path.substr(1,path.length-1)+item);
+              info.samples=items.map(item=>path.substr(1,path.length-1)+foundInstrumentName+"/"+item);
               resolve(info);
             }
 

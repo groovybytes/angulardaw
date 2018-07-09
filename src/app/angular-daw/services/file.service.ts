@@ -2,13 +2,14 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {SystemMonitorService} from "./system-monitor.service";
 import {MidiFile} from "../model/midi/midifilespec/MidiFile";
+import {HttpError} from "../model/system/HttpError";
 
 declare var MidiConvert: any;
 
 @Injectable()
 export class FileService {
 
-  constructor(private http: HttpClient, private monitor: SystemMonitorService) {
+  constructor(private http: HttpClient) {
 
   }
 
@@ -17,8 +18,7 @@ export class FileService {
       return new Promise((resolve, reject) => {
         let run=()=>{
           let url = _url.replace("#","%23");
-
-
+         // url=encodeURI(url);
           if (url.endsWith(".mid")) {
             MidiConvert.load(url, (midi: MidiFile) => {
               resolve(midi);
@@ -35,11 +35,7 @@ export class FileService {
                   }
                   else resolve(result);
                 },
-                (error) => {
-                  console.log(error);
-                  this.monitor.httpError(error);
-                  reject(error);
-                })
+                (error) => reject(new HttpError(url,error)))
           }
         }
         if (timeout) setTimeout(()=>{
