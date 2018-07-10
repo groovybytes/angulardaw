@@ -1,9 +1,8 @@
 <div class="main theme-default">
-  length{{plugins.length}}
   <ng-content></ng-content>
 
   <div *ngFor="let plugin of plugins" class="shortcut" (dblclick)="onShortcutClicked(plugin)"
-       [ngStyle]="{'left':view.reference.index*100+'px'}">
+       [ngStyle]="{'left':100+'px'}">
     <span class="title no-select">{{plugin.title()}}</span>
   </div>
 

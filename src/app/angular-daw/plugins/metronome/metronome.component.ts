@@ -75,7 +75,10 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
 
   start(): void {
-    this.transport.start();
+
+      this.transport.start();
+
+
   }
 
   pause(): void {
@@ -108,8 +111,8 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
       this.click1 = result[0];
       this.click2 = result[1];
       this.transportSubscription = this.transport.beat.subscribe(position => {
-        if (position.beat === 0) this.click2.play(0, 0.5, [Note.get("A2")], Dynamics.default());
-        else this.click1.play(0, 0.5, [Note.get("A2")], Dynamics.default());
+        if (position.beat === 0) this.click2.trigger();// play(0, 0.5, [Note.get("A2")], Dynamics.default());
+        else this.click1.trigger();
 
       })
     }).catch(error => {

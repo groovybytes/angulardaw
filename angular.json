@@ -27,6 +27,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/flexboxgrid/dist/flexboxgrid.min.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
@@ -63,6 +64,12 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "hmr": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.hmr.ts"
+              }]
             }
           }
         },
@@ -74,6 +81,10 @@
           "configurations": {
             "production": {
               "browserTarget": "audtiotools:build:production"
+            },
+            "hmr": {
+              "hmr": true,
+              "browserTarget": "audtiotools:build:hmr"
             }
           }
         },

@@ -9,8 +9,10 @@ import {TransportService} from "../../services/transport.service";
 export class BeatviewerComponent implements OnInit {
 
   currentBeat: number = 0;
+  transport: TransportService;
 
-  constructor(private transport: TransportService) {
+  constructor( transport: TransportService) {
+    this.transport=transport;
   }
 
   ngOnInit() {

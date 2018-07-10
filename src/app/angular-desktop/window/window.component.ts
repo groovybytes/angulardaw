@@ -105,7 +105,6 @@ export class WindowComponent implements OnInit, AfterContentInit {
         },
         // enable autoScroll
         autoScroll: true,
-
         // call this function on every dragmove event
         onmove: dragMoveListener,
         // call this function on every dragend event

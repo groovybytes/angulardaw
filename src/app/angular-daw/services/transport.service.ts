@@ -47,6 +47,11 @@ export class TransportService {
   private intervalHandle: any;
   private threshold = 10;
   private _position: TransportPosition = new TransportPosition();
+  private pauseTime:number=0;
+  private startOffset:number;
+  private paused: boolean = false;
+  private loop: () => void;
+
 
   constructor(private context: AudioContextService) {
 
@@ -58,24 +63,28 @@ export class TransportService {
   }
 
   start(): void {
-
-    if (this.intervalHandle) this.stop();
-    let startOffset;
-    this._position.reset();
-    let notesPlayed = 0;
-    let timeStamp = 0;
-    let offset = 0;
-    let firstTrigger = true;
-    this.intervalHandle = setInterval(() => {
-      requestAnimationFrame(() => {
-        if (!startOffset)  startOffset = this.context.context().currentTime;
-        this._position.time = this.context.context().currentTime - startOffset;
+    if (this.paused) {
+      this.paused=false;
+      this.startOffset+=this.context.context().currentTime-this.pauseTime;
+      this.intervalHandle = setInterval(() => this.loop(), 1);
+    }
+    else {
+      if (this.intervalHandle) this.stop();
+      this._position.reset();
+      let notesPlayed = 0;
+      let timeStamp = 0;
+      let offset = 0;
+      let firstTrigger = true;
+      this.loop = () => {
+        if (!this.startOffset) this.startOffset = this.context.context().currentTime;
+        this._position.time = this.context.context().currentTime - this.startOffset;
         offset = (this._position.time - timeStamp) * 1000;
 
         this._position.bar = Math.floor(notesPlayed / this._signature.barUnit);
         this._position.beat = Math.floor(notesPlayed % this._signature.beatUnit);
 
         if (firstTrigger || this.isMatch(offset, this.noteTime)) {
+
           firstTrigger = false;
           offset = 0;
           timeStamp = this._position.time;
@@ -83,19 +92,25 @@ export class TransportService {
           notesPlayed++;
         }
         this.position.next(this._position);
-      })
-    }, 0);
-    this._running = true;
 
 
+      }
+      this.intervalHandle = setInterval(() => this.loop(), 1);
+      this._running = true;
+    }
   }
 
   pause(): void {
-
+    clearInterval(this.intervalHandle);
+    this.pauseTime=this.context.context().currentTime;
+    this.paused=true;
   }
 
   stop(): void {
     clearInterval(this.intervalHandle);
+    this.pauseTime = 0;
+    this.paused = false;
+    this.startOffset=null;
     this._running = false;
   }
 

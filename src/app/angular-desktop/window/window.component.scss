@@ -1,3 +1,5 @@
+@import "../variables";
+
 :host(.minimized,.closed) {
   display: none !important;
 }
@@ -5,26 +7,26 @@
 :host(.maximized) {
   width: 100% !important;
   height: 100vh !important;
-  left:0 !important;
-  top:0 !important;
+  left: 0 !important;
+  top: 0 !important;
   transform: translate(0, 0) !important;
 }
 
-:host{
-  min-width:400px;
-  min-height:400px;
+:host {
+  min-width: 400px;
+  min-height: 400px;
+
+ // box-shadow: 4px 4px $contrast-color;
 
 }
 
 :host /deep/ {
   overflow: hidden;
-
-
-  $header-base-color: lightgray;
-  $header-height: 50px;
-  $scrollbar-color: darkgray;
-  $window-background: white;
   border-radius: 10px;
+  //border-top: 1px solid $contrast-color;
+  border-left: 2px solid $header-base-color;
+  border-right: 2px solid $header-base-color;
+  border-bottom: 2px solid $header-base-color;
 
   position: absolute;
 
@@ -48,17 +50,20 @@
   .window-title {
     position: absolute;
     float: left;
-    color:black;
+    color: black;
+    text-transform: capitalize;
+    text-shadow: 0 1px 1px #e7e7e7;
   }
   .window-header {
     height: $header-height;
     background-color: $header-base-color;
   }
   .window-body {
-    padding-top:10px;
+    padding-top: 10px;
     background-color: $window-background;
     overflow: auto;
     height: 100%;
+
     //opacity: 0.9;
   }
   .icon-bar {

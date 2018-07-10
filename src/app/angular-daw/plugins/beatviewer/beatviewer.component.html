@@ -3,7 +3,7 @@
 <table class="table table-bordered table-dark">
   <tbody>
   <tr>
-    <td *ngFor="let i of getUnits()" [ngClass]="{'active':i===currentBeat+1}">{{i}}</td>
+    <td *ngFor="let i of getUnits()" [ngClass]="{'active':transport.running && i===currentBeat+1}">{{i}}</td>
   </tr>
   </tbody>
 </table>
