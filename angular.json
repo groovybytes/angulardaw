@@ -28,6 +28,9 @@
             ],
             "styles": [
               "node_modules/flexboxgrid/dist/flexboxgrid.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "node_modules/animate.css/animate.css",
+              "node_modules/hover.css/css/hover.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {

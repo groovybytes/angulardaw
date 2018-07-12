@@ -11,6 +11,7 @@ import {Sample} from "../../model/Sample";
 import {Subscription} from "rxjs/internal/Subscription";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {System} from "../../../system/System";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'daw-metronome',
@@ -54,7 +55,9 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     this.transport.signature = new TimeSignature(this.beatUnit, value);
   }
 
-  active: BehaviorSubject<boolean>;
+  get running(): boolean {
+    return this.transport.running;
+  }
 
   private click1: Sample;
   private click2: Sample;
@@ -76,7 +79,8 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   start(): void {
 
-      this.transport.start();
+    if (this.transport.running) this.transport.stop();
+    else  this.transport.start();
 
 
   }
@@ -85,9 +89,6 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     this.transport.pause();
   }
 
-  stop(): void {
-    this.transport.stop();
-  }
 
   increase(value: number): void {
     let newBpm = this.bpm + value;

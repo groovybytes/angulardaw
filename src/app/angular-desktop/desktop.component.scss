@@ -40,6 +40,7 @@
 }
 .main{
 
+
   height:100vh;
   //max-height: 10%;
   width: 100%;
@@ -63,6 +64,13 @@
 :host /deep/{
 
   @import "buttons";
+  @import "button-groups";
+
+  .toolbar{
+    .button{
+      width:100%;
+    }
+  }
 
   .title{
     pointer-events: none;

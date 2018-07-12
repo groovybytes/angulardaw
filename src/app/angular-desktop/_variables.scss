@@ -1,10 +1,10 @@
 @import "colors";
 
-$header-base-color: $primary-color;
+$header-base-color: darkgray;
 $header-height: 50px;
 $scrollbar-color: darkgray;
-$window-background: $quaternary-color;
-$font-color:$contrast-color;
+$window-background: lighten($header-base-color,20%);
+$font-color:$contrast-color2;
 $button-color:$contrast-color;
 
 

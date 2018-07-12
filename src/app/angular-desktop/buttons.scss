@@ -1,23 +1,49 @@
 @import "colors";
 @import "mixins";
 
-button{
-  background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
-
-  //@include background-gradient(red, black, 'vertical');
-}
-button{
-  border-radius: 5px;
-  //border-color:transparent;
-  /*   -webkit-transition-duration: 0.4s; !* Safari *!
-     transition-duration: 0.4s;*/
-  opacity: 0.6;
-}
-
-button.disabled {
+.button.disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-button:hover {opacity: 1}
+
+.button {
+  border-radius:15px;
+  text-decoration: none;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.btn-default {
+  border-color: darken($primary-color, 10%);
+  background-color: $primary-color;
+  &:hover {
+    background-color: darken($primary-color, 10%)
+  }
+}
+.btn-secondary {
+  border-color: darken($secondary-color, 10%);
+  background-color: $secondary-color;
+  &:hover {
+    background-color: darken($secondary-color, 10%)
+  }
+}
+
+.btn-hot {
+  border-color: darken($contrast-color, 10%);
+  background-color: $contrast-color;
+  &:hover {
+    background-color: darken($contrast-color, 10%)
+  }
+}
+
+.btn-light {
+  border-color: darken($tertiary-color, 10%);
+  background-color: $tertiary-color;
+  &:hover {
+    background-color: darken($tertiary-color, 10%)
+  }
+}
+
+
 
 

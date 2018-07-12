@@ -1,48 +1,64 @@
-
-  <div class="row">
-    <div class="col-xs-12">
-      <beatviewer></beatviewer>
-    </div>
-
+<div class="row">
+  <div class="col-xs-12">
+    <beatviewer></beatviewer>
   </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <label for="bpm" class="range-label">{{bpm}}</label>
-      <div class="btn-group inc-buttons" role="group">
-        <button type="button" class="btn btn-secondary" (click)="increase(1)">+</button>
-        <button type="button" class="btn btn-secondary" (click)="increase(-1)">-</button>
-        <button type="button" class="btn btn-secondary" (click)="increase(5)">+5</button>
-        <button type="button" class="btn btn-secondary" (click)="increase(-5)">-5</button>
+
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <label for="bpm" class="range-label">{{bpm}}</label>
+    <div class="btn-group inc-buttons" role="group">
+      <button type="button" class="btn btn-secondary" (click)="increase(1)">+</button>
+      <button type="button" class="btn btn-secondary" (click)="increase(-1)">-</button>
+      <button type="button" class="btn btn-secondary" (click)="increase(5)">+5</button>
+      <button type="button" class="btn btn-secondary" (click)="increase(-5)">-5</button>
+    </div>
+    <input type="range" class="custom-range" [(ngModel)]="bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}"
+           step="1">
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-xs-6">
+        <label for="beats" class="range-label">{{beatUnit}}</label>
+        <input type="range" class="custom-range" [(ngModel)]="beatUnit" name="beats" id="beats" min="1" max="8"
+               step="1">
       </div>
-      <input type="range" class="custom-range" [(ngModel)]="bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}" step="1">
-    </div>
-
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="row">
-        <div class="col-xs-6">
-          <label for="beats" class="range-label">{{beatUnit}}</label>
-          <input type="range" class="custom-range" [(ngModel)]="beatUnit" name="beats" id="beats" min="1" max="8" step="1">
-        </div>
-        <div class="col-xs-6">
-          <label for="bars" class="range-label">{{barUnit}}</label>
-          <input type="range" class="custom-range" [(ngModel)]="barUnit" name="bars" id="bars" min="1" max="8" step="1">
-        </div>
+      <div class="col-xs-6">
+        <label for="bars" class="range-label">{{barUnit}}</label>
+        <input type="range" class="custom-range" [(ngModel)]="barUnit" name="bars" id="bars" min="1" max="8" step="1">
       </div>
     </div>
   </div>
-  <div class="row btn-row">
+</div>
+<div class="metronome-trigger-container">
 
-    <div class="col-xs-4">
-      <button type="button" class="btn" (click)="start()">Start</button>
+  <div class="row">
+    <div class="col-xs-12 center">
+      <div class="start-button-wrap" >
+        <a href="#" class="start-button" [ngClass]="{'shrink':running}" (click)="start()">
+          <i *ngIf="running" class="fas fa-stop-circle fa-4x"></i>
+          <i *ngIf="!running" class="fas fa-play fa-4x"></i>
+      </a>
+        <!-- <a href="#" class="start-button" [ngClass]="{'animated pulse infinite':running}" (click)="start()">
+          <i *ngIf="running" class="fas fa-stop-circle fa-4x"></i>
+          <i *ngIf="!running" class="fas fa-play fa-4x"></i>
+      </a>-->
+      </div>
     </div>
-    <div class="col-xs-4">
-      <button type="button" class="btn" (click)="stop()">Stop</button>
-    </div>
-    <div class="col-xs-4">
-      <button type="button" class="btn" (click)="pause()">Pause</button>
-    </div>
-
   </div>
+  <div class="row">
+    <div class="col-xs-12 center">
+      <button
+        type="button" id="btn-pause" startButton class="button metronome-trigger"
+        (click)="pause()">
+        <!-- <i *ngIf="running" class="fas fa-undo-alt fa-4x"></i>-->
+        <i class="fas fa-pause fa-4x"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
 

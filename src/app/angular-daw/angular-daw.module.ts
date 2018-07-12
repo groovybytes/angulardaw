@@ -25,6 +25,7 @@ import {AngularDawApi} from "./angular-daw.api";
 import { DevelopmentComponent } from './plugins/development/development.component';
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {SamplesV2Service} from "./services/samplesV2.service";
+import {StartButtonDirective} from "./directives/start-button.directive";
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import {SamplesV2Service} from "./services/samplesV2.service";
     ClockComponent,
     SliderComponent,
     AngularDawComponent,
-    DevelopmentComponent
+    DevelopmentComponent,
+    StartButtonDirective
   ],
   exports:[
     AngularDawComponent
