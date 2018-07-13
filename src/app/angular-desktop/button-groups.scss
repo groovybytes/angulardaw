@@ -1,11 +1,9 @@
-.btn-group button {
-  padding: 10px 24px; /* Some padding */
+.btn-group .btn {
+  padding: 1px 1px; /* Some padding */
   float: left; /* Float the buttons side by side */
+  margin:4px;
 }
 
-.btn-group button:not(:last-child) {
-  border-right: none; /* Prevent double borders */
-}
 
 /* Clear floats (clearfix hack) */
 .btn-group:after {

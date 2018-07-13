@@ -56,15 +56,19 @@
   /*background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
   background-blend-mode: multiply,multiply;*/
 
-  background: linear-gradient(-180deg, #BCC5CE 0%, #929EAD 98%), radial-gradient(at top left, rgba(255,255,255,0.30) 0%, rgba(0,0,0,0.30) 100%);
+
+  background: #4e5d74;
+  background: linear-gradient(#54647d, #313946);
+
+  //background: linear-gradient(-180deg, #BCC5CE 0%, #929EAD 98%), radial-gradient(at top left, rgba(255,255,255,0.30) 0%, rgba(0,0,0,0.30) 100%);
   background-blend-mode: screen;
 
 }
 
 :host /deep/{
 
-  @import "buttons";
   @import "button-groups";
+  @import "scss/slider";
 
   .toolbar{
     .button{

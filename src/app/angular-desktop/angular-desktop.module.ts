@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {DesktopComponent} from "./desktop.component";
 import {WindowComponent} from "./window/window.component";
+import { DesktopButtonComponent } from './ui-components/desktop-button/desktop-button.component';
 
 @NgModule({
   imports: [
@@ -9,11 +10,13 @@ import {WindowComponent} from "./window/window.component";
   ],
   declarations: [
     DesktopComponent,
-    WindowComponent
+    WindowComponent,
+    DesktopButtonComponent
   ],
   exports:[
     DesktopComponent,
-    WindowComponent
+    WindowComponent,
+    DesktopButtonComponent
   ]
 })
 export class AngularDesktopModule { }

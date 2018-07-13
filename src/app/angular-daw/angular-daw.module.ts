@@ -26,6 +26,7 @@ import { DevelopmentComponent } from './plugins/development/development.componen
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {SamplesV2Service} from "./services/samplesV2.service";
 import {StartButtonDirective} from "./directives/start-button.directive";
+import { PressButtonComponent } from './ui/press-button/press-button.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {StartButtonDirective} from "./directives/start-button.directive";
     SliderComponent,
     AngularDawComponent,
     DevelopmentComponent,
-    StartButtonDirective
+    StartButtonDirective,
+    PressButtonComponent
   ],
   exports:[
     AngularDawComponent

@@ -1,4 +1,5 @@
 @import "../variables";
+@import "../../scss/andy";
 
 :host(.minimized,.closed) {
   display: none !important;
@@ -60,10 +61,11 @@
   }
   .window-body {
     padding-top: 10px;
-    background-color: $window-background;
+    //background-color: $window-background;
     overflow: auto;
     height: 100%;
-
+    color:white;
+    background: -webkit-linear-gradient(360deg, #1C1C1C 10%, #494949 360%); background: -moz-linear-gradient(360deg, #1C1C1C 10%, #494949 360%); background: linear-gradient(360deg, #1C1C1C 10%, #494949 360%);
     //opacity: 0.9;
   }
   .icon-bar {

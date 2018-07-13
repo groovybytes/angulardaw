@@ -59,6 +59,8 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     return this.transport.running;
   }
 
+  buttonDownOnStartButton:boolean=false;
+
   private click1: Sample;
   private click2: Sample;
   private transportSubscription: Subscription;
@@ -76,20 +78,14 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   }
 
-
-  start(): void {
-
+  onStartBtnToggled(value:boolean):void{
     if (this.transport.running) this.transport.stop();
     else  this.transport.start();
-
-
   }
 
   pause(): void {
     this.transport.pause();
   }
-
-
   increase(value: number): void {
     let newBpm = this.bpm + value;
     if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.bpm = newBpm;
