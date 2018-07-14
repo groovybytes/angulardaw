@@ -15,6 +15,7 @@ export class Sample implements Playable {
   private sourceNode: AudioBufferSourceNode;
   private nodesLoaded: boolean = false;
 
+
   constructor(id: string, buffer: AudioBuffer, category: string, url: string, private context: AudioContext) {
     this.id = id;
     this.buffer = buffer;
@@ -85,4 +86,5 @@ export class Sample implements Playable {
     this.loadNodes();
     this.sourceNode.start(0);
   }
+
 }

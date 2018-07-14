@@ -2,15 +2,11 @@ import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
 import {AngularDawService} from "../../services/angular-daw.service";
 import {TransportService} from "../../services/transport.service";
-import {NoteInfo} from "../../model/utils/NoteInfo";
-import {Dynamics} from "../../model/utils/Dynamics";
 import {SamplesV2Service} from "../../services/samplesV2.service";
 import {AppConfiguration} from "../../../app.configuration";
 import {Sample} from "../../model/Sample";
 import {Subscription} from "rxjs/internal/Subscription";
-import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {System} from "../../../system/System";
-import {animate, state, style, transition, trigger} from "@angular/animations";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 
 @Component({
@@ -59,8 +55,6 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     return this.transport.running;
   }
 
-  buttonDownOnStartButton:boolean=false;
-
   private click1: Sample;
   private click2: Sample;
   private transportSubscription: Subscription;
@@ -73,8 +67,6 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     private transport: TransportService) {
 
     super(dawService);
-
-
 
   }
 

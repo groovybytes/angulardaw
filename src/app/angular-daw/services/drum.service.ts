@@ -5,6 +5,8 @@ import {AppConfiguration} from "../../app.configuration";
 import {SamplesV2Service} from "./samplesV2.service";
 import {Sample} from "../model/Sample";
 import {ADSREnvelope} from "../model/mip/ADSREnvelope";
+import {Instrument} from "../model/Instrument";
+import {DrumKitSpec} from "../model/mip/drums/specs/DrumKitSpec";
 
 @Injectable()
 export class DrumService {
@@ -37,6 +39,12 @@ export class DrumService {
       this.reverb = result[0];
 
     }, error => this.system.error(error));
+
+  }
+
+  fromDrumKitSpec(spec:DrumKitSpec):Promise<Instrument>{
+
+    return null;
 
   }
 

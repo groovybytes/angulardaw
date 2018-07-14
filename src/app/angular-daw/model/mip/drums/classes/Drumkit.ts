@@ -1,6 +1,4 @@
-import {DrumkitPiece} from "./DrumkitPiece";
-
-
+/*
 export class Drumkit {
 
   kick1:DrumkitPiece;
@@ -15,3 +13,4 @@ export class Drumkit {
 
 
 }
+*/

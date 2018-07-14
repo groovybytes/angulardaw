@@ -5,9 +5,17 @@ import {AudioContextService} from "./audiocontext.service";
 import {logging} from "selenium-webdriver";
 import {log} from "util";
 import {TimeSignature} from "../model/mip/TimeSignature";
+import {SamplesV2Service} from "./samplesV2.service";
+import {AppConfiguration} from "../../app.configuration";
+import {System} from "../../system/System";
+import {Sample} from "../model/Sample";
 
 @Injectable()
 export class TransportService {
+
+  private click1: Sample;
+  private click2: Sample;
+
   get noteTime(): number {
     return 60 * 1000 / this._bpm;
   }
@@ -51,9 +59,12 @@ export class TransportService {
   private startOffset:number;
   private paused: boolean = false;
   private loop: () => void;
+  private useTick:boolean=false;
 
 
-  constructor(private context: AudioContextService) {
+  constructor(private context: AudioContextService,
+              private sampleService: SamplesV2Service,
+              private config:AppConfiguration) {
 
 
   }
@@ -82,13 +93,18 @@ export class TransportService {
 
         this._position.bar = Math.floor(notesPlayed / this._signature.barUnit);
         this._position.beat = Math.floor(notesPlayed % this._signature.beatUnit);
-
+        
         if (firstTrigger || this.isMatch(offset, this.noteTime)) {
 
           firstTrigger = false;
           offset = 0;
           timeStamp = this._position.time;
+          if (this.useTick){
+            if (this._position.beat === 0) this.click2.trigger();
+            else this.click1.trigger();
+          }
           this.beat.next(this._position);
+
           notesPlayed++;
         }
         this.position.next(this._position);
@@ -112,6 +128,20 @@ export class TransportService {
     this.paused = false;
     this.startOffset=null;
     this._running = false;
+  }
+
+  turnOnTick():Promise<void>{
+    return new Promise((resolve,reject)=>{
+      this.sampleService.getSamples([
+        this.config.getAssetsUrl("sounds/metronome/click1.wav"),
+        this.config.getAssetsUrl("sounds/metronome/click2.wav")]).then(result => {
+        this.click1 = result[0];
+        this.click2 = result[1];
+        this.useTick=true;
+        resolve();
+      }).catch(error => reject(error))
+    })
+
   }
 
 

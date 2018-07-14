@@ -67,6 +67,11 @@ export class StepsequencerD3 {
     this.mergeSelection.attr("class", (d: CellInfo) => d.getCssClass());
   }
 
+  highlightColumn(column:number):void{
+    this.mergeSelection.classed("position-focused",false);
+    this.mergeSelection.filter((d:CellInfo)=>d.column===column).classed("position-focused",true)
+  };
+
 
 }
 
