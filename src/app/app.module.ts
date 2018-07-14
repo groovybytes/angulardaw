@@ -9,6 +9,8 @@ import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {SystemMonitorService} from "./system/system-monitor.service";
 import { NotificationComponent } from './system/notification/notification.component';
 import {System} from "./system/System";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import {System} from "./system/System";
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    AngularDAWModule
+    AngularDAWModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],
   providers: [

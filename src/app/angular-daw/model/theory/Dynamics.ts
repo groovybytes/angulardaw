@@ -1,17 +1,21 @@
 export class Dynamics{
-  constructor(attack: number, release: number, sustain: number, gain: number) {
+  constructor(attack: number, release: number, sustain: number,detune?:number, gainCurve?:Array<number>) {
     this.attack = attack;
     this.release = release;
     this.sustain = sustain;
-    this.gain = gain;
+    this.gainCurve=gainCurve;
+    this.detune=detune;
   }
+
   attack:number;
   release:number;
   sustain:number;
-  gain:number;
+  gainCurve:Array<number>;
+  detune:number;
 
   getGainCurve(): Float32Array {
-    return Float32Array.from([0.3,0.5,0.7,1.0,0.7, 0.5,0.3], x => x + x)
+    let gainCurve = this.gainCurve?this.gainCurve:[0.3,0.5,0.7,1.0,0.7, 0.5,0.3];
+    return Float32Array.from(gainCurve, x => x + x)
   }
 
   public static default():Dynamics{

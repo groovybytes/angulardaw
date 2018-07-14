@@ -8,12 +8,17 @@
       <desktop-button class="btn-default" (click)="increase(5)">+5</desktop-button>
       <desktop-button class="btn-default" (click)="increase(-5)">-5</desktop-button>
     </div>
+
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-xs-12">
     <div class="slidecontainer">
       <input type="range" class="slider" [(ngModel)]="bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}"
              step="1">
     </div>
   </div>
-
 </div>
 <div class="row">
   <div class="col-xs-12">

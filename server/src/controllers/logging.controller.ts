@@ -13,7 +13,7 @@ export class LoggingController {
 
   @Post()
   create(@Body() msg:any, severity:string):void {
-    this.logger.log(severity.toLowerCase(),JSON.stringify(msg));
+    this.logger.log(severity?severity.toLowerCase():"info",JSON.stringify(msg));
   }
 
 }

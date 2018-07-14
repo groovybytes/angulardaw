@@ -57,12 +57,6 @@ export class DesktopComponent implements OnInit, AfterContentInit {
 
   ngAfterContentInit(): void {
 
-
-    this.windows.forEach((window: WindowComponent) => {
-      window.y=50;
-      window.x=200;
-    })
-
     this.plugins.forEach(plugin=>{
       let window = this.windows.filter(window => window.content.id() === plugin.id())[0];
       window.state.next(WindowState.NORMAL);

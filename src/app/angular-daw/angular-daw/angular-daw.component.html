@@ -2,11 +2,17 @@
 <!--  <window title="Sequencer"  #window>
    <daw-metronome #content></daw-metronome>
  </window>-->
- <!-- <window title="Sequencer"  #window>
+  <!--<window title="Sequencer" [x]="100"   #window>
     <sequencer #content></sequencer>
   </window>
 -->
-  <window title="metronome"  #window>
+  <window title="Pad" [x]="100"   #window>
+    <pad #content></pad>
+  </window>
+  <window title="metronome" [x]="800"  #window>
     <daw-metronome #content></daw-metronome>
   </window>
+  <!--<window title="playground"  #window>
+    <app-development #content></app-development>
+  </window>-->
 </desktop>

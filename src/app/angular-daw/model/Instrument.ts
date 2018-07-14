@@ -37,5 +37,8 @@ export class Instrument implements Playable {
     return this.samples.filter(sample=>sample.baseNote.index===closestSampleByNote)[0];
   }
 
+  public trigger() {
+   this.samples[0].trigger();
+  }
 
 }

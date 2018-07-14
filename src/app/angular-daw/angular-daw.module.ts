@@ -1,6 +1,5 @@
 import {ErrorHandler, NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {BeatviewerComponent} from "./plugins/beatviewer/beatviewer.component";
 import {MetronomeComponent} from "./plugins/metronome/metronome.component";
 import {SysinfoComponent} from "./plugins/sysinfo/sysinfo.component";
 import {SequencerComponent} from "./plugins/sequencer/sequencer.component";
@@ -27,6 +26,8 @@ import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {SamplesV2Service} from "./services/samplesV2.service";
 import {StartButtonDirective} from "./directives/start-button.directive";
 import { PressButtonComponent } from './ui/press-button/press-button.component';
+import {BeatviewerComponent} from "./ui/beatviewer/beatviewer.component";
+import { PadComponent } from './plugins/pad/pad.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { PressButtonComponent } from './ui/press-button/press-button.component';
     AngularDawComponent,
     DevelopmentComponent,
     StartButtonDirective,
-    PressButtonComponent
+    PressButtonComponent,
+    PadComponent
   ],
   exports:[
     AngularDawComponent
