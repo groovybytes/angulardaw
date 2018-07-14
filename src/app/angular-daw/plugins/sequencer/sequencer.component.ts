@@ -11,15 +11,15 @@ import {
 import {DawPlugin} from "../DawPlugin";
 import {AngularDawService} from "../../services/angular-daw.service";
 import {TransportService} from "../../services/transport.service";
-import {Note} from "../../model/theory/Note";
-import {Dynamics} from "../../model/theory/Dynamics";
+import {NoteInfo} from "../../model/utils/NoteInfo";
+import {Dynamics} from "../../model/utils/Dynamics";
 import {SamplesV2Service} from "../../services/samplesV2.service";
 import {System} from "../../../system/System";
 import {AppConfiguration} from "../../../app.configuration";
 import {SimpleDrum} from "../../model/drums/SimpleDrum";
 import $ from 'jquery/dist/jquery';
-import {ADSREnvelope} from "../../model/theory/ADSREnvelope";
 import {Sample} from "../../model/Sample";
+import {ADSREnvelope} from "../../model/mip/ADSREnvelope";
 
 @Component({
   selector: 'sequencer',

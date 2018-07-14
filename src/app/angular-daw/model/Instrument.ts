@@ -1,7 +1,7 @@
 import {Sample} from "./Sample";
 import {Playable} from "./Playable";
-import {Note} from "./theory/Note";
-import {Dynamics} from "./theory/Dynamics";
+import {NoteInfo} from "./utils/NoteInfo";
+import {Dynamics} from "./utils/Dynamics";
 
 export class Instrument implements Playable {
 
@@ -10,7 +10,7 @@ export class Instrument implements Playable {
   startNote: string;
   endNote: string;
 
-  play(when: number, duration: number, notes: Array<Note>,dynamics:Dynamics) {
+  play(when: number, duration: number, notes: Array<NoteInfo>, dynamics:Dynamics) {
     notes.forEach(note=>{
       let sample = this.getSampleForNote(note);
       sample.play(when,duration,[note],dynamics);
@@ -32,7 +32,7 @@ export class Instrument implements Playable {
     return ans;
   }
 
-  getSampleForNote(note:Note):Sample{
+  getSampleForNote(note:NoteInfo):Sample{
     let closestSampleByNote= this.closest(this.samples.map(sample=>sample.baseNote.index),note.index);
     return this.samples.filter(sample=>sample.baseNote.index===closestSampleByNote)[0];
   }

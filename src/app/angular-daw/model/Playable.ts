@@ -1,7 +1,7 @@
-import {Dynamics} from "./theory/Dynamics";
-import {Note} from "./theory/Note";
+import {Dynamics} from "./utils/Dynamics";
+import {NoteInfo} from "./utils/NoteInfo";
 
 export interface Playable{
-   play(when:number,duration:number,notes: Array<Note>,dynamics:Dynamics):void;
+   play(when:number, duration:number, notes: Array<NoteInfo>, dynamics:Dynamics):void;
 
 }

@@ -4,7 +4,7 @@ import {Project} from "../model/project/Project";
 import {MidiTrack} from "../model/project/MidiTrack";
 import {InstrumentsEnum} from "../model/InstrumentsEnum";
 import {Instrument} from "../model/Instrument";
-import {Note} from "../model/theory/Note";
+import {NoteInfo} from "../model/utils/NoteInfo";
 
 @Injectable()
 export class ProjectService {
@@ -22,7 +22,7 @@ export class ProjectService {
       midi.tracks.forEach(fileTrack => {
         if (fileTrack.notes && fileTrack.notes.length >0) {
           let track = new MidiTrack();
-          track.notes = fileTrack.notes.map(note=>Note.fromMidiNote(note));
+          track.notes = fileTrack.notes.map(note=>NoteInfo.fromMidiNote(note));
           project.tracks.push(track);
           let promise = this.samplesService.getSamplesForInstrument(InstrumentsEnum.PIANO).then(results => {
             let instrument = new Instrument();

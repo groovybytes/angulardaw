@@ -28,6 +28,8 @@ import {StartButtonDirective} from "./directives/start-button.directive";
 import { PressButtonComponent } from './ui/press-button/press-button.component';
 import {BeatviewerComponent} from "./ui/beatviewer/beatviewer.component";
 import { PadComponent } from './plugins/pad/pad.component';
+import { StepsequencerComponent } from './plugins/stepsequencer/stepsequencer.component';
+import {DrumService} from "./services/drum.service";
 
 
 @NgModule({
@@ -50,7 +52,8 @@ import { PadComponent } from './plugins/pad/pad.component';
     DevelopmentComponent,
     StartButtonDirective,
     PressButtonComponent,
-    PadComponent
+    PadComponent,
+    StepsequencerComponent
   ],
   exports:[
     AngularDawComponent
@@ -67,7 +70,8 @@ import { PadComponent } from './plugins/pad/pad.component';
     ProjectService,
     AngularDawApi,
     InstrumentInfoApi,
-    SamplesV2Service
+    SamplesV2Service,
+    DrumService
   ]
 })
 export class AngularDAWModule { }

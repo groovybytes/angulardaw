@@ -4,7 +4,7 @@ import {Sample} from "../model/Sample";
 import {AudioContextService} from "./audiocontext.service";
 import {FileService} from "./file.service";
 import {InstrumentsContext} from "../model/InstrumentsContext";
-import {Note} from "../model/theory/Note";
+import {NoteInfo} from "../model/theory/NoteInfo";
 import {InstrumentsEnum} from "../model/InstrumentsEnum";
 import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../../app.configuration";
@@ -76,7 +76,7 @@ export class SamplesService {
                     sampleName = sampleName.toUpperCase();
                     parts = sampleName.split(" ");
                     let noteName = parts[parts.length - 1].replace("#", "i");
-                    result.baseNote = Note.get(noteName);
+                    result.baseNote = NoteInfo.get(noteName);
                     if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
                     this.log.log("info", "success..");
                   } catch (e) {

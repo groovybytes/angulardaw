@@ -1,10 +1,9 @@
 import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
 import {AngularDawService} from "../../services/angular-daw.service";
-import {TimeSignature} from "../../model/theory/TimeSignature";
 import {TransportService} from "../../services/transport.service";
-import {Note} from "../../model/theory/Note";
-import {Dynamics} from "../../model/theory/Dynamics";
+import {NoteInfo} from "../../model/utils/NoteInfo";
+import {Dynamics} from "../../model/utils/Dynamics";
 import {SamplesV2Service} from "../../services/samplesV2.service";
 import {AppConfiguration} from "../../../app.configuration";
 import {Sample} from "../../model/Sample";
@@ -12,6 +11,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {System} from "../../../system/System";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {TimeSignature} from "../../model/mip/TimeSignature";
 
 @Component({
   selector: 'daw-metronome',
@@ -108,7 +108,7 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
       this.click1 = result[0];
       this.click2 = result[1];
       this.transportSubscription = this.transport.beat.subscribe(position => {
-        if (position.beat === 0) this.click2.trigger();// play(0, 0.5, [Note.get("A2")], Dynamics.default());
+        if (position.beat === 0) this.click2.trigger();// play(0, 0.5, [NoteInfo.get("A2")], Dynamics.default());
         else this.click1.trigger();
 
       })

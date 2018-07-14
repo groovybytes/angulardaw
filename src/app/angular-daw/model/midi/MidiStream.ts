@@ -2,7 +2,7 @@ import {Subject} from "rxjs/internal/Subject";
 import {MidiEvent} from "./MidiEvent";
 import {TransportService} from "../../services/transport.service";
 import {MidiFileNote} from "./midifilespec/MidiFileNote";
-import {Note} from "../theory/Note";
+import {NoteInfo} from "../utils/NoteInfo";
 
 
 export class MidiStream{
@@ -18,12 +18,12 @@ export class MidiStream{
     return diff===0 || Math.abs(diff) <= this.threshold;
   }
 
-  private getMatches(time:number,notes:Array<Note>):Array<Note>{
+  private getMatches(time:number,notes:Array<NoteInfo>):Array<NoteInfo>{
     return notes.filter(note=>this.isMatch(time,note.startTime));
   }
 
 
-  stream(notes:Array<Note>,bpm:number):void{
+  stream(notes:Array<NoteInfo>, bpm:number):void{
 
 
     //let notes = Object.assign({}, track.midiData.notes);

@@ -6,11 +6,11 @@ import * as d3 from "d3";
   templateUrl: './bpm-circle.component.html',
   styleUrls: ['./bpm-circle.component.scss']
 })
-export class BpmCircleComponent implements OnInit {
+export class BpmCircleComponent {
 
   constructor(private element:ElementRef) { }
 
-  ngOnInit() {
+/*  ngOnInit() {
 
     let width = 800;
     let height=800;
@@ -72,20 +72,20 @@ export class BpmCircleComponent implements OnInit {
       .append('textPath')
       .attr("xlink:href", function(d,i) { return "#path" + i; })
       .text(function(d,i) { })//console.log(i);return "x" })
- /*     .style("fill", function(d) { return d3.rgb(fill(d.index)).darker(2); })*/
-    /*  .each(function(d) {
+ /!*     .style("fill", function(d) { return d3.rgb(fill(d.index)).darker(2); })*!/
+    /!*  .each(function(d) {
         let centroid = arcGenerator.centroid(d);
         d3.select(this)
           .attr('x', centroid[0]*1.2)
           .attr('y', centroid[1]*1.2)
           .attr('dy', '0.33em')
           .text(d.label);
-      });*/
+      });*!/
 
     svg.call(d3.drag().on("drag", (d)=>{
       //console.log(d3.event.dy);
     }));
 
-  }
+  }*/
 
 }

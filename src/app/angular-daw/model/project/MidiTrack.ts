@@ -1,11 +1,11 @@
 import {Track} from "./Track";
 import {Instrument} from "../Instrument";
-import {Note} from "../theory/Note";
+import {NoteInfo} from "../utils/NoteInfo";
 
 export class MidiTrack extends Track {
 
   //midiData: MidiFileTrack;
-  notes:Array<Note>;
+  notes:Array<NoteInfo>;
   instrument:Instrument;
 
 }

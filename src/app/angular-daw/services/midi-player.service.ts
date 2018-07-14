@@ -2,8 +2,8 @@ import {Injectable} from "@angular/core";
 import {MidiFile} from "../model/midi/midifilespec/MidiFile";
 import {ProjectService} from "./project.service";
 import {MidiTrack} from "../model/project/MidiTrack";
-import {Note} from "../model/theory/Note";
-import {Dynamics} from "../model/theory/Dynamics";
+import {NoteInfo} from "../model/utils/NoteInfo";
+import {Dynamics} from "../model/utils/Dynamics";
 import {MidiStream} from "../model/midi/MidiStream";
 import {TransportService} from "./transport.service";
 
@@ -23,7 +23,7 @@ export class MidiPlayerService {
       project.tracks.forEach(track=>{
         let stream = new MidiStream(this.transport);
         stream.midiEvent.subscribe(events => {
-          instrument.play(0,events[0].duration,events.map(ev=>Note.fromMidiCode(ev.midi)),Dynamics.default());
+          instrument.play(0,events[0].duration,events.map(ev=>NoteInfo.fromMidiCode(ev.midi)),Dynamics.default());
         })
         stream.stream((<MidiTrack>track).notes, project.bpm);
       })

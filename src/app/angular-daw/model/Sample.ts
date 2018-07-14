@@ -1,15 +1,16 @@
-import {Frequencies} from "./theory/Frequencies";
-import {Note} from "./theory/Note";
+
+import {NoteInfo} from "./utils/NoteInfo";
 import {Playable} from "./Playable";
-import {Dynamics} from "./theory/Dynamics";
-import {ADSREnvelope} from "./theory/ADSREnvelope";
+import {Dynamics} from "./utils/Dynamics";
+import {ADSREnvelope} from "./mip/ADSREnvelope";
+import {Frequencies} from "./mip/Frequencies";
 
 export class Sample implements Playable {
   id: string;
   buffer: AudioBuffer;
   category: string;
   url: string;
-  baseNote: Note;
+  baseNote: NoteInfo;
   private gainNode: GainNode;
   private sourceNode: AudioBufferSourceNode;
   private nodesLoaded: boolean = false;
@@ -30,13 +31,13 @@ export class Sample implements Playable {
     this.nodesLoaded = true;
   }
 
-  public play(when: number, duration: number, notes: Array<Note>, dynamics: Dynamics) {
+  public play(when: number, duration: number, notes: Array<NoteInfo>, dynamics: Dynamics) {
 
     this.loadNodes();
     notes.forEach(note => {
       let detune = 0;
       if (note && this.baseNote && this.baseNote != note) {
-        detune = Note.interval(this.baseNote, note) * Frequencies.SEMITONE;
+        detune = NoteInfo.interval(this.baseNote, note) * Frequencies.SEMITONE;
       }
 
       this.sourceNode.detune.value = detune;

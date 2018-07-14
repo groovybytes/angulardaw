@@ -1,6 +1,6 @@
 /*
 import {Injectable} from "@angular/core";
-import {Note} from "../model/theory/Note";
+import {NoteInfo} from "../model/theory/NoteInfo";
 
 @Injectable()
 export class TheoryService{
@@ -9,9 +9,9 @@ export class TheoryService{
 
   constructor(){
     let i =0;
-    Object.keys(Note.frequencies).forEach(freq=>{
-      let note = new Note();
-      note.frequency=Note.frequencies[freq];
+    Object.keys(NoteInfo.frequencies).forEach(freq=>{
+      let note = new NoteInfo();
+      note.frequency=NoteInfo.frequencies[freq];
       note.id=freq.replace("#","i");
 
       note.index=i;
@@ -22,7 +22,7 @@ export class TheoryService{
     })
   }
 
-  note(id:string):Note{
+  note(id:string):NoteInfo{
     return this.notes[id];
   }
 }

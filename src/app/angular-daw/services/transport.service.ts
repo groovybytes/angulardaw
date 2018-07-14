@@ -1,10 +1,10 @@
 import {Subject} from 'rxjs';
-import {TimeSignature} from "../model/theory/TimeSignature";
 import {TransportPosition} from "../model/TransportPosition";
 import {Injectable} from "@angular/core";
 import {AudioContextService} from "./audiocontext.service";
 import {logging} from "selenium-webdriver";
 import {log} from "util";
+import {TimeSignature} from "../model/mip/TimeSignature";
 
 @Injectable()
 export class TransportService {

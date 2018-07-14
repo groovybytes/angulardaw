@@ -2,7 +2,7 @@
 import {MidiFileNote} from "../midi/midifilespec/MidiFileNote";
 
 
-export class Note {
+export class NoteInfo {
   frequency: number;
   id: string;
   octave: number;
@@ -13,57 +13,56 @@ export class Note {
   startTime:number;
 
   public static notes: any;
+  public static notesByMidi: any;
 
 
   public static load(): void {
     let i = 0;
-    Object.keys(Note.frequencies).forEach(freq => {
-      let note = new Note();
-      note.frequency = Note.frequencies[freq];
+    NoteInfo.notes = {};
+    NoteInfo.notesByMidi = {};
+    Object.keys(NoteInfo.frequencies).forEach(freq => {
+      let note = new NoteInfo();
+      note.frequency = NoteInfo.frequencies[freq];
       note.id = freq.replace("#", "i");
       note.index = i;
       note.midi = i + 21;
-      Note.notes[note.id] = note;
-
-      Note.notes["midi_"+note.midi]=note;
+      NoteInfo.notes[note.id] = note;
+      NoteInfo.notesByMidi["midi_"+note.midi]=note;
       i++;
     })
   }
 
-  public move(semitones: number): Note {
-    if (!Note.notes) {
-      Note.notes = {};
-      Note.load();
+  public move(semitones: number): NoteInfo {
+    if (!NoteInfo.notes) {
+      NoteInfo.load();
     }
 
-    let key = Object.keys(Note.notes)[this.index + semitones];
-    return Note.notes[key];
+    let key = Object.keys(NoteInfo.notes)[this.index + semitones];
+    return NoteInfo.notes[key];
   }
 
-  public static get(id: string): Note {
+  public static get(id: string): NoteInfo {
 
-    if (!Note.notes) {
-      Note.notes = {};
-      Note.load();
+    if (!NoteInfo.notes) {
+      NoteInfo.load();
     }
 
-    if (!Note.notes[id]) console.warn("couldnt find note with id "+id);
-    return Note.notes[id];
+    if (!NoteInfo.notes[id]) console.warn("couldnt find note with id "+id);
+    return NoteInfo.notes[id];
   }
 
-  public static fromMidiCode(id: number): Note {
+  public static fromMidiCode(id: number): NoteInfo {
 
-    if (!Note.notes) {
-      Note.notes = {};
-      Note.load();
+    if (!NoteInfo.notes) {
+      NoteInfo.load();
     }
 
-    if (!Note.notes["midi_"+id]) console.warn("couldnt find note with id "+id);
-    return Note.notes["midi_"+id];
+    if (!NoteInfo.notesByMidi["midi_"+id]) console.warn("couldnt find note with id "+id);
+    return NoteInfo.notesByMidi["midi_"+id];
   }
 
-  public static fromMidiNote(note: MidiFileNote): Note {
-    let result = Note.fromMidiCode(note.midi);
+  public static fromMidiNote(note: MidiFileNote): NoteInfo {
+    let result = NoteInfo.fromMidiCode(note.midi);
     result.startTime=note.time;
     result.duration=note.duration;
     result.velocity=note.velocity;
@@ -71,7 +70,7 @@ export class Note {
 
   }
 
-  public static interval(note1: Note, note2: Note): number {
+  public static interval(note1: NoteInfo, note2: NoteInfo): number {
     return note2.index - note1.index;
   }
 

@@ -8,7 +8,7 @@ import * as d3 from "d3";
 })
 
 
-export class SliderComponent implements OnInit {
+export class SliderComponent  {
   private _active:boolean=false;
   private slider:any;
 
@@ -34,7 +34,7 @@ export class SliderComponent implements OnInit {
   constructor(private element:ElementRef){
   }
 
-  ngOnInit() {
+  /*ngOnInit() {
     let self = this;
     var margin = {left: 20, right: 20},
       width = 1200,
@@ -126,7 +126,7 @@ export class SliderComponent implements OnInit {
       handle.attr('cx', cx);
       self.positionChanged.next(xVal);
     }
-  }
+  }*/
 
   update():void{
     if (this.slider) this.slider.classed("active",this.active);

@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@angular/core";
 import {Sample} from "../model/Sample";
 import {AudioContextService} from "./audiocontext.service";
 import {FileService} from "./file.service";
-import {Note} from "../model/theory/Note";
+import {NoteInfo} from "../model/utils/NoteInfo";
 import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../../app.configuration";
 import {Instrument} from "../model/Instrument";
@@ -46,7 +46,7 @@ export class SamplesV2Service {
                 parts = sampleName.split(" ");
                 let noteName = parts[parts.length - 1].replace("#", "i");
                 if (this._.findIndex(provedSamples,sample=>sample.baseNote.id===noteName)===-1){
-                  result.baseNote = Note.get(noteName);
+                  result.baseNote = NoteInfo.get(noteName);
                   if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
                   provedSamples.push(result);
                   this.system.debug("success..");

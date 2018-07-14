@@ -1,6 +1,6 @@
 import {Track} from "./Track";
-import {MidiFileHeader} from "../midi/midifilespec/MidiFileHeader";
-import {TimeSignature} from "../theory/TimeSignature";
+import {TimeSignature} from "../mip/TimeSignature";
+
 
 export class Project{
   //header: MidiFileHeader;

@@ -78,7 +78,7 @@ export class SamplesService {
                       sampleName = sampleName.toUpperCase();
                       parts = sampleName.split(" ");
                       let noteName = parts[parts.length - 1].replace("#", "i");
-                      result.baseNote = Note.get(noteName);
+                      result.baseNote = NoteInfo.get(noteName);
                       if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
                       this.log.log("info", "success..");
                     } catch (e) {
