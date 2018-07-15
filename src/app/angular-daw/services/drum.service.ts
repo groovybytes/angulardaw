@@ -5,12 +5,9 @@ import {AppConfiguration} from "../../app.configuration";
 import {SamplesV2Service} from "./samplesV2.service";
 import {Sample} from "../model/Sample";
 import {ADSREnvelope} from "../model/mip/ADSREnvelope";
-import {Instrument} from "../model/Instrument";
 import {DrumKitSpec} from "../model/mip/drums/specs/DrumKitSpec";
 import {FileService} from "./file.service";
 import {Drumkit} from "../model/mip/drums/classes/Drumkit";
-import {TriggerContext} from "../model/triggers/TriggerContext";
-import {Trigger} from "../model/triggers/Trigger";
 import {DrumSample} from "../model/mip/drums/classes/DrumSample";
 import {DrumMapping} from "../model/mip/drums/specs/DrumMapping";
 

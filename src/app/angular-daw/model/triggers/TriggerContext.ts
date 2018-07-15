@@ -3,26 +3,26 @@ import {TriggerEvent} from "./TriggerEvent";
 import {Trigger} from "./Trigger";
 import {System} from "../../../system/System";
 
-export class TriggerContext {
-  private triggers: Array<Trigger<any>> = [];
-  trigger: Subject<TriggerEvent> = new Subject<TriggerEvent>();
+export class TriggerContext<T,S> {
+  triggers: Array<Trigger<T,S>> = [];
+  trigger: Subject<T> = new Subject<T>();
 
   constructor(private system:System) {
-    this.trigger.asObservable().subscribe((event: TriggerEvent) => this.nextEvent(event));
+    this.trigger.asObservable().subscribe((condition: T) => this.next(condition));
   }
 
   clear():void{
     this.triggers.length=0;
   }
 
-  addTrigger(trigger:Trigger<any>):void{
-    this.triggers.push(trigger);
-  }
+  /*getTriggerSpectrum(){
+      return this.triggers.map(t=>t.)
+  }*/
 
-  private nextEvent(event: TriggerEvent): void {
+  private next(condition: T): void {
     let found=false;
     this.triggers.forEach(trigger => {
-      if (trigger.test(event)) {
+      if (trigger.test(condition)) {
         found=true;
         trigger.resolve();
       }

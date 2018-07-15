@@ -1,17 +1,18 @@
-import {TriggerEvent} from "./TriggerEvent";
-
-export class Trigger<T extends TriggerEvent>{
+export class Trigger<T,S>{
   constructor(
-    private tester:(event:T)=>boolean,
-    private resolver:()=>void){
+    private _test:(condition:T)=>boolean,
+    private _subject:()=>S,
+    private _resolve:(subject:S)=>void){
 
   }
-
-  test(event:T):boolean{
-    return this.tester(event);
+  test(condition:T):boolean{
+    return this._test(condition);
   }
 
+  subject():S{
+    return this._subject();
+  }
   resolve():void{
-    this.resolver();
+    return this._resolve(this._subject());
   }
 }

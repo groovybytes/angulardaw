@@ -7,26 +7,31 @@ import {Severity} from "../../../../../system/Severity";
 
 export class Drumkit {
 
-  context: TriggerContext;
+  context: TriggerContext<string,DrumSample>;
   samples: Array<DrumSample> = [];
 
-  constructor(private system:System) {
-    this.context=new TriggerContext(system);
+  constructor(private system: System) {
+    this.context = new TriggerContext<string,DrumSample>(system);
   }
 
-  loadMapping(mapping:DrumMapping): void {
+  loadMapping(mapping: DrumMapping): void {
     this.context.clear();
     mapping.mappings.forEach(mapping => {
-      let trigger = new Trigger<string>((note: string) => {
+      let trigger = new Trigger<string, DrumSample>((note: string) => {
         return note === mapping.note;
       }, () => {
-        let sample = this.samples.filter(sample => sample.piece === mapping.piece && sample.articulation === mapping.articulation)[0];
-        if (!sample) this.system.warn("sample not found for : "+mapping).notify("what?!",Severity.WARNING);
-        else sample.sample.trigger();
+        return this.samples.filter(sample => sample.piece === mapping.piece && sample.articulation === mapping.articulation)[0];
+      }, (subject: DrumSample) => {
+        if (!subject) this.system.warn("sample not found for : " + mapping).notify("what?!", Severity.WARNING);
+        subject.sample.trigger();
       })
-      this.context.addTrigger(trigger);
+      this.context.triggers.push(trigger);
     })
   }
+
+  /*getSampleForNote(note: string): DrumSample {
+    let sample = this.samples.filter(sample => sample.)[0];
+  }*/
 
 
 }
