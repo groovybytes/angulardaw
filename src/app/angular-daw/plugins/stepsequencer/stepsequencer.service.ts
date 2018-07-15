@@ -13,7 +13,6 @@ export class StepSequencerService{
     let notes = Object.keys(NoteInfo.notes).reverse();
     let beats=bars*signature.beatUnit;
     for (let i = 0; i < beats*notes.length; i++) {
-      let entry=[];
       let cellInfo = new CellInfo();
       cellInfo.beat=(i%signature.beatUnit)+1;
       cellInfo.bar=(i&signature.barUnit)+1;
