@@ -6,6 +6,7 @@ import {TransportService} from "./transport.service";
 import {Project} from "../model/project/Project";
 import {MidiTrack} from "../model/project/MidiTrack";
 import {MidiFileNote} from "../model/midi/midifilespec/MidiFileNote";
+import {MusicMath} from "../model/utils/MusicMath";
 
 @Injectable()
 export class MidiStreamService{
@@ -30,7 +31,7 @@ export class MidiStreamService{
 
     let i = 0;
     let nLookAhead=10;
-    this.transport.bpm=bpm;
+    this.transport.tickInterval=MusicMath.getBeatTime(bpm);
     this.transport.position.subscribe(position=>{
 
       let matches = this.getMatches(position.time,notes.slice(i,nLookAhead));

@@ -3,6 +3,7 @@ import {MidiEvent} from "./MidiEvent";
 import {TransportService} from "../../services/transport.service";
 import {MidiFileNote} from "./midifilespec/MidiFileNote";
 import {NoteInfo} from "../utils/NoteInfo";
+import {MusicMath} from "../utils/MusicMath";
 
 
 export class MidiStream{
@@ -28,7 +29,7 @@ export class MidiStream{
 
     //let notes = Object.assign({}, track.midiData.notes);
     let i = 0;
-    this.transport.bpm=bpm;
+    this.transport.tickInterval=MusicMath.getBeatTime(bpm);
     this.transport.position.subscribe(position=>{
 
       let diff = notes[i].startTime-position.time;

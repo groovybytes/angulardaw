@@ -30,6 +30,7 @@ import {BeatviewerComponent} from "./ui/beatviewer/beatviewer.component";
 import { PadComponent } from './plugins/pad/pad.component';
 import { StepsequencerComponent } from './plugins/stepsequencer/stepsequencer.component';
 import {DrumService} from "./services/drum.service";
+import {ClickerService} from "./services/clicker.service";
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import {DrumService} from "./services/drum.service";
     AngularDawApi,
     InstrumentInfoApi,
     SamplesV2Service,
-    DrumService
+    DrumService,
+    ClickerService
   ]
 })
 export class AngularDAWModule { }

@@ -1,24 +1,27 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {DawPlugin} from "../plugins/DawPlugin";
-import {Sample} from "../model/Sample";
 import {FileService} from "./file.service";
-import {AudioContextService} from "./audiocontext.service";
+import {SamplesV2Service} from "./samplesV2.service";
+import {AppConfiguration} from "../../app.configuration";
+import {Sample} from "../model/Sample";
+import {TransportService} from "./transport.service";
+import {MusicMath} from "../model/utils/MusicMath";
 
 
 @Injectable()
 export class AngularDawService {
 
-  config:any;
+ /* config:any;*/
   plugins: Array<DawPlugin> = [];
   public pluginAdded: EventEmitter<DawPlugin> = new EventEmitter<DawPlugin>();
 
-  instruments:{
-    piano:Sample;
-  }
 
 
-
-  constructor(private fileService: FileService,private audioContext:AudioContextService) {
+  constructor(
+    private fileService: FileService,
+    private sampleService:SamplesV2Service,
+    private transport:TransportService,
+    private config:AppConfiguration) {
   }
 
   register(plugin: DawPlugin): void {
@@ -28,10 +31,13 @@ export class AngularDawService {
 
   bootstrap():void{
     this.fileService.getFile("assets/daw.config.json").then(config=>{
-      this.config = config;
+      //this.config = config;
     });
 
   }
 
 
+
 }
+
+

@@ -1,4 +1,4 @@
-import {AfterContentInit, AfterViewInit, Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AngularDawService} from "../services/angular-daw.service";
 
 @Component({
