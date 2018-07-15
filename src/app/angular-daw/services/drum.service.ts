@@ -7,6 +7,12 @@ import {Sample} from "../model/Sample";
 import {ADSREnvelope} from "../model/mip/ADSREnvelope";
 import {Instrument} from "../model/Instrument";
 import {DrumKitSpec} from "../model/mip/drums/specs/DrumKitSpec";
+import {FileService} from "./file.service";
+import {Drumkit} from "../model/mip/drums/classes/Drumkit";
+import {TriggerContext} from "../model/triggers/TriggerContext";
+import {Trigger} from "../model/triggers/Trigger";
+import {DrumSample} from "../model/mip/drums/classes/DrumSample";
+import {DrumMapping} from "../model/mip/drums/specs/DrumMapping";
 
 @Injectable()
 export class DrumService {
@@ -16,14 +22,15 @@ export class DrumService {
   constructor(
     private samplesV2Service: SamplesV2Service,
     private system: System,
+    private fileService: FileService,
     private config: AppConfiguration) {
 
   }
 
   load(): void {
     let samples = [
-      this.config.getAssetsUrl("sounds/drums/drumkit1/kick.wav"),
-      this.config.getAssetsUrl("sounds/drums/drumkit1/snare.wav"),
+      this.config.getAssetsUrl("sounds/drums/drumkit1/kick1.wav"),
+      this.config.getAssetsUrl("sounds/drums/drumkit1/snare1.wav"),
       this.config.getAssetsUrl("sounds/drums/drumkit1/hihat.wav")
     ]
 
@@ -42,9 +49,37 @@ export class DrumService {
 
   }
 
-  fromDrumKitSpec(spec:DrumKitSpec):Promise<Instrument>{
+  getMapping(id:string):Promise<DrumMapping>{
+    return new Promise((resolve, reject) => {
+      this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
+        .then((config: DrumMapping) => {
+          resolve(config);
+        })
+        .catch(error => reject(error));
+    })
+  }
 
-    return null;
+  getDrumKit(id: string): Promise<Drumkit> {
+    return new Promise((resolve, reject) => {
+      let drumKit = new Drumkit(this.system);
+      this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
+        .then((config: DrumKitSpec) => {
+          let promises = [];
+          let urls = config.samples.map(sample => this.config.getAssetsUrl("sounds/drums/"+id+"/"+sample.url));
+          let promise = this.samplesV2Service.getSamples(urls);
+          promises.push(promise);
+          promise.then((samples: Array<Sample>) => {
+            samples.forEach((sample, i) => {
+              let spec = config.samples[i];
+              drumKit.samples.push(new DrumSample(spec.piece, spec.articulation, sample));
+            })
+
+          }).catch(error => reject(error));
+          Promise.all(promises).then(() => resolve(drumKit)).catch(error => reject(error));
+        })
+        .catch(error => reject(error));
+    })
+
 
   }
 
