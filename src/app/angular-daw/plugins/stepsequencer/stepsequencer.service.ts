@@ -3,14 +3,14 @@ import {NoteInfo} from "../../model/utils/NoteInfo";
 import {CellInfo} from "./model/CellInfo";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {Trigger} from "../../model/triggers/Trigger";
-import {DrumService} from "../../services/drum.service";
+import {DrumApi} from "../../api/drum.api";
 import {Drumkit} from "../../model/mip/drums/classes/Drumkit";
 import {DrumSample} from "../../model/mip/drums/classes/DrumSample";
 
 @Injectable()
 export class StepSequencerService {
 
-  constructor(private drumService:DrumService){
+  constructor(private drumService:DrumApi){
 
   }
 

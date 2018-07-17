@@ -1,7 +1,6 @@
 import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
-import {AngularDawService} from "../../services/angular-daw.service";
-import {Subscription} from "rxjs/internal/Subscription";
+import {Workstation} from "../../model/daw/Workstation";
 
 @Component({
   selector: 'sysinfo',
@@ -10,24 +9,23 @@ import {Subscription} from "rxjs/internal/Subscription";
 })
 export class SysinfoComponent  extends DawPlugin implements OnInit, OnDestroy {
 
+  @Input() workstation: Workstation;
+
   @HostBinding('class')
   elementClass = 'plugin';
 
   plugins: Array<DawPlugin> = [];
   activated: boolean = false;
 
-  constructor(protected element: ElementRef, protected dawService: AngularDawService) {
-    super(dawService);
-    this.dawService.pluginAdded.subscribe(plugin=>{
-      this.plugins.push(plugin);
-  })
+  constructor(protected element: ElementRef) {
+    super();
+
   }
 
   ngOnInit() {
-
-
-
-
+    this.workstation.pluginAdded.subscribe(plugin=>{
+      this.plugins.push(plugin);
+    })
   }
 
   defaultWidth(): number {

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {AngularDawService} from "../services/angular-daw.service";
+import {Component, Input, OnInit} from '@angular/core';
+import {Workstation} from "../model/daw/Workstation";
 
 @Component({
   selector: 'angular-daw',
@@ -8,12 +8,14 @@ import {AngularDawService} from "../services/angular-daw.service";
 })
 export class AngularDawComponent implements OnInit {
 
-  constructor(private dawService: AngularDawService) {
+  @Input() workstation:Workstation;
+
+  constructor() {
 
   }
 
   ngOnInit() {
-    this.dawService.bootstrap();
+
   }
 
 }

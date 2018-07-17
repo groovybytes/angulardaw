@@ -29,6 +29,7 @@ import { environment } from '../environments/environment';
     System,
     AppConfiguration,
     { provide: "lodash", useValue: window["_"] },
+    { provide: "AudioContext", useValue: new AudioContext() },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SystemMonitorService,

@@ -6,7 +6,7 @@ import {System} from "../../system/System";
 declare var MidiConvert: any;
 
 @Injectable()
-export class FileService {
+export class FilesApi {
 
   constructor(private http: HttpClient,private system:System) {
 

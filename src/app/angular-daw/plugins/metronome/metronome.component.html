@@ -1,7 +1,7 @@
 
 <div class="row">
   <div class="col-xs-12">
-    <label for="bpm" class="range-label">{{bpm}}</label>
+    <label for="bpm" class="range-label">{{project.bpm}}</label>
     <div class="btn-group inc-buttons" role="group">
       <desktop-button class="btn-default" (click)="increase(1)">+</desktop-button>
       <desktop-button class="btn-default" (click)="increase(-1)">-</desktop-button>
@@ -15,7 +15,7 @@
 <div class="row">
   <div class="col-xs-12">
     <div class="slidecontainer">
-      <input type="range" class="slider" [(ngModel)]="bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}"
+      <input type="range" class="slider" [(ngModel)]="project.bpm" name="bpm" id="bpm" min="{{minBpm}}" max="{{maxBpm}}"
              step="1">
     </div>
   </div>
@@ -24,16 +24,16 @@
   <div class="col-xs-12">
     <div class="row">
       <div class="col-xs-6">
-        <label for="beats" class="range-label">{{signature.beatUnit}}</label>
+        <label for="beats" class="range-label">{{project.signature.beatUnit}}</label>
         <div class="slidecontainer">
-          <input type="range" class="slider" [(ngModel)]="signature.beatUnit" name="beats" id="beats" min="1" max="8"
+          <input type="range" class="slider" [(ngModel)]="project.signature.beatUnit" name="beats" id="beats" min="1" max="8"
                  step="1">
         </div>
       </div>
       <div class="col-xs-6">
-        <label for="bars" class="range-label">{{signature.barUnit}}</label>
+        <label for="bars" class="range-label">{{project.signature.barUnit}}</label>
         <div class="slidecontainer">
-          <input type="range" class="slider" [(ngModel)]="signature.barUnit" name="bars" id="bars" min="1" max="8" step="1">
+          <input type="range" class="slider" [(ngModel)]="project.signature.barUnit" name="bars" id="bars" min="1" max="8" step="1">
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <beatviewer [signature]="signature"></beatviewer>
+    <beatviewer [signature]="project.signature" [transport]="project.transport"></beatviewer>
   </div>
 </div>
 

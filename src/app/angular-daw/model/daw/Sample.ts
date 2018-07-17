@@ -1,9 +1,9 @@
 
-import {NoteInfo} from "./utils/NoteInfo";
+import {NoteInfo} from "../utils/NoteInfo";
 import {Playable} from "./Playable";
-import {Dynamics} from "./utils/Dynamics";
-import {ADSREnvelope} from "./mip/ADSREnvelope";
-import {Frequencies} from "./mip/Frequencies";
+import {Dynamics} from "../utils/Dynamics";
+import {ADSREnvelope} from "../mip/ADSREnvelope";
+import {Frequencies} from "../mip/Frequencies";
 
 export class Sample implements Playable {
   id: string;

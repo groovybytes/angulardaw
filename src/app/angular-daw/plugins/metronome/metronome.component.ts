@@ -1,81 +1,79 @@
 import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
-import {AngularDawService} from "../../services/angular-daw.service";
-import {TransportService} from "../../services/transport.service";
-import {SamplesV2Service} from "../../services/samplesV2.service";
-import {AppConfiguration} from "../../../app.configuration";
+import {SamplesApi} from "../../api/samples.api";
 import {Subscription} from "rxjs/internal/Subscription";
-import {System} from "../../../system/System";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {MusicMath} from "../../model/utils/MusicMath";
-import {ClickerService} from "../../services/clicker.service";
+import {Workstation} from "../../model/daw/Workstation";
+import {Transport} from "../../model/daw/Transport";
+import {Clicker} from "../../model/daw/Clicker";
+import {Project} from "../../model/daw/Project";
 
 @Component({
   selector: 'daw-metronome',
   templateUrl: './metronome.component.html',
-  styleUrls: ['./metronome.component.scss'],
-  providers: [TransportService]
+  styleUrls: ['./metronome.component.scss']
 })
+
 export class MetronomeComponent extends DawPlugin implements OnInit {
+
+  @Input() workstation: Workstation;
 
   @HostBinding('class')
   elementClass = 'plugin';
 
+  private clicker:Clicker;
+  //private _bpm: number;
 
-  private _bpm: number;
-  @Input('bpm')
+  project:Project;
+ /* @Input('bpm')
   get bpm(): number {
     return this._bpm;
   }
 
   set bpm(value: number) {
     this._bpm = value;
-    this.transport.tickInterval = MusicMath.getBeatTime(value);
+    this.project.transport.tickInterval = MusicMath.getBeatTime(value);
   }
-
+*/
   @Input('minBpm') minBpm: number = 40;
   @Input('maxBpm') maxBpm: number = 300;
 
-  private _signature: TimeSignature = new TimeSignature(4, 4);
+  /*private _signature: TimeSignature = new TimeSignature(4, 4);
   @Input('signature')
   get signature(): TimeSignature {
     return this._signature;
-  }
+  }*/
 
-  set signature(value: TimeSignature) {
+  /*set signature(value: TimeSignature) {
     this._signature = value;
   }
+*/
+  /*get running(): boolean {
+    return this.project.transport.running;
+  }*/
 
-  get running(): boolean {
-    return this.transport.running;
-  }
+ /* private transport:Transport;*/
 
   private transportSubscription: Subscription;
 
-  constructor(
-    protected dawService: AngularDawService,
-    private sampleService: SamplesV2Service,
-    private system: System,
-    private config: AppConfiguration,
-    private clicker: ClickerService,
-    private transport: TransportService) {
+  constructor(private samplesApi:SamplesApi) {
 
-    super(dawService);
-
+    super();
   }
 
   onStartBtnToggled(value: boolean): void {
-    if (this.transport.running) this.transport.stop();
-    else this.transport.start();
+    if (this.project.transport.running) this.project.transport.stop();
+    else this.project.transport.start();
   }
 
   pause(): void {
-    this.transport.pause();
+    this.project.transport.pause();
   }
 
   increase(value: number): void {
-    let newBpm = this.bpm + value;
-    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.bpm = newBpm;
+    let newBpm = this.project.bpm + value;
+    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.project.bpm = newBpm;
   }
 
 
@@ -88,10 +86,13 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
   }
 
   activate(): void {
-    this.clicker.bootstrap();
+    this.project=this.workstation.createProject();
+    this.samplesApi.getClickSamples().then(result=>{
+      this.clicker = new Clicker(result.accentSample,result.defaultSample);
+    })
 
-    this.transportSubscription = this.transport.tick.subscribe(position => {
-      this.clicker.click(MusicMath.getBeatNumber(position.tick, this._signature) === 0);
+    this.transportSubscription = this.project.transport.tickTock.subscribe(position => {
+      this.clicker.click(MusicMath.getBeatNumber(position, this.project.signature) === 0);
     })
   }
 
@@ -100,7 +101,9 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dawService.register(this);
+    this.workstation.register(this);
+
+
   }
 
   defaultWidth(): number {

@@ -1,12 +1,9 @@
 import {Subject} from 'rxjs';
-import {TransportPosition} from "../model/TransportPosition";
+import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
+import {Observable} from "rxjs/internal/Observable";
 
 export class Transport {
 
-  constructor(private getTime:()=>number) {
-
-
-  }
 
   get tickInterval(): number {
     return this._tickInterval;
@@ -21,26 +18,30 @@ export class Transport {
     return this._running;
   }
 
-  loop: {
-    start: TransportPosition,
-    end: TransportPosition
-  }
+  loop: boolean = false;
+  tickStart: number = 0;
+  tickEnd: number = Number.MAX_VALUE;
 
   private _running: boolean = false;
 
-  position: Subject<TransportPosition> = new Subject<TransportPosition>();
-  tick: Subject<TransportPosition> = new Subject<TransportPosition>();
+  time: Observable<number> = new Observable<number>();
+  private timeSubject: Subject<number> = new Subject<number>();
+  tickTock: Observable<number> = new Observable<number>();
+  private tickSubject: Subject<number> = new Subject<number>();
 
   private intervalHandle: any;
   private threshold = 10;
-  private _position: TransportPosition = new TransportPosition(0, 0);
   private pauseTime: number = 0;
   private startOffset: number;
   private paused: boolean = false;
   private _loop: () => void;
-  private useTick: boolean = false;
-
   private _tickInterval: number = 500; //120bpm
+  private tick: number = 0;
+
+  constructor(private getTime: () => number) {
+    this.tickTock = this.tickSubject.asObservable();
+    this.time = this.timeSubject.asObservable();
+  }
 
 
   private isMatch(transportTime: number, noteTime: number): boolean {
@@ -48,6 +49,7 @@ export class Transport {
   }
 
   start(): void {
+    let end=false;
     if (this.paused) {
       this.paused = false;
       this.startOffset += this.getTime() - this.pauseTime;
@@ -55,36 +57,41 @@ export class Transport {
     }
     else {
       if (this.intervalHandle) this.stop();
-      this._position.reset();
-      /* let ticksTriggered = 0;*/
       let timeStamp = 0;
       let offset = 0;
       let firstTrigger = true;
+      this.tick = this.tickStart;
+
 
       this._loop = () => {
-        if (this.loop) {
-          if (this.loop.end.tick === this._position.tick) {
-            this._position.reset();// this.loop.start;
+        console.log(this.tickEnd);
+        if (this.tickEnd === this.tick) {
+          if (this.loop){
+            this.tick = this.tickStart;
             this.startOffset = this.getTime();
             offset = 0;
             timeStamp = 0;
           }
+          else {
+            end = true;
+            clearInterval(this.intervalHandle);
+          }
+        }
+        if (!end) {
+          if (!this.startOffset) this.startOffset = this.getTime();
+          let newTime = this.getTime() - this.startOffset;
+          offset = (newTime - timeStamp) * 1000;
+
+          this.timeSubject.next(newTime);
+          if (firstTrigger || this.isMatch(offset, this._tickInterval)) {
+            firstTrigger = false;
+            offset = 0;
+            timeStamp = newTime;
+            this.tickSubject.next(this.tick);
+            this.tick += 1;
+          }
         }
 
-        if (!this.startOffset) this.startOffset = this.getTime();
-        this._position.time = this.getTime() - this.startOffset;
-        offset = (this._position.time - timeStamp) * 1000;
-
-        if (firstTrigger || this.isMatch(offset, this._tickInterval)) {
-          firstTrigger = false;
-          offset = 0;
-
-          timeStamp = this._position.time;
-          this.tick.next(this._position);
-          this._position.tick++;
-
-        }
-        this.position.next(this._position);
       };
       this.intervalHandle = setInterval(() => this._loop(), 1);
       this._running = true;

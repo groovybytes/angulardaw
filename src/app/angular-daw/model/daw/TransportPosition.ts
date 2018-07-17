@@ -1,3 +1,4 @@
+/*
 export class TransportPosition{
   constructor(time: number, tick: number) {
     this.time = time;
@@ -13,3 +14,4 @@ export class TransportPosition{
 
 
 }
+*/

@@ -1,6 +1,6 @@
 import {Get, Injectable, LoggerService, Param} from "@nestjs/common";
-import {InstrumentsEnum} from "../../../src/app/angular-daw/model/InstrumentsEnum";
-import {Sample} from "../../../src/app/angular-daw/model/Sample";
+import {InstrumentsEnum} from "../../../src/app/angular-daw/model/daw/InstrumentsEnum";
+import {Sample} from "../../../src/app/angular-daw/model/daw/Sample";
 import {InstrumentInfo} from "../../../src/app/angular-daw/api/InstrumentInfo";
 
 const Fuse = require("fuse.js");

@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core";
-import {Project} from "../model/project/Project";
-import {MidiTrack} from "../model/project/MidiTrack";
+import {Project} from "./Project";
+
+
 declare var MidiConvert: any;
 
 @Injectable()
-export class MidiWriterService {
+export class MidiWriter {
 
 
   writeProject(project:Project):any {

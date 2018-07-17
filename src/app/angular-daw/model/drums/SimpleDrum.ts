@@ -1,4 +1,4 @@
-import {Sample} from "../Sample";
+import {Sample} from "../daw/Sample";
 
 export class SimpleDrum{
   kick:Sample;

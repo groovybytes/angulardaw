@@ -2,24 +2,23 @@ import {Injectable} from "@angular/core";
 import {SimpleDrum} from "../model/drums/SimpleDrum";
 import {System} from "../../system/System";
 import {AppConfiguration} from "../../app.configuration";
-import {SamplesV2Service} from "./samplesV2.service";
-import {Sample} from "../model/Sample";
-import {ADSREnvelope} from "../model/mip/ADSREnvelope";
+import {SamplesApi} from "./samples.api";
+import {Sample} from "../model/daw/Sample";
 import {DrumKitSpec} from "../model/mip/drums/specs/DrumKitSpec";
-import {FileService} from "./file.service";
 import {Drumkit} from "../model/mip/drums/classes/Drumkit";
 import {DrumSample} from "../model/mip/drums/classes/DrumSample";
 import {DrumMapping} from "../model/mip/drums/specs/DrumMapping";
+import {FilesApi} from "./files.api";
 
 @Injectable()
-export class DrumService {
+export class DrumApi {
   drums: SimpleDrum;
   private reverb: Sample;
 
   constructor(
-    private samplesV2Service: SamplesV2Service,
+    private samplesV2Service: SamplesApi,
     private system: System,
-    private fileService: FileService,
+    private fileService: FilesApi,
     private config: AppConfiguration) {
 
   }
@@ -80,7 +79,7 @@ export class DrumService {
 
   }
 
-  playKick(): void {
+ /* playKick(): void {
     this.drums.kick.triggerWith(ADSREnvelope.default(), this.reverb);
   }
 
@@ -90,5 +89,5 @@ export class DrumService {
 
   playHihat(): void {
     this.drums.hihat.triggerWith(ADSREnvelope.default(), this.reverb);
-  }
+  }*/
 }

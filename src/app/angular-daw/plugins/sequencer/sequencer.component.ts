@@ -4,32 +4,30 @@ import {
   ElementRef,
   HostBinding,
   HostListener,
-  Inject,
+  Inject, Input,
   OnDestroy,
   OnInit
 } from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
-import {AngularDawService} from "../../services/angular-daw.service";
-import {TransportService} from "../../services/transport.service";
-import {NoteInfo} from "../../model/utils/NoteInfo";
+
 import {Dynamics} from "../../model/utils/Dynamics";
-import {SamplesV2Service} from "../../services/samplesV2.service";
+import {SamplesApi} from "../../api/samples.api";
 import {System} from "../../../system/System";
 import {AppConfiguration} from "../../../app.configuration";
 import {SimpleDrum} from "../../model/drums/SimpleDrum";
 import $ from 'jquery/dist/jquery';
-import {Sample} from "../../model/Sample";
+import {Sample} from "../../model/daw/Sample";
 import {ADSREnvelope} from "../../model/mip/ADSREnvelope";
+import {Workstation} from "../../model/daw/Workstation";
 
 @Component({
   selector: 'sequencer',
   templateUrl: './sequencer.component.html',
-  styleUrls: ['./sequencer.component.scss'],
-  providers: [TransportService]
+  styleUrls: ['./sequencer.component.scss']
 })
 export class SequencerComponent extends DawPlugin implements OnInit, OnDestroy,AfterViewInit {
 
-
+  @Input() workstation: Workstation;
   private reverb:Sample;
 
   ngAfterViewInit(): void {
@@ -57,12 +55,11 @@ export class SequencerComponent extends DawPlugin implements OnInit, OnDestroy,A
 
   constructor(
     private element:ElementRef,
-    private samplesV2Service: SamplesV2Service,
+    private samplesV2Service: SamplesApi,
     private system: System,
  /*   @Inject('jquery') private $:JQueryStatic,*/
-    private config: AppConfiguration,
-    protected dawService: AngularDawService) {
-    super(dawService);
+    private config: AppConfiguration) {
+    super();
   }
 
 
@@ -77,7 +74,7 @@ export class SequencerComponent extends DawPlugin implements OnInit, OnDestroy,A
 
   }
   ngOnInit(): void {
-    this.dawService.register(this);
+    this.workstation.register(this);
   }
 
 

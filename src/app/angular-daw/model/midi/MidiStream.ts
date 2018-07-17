@@ -1,16 +1,15 @@
 import {Subject} from "rxjs/internal/Subject";
 import {MidiEvent} from "./MidiEvent";
-import {TransportService} from "../../services/transport.service";
-import {MidiFileNote} from "./midifilespec/MidiFileNote";
 import {NoteInfo} from "../utils/NoteInfo";
 import {MusicMath} from "../utils/MusicMath";
+import {Transport} from "../daw/Transport";
 
 
 export class MidiStream{
 
   midiEvent: Subject<Array<MidiEvent>> = new Subject<Array<MidiEvent>>();
   private threshold=0.1;
-  constructor(private transport:TransportService){
+  constructor(private transport:Transport){
 
   }
 
@@ -23,17 +22,16 @@ export class MidiStream{
     return notes.filter(note=>this.isMatch(time,note.startTime));
   }
 
-
   stream(notes:Array<NoteInfo>, bpm:number):void{
 
 
     //let notes = Object.assign({}, track.midiData.notes);
     let i = 0;
     this.transport.tickInterval=MusicMath.getBeatTime(bpm);
-    this.transport.position.subscribe(position=>{
+    this.transport.time.subscribe(position=>{
 
-      let diff = notes[i].startTime-position.time;
-      let matches = this.getMatches(position.time,notes.slice(i,notes.length));
+      let diff = notes[i].startTime-position;
+      let matches = this.getMatches(position,notes.slice(i,notes.length));
       if (matches.length>0){
         let events = matches.map(match=>{
           let event = new MidiEvent();

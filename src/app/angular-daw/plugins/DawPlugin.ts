@@ -1,21 +1,9 @@
-import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
-import {AngularDawService} from "../services/angular-daw.service";
-import {WindowContent} from "../../angular-desktop/window/WindowContent";
-import {OnInit} from "@angular/core";
+import {Workstation} from "../model/daw/Workstation";
 
 export abstract class DawPlugin {
 
-  constructor(protected dawService: AngularDawService) {
+  abstract workstation:Workstation;
 
-    /*    this.active = new BehaviorSubject<boolean>(false);
-        this.active.subscribe(next => {
-          console.log("next=" + next);
-          if (next) this.activate();
-          else this.destroy();
-        })*/
-  }
-
-  /*active: BehaviorSubject<boolean>;*/
 
   abstract defaultWidth(): number;
 

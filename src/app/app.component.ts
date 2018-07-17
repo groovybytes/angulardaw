@@ -1,7 +1,8 @@
 import {
-  Component,
+  Component, Inject,
   OnInit
 } from '@angular/core';
+import {Workstation} from "./angular-daw/model/daw/Workstation";
 
 
 @Component({
@@ -9,13 +10,18 @@ import {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
-  constructor() {
+  workstation: Workstation;
+
+  constructor(@Inject("AudioContext") private audioContext: AudioContext) {
 
   }
 
   ngOnInit() {
+    this.workstation = new Workstation(this.audioContext);
+    this.workstation.createProject();
+
 
   }
 

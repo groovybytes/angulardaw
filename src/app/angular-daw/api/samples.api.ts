@@ -1,27 +1,26 @@
 import {Inject, Injectable} from "@angular/core";
-import {Sample} from "../model/Sample";
-import {AudioContextService} from "./audiocontext.service";
-import {FileService} from "./file.service";
+import {Sample} from "../model/daw/Sample";
 import {NoteInfo} from "../model/utils/NoteInfo";
 import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../../app.configuration";
-import {Instrument} from "../model/Instrument";
-import {InstrumentInfoApi} from "../api/instrumentinfo.api";
+import {Instrument} from "../model/daw/Instrument";
+import {InstrumentInfoApi} from "./instrumentinfo.api";
 import {System} from "../../system/System";
+import {Buffers} from "../model/utils/Buffers";
+import {FilesApi} from "./files.api";
 
-declare var Fuse;
 
 @Injectable()
-export class SamplesV2Service {
+export class SamplesApi {
 
 
-  constructor(private audioContext: AudioContextService,
+  constructor(@Inject("AudioContext") private audioContext: AudioContext,
               private http: HttpClient,
               private system: System,
               private config: AppConfiguration,
               private instrumentsInfoApi: InstrumentInfoApi,
-              @Inject('lodash') private _:any,
-              private fileService: FileService) {
+              @Inject('lodash') private _: any,
+              private fileService: FilesApi) {
 
   }
 
@@ -45,7 +44,7 @@ export class SamplesV2Service {
                 sampleName = sampleName.toUpperCase();
                 parts = sampleName.split(" ");
                 let noteName = parts[parts.length - 1].replace("#", "i");
-                if (this._.findIndex(provedSamples,sample=>sample.baseNote.id===noteName)===-1){
+                if (this._.findIndex(provedSamples, sample => sample.baseNote.id === noteName) === -1) {
                   result.baseNote = NoteInfo.get(noteName);
                   if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
                   provedSamples.push(result);
@@ -70,12 +69,12 @@ export class SamplesV2Service {
     return new Promise((resolve, reject) => {
       this.fileService.getFiles(urls).then(files => {
         let samples = [];
-        Promise.all(files.map(file => this.getAudioBuffer(file)))
+        Promise.all(files.map(file => Buffers.getAudioBuffer(file, this.audioContext)))
           .then(buffers => {
             let i = 0;
 
-            buffers.forEach(buffer => {
-              samples.push(new Sample(urls[i], buffer, "", "", this.audioContext.context()));
+            buffers.forEach((buffer: AudioBuffer) => {
+              samples.push(new Sample(urls[i], buffer, "", "", this.audioContext));
               i++;
             });
             resolve(samples);
@@ -86,29 +85,19 @@ export class SamplesV2Service {
 
   }
 
-  private getAudioBuffer(blob: Blob): Promise<AudioBuffer> {
+  public getClickSamples(): Promise<{ defaultSample: Sample, accentSample: Sample }> {
     return new Promise((resolve, reject) => {
-      this.convertToArrayBuffer(blob).then(result => {
-        this.audioContext.context().decodeAudioData(result, (buffer) => {
-          resolve(buffer);
+      this.getSamples([
+        this.config.getAssetsUrl("sounds/metronome/click1.wav"),
+        this.config.getAssetsUrl("sounds/metronome/click2.wav")])
+        .then(result => {
+          resolve({defaultSample: result[0], accentSample: result[1]});
         })
-      })
-    });
+        .catch(error=>reject(error));
+    })
 
 
   }
 
-  private convertToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
-
-    return new Promise((resolve, reject) => {
-      let fileReader = new FileReader();
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.readAsArrayBuffer(blob);
-    });
-
-
-  }
 
 }
