@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {Workstation} from "../../model/daw/Workstation";
+import {Scheduler} from "../../model/daw/Scheduler";
 import {Transport} from "../../model/daw/Transport";
 
 @Component({
@@ -21,8 +22,8 @@ export class BeatviewerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.transport.tickTock.subscribe(tick => {
-      this.currentBeat = MusicMath.getBeatNumber(tick,this.signature);
+    this.transport.beat.subscribe(beat => {
+      this.currentBeat = beat;
     })
   }
 

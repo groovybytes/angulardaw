@@ -5,7 +5,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {Workstation} from "../../model/daw/Workstation";
-import {Transport} from "../../model/daw/Transport";
+import {Scheduler} from "../../model/daw/Scheduler";
 import {Clicker} from "../../model/daw/Clicker";
 import {Project} from "../../model/daw/Project";
 
@@ -53,7 +53,7 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     return this.project.transport.running;
   }*/
 
- /* private transport:Transport;*/
+ /* private transport:Scheduler;*/
 
   private transportSubscription: Subscription;
 
@@ -63,8 +63,7 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
   }
 
   onStartBtnToggled(value: boolean): void {
-    if (this.project.transport.running) this.project.transport.stop();
-    else this.project.transport.start();
+    this.project.transport.start();
   }
 
   pause(): void {
@@ -91,8 +90,8 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
       this.clicker = new Clicker(result.accentSample,result.defaultSample);
     })
 
-    this.transportSubscription = this.project.transport.tickTock.subscribe(position => {
-      this.clicker.click(MusicMath.getBeatNumber(position, this.project.signature) === 0);
+    this.transportSubscription = this.project.transport.beat.subscribe(beat => {
+      this.clicker.click(false);
     })
   }
 

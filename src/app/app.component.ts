@@ -3,6 +3,7 @@ import {
   OnInit
 } from '@angular/core';
 import {Workstation} from "./angular-daw/model/daw/Workstation";
+import {Track} from "./angular-daw/model/daw/Track";
 
 
 @Component({
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.workstation = new Workstation(this.audioContext);
-    this.workstation.createProject();
+    let project = this.workstation.createProject();
+    project.tracks.push(new Track());
 
 
   }

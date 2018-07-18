@@ -1,4 +1,4 @@
-import {Transport} from "./Transport";
+import {Scheduler} from "./Scheduler";
 import {Project} from "./Project";
 import {DawPlugin} from "../../plugins/DawPlugin";
 import {EventEmitter} from "@angular/core";
@@ -20,7 +20,8 @@ export class Workstation{
   }
 
   createProject():Project{
-    let project = new Project(this._audioContext);
+    let scheduler = new Scheduler(()=>this._audioContext.currentTime);
+    let project = new Project(scheduler);
     project.id = this.guid();
     this.projects.push(project);
 

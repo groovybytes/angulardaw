@@ -1,58 +1,108 @@
-import {Subject} from 'rxjs';
-import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
+import {Scheduler} from "./Scheduler";
+import {MusicMath} from "../utils/MusicMath";
+import {TimeSignature} from "../mip/TimeSignature";
+import {BehaviorSubject, Subject, Subscription} from "rxjs/index";
 import {Observable} from "rxjs/internal/Observable";
+import {TransportPosition} from "./TransportPosition";
+import {NoteLength} from "../mip/NoteLength";
 
 export class Transport {
 
+  bars: number;
+  loop: boolean=false;
+  bpm: number;
+  quantization: NoteLength=NoteLength.Quarter;
+  signature:TimeSignature=new TimeSignature(4, 4);
+  tickTock: Observable<number>;
+  beat: Observable<number>;
+  time: Observable<number>;
 
-  get tickInterval(): number {
-    return this._tickInterval;
-  }
 
-  set tickInterval(value: number) {
-    this._tickInterval = value;
-  }
-
-
-  get running(): boolean {
-    return this._running;
-  }
-
-  loop: boolean = false;
   tickStart: number = 0;
   tickEnd: number = Number.MAX_VALUE;
 
-  private _running: boolean = false;
 
-  time: Observable<number> = new Observable<number>();
-  private timeSubject: Subject<number> = new Subject<number>();
-  tickTock: Observable<number> = new Observable<number>();
-  private tickSubject: Subject<number> = new Subject<number>();
-
-  private intervalHandle: any;
-  private threshold = 10;
-  private pauseTime: number = 0;
-  private startOffset: number;
+  private position: TransportPosition;
+  private lastBeat: number;
+  //private _tickInterval: number;
   private paused: boolean = false;
+  private startOffset: number = 0;
+  private intervalHandle: any;
+  private pauseTime: number = 0;
+  private threshold = 10;
+  private _running: boolean = false;
   private _loop: () => void;
-  private _tickInterval: number = 500; //120bpm
-  private tick: number = 0;
+  private tickSubject: Subject<number> = new Subject<number>();
+  private beatSubject: Subject<number> = new Subject<number>();
+  private timeSubject: Subject<number> = new Subject<number>();
+  private _bars: number = 100;
 
-  constructor(private getTime: () => number) {
+  private tick: number;
+  private timeSubscription: Subscription;
+
+
+  constructor(private scheduler: Scheduler,bpm:number) {
     this.tickTock = this.tickSubject.asObservable();
-    this.time = this.timeSubject.asObservable();
+    this.position = new TransportPosition();
+    this.position.beat = 0;
+    this.position.bar = 0;
+    this.position.time = 0;
+    this.position.tick = 0;
+    this.bpm=bpm;
+
+    this.timeSubscription = this.scheduler.time.subscribe(time => this.onTime(time));
+    this.subscribeChanges();
+
   }
 
+  private subscribeChanges(): void {
+   /* this.bpm.subscribe(bpm => {
+      this._tickInterval = MusicMath.getBeatTime(bpm, this.quantization);
+    })*/
+  }
+
+  private onTick(tick: number): void {
+    /*console.log(tick);
+    this.position.tick = tick;
+    this.position.beat = MusicMath.getBeatNumber(tick,this.quantization,this.signature);
+    this.position.bar =  MusicMath.getBarNumber(tick,this.quantization,this.signature);
+    if (this.lastBeat !== this.position.beat) {
+      this.beatSubject.next(this.position.beat);
+      this.lastBeat = this.position.beat;
+    }
+    this.tickSubject.next(this.position.tick);*/
+  }
+
+  private onTime(time: number): void {
+    this.position.time = time;
+    this.timeSubject.next(this.position.time);
+  }
+
+  private onLoopChanged(): void {
+    /*  this.tickStart = this.loopStart * this.signature.beatUnit;
+      this.project.transport.tickEnd = startTick + this.project.signature.beatUnit * this.loopLength;*/
+  }
 
   private isMatch(transportTime: number, noteTime: number): boolean {
     return noteTime - transportTime < this.threshold;
   }
 
+  getPositionInfo(): TransportPosition {
+    return this.position;
+  }
+
+  private onSchedulerTime(time: number): void {
+
+  }
+
   start(): void {
-    let end=false;
+    this.scheduler.stop();
+    this.scheduler.start();
+
+    let end = false;
     if (this.paused) {
       this.paused = false;
-      this.startOffset += this.getTime() - this.pauseTime;
+      this.startOffset += this.scheduler.getSysTime() - this.pauseTime;
       this.intervalHandle = setInterval(() => this._loop(), 1);
     }
     else {
@@ -62,13 +112,11 @@ export class Transport {
       let firstTrigger = true;
       this.tick = this.tickStart;
 
-
       this._loop = () => {
-        console.log(this.tickEnd);
         if (this.tickEnd === this.tick) {
-          if (this.loop){
+          if (this.loop) {
             this.tick = this.tickStart;
-            this.startOffset = this.getTime();
+            this.startOffset = this.scheduler.getSysTime();
             offset = 0;
             timeStamp = 0;
           }
@@ -78,12 +126,12 @@ export class Transport {
           }
         }
         if (!end) {
-          if (!this.startOffset) this.startOffset = this.getTime();
-          let newTime = this.getTime() - this.startOffset;
+          if (!this.startOffset) this.startOffset = this.scheduler.getSysTime();
+          let newTime = this.scheduler.getSysTime() - this.startOffset;
           offset = (newTime - timeStamp) * 1000;
 
           this.timeSubject.next(newTime);
-          if (firstTrigger || this.isMatch(offset, this._tickInterval)) {
+          if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm,this.quantization))) {
             firstTrigger = false;
             offset = 0;
             timeStamp = newTime;
@@ -91,16 +139,22 @@ export class Transport {
             this.tick += 1;
           }
         }
-
       };
       this.intervalHandle = setInterval(() => this._loop(), 1);
       this._running = true;
     }
   }
 
+  destroy(): void {
+
+    this.timeSubscription.unsubscribe();
+    this.scheduler.destroy();
+    if (this.intervalHandle) clearInterval(this.intervalHandle);
+  }
+
   pause(): void {
     clearInterval(this.intervalHandle);
-    this.pauseTime = this.getTime();
+    this.pauseTime = this.scheduler.getSysTime();
     this.paused = true;
   }
 
@@ -111,5 +165,6 @@ export class Transport {
     this.startOffset = null;
     this._running = false;
   }
+
 
 }

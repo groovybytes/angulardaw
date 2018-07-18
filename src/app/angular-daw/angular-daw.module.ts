@@ -14,7 +14,6 @@ import {AngularDesktopModule} from "../angular-desktop/angular-desktop.module";
 import {DevelopmentComponent} from './plugins/development/development.component';
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {SamplesApi} from "./api/samples.api";
-import {StartButtonDirective} from "./directives/start-button.directive";
 import {PressButtonComponent} from './ui/press-button/press-button.component';
 import {BeatviewerComponent} from "./ui/beatviewer/beatviewer.component";
 import {PadComponent} from './plugins/pad/pad.component';
@@ -41,7 +40,6 @@ import {FilesApi} from "./api/files.api";
     SliderComponent,
     AngularDawComponent,
     DevelopmentComponent,
-    StartButtonDirective,
     PressButtonComponent,
     PadComponent,
     StepsequencerComponent

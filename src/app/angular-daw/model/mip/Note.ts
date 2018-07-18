@@ -1,19 +1,16 @@
-import {ADSREnvelope} from "./ADSREnvelope";
-import {Frequencies} from "./Frequencies";
+import {Loudness} from "./Loudness";
+import {NoteLength} from "./NoteLength";
 
 export class Note {
-  constructor(name: string, time: number, envelope: ADSREnvelope, frequency: number) {
+  constructor(name: string, length: NoteLength, loudness: Loudness, pitch: number) {
     this.name = name;
-    this.time = time;
-    this.envelope = envelope;
-    this.frequency = frequency;
+    this.length = length;
+    this.loudness = loudness;
+    this.pitch = pitch;
   }
 
-  static create(name:string):Note{
-    return new Note(name,0,ADSREnvelope.default(),0);
-  }
   name: string;
-  time: number;
-  envelope:ADSREnvelope;
-  frequency:number;
+  length:NoteLength;
+  loudness:Loudness=Loudness.mf;
+  pitch:number;
 }

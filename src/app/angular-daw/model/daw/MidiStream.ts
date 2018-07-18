@@ -1,15 +1,16 @@
+/*
 import {Subject} from "rxjs/internal/Subject";
 import {MidiEvent} from "../midi/MidiEvent";
 import {MidiFileNote} from "../midi/midifilespec/MidiFileNote";
 import {MusicMath} from "../utils/MusicMath";
-import {Transport} from "./Transport";
+import {Scheduler} from "./Scheduler";
 
 
 export class MidiStream{
 
   midiEvent: Subject<Array<MidiEvent>> = new Subject<Array<MidiEvent>>();
   private threshold=0.1;
-  constructor(private transport:Transport){
+  constructor(private transport:Scheduler){
 
   }
 
@@ -42,18 +43,18 @@ export class MidiStream{
         i+=matches.length;
       }
 
-      /*   if (this.isMatch(notes[i].time,position.time)){
+      /!*   if (this.isMatch(notes[i].time,position.time)){
 
            let event = new MidiEvent();
            event.midi=notes[i].midi;
            event.duration=notes[i].duration;
            this.midiEvent.next([event]);
            i++;
-         }*/
+         }*!/
 
     });
-
     this.transport.start();
 
   }
 }
+*/

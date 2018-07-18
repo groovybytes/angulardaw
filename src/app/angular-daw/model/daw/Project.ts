@@ -1,30 +1,40 @@
 import {TimeSignature} from "../mip/TimeSignature";
-import {Transport} from "./Transport";
+import {Scheduler} from "./Scheduler";
 import {MusicMath} from "../utils/MusicMath";
+import {Transport} from "./Transport";
+import {NoteLength} from "../mip/NoteLength";
+import {Track} from "./Track";
 
 export class Project{
+
+  tracks:Array<Track>=[];
+  get quantization(): NoteLength {
+    return this._quantization;
+  }
+
+  set quantization(value: NoteLength) {
+    this._quantization = value;
+  }
+
+  private _quantization:NoteLength=NoteLength.Quarter;
+
   get bpm(): number {
-    return this._bpm;
+    return this._transport.bpm;
   }
 
   set bpm(value: number) {
-    this._bpm = value;
-    this.transport.tickInterval=MusicMath.getBeatTime(value);
+    this._transport.bpm= value;
   }
-  get context(): AudioContext {
-    return this._context;
-  }
+
   id:string;
-  signature:TimeSignature=new TimeSignature(4,4);
-  private _bpm:number=120;
 
   private _transport:Transport;
   get transport(): Transport {
     return this._transport;
   }
 
-  constructor(private _context:AudioContext){
-    this._transport=new Transport(()=>this._context.currentTime);
+  constructor(private scheduler:Scheduler){
+    this._transport=new Transport(scheduler,120);
   }
 
 
