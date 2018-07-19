@@ -2,10 +2,7 @@ import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {DawPlugin} from "../DawPlugin";
 import {SamplesApi} from "../../api/samples.api";
 import {Subscription} from "rxjs/internal/Subscription";
-import {TimeSignature} from "../../model/mip/TimeSignature";
-import {MusicMath} from "../../model/utils/MusicMath";
 import {Workstation} from "../../model/daw/Workstation";
-import {Scheduler} from "../../model/daw/Scheduler";
 import {Clicker} from "../../model/daw/Clicker";
 import {Project} from "../../model/daw/Project";
 
@@ -21,7 +18,6 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   @HostBinding('class')
   elementClass = 'plugin';
-
   private clicker:Clicker;
   //private _bpm: number;
 
@@ -63,7 +59,8 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
   }
 
   onStartBtnToggled(value: boolean): void {
-    this.project.transport.start();
+    if (this.project.transport.running) this.project.transport.stop();
+    else this.project.transport.start();
   }
 
   pause(): void {
@@ -88,11 +85,12 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
     this.project=this.workstation.createProject();
     this.samplesApi.getClickSamples().then(result=>{
       this.clicker = new Clicker(result.accentSample,result.defaultSample);
-    })
+    });
 
-    this.transportSubscription = this.project.transport.beat.subscribe(beat => {
-      this.clicker.click(false);
-    })
+    this.transportSubscription = this.project.transport.tickTock.subscribe(beat => {
+      console.log(beat);
+      this.clicker.click(beat===0);
+    });
   }
 
   destroy(): void {
@@ -101,8 +99,6 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   ngOnInit(): void {
     this.workstation.register(this);
-
-
   }
 
   defaultWidth(): number {

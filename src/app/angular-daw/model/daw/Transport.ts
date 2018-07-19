@@ -5,26 +5,24 @@ import {BehaviorSubject, Subject, Subscription} from "rxjs/index";
 import {Observable} from "rxjs/internal/Observable";
 import {TransportPosition} from "./TransportPosition";
 import {NoteLength} from "../mip/NoteLength";
+import {EventEmitter} from "@angular/core";
 
 export class Transport {
+  get running(): boolean {
+    return this._running;
+  }
 
-  bars: number;
-  loop: boolean=false;
+  loop: boolean = false;
   bpm: number;
-  quantization: NoteLength=NoteLength.Quarter;
-  signature:TimeSignature=new TimeSignature(4, 4);
+  quantization: NoteLength = NoteLength.Quarter;
+  signature: TimeSignature = new TimeSignature(4, 4);
   tickTock: Observable<number>;
   beat: Observable<number>;
   time: Observable<number>;
-
-
+  transportEnd: EventEmitter<void> = new EventEmitter<void>();
   tickStart: number = 0;
   tickEnd: number = Number.MAX_VALUE;
-
-
   private position: TransportPosition;
-  private lastBeat: number;
-  //private _tickInterval: number;
   private paused: boolean = false;
   private startOffset: number = 0;
   private intervalHandle: any;
@@ -35,20 +33,19 @@ export class Transport {
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
-  private _bars: number = 100;
-
   private tick: number;
   private timeSubscription: Subscription;
 
 
-  constructor(private scheduler: Scheduler,bpm:number) {
+  constructor(private scheduler: Scheduler, bpm: number) {
     this.tickTock = this.tickSubject.asObservable();
+    this.beat = this.beatSubject.asObservable();
     this.position = new TransportPosition();
     this.position.beat = 0;
     this.position.bar = 0;
     this.position.time = 0;
     this.position.tick = 0;
-    this.bpm=bpm;
+    this.bpm = bpm;
 
     this.timeSubscription = this.scheduler.time.subscribe(time => this.onTime(time));
     this.subscribeChanges();
@@ -56,9 +53,9 @@ export class Transport {
   }
 
   private subscribeChanges(): void {
-   /* this.bpm.subscribe(bpm => {
-      this._tickInterval = MusicMath.getBeatTime(bpm, this.quantization);
-    })*/
+    /* this.bpm.subscribe(bpm => {
+       this._tickInterval = MusicMath.getBeatTime(bpm, this.quantization);
+     })*/
   }
 
   private onTick(tick: number): void {
@@ -78,10 +75,10 @@ export class Transport {
     this.timeSubject.next(this.position.time);
   }
 
-  private onLoopChanged(): void {
-    /*  this.tickStart = this.loopStart * this.signature.beatUnit;
-      this.project.transport.tickEnd = startTick + this.project.signature.beatUnit * this.loopLength;*/
-  }
+  /*  private onLoopChanged(): void {
+      /!*  this.tickStart = this.loopStart * this.signature.beatUnit;
+        this.project.transport.tickEnd = startTick + this.project.signature.beatUnit * this.loopLength;*!/
+    }*/
 
   private isMatch(transportTime: number, noteTime: number): boolean {
     return noteTime - transportTime < this.threshold;
@@ -98,7 +95,6 @@ export class Transport {
   start(): void {
     this.scheduler.stop();
     this.scheduler.start();
-
     let end = false;
     if (this.paused) {
       this.paused = false;
@@ -110,19 +106,22 @@ export class Transport {
       let timeStamp = 0;
       let offset = 0;
       let firstTrigger = true;
+      let lastBeat = -1;
       this.tick = this.tickStart;
 
       this._loop = () => {
-        if (this.tickEnd === this.tick) {
+        if (this.tick > this.tickEnd) {
           if (this.loop) {
             this.tick = this.tickStart;
             this.startOffset = this.scheduler.getSysTime();
             offset = 0;
             timeStamp = 0;
+            lastBeat=-1;
           }
           else {
             end = true;
             clearInterval(this.intervalHandle);
+            this.transportEnd.emit();
           }
         }
         if (!end) {
@@ -131,11 +130,19 @@ export class Transport {
           offset = (newTime - timeStamp) * 1000;
 
           this.timeSubject.next(newTime);
-          if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm,this.quantization))) {
+
+          if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm, this.quantization))) {
             firstTrigger = false;
             offset = 0;
             timeStamp = newTime;
             this.tickSubject.next(this.tick);
+            console.log("tick=" + this.tick);
+            let newBeat = MusicMath.getBeatNumber(this.tick, this.signature);
+            console.log("newBeat=" + newBeat);
+            if (newBeat > lastBeat) {
+              lastBeat = newBeat;
+              this.beatSubject.next(newBeat);
+            }
             this.tick += 1;
           }
         }
@@ -146,7 +153,7 @@ export class Transport {
   }
 
   destroy(): void {
-
+    this.stop();
     this.timeSubscription.unsubscribe();
     this.scheduler.destroy();
     if (this.intervalHandle) clearInterval(this.intervalHandle);

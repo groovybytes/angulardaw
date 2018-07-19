@@ -43,8 +43,8 @@ describe('Scheduler', () => {
       setTimeout(()=>{
         expect(currentTicks ===nTicks).toBeTruthy();
         done();
-      },100);
-    },100)
+      },10);
+    },10)
 
   });
 });

@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "concurrently  \"ng serve\" \"set NODE_ENV=development&& cd ./server/ && nodemon\"",
+    "start": "concurrently  \"ng serve\" \"set NODE_ENV=development&& cd ../audiotools-server/ && nodemon\"",
     "client": "ng serve",
-    "server": "set NODE_ENV=development&& cd ./server/ && nodemon\"",
+    "server": "set NODE_ENV=development&& cd ../audiotools-server/ && nodemon\"",
     "hmr": "ng serve --configuration hmr",
     "build": "ng build",
     "test": "ng test",
