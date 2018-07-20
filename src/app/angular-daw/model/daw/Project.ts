@@ -1,19 +1,18 @@
-import {TimeSignature} from "../mip/TimeSignature";
 import {Scheduler} from "./Scheduler";
-import {MusicMath} from "../utils/MusicMath";
 import {Transport} from "./Transport";
-import {NoteLength} from "../mip/NoteLength";
 import {Track} from "./Track";
+import {TransportProxy} from "./TransportProxy";
+import {NoteLength} from "../mip/NoteLength";
+import {TimeSignature} from "../mip/TimeSignature";
 
-export class Project{
+export class Project {
 
-  tracks:Array<Track>=[];
   get quantization(): NoteLength {
-    return this.transport.quantization;
+    return this._transport.quantization;
   }
 
   set quantization(value: NoteLength) {
-    this.transport.quantization = value;
+    this._transport.quantization = value;
   }
 
   get bpm(): number {
@@ -32,16 +31,14 @@ export class Project{
     this._transport.signature= value;
   }
 
-  id:string;
+  tracks:Array<Track>=[];
+  readonly transport:TransportProxy;
+  private readonly _transport:Transport;
 
-  private _transport:Transport;
-  get transport(): Transport {
-    return this._transport;
-  }
+  id:string;
 
   constructor(private scheduler:Scheduler){
     this._transport=new Transport(scheduler,120);
+    this.transport=new TransportProxy(this._transport);
   }
-
-
 }

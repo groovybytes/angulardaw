@@ -84,7 +84,7 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   activate(): void {
     this.project=this.workstation.createProject();
-    this.project.transport.quantization=NoteLength.EighthTriplet;
+    this.project.quantization=NoteLength.EighthTriplet;
     this.samplesApi.getClickSamples().then(result=>{
       this.clicker = new Clicker(result.accentSample,result.defaultSample);
     });
