@@ -1,6 +1,8 @@
 import {Scheduler} from "./Scheduler";
 import {Subscription} from "rxjs/internal/Subscription";
 import {Transport} from "./Transport";
+import {TimeSignature} from "../mip/TimeSignature";
+import {NoteLength} from "../mip/NoteLength";
 
 
 describe('Transport', () => {
@@ -71,7 +73,7 @@ describe('Transport', () => {
       beat=_beat
     });
     transport.transportEnd.subscribe(()=>{
-      expect(beat).toBe(1);
+      expect(beat).toBe(0);
       transport.destroy();
       done();
     });
@@ -112,6 +114,32 @@ describe('Transport', () => {
     });
     transport.transportEnd.subscribe(() => {
       expect(nTicks).toBe(3);
+      transport.destroy();
+      done();
+    });
+    transport.start();
+
+  });
+
+  it('compare ticks and beats with a narrower quantization setting', (done: DoneFn) => {
+
+    let nTicks = 0;
+    let nbeats = 0;
+
+    let transport: Transport = new Transport(scheduler, 200);
+    transport.signature=new TimeSignature(4,4);
+    transport.quantization=NoteLength.Eighth;
+    transport.tickStart = 0;
+    transport.tickEnd = 3;
+    transport.tickTock.subscribe(tick => {
+      nTicks++;
+    });
+    transport.beat.subscribe(beat => {
+      nbeats++;
+    });
+    transport.transportEnd.subscribe(() => {
+      expect(nTicks).toBe(4);
+      expect(nbeats).toBe(2);
       transport.destroy();
       done();
     });

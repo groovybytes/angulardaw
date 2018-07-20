@@ -9,14 +9,12 @@ export class Project{
 
   tracks:Array<Track>=[];
   get quantization(): NoteLength {
-    return this._quantization;
+    return this.transport.quantization;
   }
 
   set quantization(value: NoteLength) {
-    this._quantization = value;
+    this.transport.quantization = value;
   }
-
-  private _quantization:NoteLength=NoteLength.Quarter;
 
   get bpm(): number {
     return this._transport.bpm;
@@ -24,6 +22,14 @@ export class Project{
 
   set bpm(value: number) {
     this._transport.bpm= value;
+  }
+
+  get signature(): TimeSignature {
+    return this._transport.signature;
+  }
+
+  set signature(value: TimeSignature) {
+    this._transport.signature= value;
   }
 
   id:string;

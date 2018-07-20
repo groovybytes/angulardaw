@@ -5,6 +5,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {Workstation} from "../../model/daw/Workstation";
 import {Clicker} from "../../model/daw/Clicker";
 import {Project} from "../../model/daw/Project";
+import {NoteLength} from "../../model/mip/NoteLength";
 
 @Component({
   selector: 'daw-metronome',
@@ -83,12 +84,11 @@ export class MetronomeComponent extends DawPlugin implements OnInit {
 
   activate(): void {
     this.project=this.workstation.createProject();
+    this.project.transport.quantization=NoteLength.EighthTriplet;
     this.samplesApi.getClickSamples().then(result=>{
       this.clicker = new Clicker(result.accentSample,result.defaultSample);
     });
-
-    this.transportSubscription = this.project.transport.tickTock.subscribe(beat => {
-      console.log(beat);
+    this.transportSubscription = this.project.transport.beat.subscribe(beat => {
       this.clicker.click(beat===0);
     });
   }

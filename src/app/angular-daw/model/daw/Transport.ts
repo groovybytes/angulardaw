@@ -116,7 +116,7 @@ export class Transport {
             this.startOffset = this.scheduler.getSysTime();
             offset = 0;
             timeStamp = 0;
-            lastBeat=-1;
+            lastBeat = -1;
           }
           else {
             end = true;
@@ -136,10 +136,9 @@ export class Transport {
             offset = 0;
             timeStamp = newTime;
             this.tickSubject.next(this.tick);
-            console.log("tick=" + this.tick);
-            let newBeat = MusicMath.getBeatNumber(this.tick, this.signature);
-            console.log("newBeat=" + newBeat);
-            if (newBeat > lastBeat) {
+            let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
+
+            if (newBeat !== lastBeat && newBeat % 1 === 0) {
               lastBeat = newBeat;
               this.beatSubject.next(newBeat);
             }
