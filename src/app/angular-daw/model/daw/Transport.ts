@@ -20,6 +20,7 @@ export class Transport {
   beat: Observable<number>;
   time: Observable<number>;
   transportEnd: EventEmitter<void> = new EventEmitter<void>();
+  transportStart: EventEmitter<void> = new EventEmitter<void>();
   tickStart: number = 0;
   tickEnd: number = Number.MAX_VALUE;
   private position: TransportPosition;
@@ -88,6 +89,7 @@ export class Transport {
 
   start(): void {
     this.scheduler.stop();
+    this.transportStart.emit();
     this.scheduler.start();
     this.looper=true;
     if (this.paused) {

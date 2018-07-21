@@ -1,4 +1,13 @@
-import {AfterContentInit, Component, ContentChildren, Input, OnInit, QueryList} from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  Input,
+  OnChanges,
+  OnInit,
+  QueryList,
+  SimpleChanges
+} from '@angular/core';
 import {ViewReference} from "./model/ViewReference";
 import {WindowComponent} from "./window/window.component";
 import {WindowContent} from "./window/WindowContent";
@@ -12,7 +21,7 @@ import {Workstation} from "../angular-daw/model/daw/Workstation";
   styleUrls: ['./desktop.component.scss']
 })
 
-export class DesktopComponent implements OnInit, AfterContentInit {
+export class DesktopComponent implements OnInit, AfterContentInit,OnChanges {
 
   @Input() workstation: Workstation;
 
@@ -26,11 +35,7 @@ export class DesktopComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    this.workstation.pluginAdded.subscribe((plugin:DawPlugin)=>{
-      plugin.activate();
-      this.activePlugins.push(plugin);
-      this.plugins.push(plugin)
-    });
+
   }
 
   onShortcutClicked(view: {reference:ViewReference,windowContent:WindowContent}): void {
@@ -55,6 +60,14 @@ export class DesktopComponent implements OnInit, AfterContentInit {
     })
 
 
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.workstation.pluginAdded.subscribe((plugin:DawPlugin)=>{
+      plugin.activate();
+      this.activePlugins.push(plugin);
+      this.plugins.push(plugin)
+    });
   }
 }
 

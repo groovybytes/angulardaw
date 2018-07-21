@@ -9,6 +9,7 @@ export interface TransportControl {
   beat: Observable<number>;
   time: Observable<number>;
   transportEnd: EventEmitter<void>;
+  transportStart: EventEmitter<void>;
   tickStart: number;
   tickEnd: number;
   start(): void;

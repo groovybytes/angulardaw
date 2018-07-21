@@ -46,6 +46,9 @@ export class TransportProxy implements TransportControl{
   get transportEnd(): EventEmitter<void> {
     return this.transport.transportEnd;
   }
+  get transportStart(): EventEmitter<void> {
+    return this.transport.transportStart;
+  }
 
   constructor(private transport:Transport){
 

@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.workstation = new Workstation(this.audioContext);
     let project = this.workstation.createProject();
-    project.tracks.push(new Track());
+    //project.tracks.push(new Track());
 
 
   }

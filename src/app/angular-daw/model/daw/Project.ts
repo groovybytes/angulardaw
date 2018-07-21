@@ -31,7 +31,7 @@ export class Project {
     this._transport.signature= value;
   }
 
-  tracks:Array<Track>=[];
+  tracks:Array<Track<any> >=[];
   readonly transport:TransportProxy;
   private readonly _transport:Transport;
 
@@ -40,5 +40,11 @@ export class Project {
   constructor(private scheduler:Scheduler){
     this._transport=new Transport(scheduler,120);
     this.transport=new TransportProxy(this._transport);
+  }
+
+  destroy():void{
+    this.tracks.forEach(track=>track.destroy());
+    this._transport.stop();
+    this._transport.destroy();
   }
 }
