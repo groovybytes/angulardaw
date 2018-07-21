@@ -9,6 +9,8 @@ import {NoteLength} from "../../model/mip/NoteLength";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {TransportPosition} from "../../model/daw/TransportPosition";
+import {TrackEvent} from "../../model/daw/TrackEvent";
+import {Note} from "../../model/mip/Note";
 
 @Injectable()
 export class StepSequencerService {
@@ -30,8 +32,8 @@ export class StepSequencerService {
     })
   }
 
-  createModel(bars: number,quantization:NoteLength,signature:TimeSignature, triggers?: Array<Trigger<string,DrumSample>>): Array<CellInfo> {
-    let result = [];
+  createModel(bars: number,quantization:NoteLength,bpm:number,signature:TimeSignature,events:Array<TrackEvent<Note>>, triggers?: Array<Trigger<string,DrumSample>>): Array<CellInfo> {
+    let result:Array<CellInfo> = [];
     NoteInfo.notes = {};
     NoteInfo.load();
 
@@ -46,6 +48,7 @@ export class StepSequencerService {
         let cellInfo = new CellInfo();
         cellInfo.position=new TransportPosition();
         cellInfo.column = index % ticks;
+
         cellInfo.row = Math.floor(index / ticks);
         cellInfo.note = note;
         cellInfo.position.beat=MusicMath.getBeatNumber(cellInfo.column,quantization,signature);
@@ -53,6 +56,11 @@ export class StepSequencerService {
         index++;
       }
     }
+    events.forEach(event=>{
+      let tick = MusicMath.getTickForTime(event.time,bpm,quantization);
+      let cell = result.filter(cell=>cell.column===tick && cell.note===event.data.name)[0];
+      cell.active=true;
+    })
 
     return result;
   }

@@ -21,6 +21,11 @@ export class MusicMath {
     return bar*signature.beatUnit*beatTicks+beatTicks*beat;
   }
 
+  public static getTickForTime(time:number,bpm:number,quantization:NoteLength): number {
+    let tickTime = MusicMath.getTickTime(bpm,quantization);
+    return Math.floor(time/tickTime);
+  }
+
   public static getBarNumber(tick:number,quantization:NoteLength,signature:TimeSignature): number {
     return Math.floor(tick/MusicMath.getBeatTicks(quantization)/signature.beatUnit);
   }
