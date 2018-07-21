@@ -1,4 +1,3 @@
-import {ElementRef, EventEmitter} from "@angular/core";
 import * as d3 from "d3";
 import {RowBarInfo} from "./model/RowBarInfo";
 import {TableDimensions} from "./model/TableDimensions";
@@ -8,20 +7,21 @@ import {CellInfo} from "./model/CellInfo";
 export class SequencerRowBarD3 {
 
   private mergeSelection;
+  private container;
 
   constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>) {
-
+    this.container = this.svgElement.append("g").attr("class", "row-bar");
   }
 
   render(model: Array<RowBarInfo>, dimensions:TableDimensions,cellEvents:CellEvents<CellInfo>): void {
-    let container = this.svgElement.append("g").attr("class", "row-bar");
+
 
     let bandWidthX=dimensions.getBandWidthX();
     let bandWidthY=dimensions.getBandWidthY();
 
-    container.attr("transform", "translate("+dimensions.left+","+dimensions.top+")");
+    this.container.attr("transform", "translate("+dimensions.left+","+dimensions.top+")");
 
-    let join = container.selectAll(".cell-container").data(model);
+    let join = this.container.selectAll(".cell").data(model,(d:RowBarInfo)=>d.getId());
 
     join.exit().remove();
 

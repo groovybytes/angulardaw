@@ -6,6 +6,9 @@ import {DrumApi} from "../../api/drum.api";
 import {Drumkit} from "../../model/mip/drums/classes/Drumkit";
 import {DrumSample} from "../../model/mip/drums/classes/DrumSample";
 import {NoteLength} from "../../model/mip/NoteLength";
+import {MusicMath} from "../../model/utils/MusicMath";
+import {TimeSignature} from "../../model/mip/TimeSignature";
+import {TransportPosition} from "../../model/daw/TransportPosition";
 
 @Injectable()
 export class StepSequencerService {
@@ -27,13 +30,13 @@ export class StepSequencerService {
     })
   }
 
-  createModel(bars: number,quantization:NoteLength, triggers?: Array<Trigger<string,DrumSample>>): Array<CellInfo> {
+  createModel(bars: number,quantization:NoteLength,signature:TimeSignature, triggers?: Array<Trigger<string,DrumSample>>): Array<CellInfo> {
     let result = [];
     NoteInfo.notes = {};
     NoteInfo.load();
 
     let notes = Object.keys(NoteInfo.notes).reverse();
-    let ticks = bars * quantization;
+    let ticks = MusicMath.getBarTicks(quantization,signature)*bars;
     let index = 0;
     for (let i = 0; i < ticks * notes.length; i++) {
       let row = Math.floor(i / ticks);
@@ -41,11 +44,11 @@ export class StepSequencerService {
       let addNote = !triggers || triggers.filter(t => t.test(note)).length>0;
       if (addNote){
         let cellInfo = new CellInfo();
-        //cellInfo.beat = (index % signature.beatUnit) + 1;
-        //cellInfo.bar = (index & signature.barUnit) + 1;
+        cellInfo.position=new TransportPosition();
         cellInfo.column = index % ticks;
         cellInfo.row = Math.floor(index / ticks);
         cellInfo.note = note;
+        cellInfo.position.beat=MusicMath.getBeatNumber(cellInfo.column,quantization,signature);
         result.push(cellInfo);
         index++;
       }

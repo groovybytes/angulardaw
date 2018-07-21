@@ -7,7 +7,9 @@ export class CellInfo {
   note: string;
   active: boolean = false;
 
-
+  getId():string{
+    return this.note+"_"+this.column;
+  }
   getCssClass(): string {
     let result = "cell";
     result += this.row % 2 === 0 ? " cell-default" : " cell-alt";

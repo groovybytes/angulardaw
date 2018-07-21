@@ -32,6 +32,10 @@ describe('MusicMath', () => {
     expect(MusicMath.getBeatNumber(4,NoteLength.Quarter,new TimeSignature(3,4))).toBe(1);
     expect(MusicMath.getBeatNumber(4,NoteLength.Eighth,new TimeSignature(4,4))).toBe(2);
   });
+  it('getBeatNumber:not a beat!', () => {
+    expect(MusicMath.getBeatNumber(1,NoteLength.Eighth, new TimeSignature(4,4))).toBe(-1);
+  });
+
 
   it('getBarNumber', () => {
     expect(MusicMath.getBarNumber(0,NoteLength.Quarter, new TimeSignature(4,4))).toBe(0);

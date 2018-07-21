@@ -2,6 +2,7 @@ import {Scheduler} from "./Scheduler";
 import {Project} from "./Project";
 import {DawPlugin} from "../../plugins/DawPlugin";
 import {EventEmitter} from "@angular/core";
+import {Lang} from "../utils/Lang";
 
 export class Workstation{
 
@@ -22,7 +23,7 @@ export class Workstation{
   createProject():Project{
     let scheduler = new Scheduler(()=>this._audioContext.currentTime);
     let project = new Project(scheduler);
-    project.id = this.guid();
+    project.id = Lang.guid();
     this.projects.push(project);
 
     return project;
@@ -37,12 +38,4 @@ export class Workstation{
     this.pluginAdded.emit(plugin);
   }
 
-  guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 }

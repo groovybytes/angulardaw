@@ -138,7 +138,7 @@ export class Transport {
             this.tickSubject.next(this.tick);
             let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
 
-            if (newBeat !== lastBeat && newBeat % 1 === 0) {
+            if (newBeat !== lastBeat && newBeat !==-1) {
               lastBeat = newBeat;
               this.beatSubject.next(newBeat);
             }

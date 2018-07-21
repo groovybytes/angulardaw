@@ -3,6 +3,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {Transport} from "./Transport";
 import {TimeSignature} from "../mip/TimeSignature";
 import {NoteLength} from "../mip/NoteLength";
+import {MusicMath} from "../utils/MusicMath";
 
 
 describe('Transport', () => {
@@ -94,6 +95,58 @@ describe('Transport', () => {
       nTicks--;
       currentTick++;
       if (nTicks == 0) {
+        transport.destroy();
+        done();
+      }
+    });
+    transport.start();
+
+  });
+  it('loops between a bar and triggers correct beats', (done: DoneFn) => {
+
+    let currentTick: number = -1;
+    let transport: Transport = new Transport(scheduler, 200);
+    transport.signature=new TimeSignature(4,4);
+    transport.quantization=NoteLength.Quarter;
+    transport.loop = true;
+    transport.tickStart = 0;
+    transport.tickEnd = MusicMath.getBarTicks(transport.quantization,transport.signature)+2;
+    subscription = transport.beat.subscribe(beat => {
+      currentTick+=1;
+      if (currentTick===0) expect(beat).toBe(0);
+      else if (currentTick===1) expect(beat).toBe(1);
+      else if (currentTick===2) expect(beat).toBe(2);
+      else if (currentTick===3) expect(beat).toBe(3);
+      else if (currentTick===4) expect(beat).toBe(0);
+      else if (currentTick===5) expect(beat).toBe(1);
+      if (currentTick == 5) {
+        transport.destroy();
+        done();
+      }
+    });
+    transport.start();
+
+  });
+
+  it('loops between a bar and triggers correct beats with Eighth Quantization', (done: DoneFn) => {
+
+    let i: number = -1;
+    let transport: Transport = new Transport(scheduler, 200);
+    transport.signature=new TimeSignature(4,4);
+    transport.quantization=NoteLength.Eighth;
+    transport.loop = true;
+    transport.tickStart = 0;
+    transport.tickEnd = MusicMath.getBarTicks(transport.quantization,transport.signature)+2;
+    subscription = transport.beat.subscribe(beat => {
+      i+=1;
+      console.log(beat);
+      if (i===0) expect(beat).toBe(0);
+      else if (i===1) expect(beat).toBe(1);
+      else if (i===2) expect(beat).toBe(2);
+      else if (i===3) expect(beat).toBe(3);
+      else if (i===4) expect(beat).toBe(0);
+      else if (i===5) expect(beat).toBe(1);
+      if (i == 5) {
         transport.destroy();
         done();
       }

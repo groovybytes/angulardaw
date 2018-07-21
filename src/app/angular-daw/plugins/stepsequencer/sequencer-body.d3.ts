@@ -4,25 +4,23 @@ import * as d3 from "d3";
 import {TableDimensions} from "./model/TableDimensions";
 import {CellEvents} from "./model/CellEvents";
 
-export class StepsequencerD3 {
+export class SequencerBodyD3 {
 
   private mergeSelection;
 
+  private container:any;
   constructor(private svgElement:  d3.Selection<SVGElement, {}, HTMLElement, any>) {
-
+    this.container = this.svgElement.append("g").attr("class", "step-sequencer");
   }
 
   render(model: Array<CellInfo>, dimensions:TableDimensions,cellEvents:CellEvents<CellInfo>): void {
 
-    let container = this.svgElement.append("g").attr("class", "step-sequencer");
-
     let bandWidthX=dimensions.getBandWidthX();
     let bandWidthY=dimensions.getBandWidthY();
 
-    container.attr("transform", "translate("+dimensions.left+","+dimensions.top+")");
+    this.container.attr("transform", "translate("+dimensions.left+","+dimensions.top+")");
 
-    let join = container.selectAll(".cell-container").data(model);
-
+    let join =  this.container.selectAll(".cell").data(model,(d:CellInfo)=>d.getId());
     join.exit().remove();
 
     let enterSelection = join.enter().append("g").attr("class", d=>d.getCssClass())
@@ -30,16 +28,15 @@ export class StepsequencerD3 {
       .append("rect")
       .call(selection=>cellEvents.apply(selection));
 
-
     this.mergeSelection = enterSelection.merge(join);
-    this.mergeSelection.attr("data-id", (d: CellInfo,i) => i)
-      .attr("data-column", (d, i) => i % dimensions.nRows())
-      .attr("data-row", (d, i) => Math.floor(i / dimensions.nRows()))
+    this.mergeSelection.attr("data-id", (d: CellInfo) => d.getId())
+      .attr("data-column", (d:CellInfo) => d.column)
+      .attr("data-row", (d:CellInfo) => d.row)
       .classed("empty", (d: CellInfo) => true)
       .attr("transform", (d: CellInfo) => "translate(" + ((d.column) * bandWidthX) + "," + ((d.row) * bandWidthY) + ")")
       .selectAll("rect")
-      .attr("width", dimensions.width+"px")
-      .attr("height", dimensions.height+"px")
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
       .attr("class", "cell-visual")
 
 
