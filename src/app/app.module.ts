@@ -34,8 +34,8 @@ import { environment } from '../environments/environment';
       provide: HTTP_INTERCEPTORS,
       useClass: SystemMonitorService,
       multi: true
-    },
-    {provide: ErrorHandler, useClass: SystemMonitorService}
+    }
+   /* {provide: ErrorHandler, useClass: SystemMonitorService}*/
 
   ],
   bootstrap: [AppComponent]

@@ -2,6 +2,7 @@ import {TransportControl} from "./TransportControl";
 import {Observable} from "rxjs/internal/Observable";
 import {EventEmitter} from "@angular/core";
 import {Transport} from "./Transport";
+import {TransportPosition} from "./TransportPosition";
 
 export class TransportProxy implements TransportControl{
   get running(): boolean {
@@ -60,6 +61,10 @@ export class TransportProxy implements TransportControl{
 
   stop(): void {
     this.transport.stop();
+  }
+
+  getPosition():TransportPosition{
+    return this.transport.getPositionInfo();
   }
 
 

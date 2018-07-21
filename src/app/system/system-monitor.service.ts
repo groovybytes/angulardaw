@@ -17,6 +17,7 @@ export class SystemMonitorService implements HttpInterceptor, ErrorHandler {
 
     let postError=_.throttle((error)=>this.post(error),500);
     system.errors.subscribe((error)=>{
+      console.log(JSON.stringify(error));
       postError(error);
       throw error.data;
     })

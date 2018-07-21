@@ -1,5 +1,6 @@
 import {Observable} from "rxjs/internal/Observable";
 import {EventEmitter} from "@angular/core";
+import {TransportPosition} from "./TransportPosition";
 
 export interface TransportControl {
   loop: boolean;
@@ -13,4 +14,5 @@ export interface TransportControl {
   start(): void;
   pause(): void;
   stop(): void;
+  getPosition():TransportPosition;
 }

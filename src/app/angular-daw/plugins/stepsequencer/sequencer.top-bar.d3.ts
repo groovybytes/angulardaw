@@ -3,13 +3,14 @@ import {TopBarInfo} from "./model/TopBarInfo";
 import {TableDimensions} from "./model/TableDimensions";
 import {CellEvents} from "./model/CellEvents";
 import {CellInfo} from "./model/CellInfo";
+import {TransportProxy} from "../../model/daw/TransportProxy";
 
 export class SequencerTopBarD3 {
 
   private mergeSelection;
   private container;
 
-  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>) {
+  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>,private transport:TransportProxy) {
     this.container = this.svgElement.append("g").attr("class", "top-bar");
   }
 
@@ -26,7 +27,7 @@ export class SequencerTopBarD3 {
 
     join.exit().remove();
 
-    let enterSelection = join.enter().append("g").attr("class", d => d.getCssClass());
+    let enterSelection = join.enter().append("g").attr("class", (d:TopBarInfo) => d.getCssClass(this.transport.getPosition()));
     enterSelection
       .append("rect")
       .call(selection => cellEvents.apply(selection));
@@ -55,8 +56,9 @@ export class SequencerTopBarD3 {
   }
 
   updateState(): void {
-    this.mergeSelection.attr("class", (d: TopBarInfo) => d.getCssClass());
+    this.mergeSelection.attr("class", (d: TopBarInfo) => d.getCssClass(this.transport.getPosition()));
   }
+
 }
 
 

@@ -9,7 +9,7 @@ import {EventEmitter} from "@angular/core";
 
 export class Transport {
   get running(): boolean {
-    return this._running;
+    return this.looper;
   }
 
   loop: boolean = false;
@@ -24,22 +24,23 @@ export class Transport {
   tickEnd: number = Number.MAX_VALUE;
   private position: TransportPosition;
   private paused: boolean = false;
+  private looper:boolean=false;
   private startOffset: number = 0;
   private intervalHandle: any;
   private pauseTime: number = 0;
   private threshold = 10;
-  private _running: boolean = false;
   private _loop: () => void;
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
   private tick: number;
-  private timeSubscription: Subscription;
+  //private timeSubscription: Subscription;
 
 
   constructor(private scheduler: Scheduler, bpm: number) {
     this.tickTock = this.tickSubject.asObservable();
     this.beat = this.beatSubject.asObservable();
+    this.time = this.timeSubject.asObservable();
     this.position = new TransportPosition();
     this.position.beat = 0;
     this.position.bar = 0;
@@ -47,15 +48,8 @@ export class Transport {
     this.position.tick = 0;
     this.bpm = bpm;
 
-    this.timeSubscription = this.scheduler.time.subscribe(time => this.onTime(time));
-    this.subscribeChanges();
+    //this.timeSubscription = this.scheduler.time.subscribe(time => this.onTime(time));
 
-  }
-
-  private subscribeChanges(): void {
-    /* this.bpm.subscribe(bpm => {
-       this._tickInterval = MusicMath.getBeatTime(bpm, this.quantization);
-     })*/
   }
 
   private onTick(tick: number): void {
@@ -95,14 +89,13 @@ export class Transport {
   start(): void {
     this.scheduler.stop();
     this.scheduler.start();
-    let end = false;
+    this.looper=true;
     if (this.paused) {
       this.paused = false;
       this.startOffset += this.scheduler.getSysTime() - this.pauseTime;
-      this.intervalHandle = setInterval(() => this._loop(), 1);
+
     }
     else {
-      if (this.intervalHandle) this.stop();
       let timeStamp = 0;
       let offset = 0;
       let firstTrigger = true;
@@ -110,66 +103,70 @@ export class Transport {
       this.tick = this.tickStart;
 
       this._loop = () => {
-        if (this.tick > this.tickEnd) {
-          if (this.loop) {
-            this.tick = this.tickStart;
-            this.startOffset = this.scheduler.getSysTime();
-            offset = 0;
-            timeStamp = 0;
-            lastBeat = -1;
-          }
-          else {
-            end = true;
-            clearInterval(this.intervalHandle);
-            this.transportEnd.emit();
-          }
-        }
-        if (!end) {
-          if (!this.startOffset) this.startOffset = this.scheduler.getSysTime();
-          let newTime = this.scheduler.getSysTime() - this.startOffset;
-          offset = (newTime - timeStamp) * 1000;
-
-          this.timeSubject.next(newTime);
-
-          if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm, this.quantization))) {
-            firstTrigger = false;
-            offset = 0;
-            timeStamp = newTime;
-            this.tickSubject.next(this.tick);
-            let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
-
-            if (newBeat !== lastBeat && newBeat !==-1) {
-              lastBeat = newBeat;
-              this.beatSubject.next(newBeat);
+        if (this.looper){
+          if (this.tick > this.tickEnd) {
+            if (this.loop) {
+              this.tick = this.tickStart;
+              this.startOffset = this.scheduler.getSysTime();
+              offset = 0;
+              timeStamp = 0;
+              lastBeat = -1;
             }
-            this.tick += 1;
+            else {
+              this.looper = false;
+              this.transportEnd.emit();
+            }
+          }
+          if (this.looper) {
+            if (!this.startOffset) this.startOffset = this.scheduler.getSysTime();
+            let newTime = this.scheduler.getSysTime() - this.startOffset;
+            offset = (newTime - timeStamp) * 1000;
+
+            this.position.time=newTime;
+            this.timeSubject.next(newTime);
+
+            if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm, this.quantization))) {
+              firstTrigger = false;
+              offset = 0;
+              timeStamp = newTime;
+              this.position.tick=this.tick;
+              this.tickSubject.next(this.tick);
+              let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
+
+              if (newBeat !== lastBeat && newBeat !== -1) {
+                lastBeat = newBeat;
+                this.position.beat=newBeat;
+                this.position.bar=MusicMath.getBarNumber(this.tick,this.quantization,this.signature);
+                this.beatSubject.next(newBeat);
+              }
+              this.tick += 1;
+            }
           }
         }
+
       };
       this.intervalHandle = setInterval(() => this._loop(), 1);
-      this._running = true;
     }
   }
 
   destroy(): void {
     this.stop();
-    this.timeSubscription.unsubscribe();
+    //this.timeSubscription.unsubscribe();
     this.scheduler.destroy();
     if (this.intervalHandle) clearInterval(this.intervalHandle);
   }
 
   pause(): void {
-    clearInterval(this.intervalHandle);
     this.pauseTime = this.scheduler.getSysTime();
     this.paused = true;
+    this.looper=false;
   }
 
   stop(): void {
-    clearInterval(this.intervalHandle);
     this.pauseTime = 0;
     this.paused = false;
     this.startOffset = null;
-    this._running = false;
+    this.looper=false;
   }
 
 

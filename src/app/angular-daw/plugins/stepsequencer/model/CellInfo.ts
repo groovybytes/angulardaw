@@ -10,7 +10,7 @@ export class CellInfo {
   getId():string{
     return this.note+"_"+this.column;
   }
-  getCssClass(): string {
+  getCssClass(position:TransportPosition): string {
     let result = "cell";
     result += this.row % 2 === 0 ? " cell-default" : " cell-alt";
     result += this.active ? " active" : "";
