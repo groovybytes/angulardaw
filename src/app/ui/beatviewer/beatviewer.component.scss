@@ -1,0 +1,38 @@
+@import "../../scss/andy";
+
+$size:30px;
+
+.beat-container{
+  display:inline-block;
+}
+.beat{
+
+  @include background-gradient( #e6e600,#999900,"");
+  width:$size;
+  height:$size;
+  position: absolute;
+  border-radius: 50%;
+  z-index:2;
+}
+.beat2{
+  transform:scale(1.1);
+  width:$size;
+  height:$size;
+  background-color:   #999900;
+  position: absolute;
+  border-radius: 50%;
+  z-index:1;
+}
+
+.active{
+  .beat{
+    @include background-gradient(  #009933, #004d1a,"");
+
+  }
+  .beat2{
+
+    @include scale(1.2);
+    filter: blur(8px);
+  }
+
+}

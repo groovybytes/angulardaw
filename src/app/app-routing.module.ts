@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
+import {StepsequencerComponent} from "./stepsequencer/stepsequencer.component";
 import {AppComponent} from "./app.component";
 
 const routes: Routes = [

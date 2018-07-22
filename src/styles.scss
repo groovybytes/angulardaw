@@ -1,0 +1,23 @@
+@import "variables";
+@import 'scrollbar';
+@import '~bootstrap/scss/bootstrap';
+
+
+body{
+  padding-top: 70px;
+  overflow: auto;
+}
+
+.main-container {
+  height: $main-height;
+}
+
+:host /deep/ {
+  .footer {
+    border-top: 1px solid black;
+    padding: 0;
+    height: 300px;
+  }
+
+}
+

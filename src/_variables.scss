@@ -1,0 +1,35 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+$color6: rgba(102, 153, 204, 1);
+$color7: rgba(255, 242, 117, 1);
+$color8: rgba(255, 140, 66, 1);
+$color9: red;//rgba(255, 60, 56, 1);
+$color10: rgba(162, 62, 72, 1);
+
+$color1: rgba(45, 49, 66, 1);
+$color2: rgba(191, 192, 192, 1);
+$color3: rgba(255, 255, 255, 1);
+$color4: rgba(239, 131, 84, 1);
+$color5: rgba(79, 93, 117, 1);
+
+$theme-colors: (
+  "primary": $color1,
+  "secondary": $color2,
+  "tertiary": $color3,
+  "danger": $color9,
+  "info":$color3,
+  "warning":$color5
+);
+
+$enable-gradients:true;
+$card-bg:lighten($body-bg,10%);
+$body-bg: lighten(#54647d,10%); //linear-gradient(#54647d, #313946);// no-repeat right top;
+$body-color: $gray-900;
+
+$header-height: 10vh;
+$main-height:80vh;
+$footer-height: 10vh;
+
+

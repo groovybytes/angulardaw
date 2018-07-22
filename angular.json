@@ -71,13 +71,25 @@
               "buildOptimizer": true,
               "serviceWorker": true
             },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ],
+              "sourceMap": true,
+              "extractCss": true
+            },
             "hmr": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.hmr.ts"
                 }
-              ]
+              ],
+              "sourceMap": false,
+              "extractCss": false
             }
           }
         },
@@ -89,6 +101,9 @@
           "configurations": {
             "production": {
               "browserTarget": "audtiotools:build:production"
+            },
+            "development": {
+              "browserTarget": "audtiotools:build:development"
             },
             "hmr": {
               "hmr": true,

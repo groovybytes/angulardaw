@@ -1,9 +1,4 @@
-import {
-  Component, Inject,
-  OnInit
-} from '@angular/core';
-import {Workstation} from "./angular-daw/model/daw/Workstation";
-import {Track} from "./angular-daw/model/daw/Track";
+import {Component, OnInit} from '@angular/core';
 
 
 @Component({
@@ -13,16 +8,16 @@ import {Track} from "./angular-daw/model/daw/Track";
 })
 export class AppComponent implements OnInit {
 
-  workstation: Workstation;
+  //workstation: Workstation;
 
-  constructor(@Inject("AudioContext") private audioContext: AudioContext) {
+  constructor() {
 
   }
 
   ngOnInit() {
-    this.workstation = new Workstation(this.audioContext);
+    /*this.workstation = new Workstation(this.audioContext);
     let project = this.workstation.createProject();
-    //project.tracks.push(new Track());
+    //project.tracks.push(new Track());*/
 
 
   }

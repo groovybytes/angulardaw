@@ -1,3 +1,0 @@
-export enum WindowState{
-  NORMAL,MINIMIZED,MAXIMIZED,CLOSED
-}

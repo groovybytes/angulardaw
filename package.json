@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "concurrently  \"ng serve\" \"set NODE_ENV=development&& cd ../audiotools-server/ && nodemon\"",
-    "client": "ng serve",
+    "client": "ng serve --configuration development",
     "server": "set NODE_ENV=development&& cd ../audiotools-server/ && nodemon\"",
     "hmr": "ng serve --configuration hmr",
     "build": "ng build",
@@ -30,6 +30,7 @@
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.4",
     "animate.css": "^3.6.1",
+    "bootstrap": "^4.1.2",
     "bourbon": "^5.0.1",
     "concurrently": "^3.6.0",
     "core-js": "^2.5.4",
