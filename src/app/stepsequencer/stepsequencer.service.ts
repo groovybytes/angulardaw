@@ -11,6 +11,7 @@ import {TimeSignature} from "../model/mip/TimeSignature";
 import {TransportPosition} from "../model/daw/TransportPosition";
 import {TrackEvent} from "../model/daw/TrackEvent";
 import {Note} from "../model/mip/Note";
+import {SequencerDimensions} from "./model/SequencerDimensions";
 
 @Injectable()
 export class StepSequencerService {
@@ -19,6 +20,13 @@ export class StepSequencerService {
 
   }
 
+  calculateEventTime(ev,dimensions:SequencerDimensions,tickTime:number):void{
+
+
+
+   /* let percentage = this.transport.getPosition().time / fullTime;
+    let pxPosition = width * percentage;*/
+  }
   loadInstrument():Promise<Drumkit>{
     return new Promise((resolve, reject) => {
       this.drumService.getDrumKit("drumkit1").then(drumkit => {

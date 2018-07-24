@@ -1,16 +1,22 @@
 import {CellInfo} from "./model/CellInfo";
 import * as d3 from "d3";
-import {TableDimensions} from "./model/TableDimensions";
 import {CellEvents} from "./model/CellEvents";
 import {TransportProxy} from "../model/daw/TransportProxy";
+import {TrackEvent} from "../model/daw/TrackEvent";
+import {SequencerDimensions} from "./model/SequencerDimensions";
+import {EventEmitter} from "@angular/core";
+import {Note} from "../model/mip/Note";
+import {SequencerEvent} from "./model/SequencerEvent";
 
 export class SequencerBodyD3 {
 
   private mergeSelection;
   private cursor;
-  private dimensions: TableDimensions;
-  private model: Array<CellInfo>;
+  private dimensions: SequencerDimensions;
+  private events: Array<SequencerEvent>;
   private tickTime: number;
+  private bgRectangle:any;
+  bodyClick:EventEmitter<any>=new EventEmitter<any>();
 
   private container: any;
 
@@ -19,47 +25,56 @@ export class SequencerBodyD3 {
 
   }
 
-  render(model: Array<CellInfo>, dimensions: TableDimensions, cellEvents: CellEvents<CellInfo>, tickTime: number): void {
-    this.model = model;
+  render(events:Array<SequencerEvent>, dimensions: SequencerDimensions, cellEvents: CellEvents<CellInfo>, tickTime: number): void {
+
+    let width = dimensions.bodyWidth;
+    let ticks = width / dimensions.cellWidth;
+    let fullTime = tickTime * ticks;
+    this.events = events;
     this.tickTime = tickTime;
     this.dimensions = dimensions;
+
+  /*  dimensions.getRangeY()/dimensions.nColumns();
+    this.dimensions = dimensions;
     let bandWidthX = dimensions.getBandWidthX();
-    let bandWidthY = dimensions.getBandWidthY();
+    let bandWidthY = dimensions.getBandWidthY();*/
 
-    this.container.attr("transform", "translate(" + dimensions.left + "," + dimensions.top + ")");
+    this.container.attr("transform", "translate(" + (dimensions.left+dimensions.rowBarWidth) + "," + (dimensions.top+dimensions.headerBarHeight) + ")");
 
-    let join = this.container.selectAll(".cell").data(model, (d: CellInfo) => d.getId());
+    let join = this.container.selectAll(".event-rect").data(events);//, (d: TrackEvent<any>) => d.);
     join.exit().remove();
 
-    let enterSelection = join.enter().append("g").attr("class", d => d.getCssClass())
-    enterSelection
+    let enterSelection = join.enter()
       .append("rect")
-      .call(selection => cellEvents.apply(selection));
-
+      .attr("class", "event-rect");
     this.mergeSelection = enterSelection.merge(join);
-    this.mergeSelection.attr("data-id", (d: CellInfo) => d.getId())
-      .attr("data-column", (d: CellInfo) => d.column)
-      .attr("data-row", (d: CellInfo) => d.row)
-      .classed("empty", (d: CellInfo) => true)
-      .attr("transform", (d: CellInfo) => "translate(" + ((d.column) * bandWidthX) + "," + ((d.row) * bandWidthY) + ")")
-      .selectAll("rect")
-      .attr("width", dimensions.width+dimensions.padding*2)
-      .attr("height", dimensions.height+dimensions.padding*2)
-      .attr("class", "cell-visual");
+    this.mergeSelection
+      .attr("transform", (d: SequencerEvent) => {
+        return "translate(" +(d.trackEvent.time/fullTime*width)+","+d.row*dimensions.cellHeight+")";
+      })
+      .attr("width", 50)
+      .attr("height", 50);
+
 
 
     if (!this.cursor) this.cursor = this.container.append("line").attr("class", "cursor")
-      .attr("y2", this.dimensions.top+ this.dimensions.getRangeY())
+      .attr("y2", this.dimensions.bodyHeight)
       .attr("y1", 0);
+
+    if (!this.bgRectangle){
+      this.bgRectangle=this.container
+        .append("rect")
+        .attr("class","bg-rect")
+        .attr("width",dimensions.bodyWidth)
+        .attr("height",dimensions.bodyHeight)
+        .on("click",()=>this.bodyClick.emit(d3.event));
+    }
   }
 
-  updateState(): void {
-    this.mergeSelection.attr("class", (d: CellInfo) => d.getCssClass(this.transport.getPosition()));
-  }
 
   updatePosition(): void {
-    let width = this.dimensions.getRangeX();
-    let ticks = this.dimensions.getRangeX() / this.dimensions.getBandWidthX();
+    let width = this.dimensions.bodyWidth;
+    let ticks = width / this.dimensions.cellWidth;
     let fullTime = this.tickTime * ticks / 1000;
     let percentage = this.transport.getPosition().time / fullTime;
     let pxPosition = width * percentage;
