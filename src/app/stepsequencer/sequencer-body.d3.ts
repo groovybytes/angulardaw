@@ -43,12 +43,14 @@ export class SequencerBodyD3 {
       .classed("empty", (d: CellInfo) => true)
       .attr("transform", (d: CellInfo) => "translate(" + ((d.column) * bandWidthX) + "," + ((d.row) * bandWidthY) + ")")
       .selectAll("rect")
-      .attr("width", dimensions.width)
-      .attr("height", dimensions.height)
-      .attr("class", "cell-visual")
+      .attr("width", dimensions.width+dimensions.padding*2)
+      .attr("height", dimensions.height+dimensions.padding*2)
+      .attr("class", "cell-visual");
 
 
-    if (!this.cursor) this.cursor = this.container.append("line").attr("class", "cursor");
+    if (!this.cursor) this.cursor = this.container.append("line").attr("class", "cursor")
+      .attr("y2", this.dimensions.top+ this.dimensions.getRangeY())
+      .attr("y1", 0);
   }
 
   updateState(): void {
@@ -63,9 +65,7 @@ export class SequencerBodyD3 {
     let pxPosition = width * percentage;
     this.cursor
       .attr("x1", pxPosition)
-      .attr("x2", pxPosition)
-      .attr("y1", "0")
-      .attr("y2", "200");
+      .attr("x2", pxPosition);
   }
 
  /* highlightColumn(column: number): void {

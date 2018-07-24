@@ -1,6 +1,4 @@
 export class TableDimensions{
-
-
   constructor(padding: number, width: number, height: number, nColumns: () => number, nRows: () => number, top: number, left: number) {
     this.padding = padding;
     this.width = width;
@@ -8,8 +6,11 @@ export class TableDimensions{
     this.nColumns = nColumns;
     this.nRows = nRows;
     this.top = top;
-    this.left = left;
+    this.left=left;
   }
+
+
+
 
   padding:number;
   width:number;

@@ -29,5 +29,9 @@ export class Workstation{
     return this.projects[0];//this.projects.filter(p=>p.id===id)[0];
   }
 
+  getOpenProject():Project{
+    return this.projects[0];
+  }
+
 
 }

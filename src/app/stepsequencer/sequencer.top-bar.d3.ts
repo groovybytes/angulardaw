@@ -15,7 +15,7 @@ export class SequencerTopBarD3 {
   }
 
 
-  render(model: Array<TopBarInfo>, dimensions: TableDimensions, cellEvents: CellEvents<CellInfo>): void {
+  render(model: Array<TopBarInfo>, dimensions: TableDimensions,offsets, bodyHeight:number,cellEvents: CellEvents<CellInfo>): void {
 
 
     let bandWidthX = dimensions.getBandWidthX();
@@ -32,6 +32,8 @@ export class SequencerTopBarD3 {
       .append("rect")
       .call(selection => cellEvents.apply(selection));
 
+    enterSelection.append("line").attr("class","grid-line");
+
     enterSelection
       .append("text")
       .attr("text-anchor", "middle")
@@ -44,9 +46,15 @@ export class SequencerTopBarD3 {
       .classed("empty", (d: TopBarInfo) => true)
       .attr("transform", (d: TopBarInfo) => "translate(" + ((d.tick) * bandWidthX) + "," + 0 + ")")
       .selectAll("rect")
-      .attr("width", dimensions.width + "px")
-      .attr("height", dimensions.height + "px")
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
       .attr("class", "cell-visual");
+
+    this.mergeSelection.selectAll(".grid-line")
+      .attr("x1",0)
+      .attr("x2",0)
+      .attr("y1",offsets.top)
+      .attr("y2",bodyHeight*1.2+dimensions.top)
 
     this.mergeSelection.selectAll("text")
       .text((d: TopBarInfo) => d.text)
