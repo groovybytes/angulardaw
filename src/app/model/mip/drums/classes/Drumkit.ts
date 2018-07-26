@@ -4,6 +4,7 @@ import {DrumMapping} from "../specs/DrumMapping";
 import {Trigger} from "../../../triggers/Trigger";
 import {System} from "../../../../system/System";
 import {Severity} from "../../../../system/Severity";
+import {Articulation} from "./Articulation";
 
 export class Drumkit {
 
@@ -16,17 +17,19 @@ export class Drumkit {
 
   loadMapping(mapping: DrumMapping): void {
     this.context.clear();
-    mapping.mappings.forEach(mapping => {
-      let trigger = new Trigger<string, DrumSample>((note: string) => {
-        return note === mapping.note;
-      }, () => {
-        return this.samples.filter(sample => sample.piece === mapping.piece && sample.articulation === mapping.articulation)[0];
-      }, (subject: DrumSample) => {
-        if (!subject) this.system.warn("sample not found for : " + mapping).notify("what?!", Severity.WARNING);
-        subject.sample.trigger();
-      })
-      this.context.triggers.push(trigger);
-    })
+    mapping.mappings.forEach(mapping => this.addTrigger(mapping.note,mapping.piece,mapping.articulation));
+  }
+
+  addTrigger(note:string,piece:string,articulation:Articulation):void{
+    let trigger = new Trigger<string, DrumSample>((_note: string) => {
+      return _note === note;
+    }, () => {
+      return this.samples.filter(sample => sample.piece === piece && sample.articulation === articulation)[0];
+    }, (subject: DrumSample) => {
+      if (!subject) this.system.warn("sample not found for : " + piece).notify("what?!", Severity.WARNING);
+      subject.sample.trigger();
+    });
+    this.context.triggers.push(trigger);
   }
 
   /*getSampleForNote(note: string): DrumSample {

@@ -23,10 +23,11 @@ import {FilesApi} from "./api/files.api";
 import {SamplesApi} from "./api/samples.api";
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {Workstation} from "./model/daw/Workstation";
-import { TransportComponent } from './ui/transport/transport.component';
-import { ToolbarComponent } from './ui/toolbar/toolbar.component';
-import { DawControlComponent } from './daw-control/daw-control.component';
-import { PanelComponent } from './ui/panel/panel.component';
+import {TransportComponent} from './ui/transport/transport.component';
+import {ToolbarComponent} from './ui/toolbar/toolbar.component';
+import {DawControlComponent} from './daw-control/daw-control.component';
+import {PanelComponent} from './ui/panel/panel.component';
+import { StorageServiceModule} from 'angular-webstorage-service';
 
 
 let audioContext = new AudioContext();
@@ -53,7 +54,8 @@ let audioContext = new AudioContext();
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    StorageServiceModule
     //ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],

@@ -7,6 +7,9 @@ export class MusicMath {
   public static getTickTime(bpm: number,quantization:NoteLength): number {
     return 240/bpm*1000*quantization; //240/bpm*1000==wholenotetime
   }
+ /* public static getNoteLength(bpm: number,length:NoteLength): number {
+      return 240/bpm*1000*quantization; //240/bpm*1000==wholenotetime
+    }*/
 
   public static getBeatTicks(quantization:NoteLength):number{
     return Math.pow(quantization*4,-1);

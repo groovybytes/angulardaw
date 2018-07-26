@@ -15,8 +15,9 @@ export class SequencerBodyD3 {
   private dimensions: SequencerDimensions;
   private events: Array<SequencerEvent>;
   private tickTime: number;
-  private bgRectangle:any;
-  bodyClick:EventEmitter<any>=new EventEmitter<any>();
+  private bgRectangle: any;
+  bodyClick: EventEmitter<any> = new EventEmitter<any>();
+  eventClick: EventEmitter<SequencerEvent> = new EventEmitter<SequencerEvent>();
 
   private container: any;
 
@@ -25,7 +26,7 @@ export class SequencerBodyD3 {
 
   }
 
-  render(events:Array<SequencerEvent>, dimensions: SequencerDimensions, cellEvents: CellEvents<CellInfo>, tickTime: number): void {
+  render(events: Array<SequencerEvent>, dimensions: SequencerDimensions, cellEvents: CellEvents<CellInfo>, tickTime: number): void {
 
     let width = dimensions.bodyWidth;
     let ticks = width / dimensions.cellWidth;
@@ -34,40 +35,47 @@ export class SequencerBodyD3 {
     this.tickTime = tickTime;
     this.dimensions = dimensions;
 
-  /*  dimensions.getRangeY()/dimensions.nColumns();
-    this.dimensions = dimensions;
-    let bandWidthX = dimensions.getBandWidthX();
-    let bandWidthY = dimensions.getBandWidthY();*/
+    /*  dimensions.getRangeY()/dimensions.nColumns();
+      this.dimensions = dimensions;
+      let bandWidthX = dimensions.getBandWidthX();
+      let bandWidthY = dimensions.getBandWidthY();*/
 
-    this.container.attr("transform", "translate(" + (dimensions.left+dimensions.rowBarWidth) + "," + (dimensions.top+dimensions.headerBarHeight) + ")");
+    this.container.attr("transform", "translate(" + (dimensions.left + dimensions.rowBarWidth) + "," + (dimensions.top + dimensions.headerBarHeight) + ")");
 
     let join = this.container.selectAll(".event-rect").data(events);//, (d: TrackEvent<any>) => d.);
     join.exit().remove();
 
     let enterSelection = join.enter()
       .append("rect")
-      .attr("class", "event-rect");
+      .attr("class", "event-rect")
+      .on("click", (d) => {
+
+        this.eventClick.emit(d);
+      });
+
+
     this.mergeSelection = enterSelection.merge(join);
     this.mergeSelection
       .attr("transform", (d: SequencerEvent) => {
-        return "translate(" +(d.trackEvent.time/fullTime*width)+","+d.row*dimensions.cellHeight+")";
+        return "translate(" + (d.trackEvent.time / fullTime * width) + "," + d.row * dimensions.cellHeight + ")";
       })
-      .attr("width", 50)
-      .attr("height", 50);
-
+      .attr("width", this.dimensions.cellWidth)
+      .attr("height", this.dimensions.cellHeight);
 
 
     if (!this.cursor) this.cursor = this.container.append("line").attr("class", "cursor")
       .attr("y2", this.dimensions.bodyHeight)
       .attr("y1", 0);
 
-    if (!this.bgRectangle){
-      this.bgRectangle=this.container
+    if (!this.bgRectangle) {
+      this.bgRectangle = this.container
         .append("rect")
-        .attr("class","bg-rect")
-        .attr("width",dimensions.bodyWidth)
-        .attr("height",dimensions.bodyHeight)
-        .on("click",()=>this.bodyClick.emit(d3.event));
+        .attr("class", "bg-rect")
+        .attr("width", dimensions.bodyWidth)
+        .attr("height", dimensions.bodyHeight)
+        .on("click", () => {
+          this.bodyClick.emit(d3.event)
+        });
     }
   }
 
@@ -83,10 +91,10 @@ export class SequencerBodyD3 {
       .attr("x2", pxPosition);
   }
 
- /* highlightColumn(column: number): void {
-    this.mergeSelection.classed("position-focused", false);
-    this.mergeSelection.filter((d: CellInfo) => d.column === column).classed("position-focused", true)
-  };*/
+  /* highlightColumn(column: number): void {
+     this.mergeSelection.classed("position-focused", false);
+     this.mergeSelection.filter((d: CellInfo) => d.column === column).classed("position-focused", true)
+   };*/
 
 
 }

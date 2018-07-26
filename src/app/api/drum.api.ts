@@ -55,7 +55,7 @@ export class DrumApi {
     })
   }
 
-  getDrumKit(id: string): Promise<Drumkit> {
+  getDrumKit(id: string,mapping?:string): Promise<Drumkit> {
     return new Promise((resolve, reject) => {
       let drumKit = new Drumkit(this.system);
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
@@ -71,6 +71,13 @@ export class DrumApi {
             })
 
           }).catch(error => reject(error));
+
+          if (mapping) {
+            let promise = this.getMapping(mapping);
+            promises.push(promise);
+            promise.then((result)=>drumKit.loadMapping(result));
+
+          }
           Promise.all(promises).then(() => resolve(drumKit)).catch(error => reject(error));
         })
         .catch(error => reject(error));

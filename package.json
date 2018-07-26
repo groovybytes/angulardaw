@@ -29,6 +29,7 @@
     "@fortawesome/fontawesome-free": "^5.1.0",
     "@types/d3": "^5.0.0",
     "@types/jquery": "^3.3.4",
+    "angular-webstorage-service": "^1.0.2",
     "animate.css": "^3.6.1",
     "bootstrap": "^4.1.2",
     "bourbon": "^5.0.1",

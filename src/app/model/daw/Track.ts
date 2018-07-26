@@ -13,7 +13,10 @@ export class Track<T extends TrackEventHandler>{
   private lookAhead:number=10;
 
   constructor(private handler:T,private timer:Observable<number>,start:EventEmitter<void>, @Inject("lodash") private _){
-    this.subscriptions.push(timer.subscribe(time=>this.onTime(time)));
+    this.subscriptions.push(timer.subscribe(time=>{
+      if (time===0) this.i=0;
+      this.onTime(time);
+    }));
     this.subscriptions.push(start.subscribe(()=>{
       this.i=0;
     }));
@@ -31,6 +34,7 @@ export class Track<T extends TrackEventHandler>{
   }
 
   private onTime(time:number):void{
+
     let nextCandidates = this.events.slice(this.i,this.lookAhead);
     let matches = this.getMatches(time,nextCandidates);
     if (matches.length>0){

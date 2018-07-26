@@ -107,6 +107,7 @@ export class Transport {
       this._loop = () => {
         if (this.looper){
           if (this.tick > this.tickEnd) {
+            console.log("loop end");
             if (this.loop) {
               this.tick = this.tickStart;
               this.startOffset = this.scheduler.getSysTime();

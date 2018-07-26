@@ -8,7 +8,10 @@ export class TriggerContext<T,S> {
   trigger: Subject<T> = new Subject<T>();
 
   constructor(private system:System) {
-    this.trigger.asObservable().subscribe((condition: T) => this.next(condition));
+    this.trigger.asObservable().subscribe((condition: T) => {
+
+      this.next(condition)
+    });
   }
 
   clear():void{
@@ -21,9 +24,11 @@ export class TriggerContext<T,S> {
 
   private next(condition: T): void {
     let found=false;
+
     this.triggers.forEach(trigger => {
       if (trigger.test(condition)) {
         found=true;
+
         trigger.resolve();
       }
     });
