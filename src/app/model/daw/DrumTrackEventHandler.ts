@@ -9,6 +9,7 @@ export class DrumTrackEventHandler implements TrackEventHandler{
 
   }
   next(events:Array<TrackEvent<Note>>):void{
+
     events.forEach(event=>this.drums.context.trigger.next(event.data.name));
   }
 }

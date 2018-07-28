@@ -3,11 +3,13 @@ import {Observable} from "rxjs/internal/Observable";
 import {EventEmitter} from "@angular/core";
 import {Transport} from "./Transport";
 import {TransportPosition} from "./TransportPosition";
+import {TrackEvent} from "./TrackEvent";
 
-export class TransportProxy implements TransportControl{
+export class TransportProxy implements TransportControl {
   get running(): boolean {
     return this.transport.running;
   }
+
   get loop(): boolean {
     return this.transport.loop;
   }
@@ -31,6 +33,7 @@ export class TransportProxy implements TransportControl{
   set tickStart(value: number) {
     this.transport.tickStart = value;
   }
+
   get beat(): Observable<number> {
     return this.transport.beat;
   }
@@ -43,15 +46,24 @@ export class TransportProxy implements TransportControl{
     return this.transport.time;
   }
 
+  get trackEvent(): Observable<Array<TrackEvent<any>>> {
+    return this.transport.trackEvent;
+  }
+
   get transportEnd(): EventEmitter<void> {
     return this.transport.transportEnd;
   }
+
   get transportStart(): EventEmitter<void> {
     return this.transport.transportStart;
   }
 
-  constructor(private transport:Transport){
+  constructor(private transport: Transport) {
 
+  }
+
+  setTrackEvents(events: Array<TrackEvent<any>>): void {
+    this.transport.setTrackEvents(events);
   }
 
   pause(): void {
@@ -66,14 +78,9 @@ export class TransportProxy implements TransportControl{
     this.transport.stop();
   }
 
-  getPosition():TransportPosition{
+  getPosition(): TransportPosition {
     return this.transport.getPositionInfo();
   }
-
-
-
-
-
 
 
 }

@@ -1,15 +1,17 @@
-import {Scheduler} from "./Scheduler";
 import {MusicMath} from "../utils/MusicMath";
 import {TimeSignature} from "../mip/TimeSignature";
-import {BehaviorSubject, Subject, Subscription} from "rxjs/index";
+import {Subject} from "rxjs/index";
 import {Observable} from "rxjs/internal/Observable";
 import {TransportPosition} from "./TransportPosition";
 import {NoteLength} from "../mip/NoteLength";
 import {EventEmitter} from "@angular/core";
+import {TrackEvent} from "./TrackEvent";
+
+declare var _;
 
 export class Transport {
   get running(): boolean {
-    return this.looper;
+    return this.intervalHandle && this.intervalHandle >= 0;
   }
 
   loop: boolean = false;
@@ -19,29 +21,33 @@ export class Transport {
   tickTock: Observable<number>;
   beat: Observable<number>;
   time: Observable<number>;
+  trackEvent: Observable<Array<TrackEvent<any>>>;
   transportEnd: EventEmitter<void> = new EventEmitter<void>();
   transportStart: EventEmitter<void> = new EventEmitter<void>();
   tickStart: number = 0;
   tickEnd: number = Number.MAX_VALUE;
+  private trackEventIndex: number = 0;
   private position: TransportPosition;
+  private trackEvents: Array<TrackEvent<any>> = [];
   private paused: boolean = false;
-  private looper:boolean=false;
-  private startOffset: number = 0;
+  private transportStartTime: number = 0;
   private intervalHandle: any;
   private pauseTime: number = 0;
-  private threshold = 10;
-  private _loop: () => void;
+  private accuracy = 0.03; //10ms
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
+  private trackSubject: Subject<Array<TrackEvent<any>>> = new Subject<Array<TrackEvent<any>>>();
   private tick: number;
+
   //private timeSubscription: Subscription;
 
 
-  constructor(private scheduler: Scheduler, bpm: number) {
+  constructor(private getTime: () => number, bpm: number) {
     this.tickTock = this.tickSubject.asObservable();
     this.beat = this.beatSubject.asObservable();
     this.time = this.timeSubject.asObservable();
+    this.trackEvent = this.trackSubject.asObservable();
     this.position = new TransportPosition();
     this.position.beat = 0;
     this.position.bar = 0;
@@ -49,128 +55,129 @@ export class Transport {
     this.position.tick = 0;
     this.bpm = bpm;
 
-    //this.timeSubscription = this.scheduler.time.subscribe(time => this.onTime(time));
-
   }
 
-  private onTick(tick: number): void {
-    /*console.log(tick);
-    this.position.tick = tick;
-    this.position.beat = MusicMath.getBeatNumber(tick,this.quantization,this.signature);
-    this.position.bar =  MusicMath.getBarNumber(tick,this.quantization,this.signature);
-    if (this.lastBeat !== this.position.beat) {
-      this.beatSubject.next(this.position.beat);
-      this.lastBeat = this.position.beat;
-    }
-    this.tickSubject.next(this.position.tick);*/
+  private matches(val1: number, val2: number, accuracy: number): boolean {
+    return Math.abs(val2 - val1) < accuracy;
   }
 
-  private onTime(time: number): void {
-    this.position.time = time;
-    this.timeSubject.next(this.position.time);
+  private isEventMatch(transportTime: number, noteTime: number): boolean {
+    let diff = transportTime - noteTime / 1000;
+    return diff === 0 || Math.abs(diff) <= 0.01;
   }
 
-  /*  private onLoopChanged(): void {
-      /!*  this.tickStart = this.loopStart * this.signature.beatUnit;
-        this.project.transport.tickEnd = startTick + this.project.signature.beatUnit * this.loopLength;*!/
-    }*/
-
-  private isMatch(transportTime: number, noteTime: number): boolean {
-    return noteTime - transportTime < this.threshold;
-  }
+  /*private isMatch(transportTime: number, noteTime: number): boolean {
+    let diff = transportTime - noteTime / 1000;
+    return diff === 0 || Math.abs(diff) <= this.accuracy;
+  }*/
 
   getPositionInfo(): TransportPosition {
     return this.position;
   }
 
-  private onSchedulerTime(time: number): void {
-
+  setTrackEvents(events: Array<TrackEvent<any>>): void {
+    this.trackEvents = _.clone(events);
   }
 
   start(): void {
-    this.scheduler.stop();
+    this.stop();
     this.transportStart.emit();
-    this.scheduler.start();
-    this.looper=true;
     if (this.paused) {
       this.paused = false;
-      this.startOffset += this.scheduler.getSysTime() - this.pauseTime;
+      //this.transportStartTime += this.scheduler.getSysTime() - this.pauseTime;
 
     }
     else {
-      let timeStamp = 0;
-      let offset = 0;
-      let firstTrigger = true;
+      let prevQuantizationMatch = 0;
+      let quantizationDelta = 0;
       let lastBeat = -1;
+      let intervalTime: number = -1;
+      let resetTime: boolean = true;
       this.tick = this.tickStart;
+      this.intervalHandle = setInterval(
+        () => {
 
-      this._loop = () => {
-        if (this.looper){
-          if (this.tick > this.tickEnd) {
-            console.log("loop end");
-            if (this.loop) {
-              this.tick = this.tickStart;
-              this.startOffset = this.scheduler.getSysTime();
-              offset = 0;
-              timeStamp = 0;
-              lastBeat = -1;
+          let sysTime = this.getTime();
+          if (sysTime > intervalTime) {
+            intervalTime = sysTime;
+
+            if (resetTime) {
+              this.transportStartTime = sysTime;
+              resetTime = false;
             }
-            else {
-              this.looper = false;
-              this.transportEnd.emit();
-            }
-          }
-          if (this.looper) {
-            if (!this.startOffset) this.startOffset = this.scheduler.getSysTime();
-            let newTime = this.scheduler.getSysTime() - this.startOffset;
-            offset = (newTime - timeStamp) * 1000;
+            let transportTime = sysTime - this.transportStartTime;
+            quantizationDelta = (transportTime - prevQuantizationMatch);
 
-            this.position.time=newTime;
-            this.timeSubject.next(newTime);
+            this.position.time = transportTime;
+            this.timeSubject.next(transportTime);
 
-            if (firstTrigger || this.isMatch(offset, MusicMath.getTickTime(this.bpm, this.quantization))) {
-              firstTrigger = false;
-              offset = 0;
-              timeStamp = newTime;
-              this.position.tick=this.tick;
-              this.tickSubject.next(this.tick);
-              let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
 
-              if (newBeat !== lastBeat && newBeat !== -1) {
-                lastBeat = newBeat;
-                this.position.beat=newBeat;
-                this.position.bar=MusicMath.getBarNumber(this.tick,this.quantization,this.signature);
+            if ((transportTime === 0) || this.matches(
+              quantizationDelta,
+              MusicMath.getTickTime(this.bpm, this.quantization) / 1000,
+              this.accuracy)) {
+              quantizationDelta = 0;
+              prevQuantizationMatch = transportTime;
+              this.position.tick = this.tick;
+
+              if (this.tick <= this.tickEnd) {
+                this.tickSubject.next(this.tick);
+                let newBeat = MusicMath.getBeatNumber(this.tick, this.quantization, this.signature);
                 this.beatSubject.next(newBeat);
+                this.position.beat = newBeat;
+                this.position.bar = MusicMath.getBarNumber(this.tick, this.quantization, this.signature);
+                this.tick += 1;
               }
-              this.tick += 1;
+              else {
+                if (this.loop) {
+                  this.tick = this.tickStart;
+                  resetTime = true;
+                  quantizationDelta = 0;
+                  prevQuantizationMatch = 0;
+                  lastBeat = -1;
+                  intervalTime = -1;
+                  this.trackEventIndex = 0;
+                  // this.position.bar = MusicMath.getBarNumber(this.tick, this.quantization, this.signature);
+                }
+                else {
+                  this.stop();
+                }
+              }
+            }
+            if (this.trackEvents.length > 0 && this.trackEventIndex < this.trackEvents.length) {
+              let matches = 0;
+              for (let i = this.trackEventIndex; i < this.trackEvents.length; i++) {
+                //subtract 100 for the sample trigger
+                if (this.trackEvents[i].time===0 || this.matches(transportTime, (this.trackEvents[i].time) / 1000, this.accuracy)) {
+                  matches++;
+                  this.trackSubject.next([this.trackEvents[i]]);
+                }
+              }
+              this.trackEventIndex += matches;
             }
           }
-        }
-
-      };
-      this.intervalHandle = setInterval(() => this._loop(), 1);
+        }, 0);
     }
   }
+
 
   destroy(): void {
     this.stop();
     //this.timeSubscription.unsubscribe();
-    this.scheduler.destroy();
     if (this.intervalHandle) clearInterval(this.intervalHandle);
   }
 
   pause(): void {
-    this.pauseTime = this.scheduler.getSysTime();
+    this.pauseTime = this.getTime();
     this.paused = true;
-    this.looper=false;
   }
 
   stop(): void {
     this.pauseTime = 0;
     this.paused = false;
-    this.startOffset = null;
-    this.looper=false;
+    this.trackEventIndex = 0;
+    this.transportStartTime = null;
+    if (this.intervalHandle) clearInterval(this.intervalHandle);
+    this.transportEnd.emit();
   }
-
-
 }

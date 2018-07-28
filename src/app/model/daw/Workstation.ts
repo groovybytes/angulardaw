@@ -17,8 +17,7 @@ export class Workstation{
   }
 
   createProject():Project{
-    let scheduler = new Scheduler(()=>this._audioContext.currentTime);
-    let project = new Project(scheduler);
+    let project = new Project(this._audioContext);
     project.id = Lang.guid();
     this.projects.push(project);
 

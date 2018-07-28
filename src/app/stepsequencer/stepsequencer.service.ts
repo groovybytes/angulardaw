@@ -28,11 +28,11 @@ export class StepSequencerService {
     track: Track<DrumTrackEventHandler>,
     newNoteEvent: { note: string, time: number, row: number },
     drumKit: Drumkit,
-    events: Array<SequencerEvent>): void {
+    events: Array<SequencerEvent>,play:boolean): void {
 
     let newEvent = new TrackEvent<Note>(newNoteEvent.time, new Note(newNoteEvent.note, NoteLength.Quarter, Loudness.mf, 0));
     track.addEvent(newEvent);
-    drumKit.context.trigger.next(newEvent.data.name);
+    if (play) drumKit.context.trigger.next(newEvent.data.name);
     events.push(new SequencerEvent(newEvent, newNoteEvent.row));
   }
 

@@ -1,9 +1,8 @@
-import {Scheduler} from "./Scheduler";
-import {Transport} from "./Transport";
-import {Track} from "./Track";
-import {TransportProxy} from "./TransportProxy";
-import {NoteLength} from "../mip/NoteLength";
-import {TimeSignature} from "../mip/TimeSignature";
+import { Transport } from './Transport';
+import { Track } from './Track';
+import { TransportProxy } from './TransportProxy';
+import { NoteLength } from '../mip/NoteLength';
+import { TimeSignature } from '../mip/TimeSignature';
 
 export class Project {
 
@@ -36,9 +35,10 @@ export class Project {
   private readonly _transport:Transport;
 
   id:string;
+  name:string;
 
-  constructor(private scheduler:Scheduler){
-    this._transport=new Transport(scheduler,120);
+  constructor(private context:AudioContext){
+    this._transport=new Transport(()=>context.currentTime,120);
     this.transport=new TransportProxy(this._transport);
   }
 

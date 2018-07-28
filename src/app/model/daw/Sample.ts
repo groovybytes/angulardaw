@@ -84,7 +84,7 @@ export class Sample implements Playable {
 
   public trigger() {
     this.loadNodes();
-    this.sourceNode.start(0);
+    this.sourceNode.start(0,0,10);
   }
 
 }

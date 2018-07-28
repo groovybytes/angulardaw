@@ -28,7 +28,6 @@ export class TriggerContext<T,S> {
     this.triggers.forEach(trigger => {
       if (trigger.test(condition)) {
         found=true;
-
         trigger.resolve();
       }
     });

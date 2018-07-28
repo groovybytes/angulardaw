@@ -28,6 +28,7 @@ import {ToolbarComponent} from './ui/toolbar/toolbar.component';
 import {DawControlComponent} from './daw-control/daw-control.component';
 import {PanelComponent} from './ui/panel/panel.component';
 import { StorageServiceModule} from 'angular-webstorage-service';
+import { RangesliderComponent } from './ui/rangeslider/rangeslider.component';
 
 
 let audioContext = new AudioContext();
@@ -48,7 +49,8 @@ let audioContext = new AudioContext();
     TransportComponent,
     ToolbarComponent,
     DawControlComponent,
-    PanelComponent
+    PanelComponent,
+    RangesliderComponent
   ],
   imports: [
     BrowserModule,

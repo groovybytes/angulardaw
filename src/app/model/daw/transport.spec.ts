@@ -82,22 +82,27 @@ describe('Transport', () => {
 
   });
 
-  it('loops between 2 ticks', (done: DoneFn) => {
+  it('loops 1 bar', (done: DoneFn) => {
 
-    let nTicks = 4;
+    let nTicks = 5;
     let currentTick: number = 0;
     let transport: Transport = new Transport(scheduler, 200);
     transport.loop = true;
     transport.tickStart = 0;
-    transport.tickEnd = 2;
+    transport.tickEnd = 3;
+    transport.signature=new TimeSignature(4,4);
+    transport.quantization=NoteLength.Quarter;
     subscription = transport.tickTock.subscribe(tick => {
       expect(tick).toBe((currentTick % 3));
       nTicks--;
       currentTick++;
       if (nTicks == 0) {
+        expect(tick).toBe(3);
+        expect(transport.getPositionInfo().time).toBe(0);
         transport.destroy();
         done();
       }
+
     });
     transport.start();
 
