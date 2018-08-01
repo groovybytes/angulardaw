@@ -37,7 +37,7 @@ export class MidiStream{
         let events = matches.map(match=>{
           let event = new MidiEvent();
           event.midi=match.midi;
-          event.duration=match.duration;
+          event.length=match.length;
 
           return event;
         })
@@ -49,7 +49,7 @@ export class MidiStream{
 
            let event = new MidiEvent();
            event.midi=notes[i].midi;
-           event.duration=notes[i].duration;
+           event.length=notes[i].length;
            this.midiEvent.next([event]);
            i++;
          }*!/

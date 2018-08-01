@@ -1,7 +1,8 @@
-import {Sample} from "./Sample";
-import {Playable} from "./Playable";
-import {NoteInfo} from "../utils/NoteInfo";
-import {Dynamics} from "../utils/Dynamics";
+/*
+import {Sample} from "../Sample";
+import {Playable} from "../Playable";
+import {NoteInfo} from "../../utils/NoteInfo";
+import {Dynamics} from "../../utils/Dynamics";
 
 export class Instrument implements Playable {
 
@@ -10,10 +11,10 @@ export class Instrument implements Playable {
   startNote: string;
   endNote: string;
 
-  play(when: number, duration: number, notes: Array<NoteInfo>, dynamics:Dynamics) {
+  play(when: number, length: number, notes: Array<NoteInfo>, dynamics:Dynamics) {
     notes.forEach(note=>{
       let sample = this.getSampleForNote(note);
-      sample.play(when,duration,[note],dynamics);
+      sample.play(when,length,[note],dynamics);
     });
   }
 
@@ -43,3 +44,4 @@ export class Instrument implements Playable {
 
 
 }
+*/

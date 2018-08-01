@@ -1,8 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TimeSignature} from "../../model/mip/TimeSignature";
-import {MusicMath} from "../../model/utils/MusicMath";
-import {Workstation} from "../../model/daw/Workstation";
-import {Scheduler} from "../../model/daw/Scheduler";
 import {Transport} from "../../model/daw/Transport";
 
 @Component({

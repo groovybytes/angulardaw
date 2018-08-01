@@ -1,11 +1,8 @@
 import {CellInfo} from "./model/CellInfo";
 import * as d3 from "d3";
 import {CellEvents} from "./model/CellEvents";
-import {TransportProxy} from "../model/daw/TransportProxy";
-import {TrackEvent} from "../model/daw/TrackEvent";
 import {SequencerDimensions} from "./model/SequencerDimensions";
 import {EventEmitter} from "@angular/core";
-import {Note} from "../model/mip/Note";
 import {SequencerEvent} from "./model/SequencerEvent";
 
 export class SequencerBodyD3 {
@@ -21,7 +18,7 @@ export class SequencerBodyD3 {
 
   private container: any;
 
-  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>, private transport: TransportProxy) {
+  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>) {
     this.container = this.svgElement.append("g").attr("class", "step-sequencer");
 
   }
@@ -80,11 +77,11 @@ export class SequencerBodyD3 {
   }
 
 
-  updatePosition(): void {
+  updatePosition(tranpsortTime:number): void {
     let width = this.dimensions.bodyWidth;
     let ticks = width / this.dimensions.cellWidth;
     let fullTime = this.tickTime * ticks / 1000;
-    let percentage = this.transport.getPosition().time / fullTime;
+    let percentage = tranpsortTime / fullTime;
     let pxPosition = width * percentage;
     this.cursor
       .attr("x1", pxPosition)

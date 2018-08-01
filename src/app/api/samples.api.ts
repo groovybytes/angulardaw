@@ -2,7 +2,6 @@ import {Inject, Injectable} from "@angular/core";
 import {Sample} from "../model/daw/Sample";
 import {NoteInfo} from "../model/utils/NoteInfo";
 import {HttpClient} from "@angular/common/http";
-import {Instrument} from "../model/daw/Instrument";
 import {InstrumentInfoApi} from "./instrumentinfo.api";
 import {Buffers} from "../model/utils/Buffers";
 import {FilesApi} from "./files.api";
@@ -25,7 +24,7 @@ export class SamplesApi {
   }
 
 
-  createInstrument(name: string): Promise<Instrument> {
+ /* createInstrument(name: string): Promise<Instrument> {
 
     return new Promise((resolve, reject) => {
       this.instrumentsInfoApi.getInfo(name).subscribe(instrumentInfo => {
@@ -63,7 +62,7 @@ export class SamplesApi {
           .catch(error => reject(error));
       }, error => reject(error));
     })
-  }
+  }*/
 
   public getSamples(urls: Array<string>): Promise<Array<Sample>> {
     return new Promise((resolve, reject) => {
@@ -74,7 +73,7 @@ export class SamplesApi {
             let i = 0;
 
             buffers.forEach((buffer: AudioBuffer) => {
-              samples.push(new Sample(urls[i], buffer, "", "", this.audioContext));
+              samples.push(new Sample(urls[i], buffer,  this.audioContext));
               i++;
             });
             resolve(samples);

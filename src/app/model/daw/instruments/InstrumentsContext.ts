@@ -1,5 +1,7 @@
-import {Sample} from "./Sample";
+/*
+import {Sample} from "../Sample";
 
 export class InstrumentsContext{
     piano:Sample;
 }
+*/

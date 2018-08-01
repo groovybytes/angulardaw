@@ -1,16 +1,11 @@
-
-import {MidiFileNote} from "../midi/midifilespec/MidiFileNote";
-
-
 export class NoteInfo {
   frequency: number;
   id: string;
-  octave: number;
   midi: number;
   index: number;
-  duration:number;
-  velocity:number;
-  startTime:number;
+  length:number;
+ /* velocity:number;
+  startTime:number;*/
 
   public static notes: any;
   public static notesByMidi: any;
@@ -51,7 +46,7 @@ export class NoteInfo {
     return NoteInfo.notes[id];
   }
 
-  public static fromMidiCode(id: number): NoteInfo {
+  /*public static fromMidiCode(id: number): NoteInfo {
 
     if (!NoteInfo.notes) {
       NoteInfo.load();
@@ -64,11 +59,11 @@ export class NoteInfo {
   public static fromMidiNote(note: MidiFileNote): NoteInfo {
     let result = NoteInfo.fromMidiCode(note.midi);
     result.startTime=note.time;
-    result.duration=note.duration;
+    result.length=note.length;
     result.velocity=note.velocity;
     return result;
 
-  }
+  }*/
 
   public static interval(note1: NoteInfo, note2: NoteInfo): number {
     return note2.index - note1.index;
@@ -209,9 +204,5 @@ export class NoteInfo {
     "B10": 31608.53128039195
   }
 
-
-}
-
-export class Notes {
 
 }

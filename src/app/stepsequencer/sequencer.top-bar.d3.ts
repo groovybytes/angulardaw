@@ -2,15 +2,15 @@ import * as d3 from "d3";
 import {TopBarInfo} from "./model/TopBarInfo";
 import {CellEvents} from "./model/CellEvents";
 import {CellInfo} from "./model/CellInfo";
-import {TransportProxy} from "../model/daw/TransportProxy";
 import {SequencerDimensions} from "./model/SequencerDimensions";
+import {TransportPosition} from "../model/daw/TransportPosition";
 
 export class SequencerTopBarD3 {
 
   private mergeSelection;
   private container;
 
-  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>,private transport:TransportProxy) {
+  constructor(private svgElement: d3.Selection<SVGElement, {}, HTMLElement, any>) {
     this.container = this.svgElement.append("g").attr("class", "top-bar");
   }
 
@@ -25,7 +25,7 @@ export class SequencerTopBarD3 {
 
     join.exit().remove();
 
-    let enterSelection = join.enter().append("g").attr("class", (d:TopBarInfo) => d.getCssClass(this.transport.getPosition()));
+    let enterSelection = join.enter().append("g").attr("class", (d:TopBarInfo) => d.getCssClass(new TransportPosition()));
     enterSelection
       .append("rect")
       .call(selection => cellEvents.apply(selection));
@@ -61,8 +61,8 @@ export class SequencerTopBarD3 {
 
   }
 
-  updateState(): void {
-    this.mergeSelection.attr("class", (d: TopBarInfo) => d.getCssClass(this.transport.getPosition()));
+  updateState(position:TransportPosition): void {
+    this.mergeSelection.attr("class", (d: TopBarInfo) => d.getCssClass(position));
   }
 
 }

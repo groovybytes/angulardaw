@@ -1,4 +1,5 @@
-import {Articulation} from "../classes/Articulation";
+/*
+import {Articulation} from "../../../drums/classes/Articulation";
 
 export class DrumKitSpec {
   id: string;
@@ -6,7 +7,9 @@ export class DrumKitSpec {
     {
       piece: string,
       articulation: Articulation,
-      url: string
+      url: string,
+      note:string
     }
     ]
 }
+*/

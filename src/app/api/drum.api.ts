@@ -1,19 +1,15 @@
 import {Injectable} from "@angular/core";
-import {SimpleDrum} from "../model/drums/SimpleDrum";
 import {SamplesApi} from "./samples.api";
 import {Sample} from "../model/daw/Sample";
-import {DrumKitSpec} from "../model/mip/drums/specs/DrumKitSpec";
-import {Drumkit} from "../model/mip/drums/classes/Drumkit";
-import {DrumSample} from "../model/mip/drums/classes/DrumSample";
-import {DrumMapping} from "../model/mip/drums/specs/DrumMapping";
 import {FilesApi} from "./files.api";
 import {System} from "../system/System";
 import {AppConfiguration} from "../app.configuration";
+import {Drums} from "../model/daw/instruments/Drums";
+import {SampledInstrument} from "../model/daw/instruments/SampledInstrument";
+import {InstrumentMapping} from "../model/mip/instruments/drums/spec/InstrumentMapping";
 
 @Injectable()
 export class DrumApi {
-  drums: SimpleDrum;
-  private reverb: Sample;
 
   constructor(
     private samplesV2Service: SamplesApi,
@@ -23,62 +19,24 @@ export class DrumApi {
 
   }
 
-  load(): void {
-    let samples = [
-      this.config.getAssetsUrl("sounds/drums/drumkit1/kick1.wav"),
-      this.config.getAssetsUrl("sounds/drums/drumkit1/snare1.wav"),
-      this.config.getAssetsUrl("sounds/drums/drumkit1/hihat.wav")
-    ]
-
-    this.samplesV2Service.getSamples(samples).then(result => {
-      let drum = this.drums = new SimpleDrum();
-      drum.kick = result[0];
-      drum.snare = result[1];
-      drum.hihat = result[2];
-
-    }, error => this.system.error(error));
-
-    this.samplesV2Service.getSamples([this.config.getAssetsUrl("sounds/impulses/PlateMedium.wav")]).then(result => {
-      this.reverb = result[0];
-
-    }, error => this.system.error(error));
-
-  }
-
-  getMapping(id:string):Promise<DrumMapping>{
+  getDrums(id: string): Promise<Drums> {
     return new Promise((resolve, reject) => {
+      let drums = new Drums();
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
-        .then((config: DrumMapping) => {
-          resolve(config);
-        })
-        .catch(error => reject(error));
-    })
-  }
-
-  getDrumKit(id: string,mapping?:string): Promise<Drumkit> {
-    return new Promise((resolve, reject) => {
-      let drumKit = new Drumkit(this.system);
-      this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
-        .then((config: DrumKitSpec) => {
+        .then((config: InstrumentMapping) => {
           let promises = [];
-          let urls = config.samples.map(sample => this.config.getAssetsUrl("sounds/drums/"+id+"/"+sample.url));
+          let urls = config.mappings.map(map => this.config.getAssetsUrl("sounds/drums/"+id+"/"+map.url));
           let promise = this.samplesV2Service.getSamples(urls);
           promises.push(promise);
           promise.then((samples: Array<Sample>) => {
             samples.forEach((sample, i) => {
-              let spec = config.samples[i];
-              drumKit.samples.push(new DrumSample(spec.piece, spec.articulation, sample));
+              let spec = config.mappings[i];
+              drums.addTrigger(spec.note,sample);
             })
 
           }).catch(error => reject(error));
 
-          if (mapping) {
-            let promise = this.getMapping(mapping);
-            promises.push(promise);
-            promise.then((result)=>drumKit.loadMapping(result));
-
-          }
-          Promise.all(promises).then(() => resolve(drumKit)).catch(error => reject(error));
+          Promise.all(promises).then(() => resolve(drums)).catch(error => reject(error));
         })
         .catch(error => reject(error));
     })
@@ -86,15 +44,4 @@ export class DrumApi {
 
   }
 
- /* playKick(): void {
-    this.drums.kick.triggerWith(ADSREnvelope.default(), this.reverb);
-  }
-
-  playSnare(): void {
-    this.drums.snare.triggerWith(ADSREnvelope.default(), this.reverb);
-  }
-
-  playHihat(): void {
-    this.drums.hihat.triggerWith(ADSREnvelope.default(), this.reverb);
-  }*/
 }

@@ -1,12 +1,12 @@
-import {DrumSample} from "./DrumSample";
-import {TriggerContext} from "../../../triggers/TriggerContext";
-import {DrumMapping} from "../specs/DrumMapping";
-import {Trigger} from "../../../triggers/Trigger";
-import {System} from "../../../../system/System";
-import {Severity} from "../../../../system/Severity";
-import {Articulation} from "./Articulation";
+/*
+import {TriggerContext} from "../../triggers/TriggerContext";
+import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
+import {Trigger} from "../../triggers/Trigger";
+import {System} from "../../../system/System";
+import {Severity} from "../../../system/Severity";
+import {Articulation} from "../../mip/drums/classes/Articulation";
 
-export class Drumkit {
+export class Drums {
 
   context: TriggerContext<string,DrumSample>;
   samples: Array<DrumSample> = [];
@@ -15,7 +15,7 @@ export class Drumkit {
     this.context = new TriggerContext<string,DrumSample>(system);
   }
 
-  loadMapping(mapping: DrumMapping): void {
+  loadMapping(mapping: InstrumentMapping): void {
     this.context.clear();
     mapping.mappings.forEach(mapping => this.addTrigger(mapping.note,mapping.piece,mapping.articulation));
   }
@@ -32,9 +32,10 @@ export class Drumkit {
     this.context.triggers.push(trigger);
   }
 
-  /*getSampleForNote(note: string): DrumSample {
+  /!*getSampleForNote(note: string): DrumSample {
     let sample = this.samples.filter(sample => sample.)[0];
-  }*/
+  }*!/
 
 
 }
+*/

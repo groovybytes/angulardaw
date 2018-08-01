@@ -1,62 +1,20 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top ">
+<!--<nav class="navbar navbar-expand-md navbar-dark fixed-top ">
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">AngularDAW <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="#" routerLinkActive="active">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
 
-        <a routerLink="/stepsequencer" routerLinkActive="active" class="nav-link">Stepsequencer</a>
-        <!--  <a class="nav-link" href="#">Link</a>-->
+        <a routerLink="/projects" routerLinkActive="active" class="nav-link">Projects</a>
+        &lt;!&ndash;  <a class="nav-link" href="#">Link</a>&ndash;&gt;
       </li>
     </ul>
   </div>
-</nav>
+</nav>-->
 
 <div class="container-fluid">
   <main role="main" class="main-container">
-
-    <!--<div class="card-group">
-      <div class="card">
-        <img class="card-img-top" src=".../100px180/" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-img-top" src=".../100px180/" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-        </div>
-      </div>
-      <div class="card">
-        <img class="card-img-top" src=".../100px180/" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-        </div>
-      </div>
-    </div>-->
-
-    <stepsequencer></stepsequencer>
-    <app-development></app-development>
-    <!--  <div class="card border-tertiary">
-        <div class="card-header bg-gradient-tertiary">Header</div>
-        <div class="card-body">
-          <stepsequencer></stepsequencer>
-        </div>
-        <div class="card-footer bg-gradient-tertiary border-tertiary">Footer</div>
-      </div>-->
-
+    <router-outlet></router-outlet>
   </main>
 </div>
-
-<nav class="navbar navbar-dark bg-light footer fixed-bottom">
-  <daw-control></daw-control>
-</nav>
-<!--<daw-control></daw-control>-->

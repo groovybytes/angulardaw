@@ -1,3 +1,4 @@
+/*
 import {Sample} from "../../../daw/Sample";
 import {Articulation} from "./Articulation";
 
@@ -12,3 +13,4 @@ export class DrumSample {
     this.sample = sample;
   }
 }
+*/

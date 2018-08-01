@@ -1,4 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+import {WorkstationService} from "./shared/services/workstation.service";
+import {Transport} from "./model/daw/Transport";
+import {ActivatedRoute} from "@angular/router";
+import {Project} from "./model/daw/Project";
+import {ProjectsApi} from "./shared/api/projects.api";
 
 
 @Component({
@@ -8,20 +13,20 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  //workstation: Workstation;
+  workstation: WorkstationService;
+  transport: Transport;
 
-  constructor() {
+  constructor(
+    workstation: WorkstationService) {
+    this.workstation = workstation;
+    this.transport = new Transport(()=>workstation.audioContext.currentTime);
 
   }
 
   ngOnInit() {
-    /*this.workstation = new Workstation(this.audioContext);
-    let project = this.workstation.createProject();
-    //project.tracks.push(new Track());*/
 
 
   }
-
 
 }
 

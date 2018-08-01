@@ -16,7 +16,7 @@ export class MidiWriter {
     midi.track()
     // select an instrument by its MIDI patch number
       .patch(32)
-      // chain note events: note, time, duration
+      // chain note events: note, time, length
       .note(60, 0, 2)
       .note(63, 1, 2)
       .note(60, 2, 2)

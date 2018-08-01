@@ -1,11 +1,10 @@
-import {TrackEvent} from "../../model/daw/TrackEvent";
-import {Note} from "../../model/mip/Note";
+import {EventDTO} from "../../shared/api/EventDTO";
 
 export class SequencerEvent{
-  trackEvent:TrackEvent<Note>;
+  trackEvent:EventDTO;
   row:number;
 
-  constructor(trackEvent: TrackEvent<Note>, row: number) {
+  constructor(trackEvent:EventDTO, row: number) {
     this.trackEvent = trackEvent;
     this.row = row;
   }

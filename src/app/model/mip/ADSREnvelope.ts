@@ -7,7 +7,6 @@ export class ADSREnvelope {
     this.sustainTime = sustainTime;
   }
 
-
   attackTime: number;
   decayReduction: number;
   decayTime: number;
