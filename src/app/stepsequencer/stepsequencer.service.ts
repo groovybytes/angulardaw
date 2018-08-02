@@ -12,6 +12,7 @@ import {SequencerEvent} from "./model/SequencerEvent";
 import {Track} from "../model/daw/Track";
 import {Drums} from "../model/daw/instruments/Drums";
 import {EventDTO} from "../shared/api/EventDTO";
+import {MidiTrack} from "../model/daw/MidiTrack";
 
 @Injectable()
 export class StepSequencerService {
@@ -22,7 +23,7 @@ export class StepSequencerService {
 
 
   onNoteEventTriggered(
-    track: Track,
+    track: MidiTrack,
     newNoteEvent: { note: string, time: number, row: number },
     drumKit: Drums,
     events: Array<SequencerEvent>, play: boolean): void {

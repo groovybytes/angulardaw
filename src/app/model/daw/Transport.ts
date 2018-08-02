@@ -4,20 +4,21 @@ import {Observable} from "rxjs/internal/Observable";
 import {TransportPosition} from "./TransportPosition";
 import {EventEmitter} from "@angular/core";
 import {TransportParams} from "./TransportParams";
+import {TransportObservable} from "./TransportObservable";
 
 declare var _;
 
-export class Transport {
-  get running(): boolean {
-    return this.intervalHandle && this.intervalHandle >= 0;
-  }
+export class Transport implements TransportObservable {
 
-  params:TransportParams;
+  params: TransportParams = new TransportParams();
   tickTock: Observable<number>;
   beat: Observable<number>;
   time: Observable<number>;
   transportEnd: EventEmitter<void> = new EventEmitter<void>();
   transportStart: EventEmitter<void> = new EventEmitter<void>();
+  timeReset: EventEmitter<number> = new EventEmitter<number>();
+  private startTime:number=0;
+  private endTime:number=0;
   private position: TransportPosition;
   private paused: boolean = false;
   private transportStartTime: number = 0;
@@ -37,6 +38,7 @@ export class Transport {
     this.beat = this.beatSubject.asObservable();
     this.time = this.timeSubject.asObservable();
     this.position = new TransportPosition();
+    this.params.tickEnd = 1000;
     this.position.beat = 0;
     this.position.bar = 0;
     this.position.time = 0;
@@ -69,16 +71,20 @@ export class Transport {
       this.tick = this.params.tickStart;
       this.intervalHandle = setInterval(
         () => {
-
+          let tickTime=MusicMath.getTickTime(this.params.bpm,this.params.quantization);
+          this.startTime=this.params.tickStart*tickTime;
+          this.endTime=this.params.tickEnd*tickTime;
           let sysTime = this.getTime();
           if (sysTime > intervalTime) {
             intervalTime = sysTime;
 
             if (resetTime) {
               this.transportStartTime = sysTime;
+              if (resetTime) this.timeReset.emit( sysTime - this.transportStartTime);
               resetTime = false;
             }
             let transportTime = sysTime - this.transportStartTime;
+
             quantizationDelta = (transportTime - prevQuantizationMatch);
 
             this.position.time = transportTime;
@@ -87,7 +93,7 @@ export class Transport {
 
             if ((transportTime === 0) || this.matches(
               quantizationDelta,
-              MusicMath.getTickTime(this.params.bpm, this.params.quantization) / 1000,
+              tickTime / 1000,
               this.accuracy)) {
               quantizationDelta = 0;
               prevQuantizationMatch = transportTime;
@@ -109,6 +115,7 @@ export class Transport {
                   prevQuantizationMatch = 0;
                   lastBeat = -1;
                   intervalTime = -1;
+
                   // this.position.bar = MusicMath.getBarNumber(this.tick, this.quantization, this.signature);
                 }
                 else {
@@ -121,7 +128,6 @@ export class Transport {
         }, 0);
     }
   }
-
 
   destroy(): void {
     this.stop();
@@ -140,5 +146,17 @@ export class Transport {
     this.transportStartTime = null;
     if (this.intervalHandle) clearInterval(this.intervalHandle);
     this.transportEnd.emit();
+  }
+
+  isRunning(): boolean {
+    return this.intervalHandle && this.intervalHandle >= 0;
+  }
+
+  getEndTime(): number {
+    return this.endTime;
+  }
+
+  getStartTime(): number {
+    return this.startTime;
   }
 }

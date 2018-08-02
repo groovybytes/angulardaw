@@ -31,7 +31,7 @@ export class MetronomeComponent implements OnInit {
   }
 
   onStartBtnToggled(value: boolean): void {
-    if (this.transport.running) this.transport.stop();
+    if (this.transport.isRunning()) this.transport.stop();
     else this.transport.start();
   }
 
@@ -59,7 +59,7 @@ export class MetronomeComponent implements OnInit {
       this.clicker = new Clicker(result.accentSample,result.defaultSample);
     });
     this.transportSubscription = this.transport.beat.subscribe(beat => {
-      this.clicker.click(beat===0);
+     // this.clicker.click(beat===0);
     });
   }
 

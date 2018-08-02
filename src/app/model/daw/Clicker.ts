@@ -1,6 +1,7 @@
 import {Sample} from "./Sample";
+import {Instrument} from "../mip/instruments/Instrument";
 
-export class Clicker {
+export class Clicker implements Instrument{
 
   constructor(private accentSample:Sample,private otherSample:Sample) {
   }
@@ -14,8 +15,17 @@ export class Clicker {
     });
   }*/
 
-  click(accent:boolean): void {
+  /*click(accent:boolean): void {
     if (accent) this.accentSample.trigger();
+    else this.otherSample.trigger();
+  }*/
+
+  getName(): string {
+    return "clicker";
+  }
+
+  play(note: string, time: number, length: number, loudness: number, articulation?: number): void {
+    if (note === "A1") this.accentSample.trigger();
     else this.otherSample.trigger();
   }
 
