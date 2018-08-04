@@ -1,0 +1,21 @@
+@import "../../variables";
+
+$height: $footer-height;
+:host /deep/ {
+
+  .btn-group, .btn-toolbar {
+    height: $height;
+  }
+  button {
+    width: $height;
+  }
+
+}
+
+:host {
+
+  .btn-toolbar {
+    background-color: darken($body-bg, 10%);
+  }
+  height: $height;
+}

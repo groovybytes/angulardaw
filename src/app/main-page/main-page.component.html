@@ -1,0 +1,15 @@
+<div *ngIf="project">
+<nav class="navbar navbar-light bg-light fixed-top">
+  <form class="form-inline">
+    <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
+  </form>
+</nav>
+
+<!--  <app-development [project]="project"></app-development>-->
+  <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
+
+
+<nav class="navbar navbar-dark bg-light footer fixed-bottom">
+  <daw-control [project]="project"></daw-control>
+</nav>
+</div>

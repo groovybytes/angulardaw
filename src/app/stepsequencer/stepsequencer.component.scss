@@ -1,0 +1,73 @@
+@import "../../variables";
+
+:host {
+
+
+}
+
+:host /deep/ {
+
+  text{
+    pointer-events: none;
+  }
+  .grid-line {
+
+    stroke: black;
+  }
+  .cursor {
+    stroke: $color10;
+    stroke-width: 2px;
+  }
+  .cell-visual {
+    stroke: black;
+    stroke-width: 2px;
+  }
+
+  .bg-row-bar{
+      fill: transparent;
+    &:hover{
+      fill:$color6;
+    }
+  }
+
+  .event-rect{
+    fill:black;
+  }
+
+  .bg-rect{
+    fill:transparent;
+  }
+  .active {
+    .cell-visual {
+      fill: darken($color2,20%) !important;
+    }
+    .cell-visual:hover {
+      fill: darken($color2,30%) !important;
+    }
+
+  }
+  .position-focused {
+    .cell-visual {
+      fill: $color10 !important;
+    }
+
+  }
+  .cell-default {
+    .cell-visual {
+      fill: transparent;
+      &:hover {
+        fill: $color6;
+      }
+    }
+  }
+
+  .cell-alt {
+    .cell-visual {
+      fill: transparent;
+      &:hover {
+        fill: $color6;
+      }
+    }
+  }
+
+}

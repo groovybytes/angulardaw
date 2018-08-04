@@ -1,0 +1,23 @@
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let project of projects">
+    {{project.name}}
+    <button type="button" class="btn btn-primary" (click)="open(project)">Open</button>
+  </li></ul>
+
+<form (ngSubmit)="onSubmit()">
+  <div class="form-row">
+    <div class="col">
+      <input type="text" class="form-control"
+             autocomplete="off"
+             id="projectInput"
+             placeholder="project name"
+             [(ngModel)]="newProjectName"
+             name="newProjectName"
+             minlength="5"
+             required>
+    </div>
+    <div class="col">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>

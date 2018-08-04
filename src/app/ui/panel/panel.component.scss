@@ -1,0 +1,13 @@
+:host  /deep/{
+  .card {
+
+  }
+  .card-body{
+   max-height: 50vh;
+    overflow: auto;
+  }
+  .card-footer {
+    padding:0;
+  }
+
+}
