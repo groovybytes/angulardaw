@@ -5,9 +5,10 @@
   </form>
 </nav>
 
-<!--  <app-development [project]="project"></app-development>-->
+ <!-- <app-development [project]="project"></app-development>-->
   <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
 
+  <stepsequencer [project]="project"></stepsequencer>
 
 <nav class="navbar navbar-dark bg-light footer fixed-bottom">
   <daw-control [project]="project"></daw-control>

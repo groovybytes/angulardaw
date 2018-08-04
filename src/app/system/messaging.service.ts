@@ -1,7 +1,6 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../app.configuration";
-import {ApplicationError} from "./ApplicationError";
 import {Severity} from "./Severity";
 
 
@@ -12,7 +11,7 @@ export class MessagingService {
 
   }
 
-  systemEvent:EventEmitter<ApplicationError>=new EventEmitter<ApplicationError>();
+  systemEvent:EventEmitter<any>=new EventEmitter<any>();
 
   log(msg:string, severity?:Severity):void{
     let _severity = severity?severity:Severity.DEBUG;
@@ -26,7 +25,7 @@ export class MessagingService {
     //this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(o),severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
   }
 
-  triggerEvent(event:ApplicationError):void{
+  triggerEvent(event:any):void{
     this.systemEvent.next(event);
   }
 

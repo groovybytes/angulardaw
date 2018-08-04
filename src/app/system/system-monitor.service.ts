@@ -1,10 +1,8 @@
-import {ErrorHandler, Inject, Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {Observable} from "rxjs/internal/Observable";
 import {catchError} from "rxjs/operators";
 import {throwError} from "rxjs/internal/observable/throwError";
-import {ApplicationError} from "./ApplicationError";
-import {Severity} from "./Severity";
 import {System} from "./System";
 import {AppConfiguration} from "../app.configuration";
 
@@ -30,14 +28,14 @@ export class SystemMonitorService implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
       const error = err.error.message || err.statusText;
-      this.system.errors.emit(new ApplicationError(error));
+      this.system.errors.emit(error);
       return throwError(error);
     }))
   }
 
   handleError(error: any): void {
     let sendError = error ? error.stack ? error.stack : error : "";
-    this.system.errors.emit(new ApplicationError(sendError));
+    this.system.errors.emit(error);
     throw(error);
   }
 

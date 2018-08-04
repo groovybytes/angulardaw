@@ -11,6 +11,10 @@ export class Drums implements Instrument{
     this.triggers.push({note:note,sample:sample});
   }
 
+  getNotes():Array<string>{
+    return this.triggers.map(t=>t.note);
+  }
+
   play(note: string): void {
     let trigger = this.triggers.find(trigger=>trigger.note===note);
     trigger.sample.trigger();

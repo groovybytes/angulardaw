@@ -39,7 +39,7 @@ export class DevelopmentComponent {
       this.samplesV2Service.getClickSamples().then(result => {
 
         //this.workstation.transport.beat.subscribe((beat) => clicker.click(beat === 0));
-        let track = this.project.newTrack(TrackCategory.MIDI) as MidiTrack;
+        let track = this.project.tracks[0] as MidiTrack;
         track.instrument = drumkit;
         this.project.transportParams.tickStart = 0;
         this.project.transportParams.tickEnd = 3;

@@ -104,7 +104,6 @@ export class SequencerD3 {
     });
     this.rowBarRenderer.render(
       data.filter(d => d.column === 0).map((d, i) => {
-       this.drumKit.play(d.note);
         return new RowBarInfo(i, d.note, d.note);
       }),
       dimensions,

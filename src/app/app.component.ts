@@ -26,10 +26,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.system.errors.subscribe(error => {
-      let msg = "";
+      throw error;
+   /*   let msg = "";
       if (error.data) msg=JSON.stringify(error.data.stack);
       else msg=JSON.stringify(error);
-      this.messaging.log(msg,Severity.ERROR);
+      this.messaging.log(msg,Severity.ERROR);*/
 
     })
 

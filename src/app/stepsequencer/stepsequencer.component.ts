@@ -63,11 +63,12 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
     });
 
     this.sequencerService.loadInstrument().then((drumkit) => {
-      this.track = this.project.newTrack(TrackCategory.MIDI) as MidiTrack;
+      this.track = this.project.tracks[0] as MidiTrack;
 
       this.drumKit = drumkit;
+      this.track.instrument=this.drumKit;
       let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
-        this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue);
+        this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue,this.drumKit.getNotes());
       this.project.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.project.transportParams.quantization,
         this.project.transportParams.signature);
       this.project.transportParams.tickEnd = this.loobBarEnd * MusicMath.getBarTicks(this.project.transportParams.quantization, this.project.transportParams.signature) - 1;
@@ -124,7 +125,7 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
     this.project.transport.stop();
     this.project.transportParams.quantization = length;
     let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
-      this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue);
+      this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue,this.drumKit.getNotes());
     this.renderer.render(viewModel);
 
   }

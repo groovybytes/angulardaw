@@ -26,6 +26,7 @@ export class MainPageService{
       this.projectsApi.get(id).subscribe(project => {
         result = ProjectMapper.fromJSON(project);
         result.transport=transport;
+        result.transportParams=transport.params;
         this.tracksApi.find({projectId: id}).subscribe(tracks => {
             tracks.forEach(t => {
               let newTrack = TrackMapper.fromJSON(t);

@@ -1,6 +1,5 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {ApplicationError} from "./ApplicationError";
 import {AppConfiguration} from "../app.configuration";
 import {SystemNotification} from "./SystemNotification";
 import {Severity} from "./Severity";
@@ -13,19 +12,19 @@ export class System{
   }
 
   notifications:EventEmitter<SystemNotification>=new EventEmitter<SystemNotification>();
-  errors:EventEmitter<ApplicationError>=new EventEmitter<ApplicationError>();
+  errors:EventEmitter<any>=new EventEmitter<any>();
 
   notify(message:string,severity:Severity):System{
     this.notifications.next(new SystemNotification(message,severity));
     return this;
   }
   error(msg:any):System{
-    this.errors.emit(new ApplicationError(msg));
+    this.errors.emit(msg);
     return this;
   }
 
   httpError(msg:any,url?:string):System{
-    this.errors.emit(new ApplicationError(msg));
+    this.errors.emit(msg);
     return this;
   }
 

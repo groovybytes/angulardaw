@@ -54,7 +54,11 @@ export class StepSequencerService {
 
   }
 
-  createModel(bars: number, quantization: NoteLength, bpm: number, signature: TimeSignature, events: Array<EventDto>): Array<CellInfo> {
+  createModel(bars: number, quantization: NoteLength,
+              bpm: number,
+              signature: TimeSignature,
+              events: Array<EventDto>,
+              noteTriggers:Array<string>): Array<CellInfo> {
     let result: Array<CellInfo> = [];
     NoteInfo.notes = {};
     NoteInfo.load();
@@ -65,7 +69,7 @@ export class StepSequencerService {
     for (let i = 0; i < ticks * notes.length; i++) {
       let row = Math.floor(i / ticks);
       let note = notes[row];
-      let addNote = true;//!triggers || triggers.filter(t => t.test(note)).length > 0;
+      let addNote = noteTriggers.indexOf(note)>=0;
       if (addNote) {
         let cellInfo = new CellInfo();
         cellInfo.position = new TransportPosition();

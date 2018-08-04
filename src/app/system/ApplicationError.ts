@@ -1,3 +1,4 @@
+/*
 export class ApplicationError {
   constructor(data: any) {
     this.data = data;
@@ -6,3 +7,4 @@ export class ApplicationError {
   data: any;
   userMessage:string;
 }
+*/
