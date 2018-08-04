@@ -1,9 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {WorkstationService} from "./shared/services/workstation.service";
-import {Transport} from "./model/daw/Transport";
 import {System} from "./system/System";
 import {MessagingService} from "./system/messaging.service";
-import {Severity} from "./system/Severity";
 
 
 @Component({
@@ -13,14 +10,10 @@ import {Severity} from "./system/Severity";
 })
 export class AppComponent implements OnInit {
 
-  workstation: WorkstationService;
-  transport: Transport;
 
   constructor(private system: System,
-              private messaging: MessagingService,
-              workstation: WorkstationService) {
-    this.workstation = workstation;
-    this.transport = new Transport(() => workstation.audioContext.currentTime);
+              private messaging: MessagingService) {
+
 
   }
 

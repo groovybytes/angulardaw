@@ -42,7 +42,6 @@ export class ProjectsPageComponent implements OnInit {
     let project = new Project();
     project.userId = this.auth.getUserId();
     project.name = this.newProjectName;
-    project.newTrack(TrackCategory.MIDI);
     this.projectsApi.post(ProjectMapper.toJSON(project)).subscribe(project => {
       this.projects.push(project);
       console.log("project saved");

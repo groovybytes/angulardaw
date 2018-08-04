@@ -1,16 +1,16 @@
-import {Component, HostBinding, Inject, Input, OnInit} from '@angular/core';
-import {SamplesApi} from "../api/samples.api";
+import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {Subscription} from "rxjs/internal/Subscription";
-import {WorkstationService} from "../shared/services/workstation.service";
 import {Clicker} from "../model/daw/Clicker";
 import {Project} from "../model/daw/Project";
 import {NoteLength} from "../model/mip/NoteLength";
-import {Transport} from "../model/daw/Transport";
+import {TransportService} from "../shared/services/transport.service";
+import {ProjectsService} from "../shared/services/projects.service";
 
 @Component({
   selector: 'daw-metronome',
   templateUrl: './metronome.component.html',
-  styleUrls: ['./metronome.component.scss']
+  styleUrls: ['./metronome.component.scss'],
+  providers: [TransportService]
 })
 
 export class MetronomeComponent implements OnInit {
@@ -18,16 +18,16 @@ export class MetronomeComponent implements OnInit {
   @HostBinding('class')
   elementClass = 'plugin';
   private clicker:Clicker;
-  project:Project;
 
-  @Input() transport:Transport;
   @Input('minBpm') minBpm: number = 40;
   @Input('maxBpm') maxBpm: number = 300;
 
+  transport:TransportService;
+  private project:Project;
   private transportSubscription: Subscription;
 
-  constructor(private workstation:WorkstationService, private samplesApi:SamplesApi) {
-
+  constructor( transport:TransportService,private projectService:ProjectsService) {
+    this.transport=transport;
   }
 
   onStartBtnToggled(value: boolean): void {
@@ -54,13 +54,16 @@ export class MetronomeComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.projectService.loadGhostProject({
+      id:0,
+      name:"metronome",
+      bpm:120,
+      quantization:NoteLength.Quarter,
+      signature:"4,4"
+    }).then(result=>this.project=result);
+
     this.transport.params.quantization=NoteLength.EighthTriplet;
-    this.samplesApi.getClickSamples().then(result=>{
-      this.clicker = new Clicker(result.accentSample,result.defaultSample);
-    });
-    this.transportSubscription = this.transport.beat.subscribe(beat => {
-     // this.clicker.click(beat===0);
-    });
+    this.projectService.addClickTrack(this.project);
   }
 
 

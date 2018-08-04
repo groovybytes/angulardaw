@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Transport} from "../../model/daw/Transport";
+import {TransportService} from "../../shared/services/transport.service";
 
 @Component({
   selector: 'transport',
@@ -8,9 +8,10 @@ import {Transport} from "../../model/daw/Transport";
 })
 export class TransportComponent implements OnInit {
 
-  @Input() transport:Transport;
-
-  constructor() { }
+  transport:TransportService
+  constructor(transport:TransportService) {
+    this.transport=transport;
+  }
 
   ngOnInit() {
 

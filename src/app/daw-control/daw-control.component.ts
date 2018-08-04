@@ -8,6 +8,7 @@ import {ProjectDto} from "../shared/api/ProjectDTO";
 import {TrackDto} from "../shared/api/TrackDto";
 import {TrackMapper} from "../shared/api/mapping/TrackMapper";
 import {System} from "../system/System";
+import {ProjectsService} from "../shared/services/projects.service";
 
 @Component({
   selector: 'daw-control',
@@ -19,9 +20,7 @@ export class DawControlComponent implements OnInit {
   @Input() project: Project;
 
   constructor(
-    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
-    @Inject("TracksApi") private tracksApi: ApiEndpoint<TrackDto>,
-    private system: System
+    private projectsService:ProjectsService
   ) {
 
   }
@@ -30,12 +29,7 @@ export class DawControlComponent implements OnInit {
   }
 
   addMidiTrack(): void {
-    let track = this.project.newTrack(TrackCategory.MIDI);
-    this.tracksApi.post(TrackMapper.toJSON(this.project.id, track))
-      .subscribe(result => {
-        console.log("track saved");
-      }, error => this.system.error(error));
-
+    this.projectsService.addMidiTrack(this.project);
   }
 
 }

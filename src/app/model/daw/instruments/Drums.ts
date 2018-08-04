@@ -1,6 +1,6 @@
 import {Sample} from "../Sample";
-import {CompoundInstrument} from "../../mip/instruments/CompoundInstrument";
 import {Instrument} from "../../mip/instruments/Instrument";
+import {Instruments} from "./Instruments";
 
 
 export class Drums implements Instrument{
@@ -20,8 +20,8 @@ export class Drums implements Instrument{
     trigger.sample.trigger();
   }
 
-  getName(): string {
-    return "";
+  getId(): Instruments {
+    return Instruments.DRUMKIT1;
   }
 
   /*private chooseSample(note: NoteInfo): Sample {

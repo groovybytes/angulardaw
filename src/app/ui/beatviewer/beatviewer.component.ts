@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TimeSignature} from "../../model/mip/TimeSignature";
-import {Transport} from "../../model/daw/Transport";
+import {TransportService} from "../../shared/services/transport.service";
+
+;
 
 @Component({
   selector: 'beatviewer',
@@ -11,7 +13,7 @@ export class BeatviewerComponent implements OnInit {
 
   currentBeat: number = 0;
 
-  @Input()  transport: Transport;
+  @Input()  transport: TransportService;
   @Input() signature: TimeSignature=new TimeSignature(4,4);
 
   constructor() {

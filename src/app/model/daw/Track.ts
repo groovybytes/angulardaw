@@ -1,25 +1,25 @@
 import {Instrument} from "../mip/instruments/Instrument";
-import {TransportObservable} from "./TransportObservable";
 import {TrackCategory} from "./TrackCategory";
+import {TransportEvents} from "./TransportEvents";
+import {TransportInfo} from "./TransportInfo";
 
 export abstract class Track {
   id: any;
   index: number;
   name: string;
   instrument: Instrument;
+  effects:any;
   category:TrackCategory=TrackCategory.MIDI;
-  protected transport: TransportObservable;
 
-  constructor() {
+  constructor(protected transportEvents:TransportEvents,protected transportInfo:TransportInfo) {
 
   }
 
-  setTransport(transport: TransportObservable): void {
+ /* setTransport(transport: TransportObservable): void {
     this.transport = transport;
     this.onTransportInit();
-  }
+  }*/
 
-  protected abstract onTransportInit():void;
   abstract destroy():void;
 
 

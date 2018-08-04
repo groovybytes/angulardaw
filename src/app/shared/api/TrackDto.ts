@@ -7,4 +7,5 @@ export interface TrackDto {
   name: string;
   category:number;
   projectId:any;
+  instrumentId:string;
 }

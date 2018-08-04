@@ -3,9 +3,8 @@ import {TrackCategory} from "./TrackCategory";
 import * as _ from "lodash";
 import {EventDto} from "../../shared/api/EventDTO";
 import {Subscription} from "rxjs/internal/Subscription";
-import {ProjectDto} from "../../shared/api/ProjectDTO";
-import {TrackDto} from "../../shared/api/TrackDTO";
-import {Project} from "./Project";
+import {TransportEvents} from "./TransportEvents";
+import {TransportInfo} from "./TransportInfo";
 
 export class MidiTrack extends Track {
   queue: Array<EventDto> = [];
@@ -14,16 +13,13 @@ export class MidiTrack extends Track {
   private accuracy = 0.03;
   private subscriptions: Array<Subscription> = [];
 
-  constructor() {
-    super();
+  constructor(protected transportEvents:TransportEvents,protected transportInfo:TransportInfo) {
+    super(transportEvents, transportInfo);
     this.category = TrackCategory.MIDI;
-  }
-
-  protected onTransportInit(): void {
-    this.subscriptions.push(this.transport.time.subscribe(time => this.onTransportTime(time)));
-    this.subscriptions.push(this.transport.timeReset.subscribe(() => {
-      let startTime = this.transport.getStartTime();
-      let endTime = this.transport.getEndTime();
+    this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
+    this.subscriptions.push(this.transportEvents.timeReset.subscribe(() => {
+      let startTime = this.transportInfo.getStartTime();
+      let endTime = this.transportInfo.getEndTime();
       this.queueIndex = 0;
       this.loopQueue = this.queue.filter(d => d.time >= startTime && d.time <= endTime);
     }));

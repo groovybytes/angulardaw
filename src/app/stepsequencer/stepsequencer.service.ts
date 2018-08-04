@@ -17,7 +17,7 @@ import {MidiTrack} from "../model/daw/MidiTrack";
 @Injectable()
 export class StepSequencerService {
 
-  constructor(private drumService: DrumApi) {
+  constructor(private drumService: DrumApi)  {
 
   }
 

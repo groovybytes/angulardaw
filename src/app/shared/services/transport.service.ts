@@ -1,16 +1,13 @@
-/*
-import {MusicMath} from "../utils/MusicMath";
-import {Subject} from "rxjs/index";
-import {Observable} from "rxjs/internal/Observable";
-import {TransportPosition} from "./TransportPosition";
-import {EventEmitter} from "@angular/core";
-import {TransportParams} from "./TransportParams";
-import {TransportEvents} from "./TransportEvents";
-import {TransportInfo} from "./TransportInfo";
+import {TransportParams} from "../../model/daw/TransportParams";
+import {Observable, Subject} from "rxjs";
+import {EventEmitter, Inject, Injectable} from "@angular/core";
+import {TransportPosition} from "../../model/daw/TransportPosition";
+import {MusicMath} from "../../model/utils/MusicMath";
+import {TransportEvents} from "../../model/daw/TransportEvents";
+import {TransportInfo} from "../../model/daw/TransportInfo";
 
-declare var _;
-
-export class Transport {
+@Injectable()
+export class TransportService {
   params: TransportParams = new TransportParams();
   tickTock: Observable<number>;
   beat: Observable<number>;
@@ -34,7 +31,7 @@ export class Transport {
   //private timeSubscription: Subscription;
 
 
-  constructor(private getTime: () => number) {
+  constructor(@Inject("AudioContext") private audioContext:AudioContext) {
     this.tickTock = this.tickSubject.asObservable();
     this.beat = this.beatSubject.asObservable();
     this.time = this.timeSubject.asObservable();
@@ -75,7 +72,7 @@ export class Transport {
           let tickTime=MusicMath.getTickTime(this.params.bpm,this.params.quantization);
           this.startTime=this.params.tickStart*tickTime;
           this.endTime=this.params.tickEnd*tickTime;
-          let sysTime = this.getTime();
+          let sysTime = this.audioContext.currentTime;
           if (sysTime > intervalTime) {
             intervalTime = sysTime;
 
@@ -137,7 +134,7 @@ export class Transport {
   }
 
   pause(): void {
-    this.pauseTime = this.getTime();
+    this.pauseTime = this.audioContext.currentTime;
     this.paused = true;
   }
 
@@ -180,4 +177,4 @@ export class Transport {
       getEndTime:()=>this.getEndTime()
     }
   }
-}*/
+}

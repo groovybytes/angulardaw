@@ -1,3 +1,4 @@
+/*
 import {Instrument} from "../../mip/instruments/Instrument";
 import {Sample} from "../Sample";
 
@@ -17,3 +18,4 @@ export class SampledInstrument implements Instrument{
   }
 
 }
+*/

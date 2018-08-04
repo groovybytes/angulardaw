@@ -5,7 +5,6 @@ import {FilesApi} from "./files.api";
 import {System} from "../system/System";
 import {AppConfiguration} from "../app.configuration";
 import {Drums} from "../model/daw/instruments/Drums";
-import {SampledInstrument} from "../model/daw/instruments/SampledInstrument";
 import {InstrumentMapping} from "../model/mip/instruments/drums/spec/InstrumentMapping";
 
 @Injectable()

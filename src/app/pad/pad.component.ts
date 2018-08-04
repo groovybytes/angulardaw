@@ -1,3 +1,4 @@
+/*
 import {Component, Input, OnInit} from '@angular/core';
 import {WorkstationService} from "../shared/services/workstation.service";
 
@@ -14,8 +15,8 @@ export class PadComponent   implements OnInit {
 
 
   constructor() {
-
   }
+
 
   getRows():Array<number>{
     return new Array(this.rows);
@@ -35,3 +36,4 @@ export class PadComponent   implements OnInit {
 
 
 }
+*/

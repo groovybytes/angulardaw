@@ -1,5 +1,6 @@
 import {Sample} from "./Sample";
 import {Instrument} from "../mip/instruments/Instrument";
+import {Instruments} from "./instruments/Instruments";
 
 export class Clicker implements Instrument{
 
@@ -20,8 +21,8 @@ export class Clicker implements Instrument{
     else this.otherSample.trigger();
   }*/
 
-  getName(): string {
-    return "clicker";
+  getId(): Instruments {
+    return Instruments.METRONOME;
   }
 
   play(note: string, time: number, length: number, loudness: number, articulation?: number): void {

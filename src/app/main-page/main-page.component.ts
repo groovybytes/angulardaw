@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Transport} from "../model/daw/Transport";
 import {Project} from "../model/daw/Project";
-import {WorkstationService} from "../shared/services/workstation.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MainPageService} from "./main-page.service";
 import {System} from "../system/System";
+import {ProjectsService} from "../shared/services/projects.service";
 
 @Component({
   selector: 'main-page',
@@ -12,21 +10,13 @@ import {System} from "../system/System";
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent implements OnInit {
-
-  workstation: WorkstationService;
-  transport: Transport;
   project: Project;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service:MainPageService,
-    private system:System,
-    workstation: WorkstationService) {
-
-
-    this.workstation = workstation;
-    this.transport = new Transport(() => workstation.audioContext.currentTime);
+    private projectService:ProjectsService,
+    private system:System) {
 
   }
 
@@ -37,7 +27,7 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.service.loadProject(params.projectId,this.transport)
+      this.projectService.loadProject(params.projectId)
         .then(project=>this.project=project)
         .catch(error=>this.system.error(error));
     });
