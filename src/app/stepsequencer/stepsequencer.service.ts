@@ -11,7 +11,7 @@ import {Loudness} from "../model/mip/Loudness";
 import {SequencerEvent} from "./model/SequencerEvent";
 import {Track} from "../model/daw/Track";
 import {Drums} from "../model/daw/instruments/Drums";
-import {EventDTO} from "../shared/api/EventDTO";
+import {EventDto} from "../shared/api/EventDTO";
 import {MidiTrack} from "../model/daw/MidiTrack";
 
 @Injectable()
@@ -28,14 +28,8 @@ export class StepSequencerService {
     drumKit: Drums,
     events: Array<SequencerEvent>, play: boolean): void {
 
-    let event = {
-      id: null,
-      note: newNoteEvent.note,
-      time: newNoteEvent.time,
-      length: NoteLength.Quarter,
-      loudness: Loudness.mf,
-      articulation: null
-    };
+    let event:EventDto = {id:null,time:newNoteEvent.time,note:newNoteEvent.note,length:NoteLength.Quarter
+    ,loudness:Loudness.mf,articulation:0,trackId:track.id};
 
     track.queue.push(event);
     if (play) drumKit.play(newNoteEvent.note);
@@ -60,7 +54,7 @@ export class StepSequencerService {
 
   }
 
-  createModel(bars: number, quantization: NoteLength, bpm: number, signature: TimeSignature, events: Array<EventDTO>): Array<CellInfo> {
+  createModel(bars: number, quantization: NoteLength, bpm: number, signature: TimeSignature, events: Array<EventDto>): Array<CellInfo> {
     let result: Array<CellInfo> = [];
     NoteInfo.notes = {};
     NoteInfo.load();

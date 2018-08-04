@@ -1,12 +1,15 @@
 import {Track} from "./Track";
 import {TrackCategory} from "./TrackCategory";
 import * as _ from "lodash";
-import {EventDTO} from "../../shared/api/EventDTO";
+import {EventDto} from "../../shared/api/EventDTO";
 import {Subscription} from "rxjs/internal/Subscription";
+import {ProjectDto} from "../../shared/api/ProjectDTO";
+import {TrackDto} from "../../shared/api/TrackDTO";
+import {Project} from "./Project";
 
 export class MidiTrack extends Track {
-  queue: Array<EventDTO> = [];
-  private loopQueue: Array<EventDTO> = [];
+  queue: Array<EventDto> = [];
+  private loopQueue: Array<EventDto> = [];
   private queueIndex: number = 0;
   private accuracy = 0.03;
   private subscriptions: Array<Subscription> = [];
@@ -50,19 +53,15 @@ export class MidiTrack extends Track {
 
   addNote(note: string, time: number, length: number, loudness: number, articulation?: number): void {
     let insertIndex = _.sortedIndexBy(this.queue, {'time': time}, event => event.time);
-    this.queue.splice(insertIndex, 0, {
-      id: null,
-      note: note,
-      time: time,
-      length: length,
-      loudness: loudness,
-      articulation: articulation
-    });
+    this.queue.splice(insertIndex, 0, {id:null,time:time,note:note,length:length,
+      loudness:loudness,articulation:articulation,trackId:this.id});
   }
 
   destroy() {
     this.subscriptions.forEach(subsription => subsription.unsubscribe());
   }
+
+
 
 
 }

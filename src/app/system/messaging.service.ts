@@ -3,8 +3,6 @@ import {HttpClient} from "@angular/common/http";
 import {AppConfiguration} from "../app.configuration";
 import {ApplicationError} from "./ApplicationError";
 import {Severity} from "./Severity";
-import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
-import {Subject} from "rxjs/internal/Subject";
 
 
 @Injectable()
@@ -19,13 +17,13 @@ export class MessagingService {
   log(msg:string, severity?:Severity):void{
     let _severity = severity?severity:Severity.DEBUG;
     this.consoleLog(msg,_severity);
-    this.http.post(this.config.getUrl("log"),{msg:msg,severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
+    //this.http.post(this.config.getUrl("log"),{msg:msg,severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
   }
 
   logObject(o:any, severity?:Severity):void{
     let _severity = severity?severity:Severity.DEBUG;
     this.consoleLog(JSON.stringify(o),_severity);
-    this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(o),severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
+    //this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(o),severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
   }
 
   triggerEvent(event:ApplicationError):void{

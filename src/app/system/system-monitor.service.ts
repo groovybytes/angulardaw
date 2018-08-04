@@ -10,21 +10,21 @@ import {AppConfiguration} from "../app.configuration";
 
 
 @Injectable()
-export class SystemMonitorService implements HttpInterceptor, ErrorHandler {
+export class SystemMonitorService implements HttpInterceptor {
 
 
   constructor(private system: System,private http: HttpClient,private config: AppConfiguration,@Inject("lodash") _) {
 
     let postError=_.throttle((error)=>this.post(error),500);
     system.errors.subscribe((error)=>{
-      console.log(JSON.stringify(error));
+      ///console.log(JSON.stringify(error));
       postError(error);
       throw error.data;
     })
   }
 
   private post(error):void{
-    this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(error),severity:"error"}).subscribe(result=>{});
+    //this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(error),severity:"error"}).subscribe(result=>{});
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -38,6 +38,7 @@ export class SystemMonitorService implements HttpInterceptor, ErrorHandler {
   handleError(error: any): void {
     let sendError = error ? error.stack ? error.stack : error : "";
     this.system.errors.emit(new ApplicationError(sendError));
+    throw(error);
   }
 
 }

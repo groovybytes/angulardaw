@@ -33,6 +33,9 @@ import { SimplepianoComponent } from './ui/simplepiano/simplepiano.component';
 import {AuthService} from "./shared/services/auth.service";
 import { MainPageComponent } from './main-page/main-page.component';
 import { ProjectsPageComponent } from './projects-page/projects-page.component';
+import { TrackComponent } from './track/track.component';
+import {MainPageService} from "./main-page/main-page.service";
+import {MessagingService} from "./system/messaging.service";
 
 
 let audioContext = new AudioContext();
@@ -56,7 +59,8 @@ let audioContext = new AudioContext();
     RangesliderComponent,
     SimplepianoComponent,
     MainPageComponent,
-    ProjectsPageComponent
+    ProjectsPageComponent,
+    TrackComponent
   ],
   imports: [
     BrowserModule,
@@ -77,14 +81,16 @@ let audioContext = new AudioContext();
     AppConfiguration,
     AuthService,
     WorkstationService,
+    MainPageService,
+    MessagingService,
     { provide: "interact", useValue: window["interact"] },
     { provide: "lodash", useValue: window["_"] },
-    { provide: "AudioContext", useValue: audioContext },
-    {
+    { provide: "AudioContext", useValue: audioContext }
+   /* {
       provide: HTTP_INTERCEPTORS,
       useClass: SystemMonitorService,
       multi: true
-    }
+    }*/
    /* {provide: ErrorHandler, useClass: SystemMonitorService}*/
 
   ],
