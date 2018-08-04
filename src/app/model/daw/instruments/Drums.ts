@@ -24,6 +24,9 @@ export class Drums implements Instrument{
     return Instruments.DRUMKIT1;
   }
 
+  destroy(): void {
+  }
+
   /*private chooseSample(note: NoteInfo): Sample {
     let closestSampleByNote = this.closest(this.triggers.map(trigger => trigger.note.index), note.index);
     return this.triggers.filter(trigger => trigger.note.index === closestSampleByNote)[0].sample;

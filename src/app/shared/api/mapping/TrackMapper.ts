@@ -7,14 +7,13 @@ import {TransportEvents} from "../../../model/daw/TransportEvents";
 import {TransportInfo} from "../../../model/daw/TransportInfo";
 
 export class TrackMapper {
-  static toJSON(projectId:any,track: Track): TrackDto {
+  static toJSON(track: Track): TrackDto {
     let trackDTO={id:0,index:0,name:"",category:0,projectId:0,instrumentId:""};
     trackDTO.id = track.id;
     trackDTO.index = track.index;
     trackDTO.name = "";
     trackDTO.category = track.category;
-    trackDTO.projectId=projectId;
-    trackDTO.instrumentId=track.instrument.getId();
+    trackDTO.instrumentId=track.instrument?track.instrument.getId():null;
 
     return trackDTO;
   }

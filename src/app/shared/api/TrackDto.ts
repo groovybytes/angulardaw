@@ -6,6 +6,5 @@ export interface TrackDto {
   index: number;
   name: string;
   category:number;
-  projectId:any;
   instrumentId:string;
 }

@@ -30,5 +30,8 @@ export class Clicker implements Instrument{
     else this.otherSample.trigger();
   }
 
+  destroy(): void {
+  }
+
 
 }

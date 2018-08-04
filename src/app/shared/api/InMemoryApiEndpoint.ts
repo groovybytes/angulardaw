@@ -31,7 +31,6 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   post(o: T): Observable<T> {
     o["id"] = _.uniqueId();
     this.localStorage.add(o);
-    this.localStorage.save();
 
     return of(o);
   }

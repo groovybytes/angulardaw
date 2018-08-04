@@ -48,7 +48,8 @@ export class ProjectsService {
           tracks.forEach(t => {
             let newTrack = TrackMapper.fromJSON(t, this.transportService.getEvents(), this.transportService.getInfo());
             result.tracks.push(newTrack);
-            if (t.instrumentId) this.loadInstrument(Instruments[t.instrumentId]).catch(error => this.system.error(error));
+            if (t.instrumentId) this.setInstrument(newTrack, Instruments[t.instrumentId])
+              .catch(error => this.system.error(error));
             if (newTrack instanceof MidiTrack) {
               this.eventsApi.find({trackId: t.id}).subscribe(events => {
                 (<MidiTrack>newTrack).queue = events;
@@ -74,7 +75,33 @@ export class ProjectsService {
 
   }
 
-  loadInstrument(instrumentId: Instruments): Promise<Instrument> {
+  setInstrument(track: Track, id: Instruments): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      try{
+        if (track.instrument) track.instrument.destroy();
+        track.instrument = null;
+        this.loadInstrument(id)
+          .then(instrument => {
+            track.instrument = instrument;
+            this.saveTrack(track);
+            resolve();
+          })
+          .catch(error => reject(error));
+      }
+      catch (e) {
+        reject(e);
+      }
+
+    })
+  }
+
+  removeInstrument(track: Track): void {
+    track.instrument.destroy();
+    track.instrument = null;
+    this.saveTrack(track);
+  }
+
+  private loadInstrument(instrumentId: Instruments): Promise<Instrument> {
     if (instrumentId === Instruments.DRUMKIT1) return this.loadDrums();
     else throw new Error("not implemented");
 
@@ -84,9 +111,9 @@ export class ProjectsService {
     let track = new MidiTrack(this.transportService.getEvents(), this.transportService.getInfo());
     project.tracks.push(track);
 
-    if (!ghost) this.tracksApi.post(TrackMapper.toJSON(project.id, track))
+    if (!ghost) this.tracksApi.post(TrackMapper.toJSON(track))
       .subscribe(result => {
-        track.id=result.id;
+        track.id = result.id;
         console.log("track saved");
       }, error => this.system.error(error));
 
@@ -99,9 +126,9 @@ export class ProjectsService {
         let clickTrack = new ClickTrack(this.transportService.getEvents(), this.transportService.getInfo());
         clickTrack.instrument = new Clicker(result.accentSample, result.defaultSample);
         project.tracks.push(clickTrack);
-        if (!ghost) this.tracksApi.post(TrackMapper.toJSON(project.id, clickTrack))
+        if (!ghost) this.tracksApi.post(TrackMapper.toJSON(clickTrack))
           .subscribe(result => {
-            clickTrack.id=result.id;
+            clickTrack.id = result.id;
             console.log("track saved");
           }, error => this.system.error(error));
         resolve(clickTrack);
@@ -109,6 +136,11 @@ export class ProjectsService {
         .catch(error => reject(error));
     })
 
+  }
+
+  private saveTrack(track: Track): void {
+    this.tracksApi.put(TrackMapper.toJSON(track)).subscribe(result => {
+    }, error => this.system.error(error));
   }
 
   private loadDrums(): Promise<Drums> {

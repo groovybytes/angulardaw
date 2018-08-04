@@ -5,8 +5,17 @@
   </form>
 </nav>
 
+  <div class="track-container row no-gutters">
+    <div class="col-sm-4 col-md-2 track-controls-container">
+      <daw-track-control *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track-control>
+    </div>
+    <div class="col-sm-8 col-md-10 track-height-default">
+      <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
+    </div>
+
+  </div>
  <!-- <app-development [project]="project"></app-development>-->
-  <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
+
 
  <!-- <stepsequencer [project]="project"></stepsequencer>-->
 

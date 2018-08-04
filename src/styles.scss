@@ -3,8 +3,13 @@
 @import '~bootstrap/scss/bootstrap';
 
 
+html, body {
+  min-width:500px;
+}
+
 body{
   padding-top: 70px;
+
   overflow: auto;
 }
 

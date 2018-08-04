@@ -33,6 +33,7 @@ import {ProjectsPageComponent} from './projects-page/projects-page.component';
 import {TrackComponent} from './track/track.component';
 import {MessagingService} from "./system/messaging.service";
 import {TransportService} from "./shared/services/transport.service";
+import { TrackControlComponent } from './track-control/track-control.component';
 
 
 let audioContext = new AudioContext();
@@ -56,7 +57,8 @@ let audioContext = new AudioContext();
     SimplepianoComponent,
     MainPageComponent,
     ProjectsPageComponent,
-    TrackComponent
+    TrackComponent,
+    TrackControlComponent
   ],
   imports: [
     BrowserModule,
