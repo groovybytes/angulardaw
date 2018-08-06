@@ -4,6 +4,8 @@ import {AppRoutingModule} from "../app-routing.module";
 import {FormsModule} from "@angular/forms";
 import {SequencerComponent} from "./sequencer.component";
 import {SequencerService} from "./sequencer.service";
+import {SharedModule} from "../shared/shared.module";
+import {UiModule} from "../ui/ui.module";
 
 
 @NgModule({
@@ -14,7 +16,9 @@ import {SequencerService} from "./sequencer.service";
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    SharedModule,
+    UiModule
   ],
   providers: [
     SequencerService

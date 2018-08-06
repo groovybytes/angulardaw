@@ -4,11 +4,17 @@ import {Pattern} from "../model/daw/Pattern";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportPosition} from "../model/daw/TransportPosition";
 import {ColumnInfo} from "./model/ColumnInfo";
+import * as _ from "lodash";
+import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
+import {PatternsService} from "../shared/services/patterns.service";
+import {NoteLength} from "../model/mip/NoteLength";
+import {Loudness} from "../model/mip/Loudness";
+import {EventCell} from "./model/EventCell";
 
 @Injectable()
 export class SequencerService {
 
-  constructor() {
+  constructor(private patternsService:PatternsService) {
 
 
   }
@@ -46,8 +52,18 @@ export class SequencerService {
     return result;
   }
 
-  updateEvents(cell:NoteCell,pattern:Pattern):void{
+  onNoteCellClicked(event,cell:NoteCell,eventCells:Array<EventCell>,pattern:Pattern):void{
+    let x= event.target.offsetLeft;
+    let y= event.target.offsetTop;
+    /*    let x= event.target.getBoundingClientRect().left;
+    let y= event.target.getBoundingClientRect().top;*/
+    let note = new NoteTriggerDto(null,cell.note,cell.position.time,NoteLength.Quarter,Loudness.ff,0);
+    this.patternsService.insertNote(pattern,note);
+    eventCells.push(new EventCell(cell.position,cell.note,x,y));
 
   }
+
+
+
 
 }

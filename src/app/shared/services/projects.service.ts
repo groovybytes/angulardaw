@@ -20,6 +20,8 @@ import {NoteTriggerMapper} from "../api/mapping/NoteTriggerMapper";
 import {WstPlugin} from "../../model/daw/WstPlugin";
 import {Metronome} from "../../model/daw/plugins/Metronome";
 import {PluginsService} from "./plugins.service";
+import {Pattern} from "../../model/daw/Pattern";
+import * as _ from "lodash";
 
 @Injectable()
 export class ProjectsService {

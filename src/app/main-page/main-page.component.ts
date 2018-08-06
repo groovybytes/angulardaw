@@ -32,7 +32,7 @@ export class MainPageComponent implements OnInit {
   ngOnInit() {
 
     this.pattern=new Pattern();
-    this.pattern.length=4;
+    this.pattern.length=32;
     this.pattern.notes=["E1","D1"];
     this.pattern.transportParams=new TransportParams();
     this.pattern.transportParams.quantization=NoteLength.Eighth;
