@@ -1,3 +1,4 @@
+/*
 import {Injectable} from "@angular/core";
 import {NoteInfo} from "../model/utils/NoteInfo";
 import {CellInfo} from "./model/CellInfo";
@@ -10,9 +11,10 @@ import {TransportPosition} from "../model/daw/TransportPosition";
 import {Loudness} from "../model/mip/Loudness";
 import {SequencerEvent} from "./model/SequencerEvent";
 import {Track} from "../model/daw/Track";
-import {Drums} from "../model/daw/instruments/Drums";
-import {EventDto} from "../shared/api/EventDTO";
+import {Drums} from "../model/daw/plugins/Drums";
+import {NoteTriggerDto} from "../shared/api/EventDTO";
 import {MidiTrack} from "../model/daw/MidiTrack";
+import {NoteTrigger} from "../model/mip/NoteTrigger";
 
 @Injectable()
 export class StepSequencerService {
@@ -28,16 +30,16 @@ export class StepSequencerService {
     drumKit: Drums,
     events: Array<SequencerEvent>, play: boolean): void {
 
-    let event:EventDto = {id:null,time:newNoteEvent.time,note:newNoteEvent.note,length:NoteLength.Quarter
+    let event:NoteTriggerDto = {id:null,time:newNoteEvent.time,note:newNoteEvent.note,length:NoteLength.Quarter
     ,loudness:Loudness.mf,articulation:0,trackId:track.id};
 
     track.queue.push(event);
-    if (play) drumKit.play(newNoteEvent.note);
+    if (play) drumKit.play(new NoteTrigger(newNoteEvent.note));
     events.push(new SequencerEvent(event, newNoteEvent.row));
   }
 
   onEventClicked(event: SequencerEvent, sequencerEvents: Array<SequencerEvent>, track: Track): void {
-    /* let sequencerEventsIndex = sequencerEvents.findIndex(sequencerEvent =>
+    /!* let sequencerEventsIndex = sequencerEvents.findIndex(sequencerEvent =>
        sequencerEvent.trackEvent.time === event.trackEvent.time && sequencerEvent.trackEvent.data.name === event.trackEvent.data.name);
 
      let trackEventsIndex = track.queue.findIndex((_event) =>
@@ -46,7 +48,7 @@ export class StepSequencerService {
      if (sequencerEventsIndex >= 0) {
        track.events.splice(trackEventsIndex, 1);
        sequencerEvents.splice(sequencerEventsIndex, 1);
-     }*/
+     }*!/
   }
 
   loadInstrument(): Promise<Drums> {
@@ -57,7 +59,7 @@ export class StepSequencerService {
   createModel(bars: number, quantization: NoteLength,
               bpm: number,
               signature: TimeSignature,
-              events: Array<EventDto>,
+              events: Array<NoteTriggerDto>,
               noteTriggers:Array<string>): Array<CellInfo> {
     let result: Array<CellInfo> = [];
     NoteInfo.notes = {};
@@ -91,3 +93,4 @@ export class StepSequencerService {
     return result;
   }
 }
+*/

@@ -3,7 +3,7 @@ import {Observable, Subject} from "rxjs";
 import {EventEmitter, Inject, Injectable} from "@angular/core";
 import {TransportPosition} from "../../model/daw/TransportPosition";
 import {MusicMath} from "../../model/utils/MusicMath";
-import {TransportEvents} from "../../model/daw/TransportEvents";
+import {TransportEvents} from "../../model/daw/events/TransportEvents";
 import {TransportInfo} from "../../model/daw/TransportInfo";
 
 @Injectable()

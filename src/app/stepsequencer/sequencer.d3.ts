@@ -12,7 +12,7 @@ import {EventEmitter} from "@angular/core";
 import {SequencerDimensions} from "./model/SequencerDimensions";
 import {SequencerEvent} from "./model/SequencerEvent";
 import {Subscription} from "rxjs/internal/Subscription";
-import {Drums} from "../model/daw/instruments/Drums";
+import {Drums} from "../model/daw/plugins/Drums";
 import {TransportPosition} from "../model/daw/TransportPosition";
 
 export class SequencerD3 {

@@ -1,3 +1,4 @@
+/*
 import {Component, ElementRef, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {CellInfo} from "./model/CellInfo";
 import * as d3 from "d3";
@@ -6,7 +7,7 @@ import {SequencerBodyD3} from "./sequencer-body.d3";
 import {SequencerRowBarD3} from "./sequencer.row-bar.d3";
 import {CellEvents} from "./model/CellEvents";
 import {MusicMath} from "../model/utils/MusicMath";
-import {Clicker} from "../model/daw/Clicker";
+
 import {SamplesApi} from "../api/samples.api";
 import {Project} from "../model/daw/Project";
 import {NoteLength} from "../model/mip/NoteLength";
@@ -16,7 +17,7 @@ import {SequencerD3} from "./sequencer.d3";
 import {System} from "../system/System";
 import {SequencerEvent} from "./model/SequencerEvent";
 import {SESSION_STORAGE, StorageService} from "angular-webstorage-service";
-import {Drums} from "../model/daw/instruments/Drums";
+import {Drums} from "../model/daw/plugins/Drums";
 import {MidiTrack} from "../model/daw/MidiTrack";
 import {TransportService} from "../shared/services/transport.service";
 
@@ -133,3 +134,4 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
   }
 
 }
+*/

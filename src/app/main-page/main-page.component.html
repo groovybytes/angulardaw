@@ -5,7 +5,10 @@
   </form>
 </nav>
 
-  <div class="track-container row no-gutters">
+  <sequencer [pattern]="pattern"></sequencer>
+  <daw-grid [project]="project"></daw-grid>
+
+ <!-- <div class="track-container row no-gutters">
     <div class="col-sm-4 col-md-2 track-controls-container">
       <daw-track-control *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track-control>
     </div>
@@ -13,7 +16,7 @@
       <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
     </div>
 
-  </div>
+  </div>-->
  <!-- <app-development [project]="project"></app-development>-->
 
 

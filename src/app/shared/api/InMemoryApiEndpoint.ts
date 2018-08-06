@@ -29,7 +29,7 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   }
 
   post(o: T): Observable<T> {
-    o["id"] = _.uniqueId();
+    o["id"] = this.guid();
     this.localStorage.add(o);
 
     return of(o);
@@ -43,6 +43,15 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   delete(id: any): Observable<void> {
     this.localStorage.delete((_o) => _o["id"] === id);
     return of();
+  }
+
+  private  guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
 }

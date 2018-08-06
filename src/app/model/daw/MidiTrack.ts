@@ -1,20 +1,17 @@
+/*
 import {Track} from "./Track";
 import {TrackCategory} from "./TrackCategory";
 import * as _ from "lodash";
 import {EventDto} from "../../shared/api/EventDTO";
 import {Subscription} from "rxjs/internal/Subscription";
-import {TransportEvents} from "./TransportEvents";
+import {TransportEvents} from "./events/TransportEvents";
 import {TransportInfo} from "./TransportInfo";
+import {NoteTrigger} from "../mip/NoteTrigger";
 
 export class MidiTrack extends Track {
-  queue: Array<EventDto> = [];
-  private loopQueue: Array<EventDto> = [];
-  private queueIndex: number = 0;
-  private accuracy = 0.03;
-  private subscriptions: Array<Subscription> = [];
 
-  constructor(protected transportEvents:TransportEvents,protected transportInfo:TransportInfo) {
-    super(transportEvents, transportInfo);
+  constructor(projectId:any,protected transportEvents:TransportEvents,protected transportInfo:TransportInfo) {
+    super(projectId,transportEvents, transportInfo);
     this.category = TrackCategory.MIDI;
     this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
     this.subscriptions.push(this.transportEvents.timeReset.subscribe(() => {
@@ -32,12 +29,12 @@ export class MidiTrack extends Track {
       for (let i = this.queueIndex; i < this.queue.length; i++) {
         if (this.loopQueue[i].time === 0 || this.matches(transportTime, (this.loopQueue[i].time) / 1000, this.accuracy)) {
           matches++;
-          this.instrument.play(
+          this.instrument.play(new NoteTrigger(
             this.loopQueue[i].note,
             this.loopQueue[i].time,
             this.loopQueue[i].length,
             this.loopQueue[i].loudness,
-            this.loopQueue[i].articulation);
+            this.loopQueue[i].articulation));
         }
       }
       this.queueIndex += matches;
@@ -62,3 +59,4 @@ export class MidiTrack extends Track {
 
 
 }
+*/

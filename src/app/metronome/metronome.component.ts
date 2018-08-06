@@ -1,10 +1,12 @@
 import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {Subscription} from "rxjs/internal/Subscription";
-import {Clicker} from "../model/daw/Clicker";
 import {Project} from "../model/daw/Project";
 import {NoteLength} from "../model/mip/NoteLength";
 import {TransportService} from "../shared/services/transport.service";
 import {ProjectsService} from "../shared/services/projects.service";
+import {PluginsService} from "../shared/services/plugins.service";
+import {PluginId} from "../model/daw/plugins/PluginId";
+import {System} from "../system/System";
 
 @Component({
   selector: 'daw-metronome',
@@ -17,7 +19,6 @@ export class MetronomeComponent implements OnInit {
 
   @HostBinding('class')
   elementClass = 'plugin';
-  private clicker:Clicker;
 
   @Input('minBpm') minBpm: number = 40;
   @Input('maxBpm') maxBpm: number = 300;
@@ -26,7 +27,11 @@ export class MetronomeComponent implements OnInit {
   private project:Project;
   private transportSubscription: Subscription;
 
-  constructor( transport:TransportService,private projectService:ProjectsService) {
+  constructor(
+    transport:TransportService,
+    private pluginsService:PluginsService,
+    private system:System,
+    private projectService:ProjectsService) {
     this.transport=transport;
   }
 
@@ -61,9 +66,11 @@ export class MetronomeComponent implements OnInit {
       quantization:NoteLength.Quarter,
       signature:"4,4"
     }).then(result=>this.project=result);
-
     this.transport.params.quantization=NoteLength.EighthTriplet;
-    this.projectService.addClickTrack(this.project);
+    let track = this.projectService.addTrack(this.project,0);
+    this.projectService.addPlugin(track,PluginId.METRONOME,0)
+      .catch(error=>this.system.error(error))
+
   }
 
 

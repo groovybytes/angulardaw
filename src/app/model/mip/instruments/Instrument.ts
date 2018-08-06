@@ -1,8 +1,11 @@
+/*
 import {Instruments} from "../../daw/instruments/Instruments";
+import {NoteTrigger} from "../NoteTrigger";
 
 export interface Instrument {
 
   getId(): Instruments;
-  play(note: string, time?: number, length?: number, loudness?: number, articulation?: number): void;
+  play(event:NoteTrigger): void;
   destroy():void;
 }
+*/

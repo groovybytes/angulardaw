@@ -16,13 +16,18 @@ body{
 .main-container {
   height: $main-height;
 }
-
+.no-wrap{
+  white-space: nowrap;
+  display:inline-block !important;
+}
 :host /deep/ {
   .footer {
     border-top: 1px solid black;
     padding: 0;
     height: 300px;
   }
+
+
 
 }
 

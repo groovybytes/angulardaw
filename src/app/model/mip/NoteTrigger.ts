@@ -1,10 +1,8 @@
+export interface NoteTrigger{
 
-export interface EventDto {
-  id: any;
-  time: number;
   note: string;
+  time: number;
   length: number;
   loudness: number;
   articulation: number;
-  trackId:any;
 }

@@ -50,7 +50,8 @@
               "node_modules/toastr/build/toastr.min.js",
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/packery/dist/packery.pkgd.js"
             ]
           },
           "configurations": {

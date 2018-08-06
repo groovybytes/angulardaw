@@ -1,10 +1,11 @@
-import {EventDto} from "../../shared/api/EventDTO";
+import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
+
 
 export class SequencerEvent{
-  trackEvent:EventDto;
+  trackEvent:NoteTriggerDto;
   row:number;
 
-  constructor(trackEvent:EventDto, row: number) {
+  constructor(trackEvent:NoteTriggerDto, row: number) {
     this.trackEvent = trackEvent;
     this.row = row;
   }

@@ -1,37 +1,29 @@
 import {TrackDto} from "../TrackDTO";
 import {Track} from "../../../model/daw/Track";
-import {MidiTrack} from "../../../model/daw/MidiTrack";
 import {TrackCategory} from "../../../model/daw/TrackCategory";
-import {ClickTrack} from "../../../model/daw/ClickTrack";
-import {TransportEvents} from "../../../model/daw/TransportEvents";
+import {TransportEvents} from "../../../model/daw/events/TransportEvents";
 import {TransportInfo} from "../../../model/daw/TransportInfo";
 
 export class TrackMapper {
+
+
   static toJSON(track: Track): TrackDto {
-    let trackDTO={id:0,index:0,name:"",category:0,projectId:0,instrumentId:""};
+    let trackDTO={id:track.id,index:0,name:"",category:0,projectId:track.projectId,pluginId:""};
     trackDTO.id = track.id;
     trackDTO.index = track.index;
     trackDTO.name = "";
     trackDTO.category = track.category;
-    trackDTO.instrumentId=track.instrument?track.instrument.getId():null;
+    trackDTO.pluginId=track.plugins[0]?track.plugins[0].getId():null;
 
     return trackDTO;
   }
 
   static fromJSON(trackDto: TrackDto, transportEvents:TransportEvents, transportInfo:TransportInfo): Track {
-    let newTrack:Track;
-
-    if (trackDto.category===TrackCategory.MIDI) {
-      newTrack=new MidiTrack(transportEvents,transportInfo);
-    }
-    else if (trackDto.category===TrackCategory.CLICK){
-      newTrack=new ClickTrack(transportEvents,transportInfo);
-    }
-    else throw new Error("invalid track category");
-
+    let newTrack:Track=new Track(trackDto.projectId,transportEvents,transportInfo);
     newTrack.id = trackDto.id;
     newTrack.name = trackDto.name;
     newTrack.index = trackDto.index;
+    newTrack.projectId=trackDto.projectId;
 
     return newTrack;
 

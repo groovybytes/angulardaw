@@ -7,7 +7,7 @@
 //     ...
 //     packages: {
 //         "typeorm": {
-//             main: "typeorm-model-shim.js",
+//             main: "typeorm-patternCells-shim.js",
 //             defaultExtension: "js"
 //         }
 //     }
@@ -16,7 +16,7 @@
 // for webpack this is resolved this way:
 // resolve: { // see: http://webpack.github.io/docs/configuration.html#resolve
 //     alias: {
-//         typeorm: path.resolve(__dirname, "../node_modules/typeorm/typeorm-model-shim")
+//         typeorm: path.resolve(__dirname, "../node_modules/typeorm/typeorm-patternCells-shim")
 //     }
 // }
 

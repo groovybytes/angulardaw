@@ -37,7 +37,7 @@ export class TrackComponent implements OnInit {
     this.sequencerService.loadInstrument().then((drumkit) => {
 
       this.track.instrument = this.drumKit;
-      let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
+      let viewModel = this.sequencerService.createPatternCells(this.bars, this.project.transportParams.quantization,
         this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
       this.project.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.project.transportParams.quantization,
         this.project.transportParams.signature);
@@ -94,7 +94,7 @@ export class TrackComponent implements OnInit {
   quantize(length: NoteLength) {
     this.project.transport.stop();
     this.project.transportParams.quantization = length;
-    let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
+    let viewModel = this.sequencerService.createPatternCells(this.bars, this.project.transportParams.quantization,
       this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
     this.renderer.render(viewModel);
 

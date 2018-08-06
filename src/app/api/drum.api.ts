@@ -4,7 +4,7 @@ import {Sample} from "../model/daw/Sample";
 import {FilesApi} from "./files.api";
 import {System} from "../system/System";
 import {AppConfiguration} from "../app.configuration";
-import {Drums} from "../model/daw/instruments/Drums";
+import {Drums} from "../model/daw/plugins/Drums";
 import {InstrumentMapping} from "../model/mip/instruments/drums/spec/InstrumentMapping";
 
 @Injectable()
@@ -18,7 +18,7 @@ export class DrumApi {
 
   }
 
-  getDrums(id: string): Promise<Drums> {
+/*  getDrums(id: string): Promise<Drums> {
     return new Promise((resolve, reject) => {
       let drums = new Drums();
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
@@ -41,6 +41,6 @@ export class DrumApi {
     })
 
 
-  }
+  }*/
 
 }

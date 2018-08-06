@@ -12,9 +12,7 @@ import {MetronomeComponent} from "./metronome/metronome.component";
 import {BpmCircleComponent} from "./d3/bpm-circle/bpm-circle.component";
 import {ClockComponent} from "./d3/clock/clock.component";
 import {SliderComponent} from "./d3/slider/slider.component";
-import {DevelopmentComponent} from "./development/development.component";
 import {PressButtonComponent} from "./ui/press-button/press-button.component";
-import {StepsequencerComponent} from "./stepsequencer/stepsequencer.component";
 import {DrumApi} from "./api/drum.api";
 import {FilesApi} from "./api/files.api";
 import {SamplesApi} from "./api/samples.api";
@@ -34,8 +32,9 @@ import {TrackComponent} from './track/track.component';
 import {MessagingService} from "./system/messaging.service";
 import {TransportService} from "./shared/services/transport.service";
 import { TrackControlComponent } from './track-control/track-control.component';
-
-
+import { PatternComponent } from './ui/pattern/pattern.component';
+import {GridModule} from "./grid/grid.module";
+import {SequencerModule} from "./sequencer/sequencer.module";
 let audioContext = new AudioContext();
 @NgModule({
   declarations: [
@@ -46,9 +45,7 @@ let audioContext = new AudioContext();
     BpmCircleComponent,
     ClockComponent,
     SliderComponent,
-    DevelopmentComponent,
     PressButtonComponent,
-    StepsequencerComponent,
     TransportComponent,
     ToolbarComponent,
     DawControlComponent,
@@ -58,7 +55,8 @@ let audioContext = new AudioContext();
     MainPageComponent,
     ProjectsPageComponent,
     TrackComponent,
-    TrackControlComponent
+    TrackControlComponent,
+    PatternComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +64,9 @@ let audioContext = new AudioContext();
     FormsModule,
     HttpClientModule,
     StorageServiceModule,
-    SharedModule
+    SharedModule,
+    GridModule,
+    SequencerModule
     //ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],

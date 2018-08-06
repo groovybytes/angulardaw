@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 export class AppConfiguration{
 
   getAssetsUrl(appendix:string):string{
-    return "http://localhost:5000/"+appendix;
+    return "http://localhost:4200/assets/"+appendix;
   }
   getUrl(appendix:string):string{
     return "http://localhost:5000/api/"+appendix;
