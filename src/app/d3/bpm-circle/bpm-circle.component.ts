@@ -1,3 +1,4 @@
+/*
 import {Component, ElementRef, OnInit} from '@angular/core';
 import * as d3 from "d3";
 
@@ -10,21 +11,21 @@ export class BpmCircleComponent {
 
   constructor(private element:ElementRef) { }
 
-/*  ngOnInit() {
+/!*  ngOnInit() {
 
-    let width = 800;
-    let height=800;
+    let tickWidth = 800;
+    let tickHeight=800;
     let svg = d3.select(this.element.nativeElement).append("svg")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("tickWidth", tickWidth)
+      .attr("tickHeight", tickHeight)
 
 
       svg.append("rect")
-        .attr("width","100%")
-        .attr("height","100%")
+        .attr("tickWidth","100%")
+        .attr("tickHeight","100%")
         .attr("class","background");
 
-    let container = svg.append("g").attr("transform","translate("+(width/2)+" "+(height/2)+") scale(2,2)")
+    let container = svg.append("g").attr("transform","translate("+(tickWidth/2)+" "+(tickHeight/2)+") scale(2,2)")
 
     let arcGenerator = d3.arc()
       .innerRadius(120)
@@ -86,6 +87,7 @@ export class BpmCircleComponent {
       //console.log(d3.event.dy);
     }));
 
-  }*/
+  }*!/
 
 }
+*/

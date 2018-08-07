@@ -1,16 +1,20 @@
-import {TransportPosition} from "../../model/daw/TransportPosition";
+import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
 
 export class EventCell {
-
-  position: TransportPosition;
-  note: string;
-  x:number;
-  y:number;
-
-  constructor(position: TransportPosition, note: string, x: number, y: number) {
-    this.position = position;
+  constructor(note: NoteTriggerDto, x: number, y: number, column: number, row: number) {
     this.note = note;
     this.x = x;
     this.y = y;
+    this.column = column;
+    this.row = row;
   }
+
+
+
+  note: NoteTriggerDto;
+  x: number;
+  y: number;
+  column: number;
+  row:number;
+
 }

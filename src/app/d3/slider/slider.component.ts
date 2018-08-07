@@ -1,3 +1,4 @@
+/*
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as d3 from "d3";
 
@@ -34,27 +35,27 @@ export class SliderComponent  {
   constructor(private element:ElementRef){
   }
 
-  /*ngOnInit() {
+  /!*ngOnInit() {
     let self = this;
     var margin = {left: 20, right: 20},
-      width = 1200,
-      height = 50,
+      tickWidth = 1200,
+      tickHeight = 50,
       range = [this.min, this.max],
       step = this.steps; // change the step and if null, it'll switch back to a normal slider
 
     // append svg
     var svg = d3.select(this.element.nativeElement.querySelector("svg"))
-      .attr('width', width)
-      .attr('height', height);
+      .attr('tickWidth', tickWidth)
+      .attr('tickHeight', tickHeight);
 
     var slider =svg.append('g')
       .classed('slider', true)
-      .attr('transform', 'translate(' + margin.left + ', ' + (height / 2) + ')');
+      .attr('transform', 'translate(' + margin.left + ', ' + (tickHeight / 2) + ')');
 
     // using clamp here to avoid slider exceeding the range limits
     var xScale = d3.scaleLinear()
       .domain(range)
-      .range([0, width - margin.left - margin.right])
+      .range([0, tickWidth - margin.left - margin.right])
       .clamp(true);
 
     xScale(xScale.invert(80));
@@ -126,10 +127,11 @@ export class SliderComponent  {
       handle.attr('cx', cx);
       self.positionChanged.next(xVal);
     }
-  }*/
+  }*!/
 
   update():void{
     if (this.slider) this.slider.classed("active",this.active);
   }
 
 }
+*/

@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {ElementRef, Injectable} from "@angular/core";
 import {NoteCell} from "./model/NoteCell";
 import {Pattern} from "../model/daw/Pattern";
 import {MusicMath} from "../model/utils/MusicMath";
@@ -14,21 +14,21 @@ import {EventCell} from "./model/EventCell";
 @Injectable()
 export class SequencerService {
 
-  constructor(private patternsService:PatternsService) {
+  constructor(private patternsService: PatternsService) {
 
 
   }
 
   createNoteCells(pattern: Pattern): Array<Array<NoteCell>> {
     let model = [];
-    let nColumns = MusicMath.getBeatTicks(pattern.transportParams.quantization)*pattern.length;
+    let nColumns = MusicMath.getBeatTicks(pattern.transportParams.quantization) * pattern.length;
     for (let i = 0; i < pattern.notes.length; i++) {
       let row = [];
       model.push(row);
       for (let j = 0; j < nColumns; j++) {
         let pos = new TransportPosition();
-        pos.tick=j;
-        row.push(new NoteCell(pos,pattern.notes[i],i));
+        pos.tick = j;
+        row.push(new NoteCell(pos, pattern.notes[i], i,j));
       }
     }
 
@@ -38,12 +38,12 @@ export class SequencerService {
   createColumnInfos(pattern: Pattern): Array<ColumnInfo> {
     let result = [];
     let beatTicks = MusicMath.getBeatTicks(pattern.transportParams.quantization);
-    let nColumns = beatTicks*pattern.length;
+    let nColumns = beatTicks * pattern.length;
     for (let i = 0; i < nColumns; i++) {
-      let info = new ColumnInfo(i,null);
-      if (i % beatTicks===0) {
-        info.position=new TransportPosition();
-        info.position.beat=MusicMath.getBeatNumber(i,pattern.transportParams.quantization,pattern.transportParams.signature);
+      let info = new ColumnInfo(i, null);
+      if (i % beatTicks === 0) {
+        info.position = new TransportPosition();
+        info.position.beat = MusicMath.getBeatNumber(i, pattern.transportParams.quantization, pattern.transportParams.signature);
       }
 
       result.push(info);
@@ -52,18 +52,30 @@ export class SequencerService {
     return result;
   }
 
-  onNoteCellClicked(event,cell:NoteCell,eventCells:Array<EventCell>,pattern:Pattern):void{
-    let x= event.target.offsetLeft;
-    let y= event.target.offsetTop;
-    /*    let x= event.target.getBoundingClientRect().left;
-    let y= event.target.getBoundingClientRect().top;*/
-    let note = new NoteTriggerDto(null,cell.note,cell.position.time,NoteLength.Quarter,Loudness.ff,0);
-    this.patternsService.insertNote(pattern,note);
-    eventCells.push(new EventCell(cell.position,cell.note,x,y));
+  onNoteCellClicked(event, cell: NoteCell, eventCells: Array<EventCell>, pattern: Pattern, element: ElementRef): void {
+
+    let containerX = element.nativeElement.getBoundingClientRect().left;
+    let containerY = element.nativeElement.getBoundingClientRect().top;
+    let x = event.target.getBoundingClientRect().left - containerX;
+    let y = event.target.getBoundingClientRect().top - containerY;
+
+    let note = new NoteTriggerDto(null, cell.note, cell.position.time, NoteLength.Quarter, Loudness.ff, 0);
+    this.patternsService.insertNote(pattern, note);
+    eventCells.push(new EventCell(note, x, y,cell.column,cell.row));
+    //cell.active=true;
 
   }
 
+  onEventCellClicked(cell: EventCell, eventCells: Array<EventCell>, pattern: Pattern): void {
+    this.patternsService.removeNote(pattern,cell.note);
+    let index = _.indexOf(eventCells,cell);
+    eventCells.splice(index,1);
 
+  }
 
+  onEventCellPositionChanged(cell:EventCell,noteCells:Array<Array<NoteCell>>,pattern:Pattern):void{
+    cell.note.time=cell.column*MusicMath.getTickTime(pattern.transportParams.bpm,pattern.transportParams.quantization);
+    cell.note.note=noteCells[cell.row][0].note;
+  }
 
 }

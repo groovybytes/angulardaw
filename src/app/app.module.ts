@@ -12,7 +12,6 @@ import {DrumApi} from "./api/drum.api";
 import {FilesApi} from "./api/files.api";
 import {SamplesApi} from "./api/samples.api";
 import {InstrumentInfoApi} from "./api/instrumentinfo.api";
-import {ToolbarComponent} from './ui/toolbar/toolbar.component';
 import {DawControlComponent} from './daw-control/daw-control.component';
 import {StorageServiceModule} from 'angular-webstorage-service';
 import {SharedModule} from "./shared/shared.module";

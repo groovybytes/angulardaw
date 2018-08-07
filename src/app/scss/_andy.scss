@@ -97,8 +97,8 @@ $base-font-size: 16px !default;
 
 /// Background size helper
 /// @access public
-/// @param {Length} $width - Background width
-/// @param {Length} $height [$width] - Background height
+/// @param {Length} $tickWidth - Background tickWidth
+/// @param {Length} $tickHeight [$tickWidth] - Background tickHeight
 /// @example scss - Usage
 ///   .foo {
 ///     @include background-size(100%);
@@ -207,9 +207,9 @@ $base-font-size: 16px !default;
 }
 
 
-/// Vertically centers block elements with known height.
+/// Vertically centers block elements with known tickHeight.
 /// @access public
-/// @param {Length} $height - Element's height
+/// @param {Length} $tickHeight - Element's tickHeight
 /// @example scss - Usage
 ///   .foo {
 ///     @include center-h(42px);
@@ -218,7 +218,7 @@ $base-font-size: 16px !default;
 ///   .foo {
 ///     position: absolute;
 ///     top: 50%;
-///     height: 42px;
+///     tickHeight: 42px;
 ///     margin-top: -21px;
 ///   }
 @mixin center-h($height) {
@@ -228,7 +228,7 @@ $base-font-size: 16px !default;
     margin-top: -($height / 2);
 }
 
-/// Vertically centers block elements with unknown height.
+/// Vertically centers block elements with unknown tickHeight.
 /// @access public
 /// @example scss - Usage
 ///   .foo {
@@ -348,8 +348,8 @@ $base-font-size: 16px !default;
 /// Retina image media query helper; given an image path with a 2x-sized version of an image, will load that image as a background-image on high-resolution devices.
 /// @access public
 /// @param {String} $image - Image path
-/// @param {Length} $width - Image width
-/// @param {Height} $height - Image height
+/// @param {Length} $tickWidth - Image tickWidth
+/// @param {Height} $tickHeight - Image tickHeight
 /// @example scss - Usage
 ///   .foo {
 ///     @include image-2x('../images/image.png', 100%, auto);
@@ -365,17 +365,17 @@ $base-font-size: 16px !default;
 }
 
 
-/// Generates line-height values in both pixels and rems.
+/// Generates line-tickHeight values in both pixels and rems.
 /// @access public
-/// @param {Number} $height-value [12] - Height value
+/// @param {Number} $tickHeight-value [12] - Height value
 /// @example scss - Usage
 ///   .foo {
-///     @include line-height(16);
+///     @include line-tickHeight(16);
 ///   }
 /// @example css - Result
 ///   .foo {
-///     line-height: 16px;
-///     line-height: 1rem;
+///     line-tickHeight: 16px;
+///     line-tickHeight: 1rem;
 ///   }
 @mixin line-height($height-value: 12) {
     line-height: $height-value * 1px; //fallback for old browsers
@@ -383,14 +383,14 @@ $base-font-size: 16px !default;
 }
 
 
-/// Media query helper for declaring media queries by width, and, optionally, ratio.
+/// Media query helper for declaring media queries by tickWidth, and, optionally, ratio.
 /// @access public
-/// @param {Length} $width - Max-width
+/// @param {Length} $tickWidth - Max-tickWidth
 /// @param {Number | False} $ratio [false] - Min device pixel ratio
 /// @example scss - Usage
 ///   .foo {
 ///     @include mquery(350px, 2) {
-///       width: 100%;
+///       tickWidth: 100%;
 ///     }
 ///   }
 @mixin mquery($width, $ratio: false) {
@@ -415,7 +415,7 @@ $base-font-size: 16px !default;
 /// @example scss - Usage
 ///   .foo {
 ///     @include mquery-r(2) {
-///       width: 100%;
+///       tickWidth: 100%;
 ///     }
 ///   }
 @mixin mquery-r($ratio) {
@@ -507,16 +507,16 @@ $base-font-size: 16px !default;
 
 /// Sizing helper
 /// @access public
-/// @param {Length} $width - Width
-/// @param {Length} $height [$width] - Height
+/// @param {Length} $tickWidth - Width
+/// @param {Length} $tickHeight [$tickWidth] - Height
 /// @example scss - Usage
 ///   .foo {
 ///     @include size(350px);
 ///   }
 /// @example css - Result
 ///   .foo {
-///     width: 350px;
-///     height: 350px;
+///     tickWidth: 350px;
+///     tickHeight: 350px;
 ///   }
 @mixin size($width, $height: $width) {
     width: $width;

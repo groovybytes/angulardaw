@@ -42,8 +42,8 @@ export abstract class Axis {
       .attr("data-id", (d: MatrixEntry) => d.getId())
       .attr("data-column", (d, i) => this.getColumn(d, i))
       .attr("data-row", (d, i) => this.getRow(d, i))
-      .attr("height", this.getFillRectHeight() + "px")
-      .attr("width", this.getFillRectWidth() + "px")
+      .attr("tickHeight", this.getFillRectHeight() + "px")
+      .attr("tickWidth", this.getFillRectWidth() + "px")
       .attr("transform", (d, i) => this.getTickTransform(d));
 
     this.ticksMerge.selectAll(".main-text")
@@ -73,12 +73,12 @@ export abstract class Axis {
     this.ticksMerge.selectAll(".node")
       .attr("y", this.getNodeY() + "px")
       .attr("x", this.getNodeX() + "px")
-      .attr("width", this.getNodeWidth() + "px")
-      .attr("height", this.getNodeHeight() + "px");
+      .attr("tickWidth", this.getNodeWidth() + "px")
+      .attr("tickHeight", this.getNodeHeight() + "px");
 
     this.ticksMerge.selectAll(".fill-rect")
-      .attr("height", this.getFillRectHeight() + "px")
-      .attr("width", this.getFillRectWidth() + "px");
+      .attr("tickHeight", this.getFillRectHeight() + "px")
+      .attr("tickWidth", this.getFillRectWidth() + "px");
 
     join.exit().remove();
 
@@ -89,10 +89,10 @@ export abstract class Axis {
       .attr("class", (d: MatrixEntry) => "tick " + Utils.stringifyStrings(d.getCssClasses()))
   }
 
-  //returns the width of a tick
+  //returns the tickWidth of a tick
   abstract getWidth(): number;
 
-  //returns the height of a tick
+  //returns the tickHeight of a tick
   abstract getHeight(): number;
 
   abstract getTextX(): number;
