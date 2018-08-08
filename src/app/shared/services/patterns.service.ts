@@ -1,22 +1,29 @@
-import {Injectable} from "@angular/core";
-import {Drums} from "../../model/daw/plugins/Drums";
-import {FilesApi} from "../../api/files.api";
-import {AppConfiguration} from "../../app.configuration";
-import {SamplesApi} from "../../api/samples.api";
-import {System} from "../../system/System";
-import {PluginId} from "../../model/daw/plugins/PluginId";
-import {WstPlugin} from "../../model/daw/WstPlugin";
-import {Metronome} from "../../model/daw/plugins/Metronome";
+import {Inject, Injectable} from "@angular/core";
 import {Pattern} from "../../model/daw/Pattern";
 import * as _ from "lodash";
 import {NoteTriggerDto} from "../api/NoteTriggerDto";
+import {Project} from "../../model/daw/Project";
+import {ApiEndpoint} from "../api/ApiEndpoint";
 
 @Injectable()
 export class PatternsService {
 
-  constructor() {
+  constructor(@Inject("PatternApi") private patternApi: ApiEndpoint<Pattern>) {
 
   }
+
+ /* create(project:Project):Promise<Pattern>{
+    return new Promise((resolve,reject)=>{
+      let pattern = new Pattern();
+      this.patternApi.post(pattern).subscribe(pattern=>{
+        project.patterns.push(pattern);
+        resolve(pattern);
+      },error=>reject(error));
+    })
+
+
+
+  }*/
 
   insertNote(pattern:Pattern,note: NoteTriggerDto): void {
     let index = _.sortedIndexBy(pattern.events, {'time': note.time}, d => d.time);

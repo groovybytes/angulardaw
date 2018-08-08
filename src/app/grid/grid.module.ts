@@ -1,9 +1,9 @@
 import {NgModule} from "@angular/core";
 import {GridComponent} from "./grid.component";
-import {GridService} from "./grid.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppRoutingModule} from "../app-routing.module";
 import {FormsModule} from "@angular/forms";
+import {GridComponentService} from "./grid.component.service";
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ],
   providers: [
-    GridService
+    GridComponentService
 
   ],
   exports:[GridComponent]

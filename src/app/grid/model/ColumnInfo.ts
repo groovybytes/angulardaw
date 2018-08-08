@@ -1,3 +1,4 @@
+/*
 
 import {Track} from "../../model/daw/Track";
 import {WstPlugin} from "../../model/daw/WstPlugin";
@@ -14,3 +15,4 @@ export class ColumnInfo{
   instrument:WstPlugin;
 
 }
+*/

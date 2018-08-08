@@ -7,21 +7,19 @@ import {WstPlugin} from "./WstPlugin";
 import {Subscription} from "rxjs";
 import {any} from "codelyzer/util/function";
 import {TransportPosition} from "./TransportPosition";
+import {Pattern} from "./Pattern";
+import {TrackDto} from "../../shared/api/TrackDto";
+import * as _ from "lodash";
 
 export class Track {
-  projectId: string;
-  id: any;
-  index: number;
-  name: string;
-  plugins: Array<WstPlugin> = [];
-  effects: any;
-  category: TrackCategory = TrackCategory.MIDI;
+  model:TrackDto;
   private streamer: PerformanceStreamer;
   private subscriptions: Array<Subscription> = [];
+  private plugins:Array<WstPlugin>=[];
 
-  constructor(projectId: any, protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
-    this.projectId = projectId;
-    this.streamer = new PerformanceStreamer(transportEvents, this.transportInfo);
+  constructor(model:TrackDto,protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
+    this.model=model;
+    this.streamer = new PerformanceStreamer(model.events,transportEvents, this.transportInfo);
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.position,event.event)));
   }
 
@@ -29,8 +27,10 @@ export class Track {
     this.plugins.forEach(plugin => plugin.feed(event,position));
   }
 
+
   addEvent(event: PerformanceEvent<any>): void {
-    this.streamer.addEvent(event);
+    let insertIndex = _.sortedIndexBy(this.model.events, {'time': event.time}, event => event.time);
+    this.model.events.splice(insertIndex, 0, event);
   }
 
   removeEvent(event: PerformanceEvent<any>): void {

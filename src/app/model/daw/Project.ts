@@ -1,22 +1,21 @@
 import {Track} from './Track';
-import {TransportParams} from "./TransportParams";
+import {ProjectDto} from "../../shared/api/ProjectDto";
 
 export class Project {
-  transportParams: TransportParams = new TransportParams();
-  id: any;
-  userId: any;
-  name: string;
+  model:ProjectDto;
   readonly tracks: Array<Track> = [];
 
+  constructor(model:ProjectDto) {
+    this.model=model;
+    model.tracks.forEach(trackDto=>{
+      this.tracks.push(new Track(trackDto,null,null));
 
-  constructor() {
-
+    })
   }
 
   destroy(): void {
     this.tracks.forEach(track => track.destroy());
   }
-
 
 
 }

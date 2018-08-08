@@ -39,7 +39,7 @@ export class SequencerD3 {
   }
 
   render(data: Array<CellInfo>): void {
-    let tickTime = MusicMath.getTickTime(this.project.transportParams.bpm, this.project.transportParams.quantization);
+    let tickTime = MusicMath.getTickTime(null, null);
     /*let columns = data.filter(d => d.row === 0).length;
     let cellWidth = 50 * 4 * this.project.quantization;
     let cellHeight = 50;
@@ -57,7 +57,7 @@ export class SequencerD3 {
     dimensions.top = 100;
     dimensions.left = 100;
     dimensions.cellHeight = 50;
-    dimensions.cellWidth = 50 * 4 * this.project.transportParams.quantization;
+    dimensions.cellWidth = 50 * 4 * 1;//this.project.transportParams.quantization;
     dimensions.cellPadding = 0;
     dimensions.headerBarHeight = 50;
     dimensions.rowBarWidth = 100;
@@ -89,7 +89,7 @@ export class SequencerD3 {
       let row = Math.floor(y / dimensions.cellHeight);
 
       let time = x / width * fullTime;
-      let column = MusicMath.getTickForTime(time, this.project.transportParams.bpm, this.project.transportParams.quantization);
+      let column = MusicMath.getTickForTime(time, null,null);
       let cell = data.filter(d => d.row === row && d.column === column)[0];
       let quantizedTime = column * tickTime;
       this.newNote.emit({

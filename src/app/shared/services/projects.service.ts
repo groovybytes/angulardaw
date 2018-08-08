@@ -1,84 +1,79 @@
+import {ProjectDto} from "../api/ProjectDto";
+import {GridDto} from "../api/GridDto";
+import {GridCellDto} from "../api/GridCellDto";
+import {GridColumnDto} from "../api/GridColumnDto";
+import {Inject, Injectable} from "@angular/core";
+import {ApiEndpoint} from "../api/ApiEndpoint";
+import {Observable} from "rxjs";
+
+@Injectable()
+export class ProjectsService {
+
+  constructor(@Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>){
+
+  }
+  createProject(name: string): ProjectDto {
+    let project = new ProjectDto();
+    project.name = name;
+    let grid = project.grid = new GridDto();
+    grid.nColumns = 10;
+    grid.nRows = 10;
+    grid.columns = this.createColumnInfos(grid.nColumns);
+    grid.cells = this.createPatternCells(grid.nRows, grid.nColumns);
+    return project;
+  }
+
+
+  private createPatternCells(rows: number, columns: number): Array<GridCellDto> {
+    let model = [];
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        model.push(new GridCellDto(null, j, i, null));
+      }
+    }
+
+    return model;
+  }
+
+  private createColumnInfos(columns: number): Array<GridColumnDto> {
+    let result = [];
+    for (let i = 0; i < columns; i++) {
+
+      result.push(new GridColumnDto(null, i));
+    }
+
+    return result;
+  }
+}
+
+
+/*
 import {Inject, Injectable} from "@angular/core";
 import {Project} from "../../model/daw/Project";
 import {ProjectMapper} from "../api/mapping/ProjectMapper";
 import {TrackMapper} from "../api/mapping/TrackMapper";
 import {ApiEndpoint} from "../api/ApiEndpoint";
 import {ProjectDto} from "../api/ProjectDto";
-import {TrackDto} from "../api/TrackDto";
-import {Drums} from "../../model/daw/plugins/Drums";
-import {InstrumentMapping} from "../../model/mip/instruments/drums/spec/InstrumentMapping";
-import {Sample} from "../../model/daw/Sample";
-import {FilesApi} from "../../api/files.api";
-import {AppConfiguration} from "../../app.configuration";
-import {SamplesApi} from "../../api/samples.api";
 import {Track} from "../../model/daw/Track";
 import {TransportService} from "./transport.service";
 import {System} from "../../system/System";
 import {PluginId} from "../../model/daw/plugins/PluginId";
-import {NoteTriggerDto} from "../api/NoteTriggerDto";
 import {NoteTriggerMapper} from "../api/mapping/NoteTriggerMapper";
 import {WstPlugin} from "../../model/daw/WstPlugin";
-import {Metronome} from "../../model/daw/plugins/Metronome";
-import {PluginsService} from "./plugins.service";
-import {Pattern} from "../../model/daw/Pattern";
-import * as _ from "lodash";
+import {GridMapperService} from "../api/mapping/GridMapper.service";
+import {Observable} from "rxjs/index";
 
 @Injectable()
 export class ProjectsService {
 
   constructor(
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
-    @Inject("TracksApi") private tracksApi: ApiEndpoint<TrackDto>,
-    @Inject("EventsApi") private eventsApi: ApiEndpoint<NoteTriggerDto>,
-    private pluginsService:PluginsService,
     private system: System,
     private transportService: TransportService
   ) {
 
   }
 
-  loadProject(id: any): Promise<Project> {
-    let result: Project;
-    return new Promise<Project>((resolve, reject) => {
-      try {
-        this.projectsApi.get(id).subscribe(project => {
-          result = ProjectMapper.fromJSON(project);
-          result.transportParams = this.transportService.params;
-
-          this.tracksApi.find({projectId: id}).subscribe(tracks => {
-            let promises = [];
-            tracks.forEach(t => {
-              let newTrack = TrackMapper.fromJSON(t, this.transportService.getEvents(), this.transportService.getInfo());
-              result.tracks.push(newTrack);
-              if (t.pluginId)
-                promises.push(this.addPlugin(newTrack, PluginId[t.pluginId.toUpperCase()],0));
-              let promise = new Promise((resolve, reject) => {
-                this.eventsApi.find({trackId: t.id}).subscribe(events => {
-                  resolve(events);
-                }, error => reject(error));
-              });
-              promises.push(promise);
-              promise.then((result: Array<NoteTriggerDto>) => {
-                result.forEach(trigger=>newTrack.addEvent(NoteTriggerMapper.fromJSON(trigger)));
-              })
-
-            });
-
-            Promise.all(promises)
-              .then(() => resolve(result))
-              .catch(error => this.system.error(error));
-
-          }, error => reject(error));
-
-        }, error => reject(error))
-      }
-      catch (e) {
-        reject(e);
-      }
-
-    })
-
-  }
 
   loadGhostProject(project: ProjectDto): Promise<Project> {
     let result: Project;
@@ -89,12 +84,12 @@ export class ProjectsService {
 
   }
 
-  addPlugin(track: Track, id: PluginId,position:number): Promise<WstPlugin> {
+  addPlugin(track: Track, id: PluginId, position: number): Promise<WstPlugin> {
 
     return new Promise<WstPlugin>((resolve, reject) => {
       try {
         if (track.plugins[0]) track.plugins[0].destroy();
-        track.plugins.length=0;
+        track.plugins.length = 0;
         this.pluginsService.loadPlugin(id)
           .then(plugin => {
             track.plugins.push(plugin);
@@ -110,7 +105,7 @@ export class ProjectsService {
     })
   }
 
-  removePlugin(track: Track,position:number): void {
+  removePlugin(track: Track, position: number): void {
     track.plugins[0].destroy();
     track.plugins = null;
     this.updateTrack(track);
@@ -137,3 +132,4 @@ export class ProjectsService {
   }
 
 }
+*/

@@ -1,11 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {Project} from "../model/daw/Project";
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {System} from "../system/System";
-import {ProjectsService} from "../shared/services/projects.service";
 import {Pattern} from "../model/daw/Pattern";
-import {TransportParams} from "../model/daw/TransportParams";
-import {NoteLength} from "../model/mip/NoteLength";
+import {ProjectDto} from "../shared/api/ProjectDto";
+import {ApiEndpoint} from "../shared/api/ApiEndpoint";
 
 @Component({
   selector: 'main-page',
@@ -13,35 +11,43 @@ import {NoteLength} from "../model/mip/NoteLength";
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent implements OnInit {
-  project: Project;
+  project: ProjectDto;
 
-  pattern:Pattern;
+  pattern: Pattern;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private projectService:ProjectsService,
-    private system:System) {
+    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
+    private system: System) {
 
   }
 
   close(): void {
-    this.project.destroy();
     this.router.navigate(['/']);
   }
 
   ngOnInit() {
-
-    this.pattern=new Pattern();
-    this.pattern.length=32;
-    this.pattern.notes=["E1","D1"];
-    this.pattern.transportParams=new TransportParams();
-    this.pattern.transportParams.quantization=NoteLength.Eighth;
-    this.pattern.transportParams.loop=true;
     this.route.params.subscribe(params => {
-      this.projectService.loadProject(params.projectId)
-        .then(project=>this.project=project)
-        .catch(error=>this.system.error(error));
+      this.projectsApi.get(params.projectId).subscribe(project => {
+        this.project = project;
+      }, error => this.system.error(error));
     });
+  }
+
+  save(): void {
+    this.projectsApi.put(this.project)
+      .subscribe(() => {
+
+        console.log("project saved")
+      }, error => {
+
+        this.system.error(error)
+      });
+  }
+
+  editPattern(pattern: Pattern): void {
+    this.pattern = pattern;
   }
 }
 

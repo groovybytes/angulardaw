@@ -1,3 +1,4 @@
+/*
 import {Pattern} from "../../model/daw/Pattern";
 
 export class PatternCell{
@@ -10,3 +11,4 @@ export class PatternCell{
   row:number;
   pattern:Pattern;
 }
+*/

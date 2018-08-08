@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 export class NoteInfo {
   frequency: number;
   id: string;
@@ -10,7 +12,9 @@ export class NoteInfo {
   public static notes: any;
   public static notesByMidi: any;
 
-
+  public static getAllIds():Array<string>{
+    return _.keys(NoteInfo.notes);
+  }
   public static load(): void {
     let i = 0;
     NoteInfo.notes = {};

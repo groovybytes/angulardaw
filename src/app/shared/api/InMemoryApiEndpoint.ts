@@ -36,6 +36,7 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   }
 
   put(o: T): Observable<void> {
+    if (!o["id"]) console.warn("object has no id set");
     this.localStorage.update(o, (_o) => _o["id"] === o["id"]);
     return of();
   }

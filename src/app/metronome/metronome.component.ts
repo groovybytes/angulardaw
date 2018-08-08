@@ -3,7 +3,6 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {Project} from "../model/daw/Project";
 import {NoteLength} from "../model/mip/NoteLength";
 import {TransportService} from "../shared/services/transport.service";
-import {ProjectsService} from "../shared/services/projects.service";
 import {PluginsService} from "../shared/services/plugins.service";
 import {PluginId} from "../model/daw/plugins/PluginId";
 import {System} from "../system/System";
@@ -30,8 +29,7 @@ export class MetronomeComponent implements OnInit {
   constructor(
     transport:TransportService,
     private pluginsService:PluginsService,
-    private system:System,
-    private projectService:ProjectsService) {
+    private system:System) {
     this.transport=transport;
   }
 
@@ -59,7 +57,7 @@ export class MetronomeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.projectService.loadGhostProject({
+    /*this.projectService.loadGhostProject({
       id:0,
       name:"metronome",
       bpm:120,
@@ -69,7 +67,7 @@ export class MetronomeComponent implements OnInit {
     this.transport.params.quantization=NoteLength.EighthTriplet;
     let track = this.projectService.addTrack(this.project,0);
     this.projectService.addPlugin(track,PluginId.METRONOME,0)
-      .catch(error=>this.system.error(error))
+      .catch(error=>this.system.error(error))*/
 
   }
 

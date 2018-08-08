@@ -1,52 +1,38 @@
 import {Inject, Injectable} from "@angular/core";
-import {PatternCell} from "./model/pattern.cell";
 import {Project} from "../model/daw/Project";
-import {ColumnInfo} from "./model/ColumnInfo";
-import {ProjectsService} from "../shared/services/projects.service";
 import {System} from "../system/System";
 import {ApiEndpoint} from "../shared/api/ApiEndpoint";
 import {TrackDto} from "../shared/api/TrackDto";
-import {PluginId} from "../model/daw/plugins/PluginId";
 import {PluginsService} from "../shared/services/plugins.service";
+import {PatternsService} from "../shared/services/patterns.service";
+import {GridDto} from "../shared/api/GridDto";
 
 @Injectable()
-export class GridService {
+export class GridComponentService {
 
   constructor(
-    private projectsService: ProjectsService,
     private pluginsService:PluginsService,
+    private patternService: PatternsService,
     @Inject("TracksApi") private tracks: ApiEndpoint<TrackDto>,
+    @Inject("GridApi") private grid: ApiEndpoint<GridDto>,
     private system: System) {
 
 
   }
 
-  createPatternCells(project: Project, rows: number, columns: number): Array<Array<PatternCell>> {
-    let model = [];
-    for (let i = 0; i < rows; i++) {
-      let row = [];
-      model.push(row);
-      for (let j = 0; j < columns; j++) {
-        row.push(new PatternCell(j, i, null));
-      }
-    }
+  /*onCellClicked(project:Project,cell: PatternCell,emitter): void{
+   /!* if (!cell.pattern) this.patternService.create(project)
+      .then(pattern => {
+        cell.pattern = pattern;
+        emitter.emit(cell.pattern);
 
-    return model;
-  }
-
-  createColumnInfos(project: Project, columns: number): Array<ColumnInfo> {
-    let result = [];
-    for (let i = 0; i < columns; i++) {
-      let track = project.tracks.find(t => t.index === i);
-      let instrument = track ? track.plugins[0] : null;
-      let info = new ColumnInfo(i, track, instrument);
-      result.push(info);
-    }
-
-    return result;
-  }
-
-  selectInstrument(instr: string, column: ColumnInfo,project:Project): Promise<void> {
+      })
+      .catch(error => {
+        this.system.error(error)
+      });
+    else emitter.emit(cell.pattern);*!/
+  }*/
+/*  selectInstrument(instr: string, column: ColumnInfo,project:Project): Promise<void> {
     if (!column.track) {
       column.track = this.projectsService.addTrack(project,column.column);
     }
@@ -72,5 +58,5 @@ export class GridService {
     })
 
 
-  }
+  }*/
 }

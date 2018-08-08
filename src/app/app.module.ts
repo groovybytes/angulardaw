@@ -25,6 +25,7 @@ import {TrackControlComponent} from './track-control/track-control.component';
 import {GridModule} from "./grid/grid.module";
 import {SequencerModule} from "./sequencer/sequencer.module";
 import {UiModule} from "./ui/ui.module";
+import { ProjectWatchComponent } from './project-watch/project-watch.component';
 
 let audioContext = new AudioContext();
 @NgModule({
@@ -36,7 +37,8 @@ let audioContext = new AudioContext();
     MainPageComponent,
     ProjectsPageComponent,
     TrackComponent,
-    TrackControlComponent
+    TrackControlComponent,
+    ProjectWatchComponent
   ],
   imports: [
     BrowserModule,

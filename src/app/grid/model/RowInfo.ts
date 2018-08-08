@@ -1,3 +1,4 @@
+/*
 
 
 export class RowInfo{
@@ -6,3 +7,4 @@ export class RowInfo{
   }
   row:number;
 }
+*/

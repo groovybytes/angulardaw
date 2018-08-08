@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {Project} from "../model/daw/Project";
-import {ProjectsService} from "../shared/services/projects.service";
+import {TrackDto} from "../shared/api/TrackDto";
 
 @Component({
   selector: 'daw-control',
@@ -13,7 +13,6 @@ export class DawControlComponent implements OnInit {
   @Input() project: Project;
 
   constructor(
-    private projectsService:ProjectsService
   ) {
 
   }
@@ -22,7 +21,8 @@ export class DawControlComponent implements OnInit {
   }
 
   addMidiTrack(): void {
-    this.projectsService.addTrack(this.project,this.project.tracks.length-1);
+    this.project.model.tracks.push(new TrackDto())
+    //this.projectsService.addTrack(this.project,this.project.tracks.length-1);
   }
 
 }

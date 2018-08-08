@@ -10,6 +10,8 @@ import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model/mip/NoteLength";
 import {Loudness} from "../model/mip/Loudness";
 import {EventCell} from "./model/EventCell";
+import {TransportParams} from "../model/daw/TransportParams";
+import {NoteInfo} from "../model/utils/NoteInfo";
 
 @Injectable()
 export class SequencerService {
@@ -19,31 +21,37 @@ export class SequencerService {
 
   }
 
-  createNoteCells(pattern: Pattern): Array<Array<NoteCell>> {
+  createNoteCells(transportParams:TransportParams,pattern: Pattern): Array<Array<NoteCell>> {
     let model = [];
-    let nColumns = MusicMath.getBeatTicks(pattern.transportParams.quantization) * pattern.length;
-    for (let i = 0; i < pattern.notes.length; i++) {
+    let nColumns = MusicMath.getBeatTicks(transportParams.quantization) * pattern.length;
+    let notes;
+    if (pattern.notes.length>0) notes = pattern.notes;
+    else {
+      NoteInfo.load();
+      notes = NoteInfo.getAllIds();
+    }
+    for (let i = 0; i < notes.length; i++) {
       let row = [];
       model.push(row);
       for (let j = 0; j < nColumns; j++) {
         let pos = new TransportPosition();
         pos.tick = j;
-        row.push(new NoteCell(pos, pattern.notes[i], i,j));
+        row.push(new NoteCell(pos, notes[i], i,j));
       }
     }
 
     return model;
   }
 
-  createColumnInfos(pattern: Pattern): Array<ColumnInfo> {
+  createColumnInfos(transportParams:TransportParams,pattern: Pattern): Array<ColumnInfo> {
     let result = [];
-    let beatTicks = MusicMath.getBeatTicks(pattern.transportParams.quantization);
+    let beatTicks = MusicMath.getBeatTicks(transportParams.quantization);
     let nColumns = beatTicks * pattern.length;
     for (let i = 0; i < nColumns; i++) {
       let info = new ColumnInfo(i, null);
       if (i % beatTicks === 0) {
         info.position = new TransportPosition();
-        info.position.beat = MusicMath.getBeatNumber(i, pattern.transportParams.quantization, pattern.transportParams.signature);
+        info.position.beat = MusicMath.getBeatNumber(i, transportParams.quantization, transportParams.signature);
       }
 
       result.push(info);
@@ -73,8 +81,8 @@ export class SequencerService {
 
   }
 
-  onEventCellPositionChanged(cell:EventCell,noteCells:Array<Array<NoteCell>>,pattern:Pattern):void{
-    cell.note.time=cell.column*MusicMath.getTickTime(pattern.transportParams.bpm,pattern.transportParams.quantization);
+  onEventCellPositionChanged(cell:EventCell,noteCells:Array<Array<NoteCell>>,pattern:Pattern,transportParams:TransportParams):void{
+    cell.note.time=cell.column*MusicMath.getTickTime(transportParams.bpm,transportParams.quantization);
     cell.note.note=noteCells[cell.row][0].note;
   }
 

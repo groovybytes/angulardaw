@@ -3,10 +3,9 @@ import {Project} from "../model/daw/Project";
 import {Router} from "@angular/router";
 import {System} from "../system/System";
 import {AuthService} from "../shared/services/auth.service";
-import {ProjectDto} from "../shared/api/ProjectDTO";
-import {TrackCategory} from "../model/daw/TrackCategory";
+import {ProjectDto} from "../shared/api/ProjectDto";
 import {ApiEndpoint} from "../shared/api/ApiEndpoint";
-import {ProjectMapper} from "../shared/api/mapping/ProjectMapper";
+import {ProjectsService} from "../shared/services/projects.service";
 
 @Component({
   selector: 'projects-page',
@@ -23,6 +22,7 @@ export class ProjectsPageComponent implements OnInit {
     private route: Router,
     private system: System,
     private auth: AuthService,
+    private projectService:ProjectsService,
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>) {
 
   }
@@ -33,16 +33,14 @@ export class ProjectsPageComponent implements OnInit {
     }, error => console.log(error));
   }
 
-  open(project: Project): void {
+  open(project: ProjectDto): void {
     // this.workstation.openProject(project.id);
     this.route.navigate(['/main/' + project.id]);
   }
 
   onSubmit(): void {
-    let project = new Project();
-    project.userId = this.auth.getUserId();
-    project.name = this.newProjectName;
-    this.projectsApi.post(ProjectMapper.toJSON(project)).subscribe(project => {
+    let project = this.projectService.createProject(this.newProjectName);
+    this.projectsApi.post(project).subscribe(project => {
       this.projects.push(project);
       console.log("project saved");
     }, error => this.system.error(JSON.stringify(error)));
