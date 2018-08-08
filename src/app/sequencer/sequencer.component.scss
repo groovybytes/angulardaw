@@ -1,0 +1,61 @@
+@import "../../variables";
+
+
+:host {
+  position: absolute;
+  z-index: 100;
+
+}
+
+
+.card-body {
+  padding: 0;
+  overflow: auto;
+}
+
+.table {
+  table-layout: fixed;
+
+
+  /* tickWidth:800px;*/
+}
+
+.header-row {
+  background-color: $color2;
+}
+
+th, td {
+
+  border-color:black;
+
+  padding:0;
+
+}
+
+.sequencer-container{
+ /* position: relative;*/
+}
+.event-div{
+
+  background-color: red;
+  position: absolute;
+}
+
+.btn-note {
+  height: 49px;
+}
+
+.row-header-cell {
+}
+
+.note-cell {
+  /*tickWidth:100px;*/
+  /*tickHeight:$cell-tickHeight;*/
+  div {
+
+  }
+  /*&:hover {
+    background-color: $color8;
+  }*/
+
+}

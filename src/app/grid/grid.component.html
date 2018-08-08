@@ -1,0 +1,43 @@
+<div class="table-responsive" *ngIf="project && project.grid">
+  <table class="table table-dark table-hover  ">
+    <thead>
+    <tr>
+      <td class="header-cell"></td>
+      <td *ngFor="let col of project.grid.columns" class="header-cell">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           <!-- <span *ngIf="col.instrument"></span>
+            <span *ngIf="!col.instrument">Instrument</span>-->
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" [routerLink]="" (click)="selectInstrument('')">None</a>
+            <a *ngFor="let instr of instruments"
+               [ngClass]="{'dropdown-item':true,'active':col.instrument?col.instrument.getId()===instr:false}"
+               [routerLink]=""
+               (click)="selectInstrument(instr,col)" >{{instr}}</a>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of getRows();let i  = index">
+      <td class="header-cell">{{i}}</td>
+      <td *ngFor="let column of getColumns();let j=index">
+        <button type="button" class="btn  btn-block"
+                [ngClass]="{'btn-tertiary':!getCell(i,j).patternId,'btn-primary':getCell(i,j).patternId}"
+                (click)="onCellClicked(getCell(i,j))">&nbsp;{{getCell(i,j).patternId}}</button></td>
+
+    </tr>
+    </tbody>
+    <!--<tfoot>
+    <tr>
+      <td class="header-cell"></td>
+      <td *ngFor="let col of columns" class="header-cell">
+        <span *ngIf="col.track && col.track.instrument">{{col.track.instrument.getId()}}</span>
+      </td>
+    </tr>
+    </tfoot>-->
+  </table>
+</div>
+
