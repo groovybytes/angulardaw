@@ -2,11 +2,15 @@
 
 
 :host {
-  position: absolute;
-  z-index: 100;
+  /*position: absolute;*/
+  width:100%;
 
 }
+.card{
 
+  height: $main-height*1/3;
+  overflow: auto;
+}
 
 .card-body {
   padding: 0;

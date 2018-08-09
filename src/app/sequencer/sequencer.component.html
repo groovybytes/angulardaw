@@ -13,7 +13,7 @@
                  [tickHeight]="cellDimensions[cellDimensionIndex].height">
 
     </interactive>-->
-    <table class="table table-light table-striped table-bordered">
+    <table class="table table-light table-striped table-bordered" *ngIf="pattern">
       <thead>
       <tr class="header-row">
         <th [width]="cellDimensions[cellDimensionIndex].width" [height]="cellDimensions[cellDimensionIndex].height">

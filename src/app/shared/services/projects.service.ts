@@ -17,7 +17,7 @@ export class ProjectsService {
     project.name = name;
     let grid = project.grid = new GridDto();
     grid.nColumns = 10;
-    grid.nRows = 10;
+    grid.nRows = 30;
     grid.columns = this.createColumnInfos(grid.nColumns);
     grid.cells = this.createPatternCells(grid.nRows, grid.nColumns);
     return project;

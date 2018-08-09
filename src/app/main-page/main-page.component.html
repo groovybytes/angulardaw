@@ -1,32 +1,25 @@
 <div>
-<nav class="navbar navbar-light bg-light fixed-top">
-  <form class="form-inline">
-    <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
-    <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
+  <nav class="navbar navbar-light bg-light fixed-top">
+    <form class="form-inline">
+      <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
+      <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
 
-  </form>
-</nav>
+    </form>
+  </nav>
 
+  <div class="row">
+    <div class="col-xs-12">
+      <daw-grid [cellWidth]="100" [cellHeight]="50" [project]="project" (editPattern)="editPattern($event)"></daw-grid>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <sequencer [pattern]="pattern"></sequencer>
+    </div>
+  </div>
   <project-watch [project]="project"></project-watch>
-  <!--<sequencer *ngIf=
-  "pattern" [pattern]="pattern" [transportParams]="project.transportParams"></sequencer>-->
-  <daw-grid [project]="project" (editPattern)="editPattern($event)"></daw-grid>
 
- <!-- <div class="track-container row no-gutters">
-    <div class="col-sm-4 col-md-2 track-controls-container">
-      <daw-track-control *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track-control>
-    </div>
-    <div class="col-sm-8 col-md-10 track-tickHeight-default">
-      <daw-track *ngFor="let track of project.tracks" [project]="project" [track]="track"></daw-track>
-    </div>
-
-  </div>-->
- <!-- <app-development [project]="project"></app-development>-->
-
-
- <!-- <stepsequencer [project]="project"></stepsequencer>-->
-
-<nav class="navbar navbar-dark bg-light footer fixed-bottom">
-  <daw-control [project]="project"></daw-control>
-</nav>
+  <nav class="navbar navbar-dark bg-light footer fixed-bottom">
+    <daw-control [project]="project"></daw-control>
+  </nav>
 </div>

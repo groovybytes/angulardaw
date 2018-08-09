@@ -46,8 +46,8 @@ export class MainPageComponent implements OnInit {
       });
   }
 
-  editPattern(pattern: Pattern): void {
-    this.pattern = pattern;
+  editPattern(patternId: string): void {
+    this.pattern = this.project.patterns.find(p=>p.id===patternId);
   }
 }
 

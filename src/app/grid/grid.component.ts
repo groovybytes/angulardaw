@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, HostBinding, Input, OnInit, Output} from '@angular/core';
 import {System} from "../system/System";
 import {PluginId} from "../model/daw/plugins/PluginId";
 import {Pattern} from "../model/daw/Pattern";
@@ -13,9 +13,11 @@ import {GridCellDto} from "../shared/api/GridCellDto";
 })
 export class GridComponent implements OnInit {
   @Input() project: ProjectDto;
-  @Output() editPattern: EventEmitter<Pattern> = new EventEmitter();
+  @Output() editPattern: EventEmitter<string> = new EventEmitter();
   instruments: Array<string> = Object.keys(PluginId);
 
+  @Input() cellWidth:number;
+  @Input() cellHeight:number;
   constructor(private gridComponentService: GridComponentService,
               private system: System) {
   }
@@ -38,6 +40,7 @@ export class GridComponent implements OnInit {
       this.project.patterns.push(pattern);
       setTimeout(()=>{
         cell.patternId=pattern.id;
+        this.editPattern.emit(cell.patternId);
       })
     }
 

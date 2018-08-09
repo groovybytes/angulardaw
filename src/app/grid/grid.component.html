@@ -1,9 +1,9 @@
-<div class="table-responsive" *ngIf="project && project.grid">
-  <table class="table table-dark table-hover  ">
+<div class="table-container" >
+  <table *ngIf="project && project.grid" class="  ">
     <thead>
     <tr>
-      <td class="header-cell"></td>
-      <td *ngFor="let col of project.grid.columns" class="header-cell">
+      <td class="header-cell" [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}"></td>
+      <td *ngFor="let col of project.grid.columns" class="header-cell" [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
            <!-- <span *ngIf="col.instrument"></span>
@@ -22,8 +22,8 @@
     </thead>
     <tbody>
     <tr *ngFor="let row of getRows();let i  = index">
-      <td class="header-cell">{{i}}</td>
-      <td *ngFor="let column of getColumns();let j=index">
+      <td class="header-cell" [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">{{i}}</td>
+      <td *ngFor="let column of getColumns();let j=index" [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">
         <button type="button" class="btn  btn-block"
                 [ngClass]="{'btn-tertiary':!getCell(i,j).patternId,'btn-primary':getCell(i,j).patternId}"
                 (click)="onCellClicked(getCell(i,j))">&nbsp;{{getCell(i,j).patternId}}</button></td>
@@ -38,6 +38,6 @@
       </td>
     </tr>
     </tfoot>-->
-  </table>
+  </table> <!--table table-dark table-hover-->
 </div>
 
