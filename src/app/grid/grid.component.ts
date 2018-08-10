@@ -13,11 +13,11 @@ import {GridCellDto} from "../shared/api/GridCellDto";
 })
 export class GridComponent implements OnInit {
   @Input() project: ProjectDto;
-  @Output() editPattern: EventEmitter<string> = new EventEmitter();
   instruments: Array<string> = Object.keys(PluginId);
 
-  @Input() cellWidth:number;
-  @Input() cellHeight:number;
+  @Input() cellWidth: number;
+  @Input() cellHeight: number;
+
   constructor(private gridComponentService: GridComponentService,
               private system: System) {
   }
@@ -31,21 +31,18 @@ export class GridComponent implements OnInit {
   }
 
   onCellClicked(cell: GridCellDto): void {
-
-    if (cell.patternId){
-      cell.patternId=null;
-    }
-    else{
-      let pattern = new Pattern();
-      this.project.patterns.push(pattern);
-      setTimeout(()=>{
-        cell.patternId=pattern.id;
-        this.editPattern.emit(cell.patternId);
-      })
-    }
+    this.gridComponentService.onCellClicked(cell, this.project);
 
   }
 
+  onCellDblClicked(cell: GridCellDto): void {
+    this.gridComponentService.onCellDblClicked(cell, this.project);
+
+  }
+
+  getPattern(id):Pattern{
+    return this.project.patterns.find(p=>p.id===id);
+  }
   getCell(row: number, column: number): GridCellDto {
     let index = row * this.project.grid.nColumns + column;
     return this.project.grid.cells[index];

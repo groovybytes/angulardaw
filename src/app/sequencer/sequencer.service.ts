@@ -60,17 +60,18 @@ export class SequencerService {
     return result;
   }
 
-  onNoteCellClicked(event, cell: NoteCell, eventCells: Array<EventCell>, pattern: Pattern, element: ElementRef): void {
+  onNoteCellClicked(event,notes:Array<string>, row:number,column:number, pattern: Pattern,transportParams:TransportParams, element: ElementRef): void {
 
+    let tickTime = MusicMath.getTickTime(transportParams.bpm,transportParams.quantization);
     let containerX = element.nativeElement.getBoundingClientRect().left;
     let containerY = element.nativeElement.getBoundingClientRect().top;
     let x = event.target.getBoundingClientRect().left - containerX;
     let y = event.target.getBoundingClientRect().top - containerY;
 
-    let note = new NoteTriggerDto(null, cell.note, cell.position.time, NoteLength.Quarter, Loudness.ff, 0);
+    let note = new NoteTriggerDto(null, notes[row], column*tickTime, NoteLength.Quarter, Loudness.ff, 0);
+
     this.patternsService.insertNote(pattern, note);
-    eventCells.push(new EventCell(note, x, y,cell.column,cell.row));
-    //cell.active=true;
+
 
   }
 

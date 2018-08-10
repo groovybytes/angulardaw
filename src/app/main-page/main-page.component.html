@@ -9,12 +9,12 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <daw-grid [cellWidth]="100" [cellHeight]="50" [project]="project" (editPattern)="editPattern($event)"></daw-grid>
+      <daw-grid [cellWidth]="100" [cellHeight]="50" [project]="project"></daw-grid>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <sequencer [pattern]="pattern"></sequencer>
+      <sequencer [project]="project" [cellWidth]="100" [cellHeight]="50"></sequencer>
     </div>
   </div>
   <project-watch [project]="project"></project-watch>

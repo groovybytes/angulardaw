@@ -5,6 +5,9 @@ import {SequencerService} from "./sequencer.service";
 import {EventCell} from "./model/EventCell";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportService} from "../shared/services/transport.service";
+import {NoteInfo} from "../model/utils/NoteInfo";
+import {GridCellDto} from "../shared/api/GridCellDto";
+import {ProjectDto} from "../shared/api/ProjectDto";
 
 @Component({
   selector: 'sequencer',
@@ -13,37 +16,49 @@ import {TransportService} from "../shared/services/transport.service";
 })
 export class SequencerComponent implements OnInit {
 
-  @Input() pattern: Pattern;
+  @Input() project: ProjectDto;
 
- /* noteCells: Array<Array<NoteCell>>;
-  columns: Array<ColumnInfo>;
-  eventCells: Array<EventCell> = [];*/
-  cellDimensionIndex: number = 0;
-  cellDimensions = [
-    {width: 100, height: 50},
-    {width: 200, height: 100}
-  ];
+  @Input() cellWidth: number = 20;
+  @Input() cellHeight: number = 20;
 
-  constructor(private element: ElementRef, private sequencerService: SequencerService,private transportService:TransportService) {
+  /* noteCells: Array<Array<NoteCell>>;
+   columns: Array<ColumnInfo>;
+   eventCells: Array<EventCell> = [];*/
+
+  private allNotes: Array<string>;
+
+  constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
+    NoteInfo.load();
+    this.allNotes = NoteInfo.getAllIds();
+  }
+
+  getTime(column:number):number{
+    return MusicMath.getTickTime(this.transportService.params.bpm,this.transportService.params.quantization)*column;
+  }
+
+  getPattern(): Pattern {
+    return this.project.patterns.find(p=>p.isBeingEdited);
+  }
+
+  getNotes():Array<string>{
+    return this.getPattern().notes.length === 0 ? this.allNotes : this.getPattern().notes;
   }
 
   ngOnInit() {
+
     /*this.noteCells = this.sequencerService.createNoteCells(this.transportParams,this.pattern);
     this.columns = this.sequencerService.createColumnInfos(this.transportParams,this.pattern);*/
   }
 
-  getRows(): Array<any> {
-    return Array(this.pattern.notes.length).fill(0);
-  }
 
   getColumns(): Array<any> {
     let columns = MusicMath.getBeatTicks(this.transportService.params.quantization);
-    return Array(this.pattern.length*columns).fill(0);
+    return Array(this.getPattern().length * columns).fill(0);
   }
 
-  onNoteCellClicked(event: any, cell: NoteCell): void {
-
-    //this.sequencerService.onNoteCellClicked(event, cell, this.eventCells, this.pattern, this.element);
+  onNoteCellClicked(event: any, column:number,row:number): void {
+    console.log(column);
+    this.sequencerService.onNoteCellClicked(event,this.getNotes(),row,column,this.getPattern(),this.transportService.params,this.element);
 
   }
 
@@ -53,7 +68,7 @@ export class SequencerComponent implements OnInit {
   }
 
   onEventCellPositionChanged(cell: EventCell): void {
-   // this.sequencerService.onEventCellPositionChanged(cell, this.noteCells, this.pattern,this.transportParams);
+    // this.sequencerService.onEventCellPositionChanged(cell, this.noteCells, this.pattern,this.transportParams);
 
   }
 

@@ -4,6 +4,7 @@ import {System} from "../system/System";
 import {Pattern} from "../model/daw/Pattern";
 import {ProjectDto} from "../shared/api/ProjectDto";
 import {ApiEndpoint} from "../shared/api/ApiEndpoint";
+import {GridCellDto} from "../shared/api/GridCellDto";
 
 @Component({
   selector: 'main-page',
@@ -12,8 +13,18 @@ import {ApiEndpoint} from "../shared/api/ApiEndpoint";
 })
 export class MainPageComponent implements OnInit {
   project: ProjectDto;
+  gridCellDimensionIndex: number = 0;
+  gridCellDimensions = [
+    {width: 100, height: 50},
+    {width: 200, height: 100}
+  ];
+  sequencerCellDimensionIndex: number = 0;
+  sequencerGridCellDimensions = [
+    {width: 100, height: 50},
+    {width: 200, height: 100}
+  ];
 
-  pattern: Pattern;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -46,8 +57,8 @@ export class MainPageComponent implements OnInit {
       });
   }
 
-  editPattern(patternId: string): void {
-    this.pattern = this.project.patterns.find(p=>p.id===patternId);
+  focusedCellChanged(cell: GridCellDto): void {
+
   }
 }
 

@@ -1,9 +1,9 @@
 @import "../../variables";
-
+@import "../table";
 
 :host {
   /*position: absolute;*/
-  width:100%;
+
 
 }
 .card{
@@ -17,24 +17,6 @@
   overflow: auto;
 }
 
-.table {
-  table-layout: fixed;
-
-
-  /* tickWidth:800px;*/
-}
-
-.header-row {
-  background-color: $color2;
-}
-
-th, td {
-
-  border-color:black;
-
-  padding:0;
-
-}
 
 .sequencer-container{
  /* position: relative;*/
@@ -47,9 +29,6 @@ th, td {
 
 .btn-note {
   height: 49px;
-}
-
-.row-header-cell {
 }
 
 .note-cell {

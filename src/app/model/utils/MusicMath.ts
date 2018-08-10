@@ -11,6 +11,7 @@ export class MusicMath {
       return 240/bpm*1000*quantization; //240/bpm*1000==wholenotetime
     }*/
 
+
   public static getBeatTicks(quantization:NoteLength):number{
     return Math.pow(quantization*4,-1);
   }
@@ -27,6 +28,11 @@ export class MusicMath {
   public static getTickForTime(time:number,bpm:number,quantization:NoteLength): number {
     let tickTime = MusicMath.getTickTime(bpm,quantization);
     return Math.floor(time/tickTime);
+  }
+  public static getTimeAtBeat(beat:number,bpm:number,quantization:NoteLength): number {
+    let tickTime = MusicMath.getTickTime(bpm,quantization);
+    let beatTicks = MusicMath.getBeatTicks(quantization);
+    return beat*beatTicks*tickTime;
   }
 
   public static getBarNumber(tick:number,quantization:NoteLength,signature:TimeSignature): number {

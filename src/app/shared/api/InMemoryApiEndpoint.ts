@@ -29,7 +29,7 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   }
 
   post(o: T): Observable<T> {
-    o["id"] = this.guid();
+
     this.localStorage.add(o);
 
     return of(o);

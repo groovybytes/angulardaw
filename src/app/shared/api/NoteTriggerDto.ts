@@ -7,6 +7,9 @@ export class NoteTriggerDto implements NoteTrigger{
   length: number;
   loudness: number;
   articulation: number;
+  x:number=0; //todo used in sequencer
+  y:number=0;//todo used in sequencer
+  column:number=0;//todo used in sequencer
 
   constructor(id: any, note: string,time?: number, length?: number, loudness?: number, articulation?: number) {
     this.id = id;

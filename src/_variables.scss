@@ -5,14 +5,15 @@
 $color6: rgba(102, 153, 204, 1);
 $color7: rgba(255, 242, 117, 1);
 $color8: rgba(255, 140, 66, 1);
-$color9: red;//rgba(255, 60, 56, 1);
+$color9: #EE163B;//rgba(255, 60, 56, 1);
 $color10: rgba(162, 62, 72, 1);
 
 $color1: rgba(45, 49, 66, 1);
-$color2: rgba(191, 192, 192, 1);
+$color2:  #C1D2E9;//rgba(191, 192, 192, 1);
 $color3: rgba(255, 255, 255, 1);
 $color4: rgba(239, 131, 84, 1);
 $color5: rgba(79, 93, 117, 1);
+
 
 $theme-colors: (
   "primary": $color1,
@@ -31,5 +32,14 @@ $body-color: $gray-900;
 $header-height: 10vh;
 $main-height:80vh;
 $footer-height: 10vh;
+
+$table-head-bg:darken($color2,15%);
+$table-bg:$color2;
+$table-accent-bg:darken($color2,5%);
+$table-border-color:$color1;
+
+$table-hover-bg:lighten($color2,10%);
+$table-active-bg:$color7;
+$table-head-color:red;
 
 

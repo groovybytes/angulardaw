@@ -9,11 +9,13 @@ import {Observable} from "rxjs";
 @Injectable()
 export class ProjectsService {
 
-  constructor(@Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>){
+  constructor(@Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>) {
 
   }
+
   createProject(name: string): ProjectDto {
     let project = new ProjectDto();
+    project.id=this.guid();
     project.name = name;
     let grid = project.grid = new GridDto();
     grid.nColumns = 10;
@@ -43,6 +45,16 @@ export class ProjectsService {
     }
 
     return result;
+  }
+
+  guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 }
 

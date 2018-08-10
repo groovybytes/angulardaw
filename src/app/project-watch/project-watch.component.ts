@@ -33,23 +33,22 @@ export class ProjectWatchComponent implements OnInit, OnChanges, DoCheck {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    let project = <ProjectDto>changes.project.currentValue;
-    if (this.gridCells) console.log(this.gridCells.length);
+    /*let project = <ProjectDto>changes.project.currentValue;
     if (project) {
       this.patterns = project.patterns;
       this.gridCells = project.grid.cells;
-    }
+    }*/
 
   }
 
   ngDoCheck(): void {
-    const change = <DefaultKeyValueDiffer<any, any>>this.differ.diff(this.patterns);
+    /*const change = <DefaultKeyValueDiffer<any, any>>this.differ.diff(this.patterns);
     if (change) {
       change.forEachAddedItem((item) => {
         item.currentValue.id = this.guid();
 
       })
-    }
+    }*/
 
   }
 
