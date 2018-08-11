@@ -1,5 +1,8 @@
 @import "../variables";
 
+table{
+  table-layout: fixed;
+}
 th{
   background-color: $table-head-bg; // bootstrap fix; variable doesnt work
 }
@@ -9,8 +12,16 @@ td.focused{
 }
 
 th, td {
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+
   text-align: center;
-  min-width: 50px !important;
+  //min-width: 50px !important;
   padding:0;
 }
 

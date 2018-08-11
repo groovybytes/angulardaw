@@ -12,6 +12,8 @@ import {PanelComponent} from "./panel/panel.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {PatternComponent} from "./pattern/pattern.component";
 import { InteractiveComponent } from './interactive/interactive.component';
+import { FlexytableComponent } from './flexytable/flexytable.component';
+import {DraggableDirective} from "./directives/draggable.directive";
 
 
 @NgModule({
@@ -24,7 +26,9 @@ import { InteractiveComponent } from './interactive/interactive.component';
     PanelComponent,
     ToolbarComponent,
     PatternComponent,
-    InteractiveComponent
+    InteractiveComponent,
+    FlexytableComponent,
+    DraggableDirective
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,9 @@ import { InteractiveComponent } from './interactive/interactive.component';
     PanelComponent,
     ToolbarComponent,
     PatternComponent,
-    InteractiveComponent
+    InteractiveComponent,
+    FlexytableComponent,
+    DraggableDirective
   ]
 })
 export class UiModule {

@@ -1,64 +1,66 @@
-import {Component, ElementRef, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Pattern} from "../model/daw/Pattern";
-import {NoteCell} from "./model/NoteCell";
+import {Cell} from "./model/Cell";
 import {SequencerService} from "./sequencer.service";
 import {EventCell} from "./model/EventCell";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportService} from "../shared/services/transport.service";
-import {NoteInfo} from "../model/utils/NoteInfo";
-import {GridCellDto} from "../shared/api/GridCellDto";
-import {ProjectDto} from "../shared/api/ProjectDto";
+import {HeaderCell} from "./model/HeaderCell";
+import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
 
 @Component({
   selector: 'sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit {
+export class SequencerComponent implements OnInit, OnChanges {
 
-  @Input() project: ProjectDto;
+  @Input() pattern:Pattern;
 
   @Input() cellWidth: number = 20;
   @Input() cellHeight: number = 20;
+  droppedData: string = '';
+  gridSize = 100;
 
-  /* noteCells: Array<Array<NoteCell>>;
-   columns: Array<ColumnInfo>;
-   eventCells: Array<EventCell> = [];*/
+  grids = [0, 100, 200, 300, 400];
 
-  private allNotes: Array<string>;
+  noteCells: Array<Array<Cell> >=[];
+  headerCells: Array<HeaderCell>=[];
+  /* columns: Array<ColumnInfo>;*/
+  /* eventCells: Array<EventCell> = [];*/
+
+  x(cell:Cell):number{
+    return 100;
+  }
+  y(cell:Cell):number{
+    return 100;
+  }
 
   constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
-    NoteInfo.load();
-    this.allNotes = NoteInfo.getAllIds();
   }
 
-  getTime(column:number):number{
-    return MusicMath.getTickTime(this.transportService.params.bpm,this.transportService.params.quantization)*column;
+  getTime(column: number): number {
+    return MusicMath.getTickTime(this.transportService.params.bpm, this.transportService.params.quantization) * column;
   }
 
-  getPattern(): Pattern {
-    return this.project.patterns.find(p=>p.isBeingEdited);
+  onDrop(event): void {
+    //this.droppedData = dropData;
+    console.log(event);
+    setTimeout(() => {
+      this.droppedData = '';
+    }, 2000);
   }
-
-  getNotes():Array<string>{
-    return this.getPattern().notes.length === 0 ? this.allNotes : this.getPattern().notes;
-  }
-
   ngOnInit() {
 
-    /*this.noteCells = this.sequencerService.createNoteCells(this.transportParams,this.pattern);
-    this.columns = this.sequencerService.createColumnInfos(this.transportParams,this.pattern);*/
+    console.log("init");
+    /*  this.noteCells = this.sequencerService.createNoteCells(this.transportService.params,this.getPattern());
+      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.getPattern());*/
+
   }
 
 
-  getColumns(): Array<any> {
-    let columns = MusicMath.getBeatTicks(this.transportService.params.quantization);
-    return Array(this.getPattern().length * columns).fill(0);
-  }
-
-  onNoteCellClicked(event: any, column:number,row:number): void {
-    console.log(column);
-    this.sequencerService.onNoteCellClicked(event,this.getNotes(),row,column,this.getPattern(),this.transportService.params,this.element);
+  onNoteCellClicked(cell:Cell): void {
+    this.sequencerService.onNoteCellClicked(cell,this.pattern);
 
   }
 
@@ -70,6 +72,16 @@ export class SequencerComponent implements OnInit {
   onEventCellPositionChanged(cell: EventCell): void {
     // this.sequencerService.onEventCellPositionChanged(cell, this.noteCells, this.pattern,this.transportParams);
 
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.pattern && changes.pattern.currentValue){
+
+      this.noteCells.length=0;
+      this.headerCells.length=0;
+      this.noteCells = this.sequencerService.createNoteCells(this.transportService.params,this.pattern);
+      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.pattern)
+    }
   }
 
 

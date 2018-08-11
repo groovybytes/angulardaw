@@ -26,14 +26,15 @@ export class GridComponentService {
   }
 
 
-  onCellDblClicked(cell: GridCellDto, project: ProjectDto): void {
+  onCellDblClicked(cell: GridCellDto, project: ProjectDto,event:EventEmitter<Pattern>): void {
+    let pattern:Pattern;
     if (cell.patternId) {
-      let pattern = project.patterns.find(p => p.id === cell.patternId);
+      pattern = project.patterns.find(p => p.id === cell.patternId);
       cell.patternId = null;
       pattern.isBeingEdited = false;
     }
     else {
-      let pattern = new Pattern();
+      pattern = new Pattern();
       pattern.id = this.projectsService.guid();
       project.patterns.forEach(p => p.isBeingEdited = false);
       project.patterns.push(pattern);
@@ -41,6 +42,8 @@ export class GridComponentService {
       pattern.isBeingEdited = true;
 
     }
+
+    event.emit(pattern);
   }
 
   onCellClicked(cell: GridCellDto, project: ProjectDto): void {

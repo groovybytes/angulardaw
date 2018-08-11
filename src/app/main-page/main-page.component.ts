@@ -13,6 +13,7 @@ import {GridCellDto} from "../shared/api/GridCellDto";
 })
 export class MainPageComponent implements OnInit {
   project: ProjectDto;
+  focusedPattern:Pattern;
   gridCellDimensionIndex: number = 0;
   gridCellDimensions = [
     {width: 100, height: 50},
@@ -57,8 +58,8 @@ export class MainPageComponent implements OnInit {
       });
   }
 
-  focusedCellChanged(cell: GridCellDto): void {
-
+  focusedPatternChanged(pattern: Pattern): void {
+    this.focusedPattern=pattern;
   }
 }
 

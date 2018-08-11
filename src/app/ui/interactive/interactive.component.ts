@@ -30,7 +30,6 @@ export class InteractiveComponent implements OnInit {
   @Input() notes: Array<string>;
   @Input() cell: NoteTriggerDto;
   @Input() snapClass: string;
-  @Input() container: string;
 
 
   /* @HostBinding('style.width.px')
@@ -56,7 +55,10 @@ export class InteractiveComponent implements OnInit {
     tickTime: 0,
     fullTime: 0,
     width: 0,
-    percentage: 0
+    percentage: 0,
+    pxTime:0,
+    positionX:0,
+    positionY:0,
   };
 
   constructor(private element: ElementRef, private transportService: TransportService) {
@@ -66,7 +68,7 @@ export class InteractiveComponent implements OnInit {
 
   ngOnInit() {
     this.jqElement = $(this.element.nativeElement);
-    this.jqContainer = this.jqElement.closest(this.container);
+    this.jqContainer = this.jqElement.offsetParent();
 
     $(window).on("mouseup", () => this.isDragging = false);
     this.jqElement.on("mousedown", () => this.isDragging = true);
@@ -76,31 +78,47 @@ export class InteractiveComponent implements OnInit {
       this.updatePosition();
 
     });
-    this.jqContainer.on("mousemove", (event: any) => {
-      if (this.isDragging && $(event.target).hasClass(this.snapClass)) {
+    this.jqContainer.on("mousemove", (event: JQuery.Event) => {
 
-        let elementLeft = this.element.nativeElement.getBoundingClientRect().left;
-        let elementTop = this.element.nativeElement.getBoundingClientRect().top;
-        let targetLeft = event.target.getBoundingClientRect().left;
-        let targetTop = event.target.getBoundingClientRect().top;
-        let positionChanged: boolean = false;
-        if (elementLeft !== targetLeft) {
-          let diff = targetLeft - elementLeft;
-          if (diff > 0) this.cell.time += this.params.tickTime;
-          else this.cell.time -= this.params.tickTime;
-          console.log("update");
+
+      if (this.isDragging){
+        if (event.shiftKey){
+          let offset=this.jqElement[0].getBoundingClientRect().left- this.jqContainer[0].getBoundingClientRect().left-this.params.offsetLeft;
+          console.log(event.pageX);
+          let xPosition = event.pageX-this.params.offsetLeft-this.params.cellWidth/2;//-this.element.nativeElement.getBoundingClientRect().left;
+          let percentage = (xPosition)/this.params.width;
+          this.cell.time=Math.round(this.params.fullTime*percentage);
+          //console.log(xPosition/this.params.width   +"%");
+          /*console.log(event.pageX);
+          let delta=event.pageX+this.params.offsetLeft-this.params.positionX;
+          this.cell.time+=delta*this.params.pxTime;
+          this.params.positionX=event.pageX;*/
           this.updatePosition();
-          /* console.log(this.cell.time);
-          /!* if (diff < 0) this.cell.column -= 1;
-           else this.cell.column += 1;*!/*/
-          positionChanged = true;
         }
-        if (elementTop !== targetTop) {
-          this.cell.y += targetTop - elementTop;
-          positionChanged = true;
-        }
+        else if ( $(event.target).hasClass(this.snapClass)) {
+          let elementLeft = this.element.nativeElement.getBoundingClientRect().left;
+          let elementTop = this.element.nativeElement.getBoundingClientRect().top;
+          let targetLeft = (<Element>event.target).getBoundingClientRect().left;
+          let targetTop = (<Element>event.target).getBoundingClientRect().top;
+          let positionChanged: boolean = false;
+          if (elementLeft !== targetLeft) {
+            let diff = targetLeft - elementLeft;
+            if (diff > 0) this.cell.time += this.params.tickTime;
+            else this.cell.time -= this.params.tickTime;
+            this.updatePosition();
+            /* console.log(this.cell.time);
+            /!* if (diff < 0) this.cell.column -= 1;
+             else this.cell.column += 1;*!/*/
+            positionChanged = true;
+          }
+          if (elementTop !== targetTop) {
+           // this.cell.y += targetTop - elementTop;
+            positionChanged = true;
+          }
 
+        }
       }
+
     });
 
     setTimeout(() => {
@@ -116,7 +134,18 @@ export class InteractiveComponent implements OnInit {
     //this.componentClicked.emit(event);
   }
 
-  private getOffset(): number {
+  private getTimeAt(positionInPx:number):number{
+
+
+   /* let xPosition = event.pageX-this.params.offsetLeft-this.params.cellWidth/2;//-this.element.nativeElement.getBoundingClientRect().left;
+    let percentage = (xPosition)/this.params.width;
+    this.cell.time=Math.round(this.params.fullTime*percentage);*/
+   return 0;
+  }
+  private getOffsetToContainer  ():number{
+    return this.element.nativeElement.getBoundingClientRect().left-this.jqContainer[0].getBoundingClientRect().left;
+  }
+  private getOffsetToFirstColumn(): number {
     return this.jqContainer.find("[data-time='0']").first().offset().left - this.jqContainer.offset().left;
   }
 
@@ -126,7 +155,6 @@ export class InteractiveComponent implements OnInit {
 
   private getY(): number {
     return this.params.offsetTop + (this.notes.indexOf(this.cell.note)+1) * this.params.cellHeight;
-
   }
 
   private calculateParams(): void {
@@ -141,6 +169,8 @@ export class InteractiveComponent implements OnInit {
       , this.transportService.params.quantization);
 
     this.params.width = MusicMath.getBeatTicks(this.transportService.params.quantization) * this.patternLength * this.params.cellWidth;
+    this.params.pxTime=this.params.width/this.params.fullTime;
+
     //this.params.height=reference[0].getBoundingClientRect().height;
 
 

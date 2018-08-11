@@ -17,13 +17,15 @@ export class GridComponent implements OnInit {
 
   @Input() cellWidth: number;
   @Input() cellHeight: number;
+  @Output() focusedPatternChanged:EventEmitter<Pattern>=new EventEmitter();
 
   constructor(private gridComponentService: GridComponentService,
               private system: System) {
   }
 
   ngOnInit() {
-
+    let pattern = this.project.patterns.find(p=>p.isBeingEdited);
+    if (pattern) this.focusedPatternChanged.emit(pattern);
   }
 
   selectInstrument(instr: string, column: any): void {
@@ -36,7 +38,7 @@ export class GridComponent implements OnInit {
   }
 
   onCellDblClicked(cell: GridCellDto): void {
-    this.gridComponentService.onCellDblClicked(cell, this.project);
+    this.gridComponentService.onCellDblClicked(cell, this.project,this.focusedPatternChanged);
 
   }
 
