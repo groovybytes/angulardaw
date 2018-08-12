@@ -26,6 +26,8 @@ import {GridModule} from "./grid/grid.module";
 import {SequencerModule} from "./sequencer/sequencer.module";
 import {UiModule} from "./ui/ui.module";
 import {ProjectWatchComponent} from './project-watch/project-watch.component';
+import { DawGridComponent } from './daw-grid/daw-grid.component';
+import {DawGridService} from "./daw-grid/daw-grid.service";
 
 let audioContext = new AudioContext();
 @NgModule({
@@ -38,7 +40,8 @@ let audioContext = new AudioContext();
     ProjectsPageComponent,
     TrackComponent,
     TrackControlComponent,
-    ProjectWatchComponent
+    ProjectWatchComponent,
+    DawGridComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +67,7 @@ let audioContext = new AudioContext();
     TransportService,
     MessagingService,
     TransportService,
+    DawGridService,
     { provide: "interact", useValue: window["interact"] },
     { provide: "lodash", useValue: window["_"] },
     { provide: "AudioContext", useValue: audioContext }

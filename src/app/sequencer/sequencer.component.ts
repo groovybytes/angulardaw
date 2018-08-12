@@ -15,14 +15,14 @@ import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
 })
 export class SequencerComponent implements OnInit, OnChanges {
 
-  @Input() pattern:Pattern;
+  @Input() pattern: Pattern;
 
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 100;
 
-  noteCells: Array<Array<ContentCell> >=[];
-  headerCells: Array<HeaderCell>=[];
- entries: Array<FlexyGridEntry<NoteTriggerDto>> = [];
+  noteCells: Array<Array<ContentCell>> = [];
+  headerCells: Array<HeaderCell> = [];
+  entries: Array<FlexyGridEntry<NoteTriggerDto>> = [];
 
 
   constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
@@ -41,32 +41,33 @@ export class SequencerComponent implements OnInit, OnChanges {
   }
 
 
-  onNoteCellClicked(cell:ContentCell): void {
+  onNoteCellClicked(cell: ContentCell): void {
     //this.sequencerService.onNoteCellClicked(cell,this.pattern);
 
   }
 
-  onGridEntryAdded(entry:FlexyGridEntry<NoteTriggerDto>):void{
-    this.sequencerService.addEvent(entry,this.cellWidth,this.cellHeight,this.pattern,this.transportService.params);
+  onGridEntryAdded(entry: FlexyGridEntry<NoteTriggerDto>): void {
+    this.sequencerService.addEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
 
   }
-  onGridEntryRemoved(entry:FlexyGridEntry<NoteTriggerDto>):void{
-    this.sequencerService.removeEvent(entry,this.pattern);
+
+  onGridEntryRemoved(entry: FlexyGridEntry<NoteTriggerDto>): void {
+    this.sequencerService.removeEvent(entry, this.pattern);
   }
 
-/*  onEventCellClicked(event: any, cell: EventCell): void {
-    //this.sequencerService.onEventCellClicked(cell, this.eventCells, this.pattern);
+  /*  onEventCellClicked(event: any, cell: EventCell): void {
+      //this.sequencerService.onEventCellClicked(cell, this.eventCells, this.pattern);
 
-  }*/
+    }*/
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.pattern && changes.pattern.currentValue){
-      this.noteCells.length=0;
-      this.headerCells.length=0;
-      this.noteCells = this.sequencerService.createNoteCells(this.transportService.params,this.pattern);
-      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.pattern);
-      this.entries = this.sequencerService.createEntries(this.pattern,this.cellWidth,this.cellHeight,this.transportService.params);
+    if (changes.pattern && changes.pattern.currentValue) {
+      this.noteCells.length = 0;
+      this.headerCells.length = 0;
+      this.noteCells = this.sequencerService.createNoteCells(this.transportService.params, this.pattern);
+      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params, this.pattern);
+      this.entries = this.sequencerService.createEntries(this.pattern, this.cellWidth, this.cellHeight, this.transportService.params);
     }
   }
 

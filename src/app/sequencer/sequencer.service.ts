@@ -67,9 +67,7 @@ export class SequencerService {
       let row = [];
       model.push(row);
       for (let j = 0; j < nColumns; j++) {
-        let pos = new TransportPosition();
-        pos.tick = j;
-        let cell = new ContentCell(i, j);//new ContentCell(null, pos, notes[i], i, j);
+        let cell = new ContentCell(i, j);
         row.push(cell);
       }
     }

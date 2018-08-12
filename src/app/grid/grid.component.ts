@@ -7,7 +7,7 @@ import {ProjectDto} from "../shared/api/ProjectDto";
 import {GridCellDto} from "../shared/api/GridCellDto";
 
 @Component({
-  selector: 'daw-grid',
+  selector: 'grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss']
 })
