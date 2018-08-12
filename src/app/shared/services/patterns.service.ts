@@ -31,7 +31,7 @@ export class PatternsService {
 
   removeNote(pattern: Pattern, note: NoteTriggerDto): void {
     let index = _.sortedIndexBy(pattern.events, {'time': note.time}, d => d.time);
-    pattern.events.splice(index, 0, note);
+    pattern.events.splice(index, 1);
   }
 
 

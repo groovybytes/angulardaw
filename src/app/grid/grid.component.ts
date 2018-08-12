@@ -29,7 +29,7 @@ export class GridComponent implements OnInit {
   }
 
   selectInstrument(instr: string, column: any): void {
-    //this.gridComponentService.selectInstrument(instr, column, this.project).catch(error => this.system.error(error));
+   // this.gridComponentService.selectInstrument(instr, column, this.project).catch(error => this.system.error(error));
   }
 
   onCellClicked(cell: GridCellDto): void {

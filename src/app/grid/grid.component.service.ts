@@ -54,6 +54,34 @@ export class GridComponentService {
     }
   }
 
+  /*selectInstrument(instr: string, column: ColumnInfo,project:Project): Promise<void> {
+    if (!column.track) {
+      column.track = this.projectsService.addTrack(project,column.column);
+    }
+    return this._selectInstrument(instr,column);
+
+
+  }
+
+  private _selectInstrument(instr: string, column: ColumnInfo): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (instr === "") {
+        if (column.instrument) column.instrument.destroy();
+        this.projectsService.removePlugin(column.track,0);
+        column.instrument=null;
+        resolve();
+      }
+      else this.projectsService.addPlugin(column.track, PluginId[instr.toUpperCase()],0)
+        .then(instrument => {
+          column.instrument=instrument;
+          resolve();
+        })
+        .catch(error => reject(error))
+    })
+
+
+  }*/
+
   /*onCellClicked(project:Project,cell: PatternCell,emitter): void{
    /!* if (!cell.pattern) this.patternService.create(project)
       .then(pattern => {
@@ -66,31 +94,5 @@ export class GridComponentService {
       });
     else emitter.emit(cell.pattern);*!/
   }*/
-  /*  selectInstrument(instr: string, column: ColumnInfo,project:Project): Promise<void> {
-      if (!column.track) {
-        column.track = this.projectsService.addTrack(project,column.column);
-      }
-      return this._selectInstrument(instr,column);
-
-
-    }
-
-    private _selectInstrument(instr: string, column: ColumnInfo): Promise<void> {
-     return new Promise((resolve, reject) => {
-        if (instr === "") {
-          if (column.instrument) column.instrument.destroy();
-          this.projectsService.removePlugin(column.track,0);
-          column.instrument=null;
-          resolve();
-        }
-        else this.projectsService.addPlugin(column.track, PluginId[instr.toUpperCase()],0)
-          .then(instrument => {
-            column.instrument=instrument;
-            resolve();
-          })
-          .catch(error => reject(error))
-      })
-
-
-    }*/
+  /*  */
 }

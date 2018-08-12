@@ -51,7 +51,7 @@ export class SequencerComponent implements OnInit, OnChanges {
 
   }
   onGridEntryRemoved(entry:FlexyGridEntry<NoteTriggerDto>):void{
-
+    this.sequencerService.removeEvent(entry,this.pattern);
   }
 
 /*  onEventCellClicked(event: any, cell: EventCell): void {

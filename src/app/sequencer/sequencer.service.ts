@@ -125,6 +125,12 @@ export class SequencerService {
     console.log(trigger);
   }
 
+  removeEvent(entry:FlexyGridEntry<NoteTriggerDto>,pattern:Pattern):void{
+
+    this.patternsService.removeNote(pattern, entry.data);
+    entry.data=null;
+  }
+
   /*  onNoteCellClicked(cell: Cell, pattern: Pattern): void {
       if (cell.events.length>0) {
 
