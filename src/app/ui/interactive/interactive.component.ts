@@ -10,7 +10,7 @@ import {
   Output
 } from '@angular/core';
 import * as $ from "jquery";
-import {EventCell} from "../../sequencer/model/EventCell";
+
 import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {TransportService} from "../../shared/services/transport.service";

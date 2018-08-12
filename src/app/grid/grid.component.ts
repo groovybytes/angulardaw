@@ -17,14 +17,14 @@ export class GridComponent implements OnInit {
 
   @Input() cellWidth: number;
   @Input() cellHeight: number;
-  @Output() focusedPatternChanged:EventEmitter<Pattern>=new EventEmitter();
+  @Output() focusedPatternChanged: EventEmitter<Pattern> = new EventEmitter();
 
   constructor(private gridComponentService: GridComponentService,
               private system: System) {
   }
 
   ngOnInit() {
-    let pattern = this.project.patterns.find(p=>p.isBeingEdited);
+    let pattern = this.project.patterns.find(p => p.isBeingEdited);
     if (pattern) this.focusedPatternChanged.emit(pattern);
   }
 
@@ -38,13 +38,14 @@ export class GridComponent implements OnInit {
   }
 
   onCellDblClicked(cell: GridCellDto): void {
-    this.gridComponentService.onCellDblClicked(cell, this.project,this.focusedPatternChanged);
+    this.gridComponentService.onCellDblClicked(cell, this.project, this.focusedPatternChanged);
 
   }
 
-  getPattern(id):Pattern{
-    return this.project.patterns.find(p=>p.id===id);
+  getPattern(id): Pattern {
+    return this.project.patterns.find(p => p.id === id);
   }
+
   getCell(row: number, column: number): GridCellDto {
     let index = row * this.project.grid.nColumns + column;
     return this.project.grid.cells[index];

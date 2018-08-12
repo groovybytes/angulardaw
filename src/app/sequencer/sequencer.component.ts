@@ -1,11 +1,11 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Pattern} from "../model/daw/Pattern";
-import {Cell} from "./model/Cell";
 import {SequencerService} from "./sequencer.service";
-import {EventCell} from "./model/EventCell";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportService} from "../shared/services/transport.service";
-import {HeaderCell} from "./model/HeaderCell";
+import {ContentCell} from "../ui/flexytable/model/ContentCell";
+import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
+import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
 
 @Component({
@@ -17,24 +17,13 @@ export class SequencerComponent implements OnInit, OnChanges {
 
   @Input() pattern:Pattern;
 
-  @Input() cellWidth: number = 20;
-  @Input() cellHeight: number = 20;
-  droppedData: string = '';
-  gridSize = 100;
+  @Input() cellWidth: number = 50;
+  @Input() cellHeight: number = 100;
 
-  grids = [0, 100, 200, 300, 400];
-
-  noteCells: Array<Array<Cell> >=[];
+  noteCells: Array<Array<ContentCell> >=[];
   headerCells: Array<HeaderCell>=[];
-  /* columns: Array<ColumnInfo>;*/
-  /* eventCells: Array<EventCell> = [];*/
+ entries: Array<FlexyGridEntry<NoteTriggerDto>> = [];
 
-  x(cell:Cell):number{
-    return 100;
-  }
-  y(cell:Cell):number{
-    return 100;
-  }
 
   constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
   }
@@ -43,13 +32,6 @@ export class SequencerComponent implements OnInit, OnChanges {
     return MusicMath.getTickTime(this.transportService.params.bpm, this.transportService.params.quantization) * column;
   }
 
-  onDrop(event): void {
-    //this.droppedData = dropData;
-    console.log(event);
-    setTimeout(() => {
-      this.droppedData = '';
-    }, 2000);
-  }
   ngOnInit() {
 
     console.log("init");
@@ -59,28 +41,32 @@ export class SequencerComponent implements OnInit, OnChanges {
   }
 
 
-  onNoteCellClicked(cell:Cell): void {
-    this.sequencerService.onNoteCellClicked(cell,this.pattern);
+  onNoteCellClicked(cell:ContentCell): void {
+    //this.sequencerService.onNoteCellClicked(cell,this.pattern);
 
   }
 
-  onEventCellClicked(event: any, cell: EventCell): void {
+  onGridEntryAdded(entry:FlexyGridEntry<NoteTriggerDto>):void{
+    this.sequencerService.addEvent(entry,this.cellWidth,this.cellHeight,this.pattern,this.transportService.params);
+
+  }
+  onGridEntryRemoved(entry:FlexyGridEntry<NoteTriggerDto>):void{
+
+  }
+
+/*  onEventCellClicked(event: any, cell: EventCell): void {
     //this.sequencerService.onEventCellClicked(cell, this.eventCells, this.pattern);
 
-  }
+  }*/
 
-  onEventCellPositionChanged(cell: EventCell): void {
-    // this.sequencerService.onEventCellPositionChanged(cell, this.noteCells, this.pattern,this.transportParams);
-
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern && changes.pattern.currentValue){
-
       this.noteCells.length=0;
       this.headerCells.length=0;
       this.noteCells = this.sequencerService.createNoteCells(this.transportService.params,this.pattern);
-      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.pattern)
+      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.pattern);
+      this.entries = this.sequencerService.createEntries(this.pattern,this.cellWidth,this.cellHeight,this.transportService.params);
     }
   }
 

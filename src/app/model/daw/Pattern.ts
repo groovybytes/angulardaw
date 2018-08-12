@@ -1,5 +1,3 @@
-
-import {TransportParams} from "./TransportParams";
 import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
 
 export class Pattern{

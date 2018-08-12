@@ -1,13 +1,15 @@
-import {Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import * as $ from "jquery";
 import 'jqueryui';
+import DraggableOptions = JQueryUI.DraggableOptions;
 
 @Directive({
   selector: '[jquery-ui-draggable]'
 })
 export class DraggableDirective implements OnInit,OnChanges {
 
-  @Input() params;
+  @Input() params:DraggableOptions;
+
   constructor(private element: ElementRef) {
 
   }
@@ -18,6 +20,7 @@ export class DraggableDirective implements OnInit,OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     $(this.element.nativeElement).draggable(this.params);
   }
 
