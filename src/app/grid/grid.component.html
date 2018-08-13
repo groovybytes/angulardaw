@@ -1,5 +1,6 @@
+<!--
 <div class="table-container">
-  <table *ngIf="project && project.grid" class="table table-striped table-bordered table-hover"><!--table table-dark table-hover-->
+  <table *ngIf="project && project.grid" class="table table-striped table-bordered table-hover">&lt;!&ndash;table table-dark table-hover&ndash;&gt;
     <thead>
     <tr>
       <th class="" >X</th>
@@ -7,8 +8,8 @@
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">
-            <!-- <span *ngIf="col.instrument"></span>
-             <span *ngIf="!col.instrument">Instrument</span>-->
+            &lt;!&ndash; <span *ngIf="col.instrument"></span>
+             <span *ngIf="!col.instrument">Instrument</span>&ndash;&gt;
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" [routerLink]="" (click)="selectInstrument('')">None</a>
@@ -28,22 +29,23 @@
           [ngClass]="{'table-active':getCell(i,j).patternId,'focused':getPattern(getCell(i,j).patternId)?.isBeingEdited}"
           (dblclick)="onCellDblClicked(getCell(i,j))"
           (click)="onCellClicked(getCell(i,j))"><span *ngIf="getCell(i,j).patternId">X</span>
-       <!-- <button type="button" class="btn  btn-block"
+       &lt;!&ndash; <button type="button" class="btn  btn-block"
                 [ngClass]="{'btn-secondary':!getCell(i,j).patternId,'btn-primary':getCell(i,j).patternId}"
                 (click)="onCellClicked(getCell(i,j))">&nbsp;{{getCell(i,j).patternId}}
-        </button>-->
+        </button>&ndash;&gt;
       </td>
 
     </tr>
     </tbody>
-    <!--<tfoot>
+    &lt;!&ndash;<tfoot>
     <tr>
       <td class="header-cell"></td>
       <td *ngFor="let col of columns" class="header-cell">
         <span *ngIf="col.track && col.track.instrument">{{col.track.instrument.getId()}}</span>
       </td>
     </tr>
-    </tfoot>-->
+    </tfoot>&ndash;&gt;
   </table>
 </div>
 
+-->

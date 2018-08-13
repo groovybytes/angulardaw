@@ -3,14 +3,8 @@ import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {GridDto} from "../shared/api/GridDto";
 import {GridCellDto} from "../shared/api/GridCellDto";
-import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
 import {Pattern} from "../model/daw/Pattern";
-import {TransportParams} from "../model/daw/TransportParams";
-import {MusicMath} from "../model/utils/MusicMath";
-import {NoteLength} from "../model/mip/NoteLength";
-import {Loudness} from "../model/mip/Loudness";
 import {ProjectsService} from "../shared/services/projects.service";
-import {ProjectDto} from "../shared/api/ProjectDto";
 
 @Injectable()
 export class DawGridService {
@@ -37,36 +31,38 @@ export class DawGridService {
 
   }
 
-  createEntries(grid: GridDto, cellWidth: number, cellHeight: number): Array<FlexyGridEntry<GridCellDto>> {
-    let result = [];
-    grid.cells.forEach(cell => {
-      let left = cell.column * cellWidth;
-      let top = cell.row * cellHeight;
-      let entry = new FlexyGridEntry(cell, left, top);
-
-      result.push(entry);
+  updateEntryPositions(grid: GridDto, cellWidth: number, cellHeight: number): void {
+    grid.entries.filter(entry=>entry.data).forEach(entry => {
+      entry.left = entry.data.column * cellWidth;
+      entry.top = entry.data.row * cellHeight;
     });
-
-    return result;
   }
 
-  addEvent(entry: FlexyGridEntry<GridCellDto>, cellWidth: number, cellHeight: number, project: ProjectDto): void {
+  addEvent(entry: FlexyGridEntry<GridCellDto>, cellWidth: number, cellHeight: number, patterns: Array<Pattern>): void {
+
     let pattern = new Pattern();
     pattern.id = this.projectsService.guid();
-    project.patterns.forEach(p => p.isBeingEdited = false);
-    project.patterns.push(pattern);
+    patterns.forEach(p => p.isBeingEdited = false);
+    patterns.push(pattern);
     let row = entry.top / cellHeight;
     let column = entry.left / cellWidth;
     entry.data = new GridCellDto(null, row, column, pattern.id);
-    project.grid.cells.push(entry.data);
   }
 
-  removeEvent(entry: FlexyGridEntry<GridCellDto>,project:ProjectDto): void {
-  /*  let index = project.patterns.findIndex(p=>p.id===entry.data.patternId);
-    project.patterns.splice(index,1);
-    grid.cells.indexOf(
-    entry.data = null;*/
+  removeEvent(entry: FlexyGridEntry<GridCellDto>,patterns:Array<Pattern>): void {
+    let index = patterns.findIndex(p=>p.id===entry.data.patternId);
+    patterns.splice(index,1)
+   /* let entryIndex = grid.entries.findIndex(d=>d.data&& d.data.patternId===patterns[index].id);
+   /!* grid.entries.splice
+    patterns.splice(index,1);*!/*/
   }
+
+  updateEvent(entry: FlexyGridEntry<GridCellDto>,cellWidth: number, cellHeight: number): void {
+    entry.data.row = entry.top / cellHeight;
+    entry.data.column = entry.left / cellWidth;
+  }
+
+
 
 
 }

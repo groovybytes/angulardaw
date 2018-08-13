@@ -28,7 +28,7 @@ export class GridComponent implements OnInit {
     if (pattern) this.focusedPatternChanged.emit(pattern);
   }
 
-  selectInstrument(instr: string, column: any): void {
+ /* selectInstrument(instr: string, column: any): void {
    // this.gridComponentService.selectInstrument(instr, column, this.project).catch(error => this.system.error(error));
   }
 
@@ -57,6 +57,6 @@ export class GridComponent implements OnInit {
 
   getColumns(): Array<any> {
     return Array(this.project.grid.nColumns).fill(0);
-  }
+  }*/
 
 }
