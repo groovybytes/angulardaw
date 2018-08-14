@@ -2,6 +2,7 @@ import {Track} from './Track';
 import {ProjectDto} from "../../shared/api/ProjectDto";
 
 export class Project {
+  id:string;
   model:ProjectDto;
   readonly tracks: Array<Track> = [];
 

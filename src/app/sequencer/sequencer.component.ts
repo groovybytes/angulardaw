@@ -21,7 +21,7 @@ export class SequencerComponent implements OnInit, OnChanges {
   @Input() cellHeight: number = 100;
 
   noteCells: Array<Array<ContentCell>> = [];
-  headerCells: Array<HeaderCell> = [];
+  headerCells: Array<HeaderCell<any>> = [];
   entries: Array<FlexyGridEntry<NoteTriggerDto>> = [];
 
 

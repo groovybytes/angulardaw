@@ -5,46 +5,62 @@ import {GridColumnDto} from "../api/GridColumnDto";
 import {Inject, Injectable} from "@angular/core";
 import {ApiEndpoint} from "../api/ApiEndpoint";
 import {Observable} from "rxjs";
+import {WstPlugin} from "../../model/daw/WstPlugin";
+import {Track} from "../../model/daw/Track";
+import {PluginId} from "../../model/daw/plugins/PluginId";
+import {PluginsService} from "./plugins.service";
+import {Project} from "../../model/daw/Project";
+import {TrackDto} from "../api/TrackDto";
+import {TransportService} from "./transport.service";
 
 @Injectable()
 export class ProjectsService {
 
-  constructor(@Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>) {
+  constructor(
+    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
+    private transportService:TransportService,
+    private pluginsService: PluginsService) {
 
   }
 
   createProject(name: string): ProjectDto {
     let project = new ProjectDto();
-    project.id=this.guid();
+    project.id = this.guid();
     project.name = name;
     let grid = project.grid = new GridDto();
-    grid.nColumns = 10;
-    grid.nRows = 30;
-   /* grid.columns = this.createColumnInfos(grid.nColumns);
-    grid.cells = this.createPatternCells(grid.nRows, grid.nColumns);*/
+    grid.nColumns = 5;
+    grid.nRows = 5;
     return project;
   }
 
-
-  private createPatternCells(rows: number, columns: number): Array<GridCellDto> {
-    let model = [];
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < columns; j++) {
-        model.push(new GridCellDto(null, j, i, null));
+  addPlugin(track: Track, id: PluginId): Promise<WstPlugin> {
+    return new Promise<WstPlugin>((resolve, reject) => {
+      try {
+        if (track.plugin) track.plugin.destroy();
+        track.plugin = null;
+        this.pluginsService.loadPlugin(id)
+          .then(plugin => {
+            track.plugin=plugin;
+            resolve(plugin);
+          })
+          .catch(error => reject(error));
       }
-    }
+      catch (e) {
+        reject(e);
+      }
 
-    return model;
+    })
   }
 
-  private createColumnInfos(columns: number): Array<GridColumnDto> {
-    let result = [];
-    for (let i = 0; i < columns; i++) {
+  removePlugin(track: Track): void {
+    track.plugin.destroy();
+    track.plugin = null;
+  }
 
-      result.push(new GridColumnDto(null, i));
-    }
-
-    return result;
+  addTrack<T>(project: Project, trackDto:TrackDto): Track {
+    let track = new Track(trackDto, this.transportService.getEvents(), this.transportService.getInfo());
+    project.tracks.push(track);
+    return track;
   }
 
   guid() {
@@ -57,91 +73,3 @@ export class ProjectsService {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 }
-
-
-/*
-import {Inject, Injectable} from "@angular/core";
-import {Project} from "../../model/daw/Project";
-import {ProjectMapper} from "../api/mapping/ProjectMapper";
-import {TrackMapper} from "../api/mapping/TrackMapper";
-import {ApiEndpoint} from "../api/ApiEndpoint";
-import {ProjectDto} from "../api/ProjectDto";
-import {Track} from "../../model/daw/Track";
-import {TransportService} from "./transport.service";
-import {System} from "../../system/System";
-import {PluginId} from "../../model/daw/plugins/PluginId";
-import {NoteTriggerMapper} from "../api/mapping/NoteTriggerMapper";
-import {WstPlugin} from "../../model/daw/WstPlugin";
-import {GridMapperService} from "../api/mapping/GridMapper.service";
-import {Observable} from "rxjs/index";
-
-@Injectable()
-export class ProjectsService {
-
-  constructor(
-    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
-    private system: System,
-    private transportService: TransportService
-  ) {
-
-  }
-
-
-  loadGhostProject(project: ProjectDto): Promise<Project> {
-    let result: Project;
-    return new Promise<Project>((resolve, reject) => {
-      result = ProjectMapper.fromJSON(project);
-      resolve(result);
-    })
-
-  }
-
-  addPlugin(track: Track, id: PluginId, position: number): Promise<WstPlugin> {
-
-    return new Promise<WstPlugin>((resolve, reject) => {
-      try {
-        if (track.plugins[0]) track.plugins[0].destroy();
-        track.plugins.length = 0;
-        this.pluginsService.loadPlugin(id)
-          .then(plugin => {
-            track.plugins.push(plugin);
-            this.updateTrack(track);
-            resolve(plugin);
-          })
-          .catch(error => reject(error));
-      }
-      catch (e) {
-        reject(e);
-      }
-
-    })
-  }
-
-  removePlugin(track: Track, position: number): void {
-    track.plugins[0].destroy();
-    track.plugins = null;
-    this.updateTrack(track);
-  }
-
-  addTrack<T>(project: Project, index: number, ghost?: boolean): Track {
-    let track = new Track(project.id, this.transportService.getEvents(), this.transportService.getInfo());
-    track.index = index;
-    project.tracks.push(track);
-
-    if (!ghost) this.tracksApi.post(TrackMapper.toJSON(track))
-      .subscribe(result => {
-        track.id = result.id;
-        console.log("track saved");
-      }, error => this.system.error(error));
-
-    return track;
-  }
-
-
-  private updateTrack(track: Track): void {
-    this.tracksApi.put(TrackMapper.toJSON(track)).subscribe(result => {
-    }, error => this.system.error(error));
-  }
-
-}
-*/

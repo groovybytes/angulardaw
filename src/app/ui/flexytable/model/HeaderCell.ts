@@ -1,3 +1,3 @@
-export class HeaderCell{
-
+export class HeaderCell<T> {
+  data: T;
 }

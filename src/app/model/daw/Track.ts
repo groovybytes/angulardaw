@@ -1,13 +1,10 @@
-import {TrackCategory} from "./TrackCategory";
 import {TransportEvents} from "./events/TransportEvents";
 import {TransportInfo} from "./TransportInfo";
 import {PerformanceStreamer} from "./events/PerformanceStreamer";
 import {PerformanceEvent} from "./events/PerformanceEvent";
 import {WstPlugin} from "./WstPlugin";
 import {Subscription} from "rxjs";
-import {any} from "codelyzer/util/function";
 import {TransportPosition} from "./TransportPosition";
-import {Pattern} from "./Pattern";
 import {TrackDto} from "../../shared/api/TrackDto";
 import * as _ from "lodash";
 
@@ -15,7 +12,7 @@ export class Track {
   model:TrackDto;
   private streamer: PerformanceStreamer;
   private subscriptions: Array<Subscription> = [];
-  private plugins:Array<WstPlugin>=[];
+  plugin:WstPlugin;
 
   constructor(model:TrackDto,protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
     this.model=model;
@@ -24,7 +21,7 @@ export class Track {
   }
 
   private onNextEvent(position:TransportPosition,event: PerformanceEvent<any>): void {
-    this.plugins.forEach(plugin => plugin.feed(event,position));
+    this.plugin.feed(event,position);
   }
 
 

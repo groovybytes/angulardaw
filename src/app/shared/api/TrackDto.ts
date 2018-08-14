@@ -6,5 +6,6 @@ export class TrackDto {
   name: string;
   pluginId:string;
   projectId:any;
+  ghost:boolean=false;
   events:Array<PerformanceEvent<any>>;
 }

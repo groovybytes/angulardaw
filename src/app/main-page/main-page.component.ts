@@ -53,7 +53,6 @@ export class MainPageComponent implements OnInit {
 
         console.log("project saved")
       }, error => {
-
         this.system.error(error)
       });
   }

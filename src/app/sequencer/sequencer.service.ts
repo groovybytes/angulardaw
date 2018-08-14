@@ -20,7 +20,7 @@ export class SequencerService {
 
   }
 
-  createHeaderCells(transportParams: TransportParams, pattern: Pattern): Array<HeaderCell> {
+  createHeaderCells(transportParams: TransportParams, pattern: Pattern): Array<HeaderCell<any>> {
     let result = [];
     let beatTicks = MusicMath.getBeatTicks(transportParams.quantization);
     let nColumns = beatTicks * pattern.length;
