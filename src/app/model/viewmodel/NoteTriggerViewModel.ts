@@ -1,6 +1,6 @@
-import {NoteTrigger} from "../../model/mip/NoteTrigger";
+import {NoteTrigger} from "../mip/NoteTrigger";
 
-export class NoteTriggerDto implements NoteTrigger{
+export class NoteTriggerViewModel implements NoteTrigger{
   id: any;
   time: number;
   note: string;

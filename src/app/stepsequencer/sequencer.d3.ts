@@ -41,7 +41,7 @@ export class SequencerD3 {
   render(data: Array<CellInfo>): void {
     let tickTime = MusicMath.getTickTime(null, null);
     /*let columns = data.filter(d => d.row === 0).length;
-    let cellWidth = 50 * 4 * this.project.quantization;
+    let cellWidth = 50 * 4 * this.projectViewModel.quantization;
     let cellHeight = 50;
     let padding = cellWidth / 20;
     let offsets = {
@@ -57,7 +57,7 @@ export class SequencerD3 {
     dimensions.top = 100;
     dimensions.left = 100;
     dimensions.cellHeight = 50;
-    dimensions.cellWidth = 50 * 4 * 1;//this.project.transportParams.quantization;
+    dimensions.cellWidth = 50 * 4 * 1;//this.projectViewModel.transportParams.quantization;
     dimensions.cellPadding = 0;
     dimensions.headerBarHeight = 50;
     dimensions.rowBarWidth = 100;

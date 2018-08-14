@@ -11,11 +11,11 @@ import {
 } from '@angular/core';
 import * as $ from "jquery";
 
-import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
+import {NoteTriggerViewModel} from "../../model/viewmodel/NoteTriggerViewModel";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {TransportService} from "../../shared/services/transport.service";
 import {tick} from "@angular/core/testing";
-import {Pattern} from "../../model/daw/Pattern";
+import {PatternViewModel} from "../../model/viewmodel/PatternViewModel";
 
 
 @Component({
@@ -28,7 +28,7 @@ export class InteractiveComponent implements OnInit {
   private isDragging: boolean = false;
   @Input() patternLength: number;
   @Input() notes: Array<string>;
-  @Input() cell: NoteTriggerDto;
+  @Input() cell: NoteTriggerViewModel;
   @Input() snapClass: string;
 
 

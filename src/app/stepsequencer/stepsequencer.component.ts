@@ -37,7 +37,7 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
   events: Array<SequencerEvent> = [];
   private renderer: SequencerD3;
   private clicker: Clicker;
-  @Input() project: Project;
+  @Input() projectViewModel: Project;
   LenghType = NoteLength;
   quantizationOptions = [];
 
@@ -55,23 +55,23 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.events = [];//this.storage.get("stepsequencer.events")?this.storage.get("stepsequencer.events"):[];
-    this.project.transportParams.loop = true;
-    this.project.transportParams.quantization = NoteLength.Quarter;
+    this.projectViewModel.transportParams.loop = true;
+    this.projectViewModel.transportParams.quantization = NoteLength.Quarter;
     this.quantizationOptions = Lang.getEnumKeys(NoteLength);
     this.samplesApi.getClickSamples().then(result => {
       this.clicker = new Clicker(result.accentSample, result.defaultSample);
     });
 
     this.sequencerService.loadInstrument().then((drumkit) => {
-      this.track = this.project.tracks[0] as MidiTrack;
+      this.track = this.projectViewModel.tracks[0] as MidiTrack;
 
       this.drumKit = drumkit;
       this.track.instrument = this.drumKit;
-      let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
-        this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
-      this.project.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.project.transportParams.quantization,
-        this.project.transportParams.signature);
-      this.project.transportParams.tickEnd = this.loobBarEnd * MusicMath.getBarTicks(this.project.transportParams.quantization, this.project.transportParams.signature) - 1;
+      let viewModel = this.sequencerService.createModel(this.bars, this.projectViewModel.transportParams.quantization,
+        this.projectViewModel.transportParams.bpm, this.projectViewModel.transportParams.signature, this.track.queue, this.drumKit.getNotes());
+      this.projectViewModel.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.projectViewModel.transportParams.quantization,
+        this.projectViewModel.transportParams.signature);
+      this.projectViewModel.transportParams.tickEnd = this.loobBarEnd * MusicMath.getBarTicks(this.projectViewModel.transportParams.quantization, this.projectViewModel.transportParams.signature) - 1;
       this.transport.beat.subscribe((tick) => this.onBeat(tick));
       this.transport.time.subscribe((time) => this.onTime(time));
 
@@ -79,7 +79,7 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
       let barEvents = new CellEvents<CellInfo>();
       let svgElement = d3.select(this.container.nativeElement.querySelector("svg"));
       this.renderer = new SequencerD3(
-        this.project,
+        this.projectViewModel,
         svgElement,
         drumkit,
         sequencerEvents,
@@ -123,9 +123,9 @@ export class StepsequencerComponent implements OnInit, OnDestroy {
 
   quantize(length: NoteLength) {
     this.transport.stop();
-    this.project.transportParams.quantization = length;
-    let viewModel = this.sequencerService.createModel(this.bars, this.project.transportParams.quantization,
-      this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
+    this.projectViewModel.transportParams.quantization = length;
+    let viewModel = this.sequencerService.createModel(this.bars, this.projectViewModel.transportParams.quantization,
+      this.projectViewModel.transportParams.bpm, this.projectViewModel.transportParams.signature, this.track.queue, this.drumKit.getNotes());
     this.renderer.render(viewModel);
 
   }

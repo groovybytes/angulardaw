@@ -1,4 +1,4 @@
-export class GridColumnDto{
+export class GridColumnViewModel{
   trackId: any;
   gridIndex: number
 

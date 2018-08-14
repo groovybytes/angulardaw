@@ -1,11 +1,11 @@
-import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
+import {NoteTriggerViewModel} from "../../model/viewmodel/NoteTriggerViewModel";
 
 
 export class SequencerEvent{
-  trackEvent:NoteTriggerDto;
+  trackEvent:NoteTriggerViewModel;
   row:number;
 
-  constructor(trackEvent:NoteTriggerDto, row: number) {
+  constructor(trackEvent:NoteTriggerViewModel, row: number) {
     this.trackEvent = trackEvent;
     this.row = row;
   }

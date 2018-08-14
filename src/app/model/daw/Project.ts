@@ -1,17 +1,12 @@
 import {Track} from './Track';
-import {ProjectDto} from "../../shared/api/ProjectDto";
+import {ProjectViewModel} from "../viewmodel/ProjectViewModel";
 
 export class Project {
-  id:string;
-  model:ProjectDto;
+  model:ProjectViewModel;
   readonly tracks: Array<Track> = [];
 
-  constructor(model:ProjectDto) {
+  constructor(model:ProjectViewModel) {
     this.model=model;
-    model.tracks.forEach(trackDto=>{
-      this.tracks.push(new Track(trackDto,null,null));
-
-    })
   }
 
   destroy(): void {

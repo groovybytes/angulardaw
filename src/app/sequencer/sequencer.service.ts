@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Pattern} from "../model/daw/Pattern";
+import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportPosition} from "../model/daw/TransportPosition";
 import {PatternsService} from "../shared/services/patterns.service";
@@ -10,7 +10,7 @@ import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
 import {Loudness} from "../model/mip/Loudness";
 import {NoteLength} from "../model/mip/NoteLength";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
-import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
+import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
 
 @Injectable()
 export class SequencerService {
@@ -20,7 +20,7 @@ export class SequencerService {
 
   }
 
-  createHeaderCells(transportParams: TransportParams, pattern: Pattern): Array<HeaderCell<any>> {
+  createHeaderCells(transportParams: TransportParams, pattern: PatternViewModel): Array<HeaderCell<any>> {
     let result = [];
     let beatTicks = MusicMath.getBeatTicks(transportParams.quantization);
     let nColumns = beatTicks * pattern.length;
@@ -37,29 +37,7 @@ export class SequencerService {
     return result;
   }
 
-  createNoteCells(transportParams: TransportParams, pattern: Pattern): Array<Array<ContentCell>> {
-
-    /*let result:Array<Cell>=[];
-    let notes:Array<string>=pattern.notes;
-    if (notes.length===0) {
-      NoteInfo.load();
-      let allNotes = NoteInfo.getAllIds();
-      notes=allNotes;
-    }
-
-    let columns = MusicMath.getBeatTicks(transportParams.quantization)*pattern.length;
-    let rows = notes.length;
-    let nCells = columns*rows;
-
-    for (let i = 0; i <= nCells; i++) {
-      let row = Math.floor(i/columns);
-      let column = i % columns;
-      let cell =  new Cell(null,null,notes[row],row,column);
-      result.push(cell);
-    }
-    debugger;
-    return result;*/
-
+  createNoteCells(transportParams: TransportParams, pattern: PatternViewModel): Array<Array<ContentCell>> {
     let model = [];
     let nColumns = MusicMath.getBeatTicks(transportParams.quantization) * pattern.length;
     let notes = this.getPatternNotes(pattern);
@@ -71,12 +49,11 @@ export class SequencerService {
         row.push(cell);
       }
     }
-
     return model;
 
   }
 
-  createEntries(pattern: Pattern, cellWidth: number, cellHeight: number, params: TransportParams): Array<FlexyGridEntry<NoteTriggerDto>> {
+  createEntries(pattern: PatternViewModel, cellWidth: number, cellHeight: number, params: TransportParams): Array<FlexyGridEntry<NoteTriggerViewModel>> {
     let result = [];
     pattern.events.forEach(event => {
       let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization);
@@ -93,7 +70,7 @@ export class SequencerService {
     return result;
   }
 
-  private getPatternNotes(pattern: Pattern): Array<string> {
+  private getPatternNotes(pattern: PatternViewModel): Array<string> {
     let notes: Array<string> = pattern.notes;
     if (notes.length === 0) {
       NoteInfo.load();
@@ -104,7 +81,7 @@ export class SequencerService {
     return notes;
   }
 
-  addEvent(entry: FlexyGridEntry<NoteTriggerDto>, cellWidth: number, cellHeight: number, pattern: Pattern, params: TransportParams): void {
+  addEvent(entry: FlexyGridEntry<NoteTriggerViewModel>, cellWidth: number, cellHeight: number, pattern: PatternViewModel, params: TransportParams): void {
 
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization);
     let ticksPerBeat = MusicMath.getBeatTicks(params.quantization);
@@ -116,14 +93,14 @@ export class SequencerService {
     let notes = this.getPatternNotes(pattern);
     let note = notes[rowIndex];
 
-    let trigger = new NoteTriggerDto(null, note, noteTime, NoteLength.Quarter, Loudness.fff, 0);
+    let trigger = new NoteTriggerViewModel(null, note, noteTime, NoteLength.Quarter, Loudness.fff, 0);
     entry.data = trigger;
     this.patternsService.insertNote(pattern, trigger);
 
     console.log(trigger);
   }
 
-  removeEvent(entry:FlexyGridEntry<NoteTriggerDto>,pattern:Pattern):void{
+  removeEvent(entry:FlexyGridEntry<NoteTriggerViewModel>, pattern:PatternViewModel):void{
 
     this.patternsService.removeNote(pattern, entry.data);
     entry.data=null;

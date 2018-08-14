@@ -1,12 +1,12 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Pattern} from "../model/daw/Pattern";
+import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {SequencerService} from "./sequencer.service";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportService} from "../shared/services/transport.service";
 import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
-import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
+import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
 
 @Component({
   selector: 'sequencer',
@@ -15,14 +15,14 @@ import {NoteTriggerDto} from "../shared/api/NoteTriggerDto";
 })
 export class SequencerComponent implements OnInit, OnChanges {
 
-  @Input() pattern: Pattern;
+  @Input() pattern: PatternViewModel;
 
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 100;
 
   noteCells: Array<Array<ContentCell>> = [];
   headerCells: Array<HeaderCell<any>> = [];
-  entries: Array<FlexyGridEntry<NoteTriggerDto>> = [];
+  entries: Array<FlexyGridEntry<NoteTriggerViewModel>> = [];
 
 
   constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
@@ -46,12 +46,12 @@ export class SequencerComponent implements OnInit, OnChanges {
 
   }
 
-  onGridEntryAdded(entry: FlexyGridEntry<NoteTriggerDto>): void {
+  onGridEntryAdded(entry: FlexyGridEntry<NoteTriggerViewModel>): void {
     this.sequencerService.addEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
 
   }
 
-  onGridEntryRemoved(entry: FlexyGridEntry<NoteTriggerDto>): void {
+  onGridEntryRemoved(entry: FlexyGridEntry<NoteTriggerViewModel>): void {
     this.sequencerService.removeEvent(entry, this.pattern);
   }
 

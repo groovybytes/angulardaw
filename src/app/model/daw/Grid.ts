@@ -1,9 +1,9 @@
-import {GridDto} from "../../shared/api/GridDto";
+import {GridViewModel} from "../viewmodel/GridViewModel";
 
 export class Grid {
-  constructor(model: GridDto) {
+  constructor(model: GridViewModel) {
     this.model = model;
   }
 
-  model: GridDto;
+  model: GridViewModel;
 }

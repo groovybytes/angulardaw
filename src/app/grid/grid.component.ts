@@ -1,10 +1,10 @@
 import {Component, EventEmitter, HostBinding, Input, OnInit, Output} from '@angular/core';
 import {System} from "../system/System";
 import {PluginId} from "../model/daw/plugins/PluginId";
-import {Pattern} from "../model/daw/Pattern";
+import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {GridComponentService} from "./grid.component.service";
-import {ProjectDto} from "../shared/api/ProjectDto";
-import {GridCellDto} from "../shared/api/GridCellDto";
+import {ProjectViewModel} from "../model/viewmodel/ProjectViewModel";
+import {GridCellViewModel} from "../model/viewmodel/GridCellViewModel";
 
 @Component({
   selector: 'grid',
@@ -12,12 +12,12 @@ import {GridCellDto} from "../shared/api/GridCellDto";
   styleUrls: ['./grid.component.scss']
 })
 export class GridComponent implements OnInit {
-  @Input() project: ProjectDto;
+  @Input() project: ProjectViewModel;
   instruments: Array<string> = Object.keys(PluginId);
 
   @Input() cellWidth: number;
   @Input() cellHeight: number;
-  @Output() focusedPatternChanged: EventEmitter<Pattern> = new EventEmitter();
+  @Output() focusedPatternChanged: EventEmitter<PatternViewModel> = new EventEmitter();
 
   constructor(private gridComponentService: GridComponentService,
               private system: System) {
@@ -29,34 +29,34 @@ export class GridComponent implements OnInit {
   }
 
  /* selectInstrument(instr: string, column: any): void {
-   // this.gridComponentService.selectInstrument(instr, column, this.project).catch(error => this.system.error(error));
+   // this.gridComponentService.selectInstrument(instr, column, this.projectViewModel).catch(error => this.system.error(error));
   }
 
   onCellClicked(cell: GridCellDto): void {
-    this.gridComponentService.onCellClicked(cell, this.project);
+    this.gridComponentService.onCellClicked(cell, this.projectViewModel);
 
   }
 
   onCellDblClicked(cell: GridCellDto): void {
-    this.gridComponentService.onCellDblClicked(cell, this.project, this.focusedPatternChanged);
+    this.gridComponentService.onCellDblClicked(cell, this.projectViewModel, this.focusedPatternChanged);
 
   }
 
   getPattern(id): Pattern {
-    return this.project.patterns.find(p => p.id === id);
+    return this.projectViewModel.patterns.find(p => p.id === id);
   }
 
   getCell(row: number, column: number): GridCellDto {
-    let index = row * this.project.grid.nColumns + column;
-    return this.project.grid.cells[index];
+    let index = row * this.projectViewModel.grid.nColumns + column;
+    return this.projectViewModel.grid.cells[index];
   }
 
   getRows(): Array<any> {
-    return Array(this.project.grid.nRows).fill(0);
+    return Array(this.projectViewModel.grid.nRows).fill(0);
   }
 
   getColumns(): Array<any> {
-    return Array(this.project.grid.nColumns).fill(0);
+    return Array(this.projectViewModel.grid.nColumns).fill(0);
   }*/
 
 }

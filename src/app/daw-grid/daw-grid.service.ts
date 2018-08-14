@@ -1,20 +1,32 @@
 import {Injectable} from "@angular/core";
 import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
-import {GridDto} from "../shared/api/GridDto";
-import {GridCellDto} from "../shared/api/GridCellDto";
-import {Pattern} from "../model/daw/Pattern";
-import {ProjectsService} from "../shared/services/projects.service";
-import {TrackDto} from "../shared/api/TrackDto";
+import {GridViewModel} from "../model/viewmodel/GridViewModel";
+import {GridCellViewModel} from "../model/viewmodel/GridCellViewModel";
+import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
+import {TrackViewModel} from "../model/viewmodel/TrackViewModel";
 import {PluginId} from "../model/daw/plugins/PluginId";
 import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
-import {ProjectDto} from "../shared/api/ProjectDto";
-import {PluginsService} from "../shared/services/plugins.service";
+import {ProjectViewModel} from "../model/viewmodel/ProjectViewModel";
+import {WstPlugin} from "../model/daw/WstPlugin";
 
 @Injectable()
 export class DawGridService {
 
-  constructor(private projectsService: ProjectsService,private pluginsService:PluginsService) {
+  constructor() {
+
+  }
+
+  createHeaderCells(nColumns: number): Array<HeaderCell<TrackViewModel>> {
+
+    let cells: Array<HeaderCell<TrackViewModel>> = [];
+    for (let i = 0; i < nColumns; i++) {
+      let cell = new HeaderCell<TrackViewModel>();
+      cell.column = i;
+      cells.push(cell);
+    }
+
+    return cells;
 
   }
 
@@ -36,71 +48,70 @@ export class DawGridService {
 
   }
 
-  updateEntryPositions(grid: GridDto, cellWidth: number, cellHeight: number): void {
-    grid.entries.filter(entry=>entry.data).forEach(entry => {
+  updateEntryPositions(grid: GridViewModel, cellWidth: number, cellHeight: number): void {
+    grid.entries.filter(entry => entry.data).forEach(entry => {
       entry.left = entry.data.column * cellWidth;
       entry.top = entry.data.row * cellHeight;
     });
   }
 
-  addEvent(entry: FlexyGridEntry<GridCellDto>, cellWidth: number, cellHeight: number, patterns: Array<Pattern>): Pattern {
+  addEvent(entry: FlexyGridEntry<GridCellViewModel>, cellWidth: number, cellHeight: number, patterns: Array<PatternViewModel>): PatternViewModel {
 
-    let pattern = new Pattern();
-    pattern.id = this.projectsService.guid();
+    let pattern = new PatternViewModel();
+    pattern.id = this.guid();
     patterns.forEach(p => p.isBeingEdited = false);
     patterns.push(pattern);
     let row = entry.top / cellHeight;
     let column = entry.left / cellWidth;
-    entry.data = new GridCellDto(null, row, column, pattern.id);
+    entry.data = new GridCellViewModel(null, row, column, pattern.id);
 
     return pattern;
   }
 
-  removeEvent(entry: FlexyGridEntry<GridCellDto>,patterns:Array<Pattern>): void {
-    let index = patterns.findIndex(p=>p.id===entry.data.patternId);
-    patterns.splice(index,1)
-   /* let entryIndex = grid.entries.findIndex(d=>d.data&& d.data.patternId===patterns[index].id);
-   /!* grid.entries.splice
-    patterns.splice(index,1);*!/*/
+  removeEvent(entry: FlexyGridEntry<GridCellViewModel>, patterns: Array<PatternViewModel>): void {
+    let index = patterns.findIndex(p => p.id === entry.data.patternId);
+    patterns.splice(index, 1)
+    /* let entryIndex = grid.entries.findIndex(d=>d.data&& d.data.patternId===patterns[index].id);
+    /!* grid.entries.splice
+     patterns.splice(index,1);*!/*/
   }
 
-  updateEvent(entry: FlexyGridEntry<GridCellDto>,cellWidth: number, cellHeight: number): void {
+  updateEvent(entry: FlexyGridEntry<GridCellViewModel>, cellWidth: number, cellHeight: number): void {
     entry.data.row = entry.top / cellHeight;
     entry.data.column = entry.left / cellWidth;
   }
 
- /* setPlugin(plugin: string, cell: HeaderCell<TrackDto>,project:ProjectDto): Promise<void> {
-    return new Promise((resolve,reject)=>{
-      let track:TrackDto=cell.data;
-      if (!track) {
-        cell.data = track=new TrackDto();
-        track.projectId=project.id;
-        project.tracks.push(track);
-      }
+  //returns true when a new track has been created
+  setPlugin(plugin: PluginId, cell: HeaderCell<TrackViewModel>, projectViewModel: ProjectViewModel): boolean {
+    let newTrack: boolean = false;
+    let track: TrackViewModel = cell.data;
+    if (!track) {
+      cell.data = track = new TrackViewModel(this.guid());
+      track.projectId = projectViewModel.id;
+      projectViewModel.tracks.push(track);
+      newTrack = true;
+    }
+    track.pluginId = plugin;
 
-      this.pluginsService.loadPlugin(plugin).then()
-    })
-  }*/
+    return newTrack;
+  }
 
- /* private _selectInstrument(track:TrackDto): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (instr === "") {
-        if (track.pluginId) column.instrument.destroy();
-        this.projectsService.removePlugin(column.track,0);
-        column.instrument=null;
-        resolve();
-      }
-      else this.projectsService.addPlugin(column.track, PluginId[instr.toUpperCase()],0)
-        .then(instrument => {
-          column.instrument=instrument;
-          resolve();
-        })
-        .catch(error => reject(error))
-    })
-  }*/
+  removeTrack(cell: HeaderCell<TrackViewModel>, projectViewModel: ProjectViewModel): void {
+    let index = projectViewModel.tracks.findIndex(t => t.id === cell.data.id);
+    projectViewModel.tracks.splice(index, 1);
+
+  }
 
 
+  guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
 
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
 
 
 }

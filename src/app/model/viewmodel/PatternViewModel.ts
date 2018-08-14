@@ -1,9 +1,9 @@
-import {NoteTriggerDto} from "../../shared/api/NoteTriggerDto";
+import {NoteTriggerViewModel} from "./NoteTriggerViewModel";
 
-export class Pattern{
+export class PatternViewModel{
   id:string;
   length:number=8; //beats
-  events: Array<NoteTriggerDto> = [];
+  events: Array<NoteTriggerViewModel> = [];
   notes:Array<string>=[];
   isBeingEdited:boolean=false;
   //transportParams:TransportParams;

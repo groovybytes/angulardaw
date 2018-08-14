@@ -30,26 +30,26 @@ export class TrackComponent implements OnInit {
 
 
   /*ngOnInit(): void {
-    this.project.transportParams.loop = true;
-    this.project.transportParams.quantization = NoteLength.Quarter;
+    this.projectViewModel.transportParams.loop = true;
+    this.projectViewModel.transportParams.quantization = NoteLength.Quarter;
     this.quantizationOptions = Lang.getEnumKeys(NoteLength);
 
     this.sequencerService.loadInstrument().then((drumkit) => {
 
       this.track.instrument = this.drumKit;
-      let viewModel = this.sequencerService.createPatternCells(this.bars, this.project.transportParams.quantization,
-        this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
-      this.project.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.project.transportParams.quantization,
-        this.project.transportParams.signature);
-      this.project.transportParams.tickEnd = this.loobBarEnd * MusicMath.getBarTicks(this.project.transportParams.quantization, this.project.transportParams.signature) - 1;
-      this.project.transport.beat.subscribe((tick) => this.onBeat(tick));
-      this.project.transport.time.subscribe((time) => this.onTime(time));
+      let viewModel = this.sequencerService.createPatternCells(this.bars, this.projectViewModel.transportParams.quantization,
+        this.projectViewModel.transportParams.bpm, this.projectViewModel.transportParams.signature, this.track.queue, this.drumKit.getNotes());
+      this.projectViewModel.transportParams.tickStart = this.loopBarStart * MusicMath.getBarTicks(this.projectViewModel.transportParams.quantization,
+        this.projectViewModel.transportParams.signature);
+      this.projectViewModel.transportParams.tickEnd = this.loobBarEnd * MusicMath.getBarTicks(this.projectViewModel.transportParams.quantization, this.projectViewModel.transportParams.signature) - 1;
+      this.projectViewModel.transport.beat.subscribe((tick) => this.onBeat(tick));
+      this.projectViewModel.transport.time.subscribe((time) => this.onTime(time));
 
       let sequencerEvents = new CellEvents<CellInfo>();
       let barEvents = new CellEvents<CellInfo>();
       let svgElement = d3.select(this.container.nativeElement.querySelector("svg"));
       this.renderer = new SequencerD3(
-        this.project,
+        this.projectViewModel,
         svgElement,
         drumkit,
         sequencerEvents,
@@ -83,19 +83,19 @@ export class TrackComponent implements OnInit {
   }
 
   onTime(time: number): void {
-    this.renderer.updatePosition(this.project.transport.getPositionInfo());
+    this.renderer.updatePosition(this.projectViewModel.transport.getPositionInfo());
   }
 
   startTransport(): void {
-    if (this.project.transport.isRunning()) this.project.transport.stop();
-    else this.project.transport.start();
+    if (this.projectViewModel.transport.isRunning()) this.projectViewModel.transport.stop();
+    else this.projectViewModel.transport.start();
   }
 
   quantize(length: NoteLength) {
-    this.project.transport.stop();
-    this.project.transportParams.quantization = length;
-    let viewModel = this.sequencerService.createPatternCells(this.bars, this.project.transportParams.quantization,
-      this.project.transportParams.bpm, this.project.transportParams.signature, this.track.queue, this.drumKit.getNotes());
+    this.projectViewModel.transport.stop();
+    this.projectViewModel.transportParams.quantization = length;
+    let viewModel = this.sequencerService.createPatternCells(this.bars, this.projectViewModel.transportParams.quantization,
+      this.projectViewModel.transportParams.bpm, this.projectViewModel.transportParams.signature, this.track.queue, this.drumKit.getNotes());
     this.renderer.render(viewModel);
 
   }

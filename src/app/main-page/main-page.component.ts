@@ -1,10 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {System} from "../system/System";
-import {Pattern} from "../model/daw/Pattern";
-import {ProjectDto} from "../shared/api/ProjectDto";
+import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
+import {ProjectViewModel} from "../model/viewmodel/ProjectViewModel";
 import {ApiEndpoint} from "../shared/api/ApiEndpoint";
-import {GridCellDto} from "../shared/api/GridCellDto";
+import {GridCellViewModel} from "../model/viewmodel/GridCellViewModel";
+import {TrackViewModel} from "../model/viewmodel/TrackViewModel";
+import {ProjectsService} from "../shared/services/projects.service";
+import {Project} from "../model/daw/Project";
 
 @Component({
   selector: 'main-page',
@@ -12,8 +15,9 @@ import {GridCellDto} from "../shared/api/GridCellDto";
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent implements OnInit {
-  project: ProjectDto;
-  focusedPattern:Pattern;
+  projectViewModel: ProjectViewModel;
+  focusedPattern: PatternViewModel;
+  project: Project;
   gridCellDimensionIndex: number = 0;
   gridCellDimensions = [
     {width: 100, height: 50},
@@ -26,11 +30,11 @@ export class MainPageComponent implements OnInit {
   ];
 
 
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
+    private projectsService: ProjectsService,
+    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
     private system: System) {
 
   }
@@ -42,23 +46,37 @@ export class MainPageComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.projectsApi.get(params.projectId).subscribe(project => {
-        this.project = project;
+        this.projectViewModel = project;
+        this.projectsService.loadProject(project).then(project => this.project = project);
       }, error => this.system.error(error));
     });
   }
 
+  onTrackAdded(trackViewModel: TrackViewModel): void {
+    this.projectsService.addTrack(this.project,trackViewModel);
+  }
+
+  onTrackRemoved(trackViewModel: TrackViewModel): void {
+
+  }
+
+  onPluginChanged(trackViewModel: TrackViewModel): void {
+    this.projectsService.setPlugin(this.project.tracks.find(t=>t.id===trackViewModel.id),trackViewModel.pluginId);
+  }
+
+
   save(): void {
-    this.projectsApi.put(this.project)
+    this.projectsApi.put(this.projectViewModel)
       .subscribe(() => {
 
-        console.log("project saved")
+        console.log("projectViewModel saved")
       }, error => {
         this.system.error(error)
       });
   }
 
-  focusedPatternChanged(pattern: Pattern): void {
-    this.focusedPattern=pattern;
+  focusedPatternChanged(pattern: PatternViewModel): void {
+    this.focusedPattern = pattern;
   }
 }
 

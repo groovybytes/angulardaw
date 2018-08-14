@@ -37,5 +37,5 @@ export class LocalStorageArray<T> {
     localStorage.setItem(this.id,JSON.stringify(this.data));
   }
 
- /* project.id=_.uniqueId();*/
+ /* projectViewModel.id=_.uniqueId();*/
 }

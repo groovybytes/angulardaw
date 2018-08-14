@@ -20,8 +20,9 @@ export class PluginsService {
 
   }
 
-  loadPlugin(id: PluginId): Promise<WstPlugin> {
+  loadPlugin(_id: string): Promise<WstPlugin> {
     let plugin:WstPlugin;
+    let id=_id.toLowerCase();
     if (id === PluginId.DRUMKIT1) {
       plugin = new Drums(this.fileService,this.config,this.samplesV2Service);
     }

@@ -1,10 +1,10 @@
 <!--
 <div class="table-container">
-  <table *ngIf="project && project.grid" class="table table-striped table-bordered table-hover">&lt;!&ndash;table table-dark table-hover&ndash;&gt;
+  <table *ngIf="projectViewModel && projectViewModel.grid" class="table table-striped table-bordered table-hover">&lt;!&ndash;table table-dark table-hover&ndash;&gt;
     <thead>
     <tr>
       <th class="" >X</th>
-      <th *ngFor="let col of project.grid.columns" class="" >
+      <th *ngFor="let col of projectViewModel.grid.columns" class="" >
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false">

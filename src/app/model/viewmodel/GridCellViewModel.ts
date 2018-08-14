@@ -1,4 +1,4 @@
-export class GridCellDto{
+export class GridCellViewModel{
   trackId: any;
   row: number;
   column:number;

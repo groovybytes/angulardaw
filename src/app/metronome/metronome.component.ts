@@ -63,9 +63,9 @@ export class MetronomeComponent implements OnInit {
       bpm:120,
       quantization:NoteLength.Quarter,
       signature:"4,4"
-    }).then(result=>this.project=result);
+    }).then(result=>this.projectViewModel=result);
     this.transport.params.quantization=NoteLength.EighthTriplet;
-    let track = this.projectService.addTrack(this.project,0);
+    let track = this.projectService.addTrack(this.projectViewModel,0);
     this.projectService.addPlugin(track,PluginId.METRONOME,0)
       .catch(error=>this.system.error(error))*/
 

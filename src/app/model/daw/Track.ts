@@ -5,16 +5,17 @@ import {PerformanceEvent} from "./events/PerformanceEvent";
 import {WstPlugin} from "./WstPlugin";
 import {Subscription} from "rxjs";
 import {TransportPosition} from "./TransportPosition";
-import {TrackDto} from "../../shared/api/TrackDto";
+import {TrackViewModel} from "../viewmodel/TrackViewModel";
 import * as _ from "lodash";
 
 export class Track {
-  model:TrackDto;
+  id:string;
+  model:TrackViewModel;
   private streamer: PerformanceStreamer;
   private subscriptions: Array<Subscription> = [];
   plugin:WstPlugin;
 
-  constructor(model:TrackDto,protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
+  constructor(model:TrackViewModel, protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
     this.model=model;
     this.streamer = new PerformanceStreamer(model.events,transportEvents, this.transportInfo);
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.position,event.event)));

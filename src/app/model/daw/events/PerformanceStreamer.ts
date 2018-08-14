@@ -28,7 +28,7 @@ export class PerformanceStreamer {
   }
 
   private onTransportTime(transportTime: number): void {
-
+    console.log(transportTime);
     if (this.loopQueue.length > 0 && this.queueIndex < this.loopQueue.length) {
       let matches = 0;
       for (let i = this.queueIndex; i < this.queue.length; i++) {

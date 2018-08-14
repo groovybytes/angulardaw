@@ -1,7 +1,7 @@
-import {ProjectDto} from "../api/ProjectDto";
-import {GridDto} from "../api/GridDto";
-import {GridCellDto} from "../api/GridCellDto";
-import {GridColumnDto} from "../api/GridColumnDto";
+import {ProjectViewModel} from "../../model/viewmodel/ProjectViewModel";
+import {GridViewModel} from "../../model/viewmodel/GridViewModel";
+import {GridCellViewModel} from "../../model/viewmodel/GridCellViewModel";
+import {GridColumnViewModel} from "../../model/viewmodel/GridColumnViewModel";
 import {Inject, Injectable} from "@angular/core";
 import {ApiEndpoint} from "../api/ApiEndpoint";
 import {Observable} from "rxjs";
@@ -10,37 +10,54 @@ import {Track} from "../../model/daw/Track";
 import {PluginId} from "../../model/daw/plugins/PluginId";
 import {PluginsService} from "./plugins.service";
 import {Project} from "../../model/daw/Project";
-import {TrackDto} from "../api/TrackDto";
+import {TrackViewModel} from "../../model/viewmodel/TrackViewModel";
 import {TransportService} from "./transport.service";
+import {System} from "../../system/System";
 
 @Injectable()
 export class ProjectsService {
 
   constructor(
-    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectDto>,
-    private transportService:TransportService,
+    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
+    private transportService: TransportService,
     private pluginsService: PluginsService) {
 
   }
 
-  createProject(name: string): ProjectDto {
-    let project = new ProjectDto();
+  createProject(name: string): ProjectViewModel {
+    let project = new ProjectViewModel();
     project.id = this.guid();
     project.name = name;
-    let grid = project.grid = new GridDto();
+    let grid = project.grid = new GridViewModel();
     grid.nColumns = 5;
     grid.nRows = 5;
     return project;
   }
 
-  addPlugin(track: Track, id: PluginId): Promise<WstPlugin> {
+  loadProject(projectViewModel:ProjectViewModel):Promise<Project>{
+    return new Promise<Project>((resolve,reject)=>{
+      let project = new Project(projectViewModel);
+      let promises = [];
+      projectViewModel.tracks.forEach(track=>{
+        let newTrack = this.addTrack(project,track);
+        if (track.pluginId) promises.push(this.setPlugin(newTrack,track.pluginId));
+      });
+
+      Promise.all(promises)
+        .then(()=>resolve(project))
+        .catch(error=>reject(error));
+
+    })
+  }
+
+  setPlugin(track: Track, id: string): Promise<WstPlugin> {
     return new Promise<WstPlugin>((resolve, reject) => {
       try {
         if (track.plugin) track.plugin.destroy();
         track.plugin = null;
         this.pluginsService.loadPlugin(id)
           .then(plugin => {
-            track.plugin=plugin;
+            track.plugin = plugin;
             resolve(plugin);
           })
           .catch(error => reject(error));
@@ -57,11 +74,13 @@ export class ProjectsService {
     track.plugin = null;
   }
 
-  addTrack<T>(project: Project, trackDto:TrackDto): Track {
+  addTrack<T>(project: Project, trackDto: TrackViewModel): Track {
     let track = new Track(trackDto, this.transportService.getEvents(), this.transportService.getInfo());
+    track.id=trackDto.id;
     project.tracks.push(track);
     return track;
   }
+
 
   guid() {
     function s4() {
