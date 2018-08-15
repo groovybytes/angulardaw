@@ -1,0 +1,34 @@
+<div class="container-wrapper"
+     [ngStyle]="{'width':cellWidth*headerCells.length+'px'}"
+     id="containment-wrapper">
+  <div *ngFor="let entry of entries"
+       (mousedown)="onEntryMouseDown(entry,$event)"
+       class="cell-content"
+       (click)="onEntryClicked(entry)"
+       (dblclick)="onEntryDblClicked(entry)"
+       [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px',left:entry.left+'px',top:entry.top+'px'}"
+       jquery-ui-draggable
+       [params]="getDragParams(entry)"></div>
+  <table class=" table-striped table-bordered">
+    <!-- <thead>
+     <tr class="">
+       <th
+         *ngFor="let header of headerCells" class="text-center">
+         <span>X</span>
+       </th>
+     </tr>
+     </thead>-->
+    <tbody>
+    <tr *ngFor="let row of contentCells">
+      <td *ngFor="let cell of row"
+          (click)="onCellClicked(cell)"
+          (dblclick)="onContentCellDblClicked(cell)"
+          [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">
+
+        <!--  [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}"-->
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
