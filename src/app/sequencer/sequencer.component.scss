@@ -1,44 +1,16 @@
 @import "../../variables";
 @import "../table";
 
-:host {
-  /*position: absolute;*/
+
+.noteTable{
+  table-layout:fixed;
+  float:right;
 
 
 }
 
-[mwlDraggable] {
-  background-color: red;
-  width: 100px;
-  height: 50px;
-  position: relative;
-  z-index: 2;
-  float: left;
-  margin-right: 10px;
-  cursor: move;
-}
-/*[mwlDroppable] {
-  background-color: green;
-  width: 400px;
-  height: 400px;
-  z-index: 1;
-  position: relative;
-  top: 50px;
-  left: 100px;
-}*/
-[mwlDraggable]{
-  color: white;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.drop-over-active {
-  border: dashed 1px black;
-  background-color: lightgreen !important;
-}
-.drag-active {
-  z-index: 3;
+.flexy-table-wrapper{
+  left:200px;
 }
 .card{
 
@@ -49,30 +21,4 @@
 .card-body {
   padding: 0;
   overflow: auto;
-}
-
-
-.sequencer-container{
- /* position: relative;*/
-}
-.event-div{
-
-  background-color: red;
-  position: absolute;
-}
-
-.btn-note {
-  height: 49px;
-}
-
-.note-cell {
-  /*tickWidth:100px;*/
-  /*tickHeight:$cell-tickHeight;*/
-  div {
-
-  }
-  /*&:hover {
-    background-color: $color8;
-  }*/
-
 }

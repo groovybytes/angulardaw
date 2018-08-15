@@ -13,6 +13,9 @@ import {Project} from "../../model/daw/Project";
 import {TrackViewModel} from "../../model/viewmodel/TrackViewModel";
 import {TransportService} from "./transport.service";
 import {System} from "../../system/System";
+import {MusicMath} from "../../model/utils/MusicMath";
+import {PatternViewModel} from "../../model/viewmodel/PatternViewModel";
+import {TransportParams} from "../../model/daw/TransportParams";
 
 @Injectable()
 export class ProjectsService {
@@ -34,18 +37,18 @@ export class ProjectsService {
     return project;
   }
 
-  loadProject(projectViewModel:ProjectViewModel):Promise<Project>{
-    return new Promise<Project>((resolve,reject)=>{
+  loadProject(projectViewModel: ProjectViewModel): Promise<Project> {
+    return new Promise<Project>((resolve, reject) => {
       let project = new Project(projectViewModel);
       let promises = [];
-      projectViewModel.tracks.forEach(track=>{
-        let newTrack = this.addTrack(project,track);
-        if (track.pluginId) promises.push(this.setPlugin(newTrack,track.pluginId));
+      projectViewModel.tracks.forEach(track => {
+        let newTrack = this.addTrack(project, track);
+        if (track.pluginId) promises.push(this.setPlugin(newTrack, track.pluginId));
       });
 
       Promise.all(promises)
-        .then(()=>resolve(project))
-        .catch(error=>reject(error));
+        .then(() => resolve(project))
+        .catch(error => reject(error));
 
     })
   }
@@ -76,9 +79,16 @@ export class ProjectsService {
 
   addTrack<T>(project: Project, trackDto: TrackViewModel): Track {
     let track = new Track(trackDto, this.transportService.getEvents(), this.transportService.getInfo());
-    track.id=trackDto.id;
+    track.id = trackDto.id;
     project.tracks.push(track);
     return track;
+  }
+
+  onPatternChanged(track: Track, pattern: PatternViewModel, transportParams: TransportParams): void {
+    track.resetEvents(pattern.events);
+    pattern.notes = track.plugin.getNotes();
+    transportParams.tickEnd =
+      pattern.length * MusicMath.getBeatTicks(transportParams.quantization);
   }
 
 

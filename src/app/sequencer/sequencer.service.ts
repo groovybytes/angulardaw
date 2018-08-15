@@ -53,7 +53,8 @@ export class SequencerService {
 
   }
 
-  createEntries(pattern: PatternViewModel, cellWidth: number, cellHeight: number, params: TransportParams): Array<FlexyGridEntry<NoteTriggerViewModel>> {
+  createEntries(pattern: PatternViewModel, cellWidth: number, cellHeight: number,
+                params: TransportParams): Array<FlexyGridEntry<NoteTriggerViewModel>> {
     let result = [];
     pattern.events.forEach(event => {
       let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization);
@@ -64,7 +65,6 @@ export class SequencerService {
       let top = rowIndex * cellHeight;
 
       let entry = new FlexyGridEntry(event,left,top);
-      console.log(entry);
       result.push(entry);
     });
     return result;
@@ -92,17 +92,14 @@ export class SequencerService {
 
     let notes = this.getPatternNotes(pattern);
     let note = notes[rowIndex];
-
     let trigger = new NoteTriggerViewModel(null, note, noteTime, NoteLength.Quarter, Loudness.fff, 0);
     entry.data = trigger;
     this.patternsService.insertNote(pattern, trigger);
-
-    console.log(trigger);
   }
 
   removeEvent(entry:FlexyGridEntry<NoteTriggerViewModel>, pattern:PatternViewModel):void{
 
-    this.patternsService.removeNote(pattern, entry.data);
+    this.patternsService.removeNote(pattern, entry.data.id);
     entry.data=null;
   }
 

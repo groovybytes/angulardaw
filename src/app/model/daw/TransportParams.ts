@@ -7,5 +7,5 @@ export class TransportParams{
   signature:TimeSignature=new TimeSignature(4,4);
   tickStart: number = 0;
   tickEnd: number = Number.MAX_VALUE;
-  loop:boolean=false;
+  loop:boolean=true;
 }

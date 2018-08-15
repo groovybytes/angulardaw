@@ -1,12 +1,12 @@
 import {TransportEvents} from "./events/TransportEvents";
 import {TransportInfo} from "./TransportInfo";
 import {PerformanceStreamer} from "./events/PerformanceStreamer";
-import {PerformanceEvent} from "./events/PerformanceEvent";
 import {WstPlugin} from "./WstPlugin";
 import {Subscription} from "rxjs";
 import {TransportPosition} from "./TransportPosition";
 import {TrackViewModel} from "../viewmodel/TrackViewModel";
 import * as _ from "lodash";
+import {NoteTriggerViewModel} from "../viewmodel/NoteTriggerViewModel";
 
 export class Track {
   id:string;
@@ -21,18 +21,24 @@ export class Track {
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.position,event.event)));
   }
 
-  private onNextEvent(position:TransportPosition,event: PerformanceEvent<any>): void {
+  private onNextEvent(position:TransportPosition,event: NoteTriggerViewModel): void {
     this.plugin.feed(event,position);
   }
 
 
-  addEvent(event: PerformanceEvent<any>): void {
+  resetEvents(events:Array<NoteTriggerViewModel>):void{
+    this.model.events=events;
+    this.streamer.updateEventQueue(events);
+  }
+  addEvent(event: NoteTriggerViewModel): void {
     let insertIndex = _.sortedIndexBy(this.model.events, {'time': event.time}, event => event.time);
     this.model.events.splice(insertIndex, 0, event);
   }
 
-  removeEvent(event: PerformanceEvent<any>): void {
-    throw "not implemented";
+  removeEvent(id:string): void {
+    let index = this.model.events.findIndex(ev=>ev.id===id);
+    this.model.events.splice(index, 1);
+
   }
 
   destroy(): void {

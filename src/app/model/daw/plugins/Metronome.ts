@@ -1,11 +1,11 @@
 import {WstPlugin} from "../WstPlugin";
 import {PluginId} from "./PluginId";
-import {PerformanceEvent} from "../events/PerformanceEvent";
 import {Sample} from "../Sample";
 import {TransportPosition} from "../TransportPosition";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {AppConfiguration} from "../../../app.configuration";
+import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 
 
 export class Metronome implements WstPlugin {
@@ -27,7 +27,7 @@ export class Metronome implements WstPlugin {
   destroy(): void {
   }
 
-  feed(event: PerformanceEvent<void>, position: TransportPosition): any {
+  feed(event:NoteTriggerViewModel, position: TransportPosition): any {
     if (position.beat !== this.lastBeat) {
       if (position.beat === 0) this.accentSample.trigger();
       else this.otherSample.trigger();
@@ -44,6 +44,10 @@ export class Metronome implements WstPlugin {
       })
         .catch(error => reject(error));
     })
+  }
+
+  getNotes(): Array<string> {
+    return [];
   }
 
 

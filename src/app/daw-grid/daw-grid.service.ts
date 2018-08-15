@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {EventEmitter, Injectable} from "@angular/core";
 import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {GridViewModel} from "../model/viewmodel/GridViewModel";
@@ -99,6 +99,18 @@ export class DawGridService {
   removeTrack(cell: HeaderCell<TrackViewModel>, projectViewModel: ProjectViewModel): void {
     let index = projectViewModel.tracks.findIndex(t => t.id === cell.data.id);
     projectViewModel.tracks.splice(index, 1);
+
+  }
+
+  changePattern(project: ProjectViewModel, entry: FlexyGridEntry<GridCellViewModel>,
+                emitter: EventEmitter<{ pattern: PatternViewModel, trackId: string }>): void {
+
+    if (entry){
+      let pattern = project.patterns.find(p => p.id === entry.data.patternId);
+      let headerCell = project.grid.headerCells.find(c => c.column === entry.data.column);
+      emitter.emit({pattern: pattern, trackId: headerCell.data.id});
+    }
+    else emitter.emit({pattern: null, trackId: null});
 
   }
 

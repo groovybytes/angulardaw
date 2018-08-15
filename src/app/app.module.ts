@@ -25,9 +25,9 @@ import {TrackControlComponent} from './track-control/track-control.component';
 import {GridModule} from "./grid/grid.module";
 import {SequencerModule} from "./sequencer/sequencer.module";
 import {UiModule} from "./ui/ui.module";
-import {ProjectWatchComponent} from './project-watch/project-watch.component';
 import { DawGridComponent } from './daw-grid/daw-grid.component';
 import {DawGridService} from "./daw-grid/daw-grid.service";
+import {ObserversModule} from "./modelobserver/observers.module";
 
 let audioContext = new AudioContext();
 @NgModule({
@@ -40,7 +40,6 @@ let audioContext = new AudioContext();
     ProjectsPageComponent,
     TrackComponent,
     TrackControlComponent,
-    ProjectWatchComponent,
     DawGridComponent
   ],
   imports: [
@@ -52,7 +51,8 @@ let audioContext = new AudioContext();
     SharedModule,
     GridModule,
     SequencerModule,
-    UiModule
+    UiModule,
+    ObserversModule
     //ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],

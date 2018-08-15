@@ -1,7 +1,6 @@
 import {Sample} from "../Sample";
 import {NoteTrigger} from "../../mip/NoteTrigger";
 import {WstPlugin} from "../WstPlugin";
-import {PerformanceEvent} from "../events/PerformanceEvent";
 import {PluginId} from "./PluginId";
 import {TransportPosition} from "../TransportPosition";
 import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
@@ -9,6 +8,7 @@ import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {System} from "../../../system/System";
 import {AppConfiguration} from "../../../app.configuration";
+import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 
 
 export class Drums implements WstPlugin {
@@ -38,8 +38,8 @@ export class Drums implements WstPlugin {
   destroy(): void {
   }
 
-  feed(event: PerformanceEvent<NoteTrigger>, position: TransportPosition): any {
-    let trigger = this.triggers.find(trigger => trigger.note === event.data.note);
+  feed(event: NoteTriggerViewModel, position: TransportPosition): any {
+    let trigger = this.triggers.find(trigger => trigger.note === event.note);
     trigger.sample.trigger();
   }
 

@@ -5,50 +5,31 @@
   </div>
   <div class="card-body  cell-height-bigger" #container>
 
+    <div class="row  no-gutters">
+      <div class="col-1">
+        <table class="noteTable table-striped table-bordered">
+          <tr *ngFor="let note of pattern.notes.length>0?pattern.notes:allNotes">
+            <th [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">{{note}}</th>
+          </tr>
+        </table>
+      </div>
+      <div class="col-11">
+        <flexytable
+          [cellHeight]="cellHeight"
+          [cellWidth]="cellWidth"
+          [entries]="entries"
+          [contentCells]="noteCells"
+          [headerCells]="headerCells"
+          (entryRemoved)="onGridEntryRemoved($event)"
+          (entryAdded)="onGridEntryAdded($event)">
+        </flexytable>
+      </div>
+    </div>
 
-    <flexytable
-      [cellHeight]="cellHeight"
-      [cellWidth]="cellWidth"
-      [entries]="entries"
-      [contentCells]="noteCells"
-      [headerCells]="headerCells"
-      (entryRemoved)="onGridEntryRemoved($event)"
-      (entryAdded)="onGridEntryAdded($event)">
-    </flexytable>
 
-    <!-- <table class="table table-striped table-bordered ">&lt;!&ndash; table table-light table-striped table-bordered&ndash;&gt;
-       <thead>
-       <tr class="">
-         <th>
-           &nbsp;
-         </th>
-         <th
-           *ngFor="let header of headerCells" class="text-center">
-           <span>{{header.column}}</span>
-         </th>
-       </tr>
-       </thead>
-       <tbody>
-       <tr *ngFor="let row of noteCells">
-         <th
-           class=""><span>X</span></th>
-         <td
-           *ngFor="let cell of row" class="note-cell"
-           [attr.data-note]="cell.note"
-           (click)="onNoteCellClicked(cell)">
-
-           &lt;!&ndash;        <div style="width:100px;height:50px;position:absolute" [ngStyle]="{'left':x(cell)+'px','top':y(cell)+'px'}" *ngFor="let event of cell.events"&ndash;&gt;
-           &lt;!&ndash; <div style="width:100px;height:50px;position: absolute" [ngStyle]="{'left':0+'px','top':y(cell)+'px'}" *ngFor="let event of cell.events"&ndash;&gt;
-          &lt;!&ndash; <div ngDraggable *ngFor="let event of cell.events"
-                style="position:absolute;width:100%;height:100%;background-color: red">
-           </div>&ndash;&gt;
-
-         </td>
-       </tr>
-       </tbody>
-     </table>-->
   </div>
   <div class="card-footer bg-gradient-tertiary border-primary">
     <ng-content select="[footer]"></ng-content>
   </div>
 </div>
+

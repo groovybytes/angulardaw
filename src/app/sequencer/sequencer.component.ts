@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {SequencerService} from "./sequencer.service";
 import {MusicMath} from "../model/utils/MusicMath";
@@ -7,6 +7,7 @@ import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
+import {NoteInfo} from "../model/utils/NoteInfo";
 
 @Component({
   selector: 'sequencer',
@@ -23,9 +24,11 @@ export class SequencerComponent implements OnInit, OnChanges {
   noteCells: Array<Array<ContentCell>> = [];
   headerCells: Array<HeaderCell<any>> = [];
   entries: Array<FlexyGridEntry<NoteTriggerViewModel>> = [];
-
+  allNotes:Array<string>;
 
   constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
+    NoteInfo.load();
+    this.allNotes=NoteInfo.getAllIds();
   }
 
   getTime(column: number): number {

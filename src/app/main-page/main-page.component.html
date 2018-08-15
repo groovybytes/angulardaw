@@ -16,9 +16,8 @@
         (trackRemoved)="onTrackRemoved($event)"
         [project]="projectViewModel"
         [cellWidth]="100"
-        [cellHeight]="50"></daw-grid>
-      <!--<grid [cellWidth]="100" [cellHeight]="50" [projectViewModel]="projectViewModel"
-                (focusedPatternChanged)="focusedPatternChanged($event)"></grid>-->
+        [cellHeight]="50">
+      </daw-grid>
     </div>
   </div>
   <div class="row">
@@ -26,7 +25,7 @@
       <sequencer [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>
     </div>
   </div>
-
+  <pattern-observer [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
   <nav class="navbar navbar-dark bg-light footer fixed-bottom">
     <daw-control [project]="projectViewModel"></daw-control>
   </nav>

@@ -1,4 +1,4 @@
-import {PerformanceEvent} from "../daw/events/PerformanceEvent";
+import {NoteTriggerViewModel} from "./NoteTriggerViewModel";
 
 export class TrackViewModel {
   constructor(id:string){
@@ -10,5 +10,5 @@ export class TrackViewModel {
   pluginId:string;
   projectId:any;
   ghost:boolean=false;
-  events:Array<PerformanceEvent<any> >=[];
+  events:Array<NoteTriggerViewModel>=[];
 }

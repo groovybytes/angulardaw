@@ -1,7 +1,12 @@
+/*
 import {TransportPosition} from "../TransportPosition";
 
 export class PerformanceEvent<T>{
-  id:any;
+  constructor(data:T,time:number){
+    this.data=data;
+    this.time=time;
+  }
   time:number;
   data:T;
 }
+*/

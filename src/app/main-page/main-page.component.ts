@@ -4,10 +4,12 @@ import {System} from "../system/System";
 import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {ProjectViewModel} from "../model/viewmodel/ProjectViewModel";
 import {ApiEndpoint} from "../shared/api/ApiEndpoint";
-import {GridCellViewModel} from "../model/viewmodel/GridCellViewModel";
 import {TrackViewModel} from "../model/viewmodel/TrackViewModel";
 import {ProjectsService} from "../shared/services/projects.service";
 import {Project} from "../model/daw/Project";
+
+import {Track} from "../model/daw/Track";
+import {TransportService} from "../shared/services/transport.service";
 
 @Component({
   selector: 'main-page',
@@ -17,6 +19,7 @@ import {Project} from "../model/daw/Project";
 export class MainPageComponent implements OnInit {
   projectViewModel: ProjectViewModel;
   focusedPattern: PatternViewModel;
+  focusedTrack:Track;
   project: Project;
   gridCellDimensionIndex: number = 0;
   gridCellDimensions = [
@@ -34,6 +37,7 @@ export class MainPageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
+    private transportService:TransportService,
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
     private system: System) {
 
@@ -44,6 +48,7 @@ export class MainPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.transportService.params.loop=true;
     this.route.params.subscribe(params => {
       this.projectsApi.get(params.projectId).subscribe(project => {
         this.projectViewModel = project;
@@ -75,8 +80,14 @@ export class MainPageComponent implements OnInit {
       });
   }
 
-  focusedPatternChanged(pattern: PatternViewModel): void {
-    this.focusedPattern = pattern;
+  focusedPatternChanged(params:{pattern:PatternViewModel,trackId:string}): void {
+
+    this.focusedPattern = params.pattern;
+    if (params.pattern){
+      let track = this.project.tracks.find(t=>t.id===params.trackId);
+      this.focusedTrack=track;
+    }
+
   }
 }
 
