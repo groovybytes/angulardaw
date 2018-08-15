@@ -17,9 +17,8 @@ import {TransportService} from "../shared/services/transport.service";
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent implements OnInit {
-  projectViewModel: ProjectViewModel;
   focusedPattern: PatternViewModel;
-  focusedTrack:Track;
+  focusedTrack: Track;
   project: Project;
   gridCellDimensionIndex: number = 0;
   gridCellDimensions = [
@@ -37,7 +36,7 @@ export class MainPageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
-    private transportService:TransportService,
+    private transportService: TransportService,
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
     private system: System) {
 
@@ -48,17 +47,19 @@ export class MainPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.transportService.params.loop=true;
+    this.transportService.params.loop = true;
     this.route.params.subscribe(params => {
-      this.projectsApi.get(params.projectId).subscribe(project => {
-        this.projectViewModel = project;
-        this.projectsService.loadProject(project).then(project => this.project = project);
+      this.projectsApi.get(params.projectId).subscribe(projecViewModel => {
+        this.projectsService.loadProject(projecViewModel).then(project => {
+          this.project = project;
+
+        });
       }, error => this.system.error(error));
     });
   }
 
   onTrackAdded(trackViewModel: TrackViewModel): void {
-    this.projectsService.addTrack(this.project,trackViewModel);
+    this.projectsService.addTrack(this.project, trackViewModel);
   }
 
   onTrackRemoved(trackViewModel: TrackViewModel): void {
@@ -66,12 +67,12 @@ export class MainPageComponent implements OnInit {
   }
 
   onPluginChanged(trackViewModel: TrackViewModel): void {
-    this.projectsService.setPlugin(this.project.tracks.find(t=>t.id===trackViewModel.id),trackViewModel.pluginId);
+    this.projectsService.setPlugin(this.project.tracks.find(t => t.id === trackViewModel.id), trackViewModel.pluginId);
   }
 
 
   save(): void {
-    this.projectsApi.put(this.projectViewModel)
+    this.projectsApi.put(this.project.model)
       .subscribe(() => {
 
         console.log("projectViewModel saved")
@@ -80,12 +81,13 @@ export class MainPageComponent implements OnInit {
       });
   }
 
-  focusedPatternChanged(params:{pattern:PatternViewModel,trackId:string}): void {
+  focusedPatternChanged(params: { pattern: PatternViewModel, trackId: string }): void {
 
+    this.project.model.focusedPattern = params.pattern.id;
     this.focusedPattern = params.pattern;
-    if (params.pattern){
-      let track = this.project.tracks.find(t=>t.id===params.trackId);
-      this.focusedTrack=track;
+    if (params.pattern) {
+      let track = this.project.tracks.find(t => t.id === params.trackId);
+      this.focusedTrack = track;
     }
 
   }

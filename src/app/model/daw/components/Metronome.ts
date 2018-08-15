@@ -1,33 +1,38 @@
-import {WstPlugin} from "../WstPlugin";
-import {PluginId} from "./PluginId";
 import {Sample} from "../Sample";
 import {TransportPosition} from "../TransportPosition";
 import {AppConfiguration} from "../../../app.configuration";
-import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
+import {TransportService} from "../../../shared/services/transport.service";
+import {Subscription} from "rxjs/internal/Subscription";
 
 
-export class Metronome implements WstPlugin {
+export class Metronome {
 
   private lastBeat: number = -1;
   private accentSample: Sample;
   private otherSample: Sample;
+  private transportSubscription: Subscription;
+
+  enabled: boolean = true;
 
   constructor(private fileService: FilesApi,
               private config: AppConfiguration,
+              private transportService: TransportService,
               private samplesV2Service: SamplesApi) {
+
+    this.transportSubscription = transportService.tickTock.subscribe(tick => {
+      this.feed(this.transportService.getPositionInfo())
+    });
   }
 
-
-  getId(): PluginId {
-    return PluginId.METRONOME;
-  }
 
   destroy(): void {
+    this.transportSubscription.unsubscribe();
   }
 
-  feed(event:NoteTriggerViewModel, position: TransportPosition): any {
+  feed(position: TransportPosition): void {
+    console.log(position);
     if (position.beat !== this.lastBeat) {
       if (position.beat === 0) this.accentSample.trigger();
       else this.otherSample.trigger();
@@ -45,10 +50,5 @@ export class Metronome implements WstPlugin {
         .catch(error => reject(error));
     })
   }
-
-  getNotes(): Array<string> {
-    return [];
-  }
-
 
 }

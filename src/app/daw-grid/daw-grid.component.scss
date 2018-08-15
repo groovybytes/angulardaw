@@ -1,8 +1,9 @@
 @import "../../variables";
 
-:host{
-
-  height: $main-height*3/3;
-  min-height:$main-height*3/3 ;
+:host {
   overflow: auto;
+}
+
+.header-table {
+  table-layout: fixed;
 }

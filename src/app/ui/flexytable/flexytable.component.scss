@@ -1,22 +1,14 @@
-@import "../../table";
+@import "../../../variables";
 
 .cell-content {
   z-index: 1;
   cursor: move;
-  background-color: red;
+  background-color: $color7;
   position: absolute;
-  //background-color: green;
 }
 .container-wrapper{
   position: relative;
 }
-
 .table {
   table-layout: fixed;
-
-}
-
-td {
-  //position: relative;
-
 }

@@ -1,35 +1,21 @@
-<div class="card border-primary  bg-secondary" *ngIf="pattern">
-
-  <div class="card-header bg-gradient-tertiary">
-    <ng-content select="[header]"></ng-content>
+<div class="row  no-gutters" *ngIf="pattern">
+  <div class="col-1">
+    <table class=" noteTable table-striped table-bordered">
+      <tr *ngFor="let note of pattern.notes.length>0?pattern.notes:allNotes">
+        <th [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">{{note}}</th>
+      </tr>
+    </table>
   </div>
-  <div class="card-body  cell-height-bigger" #container>
-
-    <div class="row  no-gutters">
-      <div class="col-1">
-        <table class="noteTable table-striped table-bordered">
-          <tr *ngFor="let note of pattern.notes.length>0?pattern.notes:allNotes">
-            <th [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">{{note}}</th>
-          </tr>
-        </table>
-      </div>
-      <div class="col-11">
-        <flexytable
-          [cellHeight]="cellHeight"
-          [cellWidth]="cellWidth"
-          [entries]="entries"
-          [contentCells]="noteCells"
-          [headerCells]="headerCells"
-          (entryRemoved)="onGridEntryRemoved($event)"
-          (entryAdded)="onGridEntryAdded($event)">
-        </flexytable>
-      </div>
-    </div>
-
-
-  </div>
-  <div class="card-footer bg-gradient-tertiary border-primary">
-    <ng-content select="[footer]"></ng-content>
+  <div class="col-11">
+    <flexytable
+      [cellHeight]="cellHeight"
+      [cellWidth]="cellWidth"
+      [entries]="entries"
+      [contentCells]="noteCells"
+      [headerCells]="headerCells"
+      (entryRemoved)="onGridEntryRemoved($event)"
+      (entryAdded)="onGridEntryAdded($event)">
+    </flexytable>
   </div>
 </div>
 

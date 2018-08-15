@@ -16,13 +16,20 @@ import {System} from "../../system/System";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {PatternViewModel} from "../../model/viewmodel/PatternViewModel";
 import {TransportParams} from "../../model/daw/TransportParams";
+import {Metronome} from "../../model/daw/components/Metronome";
+import {FilesApi} from "../api/files.api";
+import {AppConfiguration} from "../../app.configuration";
+import {SamplesApi} from "../api/samples.api";
 
 @Injectable()
 export class ProjectsService {
 
   constructor(
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
+    private filesService: FilesApi,
     private transportService: TransportService,
+    private config: AppConfiguration,
+    private samplesService: SamplesApi,
     private pluginsService: PluginsService) {
 
   }
@@ -32,8 +39,8 @@ export class ProjectsService {
     project.id = this.guid();
     project.name = name;
     let grid = project.grid = new GridViewModel();
-    grid.nColumns = 5;
-    grid.nRows = 5;
+    grid.nColumns = 10;
+    grid.nRows = 10;
     return project;
   }
 
@@ -46,8 +53,19 @@ export class ProjectsService {
         if (track.pluginId) promises.push(this.setPlugin(newTrack, track.pluginId));
       });
 
+
       Promise.all(promises)
-        .then(() => resolve(project))
+        .then(() => {
+          let metronome = new Metronome(this.filesService, this.config,this.transportService, this.samplesService);
+          metronome.load().then(metronome => {
+            project.metronome=metronome;
+            metronome.enabled=project.model.metronomeEnabled;
+
+            resolve(project);
+          })
+            .catch(error => reject(error));
+
+        })
         .catch(error => reject(error));
 
     })

@@ -4,7 +4,6 @@ import {AppConfiguration} from "../../app.configuration";
 import {System} from "../../system/System";
 import {PluginId} from "../../model/daw/plugins/PluginId";
 import {WstPlugin} from "../../model/daw/WstPlugin";
-import {Metronome} from "../../model/daw/plugins/Metronome";
 import {FilesApi} from "../api/files.api";
 import {SamplesApi} from "../api/samples.api";
 import {Bass} from "../../model/daw/plugins/Bass";
@@ -28,9 +27,6 @@ export class PluginsService {
     let id=_id.toLowerCase();
     if (id === PluginId.DRUMKIT1) {
       plugin = new Drums(this.fileService,this.config,this.samplesV2Service);
-    }
-    else if (id === PluginId.METRONOME){
-      plugin = new Metronome(this.fileService,this.config,this.samplesV2Service);
     }
     else if (id === PluginId.BASS1){
       plugin = new Bass(this.theoryService,this.fileService,this.config,this.samplesV2Service);

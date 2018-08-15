@@ -40,6 +40,10 @@ export class DawGridComponent implements OnInit, OnChanges {
       if (this.project.grid.headerCells.length === 0) this.project.grid.headerCells = this.gridService.createHeaderCells(this.project.grid.nColumns);
       if (this.project.grid.contentCells.length === 0) this.project.grid.contentCells = this.gridService.createContentCells(this.project.grid.nRows, this.project.grid.nColumns);
       this.gridService.updateEntryPositions(this.project.grid, this.cellWidth, this.cellHeight);
+      if (this.project.focusedPattern) {
+        let entry = this.project.grid.entries.find(entry=>entry.data&&entry.data.patternId===this.project.focusedPattern);
+        this.gridService.changePattern(this.project,entry,this.focusedPatternChanged);
+      }
     }
   }
 

@@ -13,4 +13,6 @@ export class ProjectViewModel {
   patterns: Array<PatternViewModel>=[];
   tracks: Array<TrackViewModel>=[];
   grid: GridViewModel=new GridViewModel();
+  focusedPattern:string;
+  metronomeEnabled:boolean=true;
 }

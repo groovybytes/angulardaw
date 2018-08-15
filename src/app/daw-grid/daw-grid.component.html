@@ -1,8 +1,10 @@
-<table *ngIf="project" class="table table-striped table-bordered table-hover">
+<table *ngIf="project" class=" header-table table-bordered table-hover">
   <thead>
   <tr>
-    <th class="">X</th>
-    <th *ngFor="let cell of project.grid.headerCells" class="">
+    <th *ngFor="let cell of project.grid.headerCells" [ngStyle]="
+    {'width':cellWidth+'px',
+    'max-width':cellWidth+'px',
+    'height':cellHeight+'px'}" class="">
 
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -22,7 +24,7 @@
   </tr>
   </thead>
 </table>
-<flexytable
+<flexytable *ngIf="project"
   (entryRemoved)="onGridEntryRemoved($event)"
   (entryAdded)="onGridEntryAdded($event)"
   (entryUpdated)="onGridEntryUpdated($event)"

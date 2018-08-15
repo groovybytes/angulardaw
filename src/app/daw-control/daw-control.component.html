@@ -5,7 +5,14 @@
     <button type="button" class="btn btn-secondary">2</button>
     <button type="button" class="btn btn-secondary">3</button>
   </toolbar>
-  <toolbar class="float-right">
-    <button type="button" class="btn btn-secondary">4</button>
-  </toolbar>
+  <div class="btn-group-toggle" data-toggle="buttons" *ngIf="project">
+    <label class="btn btn-secondary active" [ngClass]="{'active':project.model.metronomeEnabled}">
+      <input id="metronomeEnabled"
+             (click)="project.model.metronomeEnabled=!project.model.metronomeEnabled"
+             type="checkbox" [attr.checked]="project.model.metronomeEnabled?'':null"
+             autocomplete="off"
+             name="metronomeEnabled"> metronome
+    </label>
+
+  </div>
 </div>
