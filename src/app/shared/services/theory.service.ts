@@ -1,62 +1,57 @@
+import {Injectable} from "@angular/core";
 import * as _ from "lodash";
+import {NoteInfo} from "../../model/utils/NoteInfo";
 
-export class NoteInfo {
-  frequency: number;
-  id: string;
-  midi: number;
-  index: number;
-  length:number;
- /* velocity:number;
-  startTime:number;*/
 
-  /*public static notes: any;
+@Injectable()
+export class TheoryService {
+  private readonly notes: any;
+  private readonly notesByMidi: any;
+  private notesArray:Array<NoteInfo>=[];
 
-  public static notesByMidi: any;
-
-  public static getAllIds():Array<string>{
-    return _.keys(NoteInfo.notes);
-  }
-
-  public static load(): void {
+  constructor() {
     let i = 0;
-    NoteInfo.notes = {};
-    NoteInfo.notesByMidi = {};
-    Object.keys(NoteInfo.frequencies).forEach(freq => {
+    this.notes = {};
+    this.notesByMidi = {};
+    Object.keys(this.frequencies).forEach(freq => {
       let note = new NoteInfo();
-      note.frequency = NoteInfo.frequencies[freq];
+      note.frequency = this.frequencies[freq];
       note.id = freq.replace("#", "i");
       note.index = i;
       note.midi = i + 21;
-      NoteInfo.notes[note.id] = note;
-      NoteInfo.notesByMidi["midi_"+note.midi]=note;
+      this.notes[note.id] = note;
+      this.notesArray.push(note);
+      this.notesByMidi["midi_"+note.midi]=note;
       i++;
     })
   }
 
-  public move(semitones: number): NoteInfo {
-    if (!NoteInfo.notes) {
-      NoteInfo.load();
-    }
-
-    let key = Object.keys(NoteInfo.notes)[this.index + semitones];
-    return NoteInfo.notes[key];
+  public getAllIds():Array<string>{
+    return _.keys(this.notes);
   }
 
-  public static get(id: string): NoteInfo {
-
-    if (!NoteInfo.notes) {
-      NoteInfo.load();
-    }
-
-    if (!NoteInfo.notes[id]) console.warn("couldnt find note with id "+id);
-    return NoteInfo.notes[id];
+  public move(note:NoteInfo,semitones: number): NoteInfo {
+    let key = Object.keys(this.notes)[note.index + semitones];
+    return this.notes[key];
   }
 
-  public static interval(note1: NoteInfo, note2: NoteInfo): number {
+  public getNote(id: string): NoteInfo {
+    if (!this.notes[id]) console.warn("couldnt find note with id "+id);
+    return this.notes[id];
+  }
+
+  public getNoteRange(from:string,to:string):Array<string>{
+    let startNote = this.getNote(from);
+    let endNote = this.getNote(to);
+
+    return this.notesArray.filter(note=>note.index>=startNote.index && note.index<=endNote.index).map(note=>note.id);
+  }
+
+  public getInterval(note1: NoteInfo, note2: NoteInfo): number {
     return note2.index - note1.index;
   }
 
-  public static frequencies = {
+  private frequencies = {
     "C0": 16.351597831287414,
     "C#0": 17.323914436054505,
     "D0": 18.354047994837977,
@@ -189,7 +184,7 @@ export class NoteInfo {
     "A10": 28160,
     "A#10": 29834.480737157748,
     "B10": 31608.53128039195
-  }*/
+  }
 
 
 }

@@ -1,3 +1,4 @@
+/*
 import {Injectable} from "@angular/core";
 import {SamplesApi} from "./samples.api";
 import {Sample} from "../model/daw/Sample";
@@ -18,7 +19,7 @@ export class DrumApi {
 
   }
 
-/*  getDrums(id: string): Promise<Drums> {
+/!*  getDrums(id: string): Promise<Drums> {
     return new Promise((resolve, reject) => {
       let drums = new Drums();
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/" + id + ".json"))
@@ -41,6 +42,7 @@ export class DrumApi {
     })
 
 
-  }*/
+  }*!/
 
 }
+*/

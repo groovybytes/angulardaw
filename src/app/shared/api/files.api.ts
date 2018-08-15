@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {MidiFile} from "../model/midi/midifilespec/MidiFile";
-import {System} from "../system/System";
+import {System} from "../../system/System";
+import {MidiFile} from "../../model/midi/midifilespec/MidiFile";
 
 declare var MidiConvert: any;
 

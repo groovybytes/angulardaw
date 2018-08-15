@@ -1,3 +1,4 @@
+/*
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs/internal/Observable";
@@ -16,3 +17,4 @@ export class InstrumentInfoApi {
     return this.http.get<InstrumentInfo>(this.config.getUrl("instrumentinfo/"+name));
   }
 }
+*/

@@ -8,10 +8,6 @@ import {HttpClientModule} from "@angular/common/http";
 import {NotificationComponent} from './system/notification/notification.component';
 import {System} from "./system/System";
 import {MetronomeComponent} from "./metronome/metronome.component";
-import {DrumApi} from "./api/drum.api";
-import {FilesApi} from "./api/files.api";
-import {SamplesApi} from "./api/samples.api";
-import {InstrumentInfoApi} from "./api/instrumentinfo.api";
 import {DawControlComponent} from './daw-control/daw-control.component';
 import {StorageServiceModule} from 'angular-webstorage-service';
 import {SharedModule} from "./shared/shared.module";
@@ -57,10 +53,6 @@ let audioContext = new AudioContext();
 
   ],
   providers: [
-    InstrumentInfoApi,
-    SamplesApi,
-    FilesApi,
-    DrumApi,
     System,
     AppConfiguration,
     AuthService,

@@ -2,10 +2,10 @@ import {WstPlugin} from "../WstPlugin";
 import {PluginId} from "./PluginId";
 import {Sample} from "../Sample";
 import {TransportPosition} from "../TransportPosition";
-import {FilesApi} from "../../../api/files.api";
-import {SamplesApi} from "../../../api/samples.api";
 import {AppConfiguration} from "../../../app.configuration";
 import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
+import {FilesApi} from "../../../shared/api/files.api";
+import {SamplesApi} from "../../../shared/api/samples.api";
 
 
 export class Metronome implements WstPlugin {

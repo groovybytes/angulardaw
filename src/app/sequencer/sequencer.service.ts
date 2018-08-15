@@ -11,11 +11,12 @@ import {Loudness} from "../model/mip/Loudness";
 import {NoteLength} from "../model/mip/NoteLength";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
+import {TheoryService} from "../shared/services/theory.service";
 
 @Injectable()
 export class SequencerService {
 
-  constructor(private patternsService: PatternsService) {
+  constructor(private patternsService: PatternsService,private theoryService:TheoryService) {
 
 
   }
@@ -73,9 +74,7 @@ export class SequencerService {
   private getPatternNotes(pattern: PatternViewModel): Array<string> {
     let notes: Array<string> = pattern.notes;
     if (notes.length === 0) {
-      NoteInfo.load();
-      let allNotes = NoteInfo.getAllIds();
-      notes = allNotes;
+      notes = this.theoryService.getAllIds();
     }
 
     return notes;

@@ -19,6 +19,7 @@ export class Sample {
 
     this.sourceNode = this.context.createBufferSource();
     this.sourceNode.buffer = this.buffer;
+    if (detune) this.sourceNode.detune.value=detune;
     this.gainNode = this.context.createGain();
     this.sourceNode.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);

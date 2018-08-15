@@ -8,6 +8,7 @@ import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
 import {NoteInfo} from "../model/utils/NoteInfo";
+import {TheoryService} from "../shared/services/theory.service";
 
 @Component({
   selector: 'sequencer',
@@ -26,9 +27,12 @@ export class SequencerComponent implements OnInit, OnChanges {
   entries: Array<FlexyGridEntry<NoteTriggerViewModel>> = [];
   allNotes:Array<string>;
 
-  constructor(private element: ElementRef, private sequencerService: SequencerService, private transportService: TransportService) {
-    NoteInfo.load();
-    this.allNotes=NoteInfo.getAllIds();
+  constructor(private element: ElementRef,
+              private theoryService:TheoryService,
+              private sequencerService: SequencerService,
+              private transportService: TransportService) {
+
+    this.allNotes=theoryService.getAllIds();
   }
 
   getTime(column: number): number {

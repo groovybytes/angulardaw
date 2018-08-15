@@ -2,7 +2,6 @@ import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Project} from "../model/daw/Project";
 import {Track} from "../model/daw/Track";
 import {System} from "../system/System";
-import {SamplesApi} from "../api/samples.api";
 
 @Component({
   selector: 'daw-track',
@@ -19,8 +18,7 @@ export class TrackComponent implements OnInit {
   quantizationOptions = [];
 
   constructor(private container: ElementRef,
-              private system: System,
-              private samplesApi: SamplesApi) {
+              private system: System) {
 
 
   }

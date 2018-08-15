@@ -22,7 +22,7 @@ export class ADSREnvelope {
   }
 
   apply(node: GainNode, now): void {
-    console.log(now);
+
     node.gain.cancelScheduledValues(now);
     node.gain.setValueAtTime(0, now);
     node.gain.linearRampToValueAtTime(1, now + this.attackTime);
