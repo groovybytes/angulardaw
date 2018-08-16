@@ -1,14 +1,20 @@
-/*setInterval(()=>{
-  self.postMessage("hallo");
-})*/
 
-requestAnimationFrame(()=>self.loop);
-self.addEventListener("message",  e => {
-  //self.postMessage(err.message);
-});
+self.context = new AudioContext();
+setInterval(function(){
+  self.postMessage('WORKER STARTED: ' + data.msg);
+},0)
 
-
- self.loop=function(){
-   console.log("here");
-   requestAnimationFrame(()=>self.loop());
-}
+self.addEventListener('message', function(e) {
+  var data = e.data;
+  switch (data.cmd) {
+    case 'start':
+      self.postMessage('WORKER STARTED: ' + data.msg);
+      break;
+    case 'stop':
+      self.postMessage('WORKER STOPPED: ' + data.msg + '. (buttons will no longer work)');
+      self.close(); // Terminates the worker.
+      break;
+    default:
+      self.postMessage('Unknown command: ' + data.msg);
+  };
+}, false);

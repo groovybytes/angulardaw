@@ -8,6 +8,7 @@ import {FilesApi} from "../api/files.api";
 import {SamplesApi} from "../api/samples.api";
 import {Bass} from "../../model/daw/plugins/Bass";
 import {TheoryService} from "./theory.service";
+import {Piano} from "../../model/daw/plugins/Piano";
 
 @Injectable()
 export class PluginsService {
@@ -30,6 +31,9 @@ export class PluginsService {
     }
     else if (id === PluginId.BASS1){
       plugin = new Bass(this.theoryService,this.fileService,this.config,this.samplesV2Service);
+    }
+    else if (id === PluginId.PIANO1){
+      plugin = new Piano(this.theoryService,this.fileService,this.config,this.samplesV2Service);
     }
     else throw new Error("not implemented");
 

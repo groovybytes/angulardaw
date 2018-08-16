@@ -20,6 +20,10 @@ export class DawControlComponent implements OnInit {
   ngOnInit() {
   }
 
+  setQuantization(value:number):void{
+    this.project.model.quantization=value;
+  }
+
   addMidiTrack(): void {
 
     //this.projectsService.addTrack(this.projectViewModel,this.projectViewModel.tracks.length-1);

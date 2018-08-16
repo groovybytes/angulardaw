@@ -5,6 +5,8 @@ import {System} from "../../system/System";
 import {AppConfiguration} from "../../app.configuration";
 import {Sample} from "../../model/daw/Sample";
 import {Buffers} from "../../model/utils/Buffers";
+import {AbstractInstrumentSampler} from "../../model/daw/plugins/AbstractInstrumentSampler";
+import {TheoryService} from "../services/theory.service";
 
 
 @Injectable()
@@ -16,6 +18,7 @@ export class SamplesApi {
               private system: System,
               private config: AppConfiguration,
               @Inject('lodash') private _: any,
+              private theoryService:TheoryService,
               private fileService: FilesApi) {
 
   }
@@ -32,6 +35,38 @@ export class SamplesApi {
           .catch(error => reject(error));
 
       }, error => reject(error));
+    })
+  }
+
+
+  loadAllInstrumentSamples(instrumentName:string): Promise<{samples:Array<Sample>,baseNotes:Array<number>}> {
+    return new Promise<{samples:Array<Sample>,baseNotes:Array<number>}>((resolve, reject) => {
+      let provedSamples: Array<Sample> = [];
+      this.getSamplesForInstrument(instrumentName)
+        .then(results => {
+          results.forEach(result => {
+            try {
+
+              let parts = result.id.split("/");
+              let sampleName = parts[parts.length - 1].split(".")[0].toLowerCase();
+              sampleName = sampleName.replace("l-ra", "");
+              sampleName = sampleName.replace("l-r", "");
+              sampleName = sampleName.toUpperCase();
+              parts = sampleName.split(" ");
+              let noteName = parts[parts.length - 1].replace("#", "i");
+              if (provedSamples.findIndex(sample => sample.baseNote.id === noteName) === -1) {
+                result.baseNote = this.theoryService.getNote(noteName);
+                if (result.baseNote === undefined) throw new Error("couldnt find a basenote from sample name " + sampleName);
+                provedSamples.push(result);
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          });
+
+          resolve({samples:provedSamples,baseNotes:provedSamples.map(sample => sample.baseNote.index)});
+        })
+        .catch(error => reject(error));
     })
   }
 

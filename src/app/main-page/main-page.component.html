@@ -30,5 +30,5 @@
 </div>
 <pattern-observer [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
 <nav class="navbar navbar-dark bg-light footer fixed-bottom">
-  <daw-control [project]="project"></daw-control>
+  <daw-control *ngIf="project" [project]="project"></daw-control>
 </nav>

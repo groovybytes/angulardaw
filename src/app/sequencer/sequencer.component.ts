@@ -41,10 +41,6 @@ export class SequencerComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-    console.log("init");
-    /*  this.noteCells = this.sequencerService.createNoteCells(this.transportService.params,this.getPattern());
-      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params,this.getPattern());*/
-
   }
 
 

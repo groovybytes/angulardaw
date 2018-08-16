@@ -47,6 +47,8 @@ export class ProjectsService {
   loadProject(projectViewModel: ProjectViewModel): Promise<Project> {
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(projectViewModel);
+      this.transportService.params.quantization=projectViewModel.quantization;
+      this.transportService.params.bpm=projectViewModel.bpm;
       let promises = [];
       projectViewModel.tracks.forEach(track => {
         let newTrack = this.addTrack(project, track);
