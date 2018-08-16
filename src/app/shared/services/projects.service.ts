@@ -104,7 +104,7 @@ export class ProjectsService {
 
   onPatternChanged(track: Track, pattern: PatternViewModel, transportParams: TransportParams): void {
     track.resetEvents(pattern.events);
-    pattern.notes = track.plugin.getNotes();
+    pattern.notes = track.plugin.getNotes().reverse();
     transportParams.tickEnd =
       pattern.length * MusicMath.getBeatTicks(transportParams.quantization);
   }

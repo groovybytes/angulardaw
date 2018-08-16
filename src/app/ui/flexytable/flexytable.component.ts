@@ -79,7 +79,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
       scroll: false,
       scrollSensitivity: 100,
       scrollSpeed: 100,
-      containment: '#containment-wrapper',
+      containment: 'parent',
       grid: this.useGrid ? [this.cellWidth, this.cellHeight] : [1, this.cellHeight],
       start: (event: Event, ui: DraggableEventUIParams) => {
 
@@ -108,6 +108,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
     /*console.log($(".cell-content").first().width());
     this.grid=[$(".cell-content").first().width(),50];*/
   }

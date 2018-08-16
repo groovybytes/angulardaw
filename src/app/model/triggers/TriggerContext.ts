@@ -31,6 +31,6 @@ export class TriggerContext<T,S> {
         trigger.resolve();
       }
     });
-    if (!found) this.system.warn("no trigger found for "+JSON.stringify(event));
+    if (!found) this.system.warn("no trigger found for "+event);
   }
 }

@@ -43,6 +43,6 @@ export class ProjectsPageComponent implements OnInit {
     this.projectsApi.post(project).subscribe(project => {
       this.projects.push(project);
       console.log("projectViewModel saved");
-    }, error => this.system.error(JSON.stringify(error)));
+    }, error => this.system.error(error));
   }
 }

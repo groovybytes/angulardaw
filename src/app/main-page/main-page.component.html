@@ -1,34 +1,34 @@
-<div>
-  <nav class="navbar navbar-light bg-light fixed-top">
-    <form class="form-inline">
-      <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
-      <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
+<nav class="navbar navbar-light bg-light fixed-top">
+  <form class="form-inline">
+    <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
+    <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
 
-    </form>
-  </nav>
+  </form>
+</nav>
 
-<!--  <div class="jumbotron bg-tertiary">-->
-  <div class="row daw-grid-container">
-    <div class="col-xs-12">
-      <daw-grid
-        (focusedPatternChanged)="focusedPatternChanged($event)"
-        (pluginChanged)="onPluginChanged($event)"
-        (trackAdded)="onTrackAdded($event)"
-        (trackRemoved)="onTrackRemoved($event)"
-        [project]="project?.model"
-        [cellWidth]="120"
-        [cellHeight]="60">
-      </daw-grid>
-    </div>
+
+
+<div class="row daw-grid-container">
+  <div class="col-xs-12">
+    <daw-grid
+      (focusedPatternChanged)="focusedPatternChanged($event)"
+      (pluginChanged)="onPluginChanged($event)"
+      (trackAdded)="onTrackAdded($event)"
+      (trackRemoved)="onTrackRemoved($event)"
+      [project]="project?.model"
+      [cellWidth]="100"
+      [cellHeight]="50">
+    </daw-grid>
   </div>
+</div>
+
+<div class="row sequencer-container">
+  <div class="col-xs-12">
+
+    <sequencer *ngIf="project" [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>
   </div>
-  <div class="row sequencer-container">
-    <div class="col-xs-12">
-      <sequencer [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>
-    </div>
-  </div>
-  <pattern-observer [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
-  <nav class="navbar navbar-dark bg-light footer fixed-bottom">
-    <daw-control [project]="project"></daw-control>
-  </nav>
-<!--</div>-->
+</div>
+<pattern-observer [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
+<nav class="navbar navbar-dark bg-light footer fixed-bottom">
+  <daw-control [project]="project"></daw-control>
+</nav>

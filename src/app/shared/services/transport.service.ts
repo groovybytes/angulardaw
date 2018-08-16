@@ -97,17 +97,22 @@ export class TransportService {
               prevQuantizationMatch = transportTime;
               this.position.tick = this.tick;
 
-              if (this.tick <= this.params.tickEnd) {
-                this.tickSubject.next(this.tick);
+              if (this.tick < this.params.tickEnd) {
                 let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization, this.params.signature);
                 this.beatSubject.next(newBeat);
                 this.position.beat = newBeat;
                 this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization, this.params.signature);
+
+                this.tickSubject.next(this.tick);
                 this.tick += 1;
               }
               else {
                 if (this.params.loop) {
                   this.tick = this.params.tickStart;
+                  let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization, this.params.signature);
+                  this.position.beat = newBeat;
+                  this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization, this.params.signature);
+
                   resetTime = true;
                   quantizationDelta = 0;
                   prevQuantizationMatch = 0;

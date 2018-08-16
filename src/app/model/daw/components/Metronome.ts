@@ -32,7 +32,6 @@ export class Metronome {
   }
 
   feed(position: TransportPosition): void {
-    console.log(position);
     if (position.beat !== this.lastBeat) {
       if (position.beat === 0) this.accentSample.trigger();
       else this.otherSample.trigger();

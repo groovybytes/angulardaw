@@ -21,7 +21,7 @@ export class MessagingService {
 
   logObject(o:any, severity?:Severity):void{
     let _severity = severity?severity:Severity.DEBUG;
-    this.consoleLog(JSON.stringify(o),_severity);
+    this.consoleLog(o,_severity);
     //this.http.post(this.config.getUrl("log"),{msg:JSON.stringify(o),severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
   }
 

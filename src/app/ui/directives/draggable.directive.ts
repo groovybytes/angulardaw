@@ -6,9 +6,9 @@ import DraggableOptions = JQueryUI.DraggableOptions;
 @Directive({
   selector: '[jquery-ui-draggable]'
 })
-export class DraggableDirective implements OnInit,OnChanges {
+export class DraggableDirective implements OnInit, OnChanges {
 
-  @Input() params:DraggableOptions;
+  @Input() params: DraggableOptions;
 
   constructor(private element: ElementRef) {
 
@@ -20,8 +20,10 @@ export class DraggableDirective implements OnInit,OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.params.firstChange) {
+      $(this.element.nativeElement).draggable(this.params);
+    }
 
-    $(this.element.nativeElement).draggable(this.params);
   }
 
 
