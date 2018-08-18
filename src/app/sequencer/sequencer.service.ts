@@ -97,6 +97,17 @@ export class SequencerService {
     this.patternsService.insertNote(pattern, trigger);
   }
 
+  updateEvent(entry: FlexyGridEntry<NoteTriggerViewModel>, cellWidth: number, cellHeight: number, pattern: PatternViewModel, params: TransportParams): void {
+
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization.getValue());
+    let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
+    let fullWidth = cellWidth * pattern.length * ticksPerBeat;
+    let percentage = entry.left / fullWidth;
+    let noteTime = fullTime * percentage;
+    let rowIndex = entry.top / cellHeight;
+    entry.data.time=noteTime;
+  }
+
   removeEvent(entry:FlexyGridEntry<NoteTriggerViewModel>, pattern:PatternViewModel):void{
 
     this.patternsService.removeNote(pattern, entry.data.id);

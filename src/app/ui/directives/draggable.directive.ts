@@ -23,6 +23,7 @@ export class DraggableDirective implements OnInit, OnChanges {
     if (changes.params.firstChange) {
       $(this.element.nativeElement).draggable(this.params);
     }
+    else  $(this.element.nativeElement).draggable("option",this.params);
 
   }
 

@@ -26,7 +26,9 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
 
   @HostListener('window:keydown', ['$event'])
   keyDown(event: KeyboardEvent) {
-    if (event.which === 16) this.useGrid = false;
+    if (event.which === 16) {
+      this.useGrid = false;
+    }
   }
 
   @HostListener('window:keyup', ['$event'])

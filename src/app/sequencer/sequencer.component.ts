@@ -62,6 +62,9 @@ export class SequencerComponent implements OnInit, OnChanges {
     this.sequencerService.addEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
 
   }
+  onGridEntryUpdated(entry: FlexyGridEntry<NoteTriggerViewModel>): void {
+    this.sequencerService.updateEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
+  }
 
   onGridEntryRemoved(entry: FlexyGridEntry<NoteTriggerViewModel>): void {
     this.sequencerService.removeEvent(entry, this.pattern);

@@ -27,6 +27,7 @@
       [entries]="entries"
       [contentCells]="noteCells"
       [headerCells]="headerCells"
+      (entryUpdated)="onGridEntryUpdated($event)"
       (entryRemoved)="onGridEntryRemoved($event)"
       (entryAdded)="onGridEntryAdded($event)">
     </flexytable>
