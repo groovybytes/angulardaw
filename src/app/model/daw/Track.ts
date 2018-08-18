@@ -18,11 +18,11 @@ export class Track {
   constructor(model:TrackViewModel, protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
     this.model=model;
     this.streamer = new PerformanceStreamer(model.events,transportEvents, this.transportInfo);
-    this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.position,event.event)));
+    this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.offset,event.event)));
   }
 
-  private onNextEvent(position:TransportPosition,event: NoteTriggerViewModel): void {
-    this.plugin.feed(event,position);
+  private onNextEvent(offset:number,event: NoteTriggerViewModel): void {
+    this.plugin.feed(event,offset);
   }
 
 

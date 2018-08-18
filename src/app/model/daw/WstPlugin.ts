@@ -5,7 +5,7 @@ import {NoteTriggerViewModel} from "../viewmodel/NoteTriggerViewModel";
 //web studio technology plugin :)
 export interface WstPlugin {
   getId(): PluginId;
-  feed(event:NoteTriggerViewModel,position:TransportPosition): any;
+  feed(event:NoteTriggerViewModel,offset:number): any;
   destroy():void;
   load():Promise<WstPlugin>;
   getNotes():Array<string>;

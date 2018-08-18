@@ -23,7 +23,7 @@ export class TransportService {
   private transportStartTime: number = 0;
   private intervalHandle: any;
   private pauseTime: number = 0;
-  private accuracy = 0.005; //10ms
+  private accuracy = 0.01; //10ms
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();

@@ -37,9 +37,9 @@ export class Drums implements WstPlugin {
   destroy(): void {
   }
 
-  feed(event: NoteTriggerViewModel, position: TransportPosition): any {
+  feed(event: NoteTriggerViewModel, offset: number): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
-    trigger.sample.trigger();
+    trigger.sample.trigger(offset);
   }
 
 

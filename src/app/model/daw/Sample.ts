@@ -6,8 +6,7 @@ import {Frequencies} from "../mip/Frequencies";
 export class Sample {
   id: string;
   baseNote: NoteInfo;
-  private gainNode: GainNode;
-  private sourceNode: AudioBufferSourceNode;
+ 
 
 
   constructor(id: string, private buffer: AudioBuffer, private context: AudioContext) {
@@ -15,25 +14,25 @@ export class Sample {
     this.buffer = buffer;
   }
 
-  public triggerWith(adsr: ADSREnvelope,detune?:number): void {
+  public triggerWith(adsr: ADSREnvelope,offset:number,detune:number): void {
 
-    this.sourceNode = this.context.createBufferSource();
-    this.sourceNode.buffer = this.buffer;
-    if (detune) this.sourceNode.detune.value=detune;
-    this.gainNode = this.context.createGain();
-    this.sourceNode.connect(this.gainNode);
-    this.gainNode.connect(this.context.destination);
-    adsr.apply(this.gainNode, this.context.currentTime);
-    this.sourceNode.start(0, 0, 0.3);
+    let sourceNode = this.context.createBufferSource();
+    sourceNode.buffer = this.buffer;
+    if (detune) sourceNode.detune.value=detune;
+    let gainNode = this.context.createGain();
+    sourceNode.connect(gainNode);
+    gainNode.connect(this.context.destination);
+    //adsr.apply(gainNode, this.context.currentTime);
+    sourceNode.start(this.context.currentTime+offset, 0, 0.7);
   }
 
-  public trigger(offset?:number):void{
-    this.sourceNode = this.context.createBufferSource();
-    this.sourceNode.buffer = this.buffer;
-    this.gainNode = this.context.createGain();
-    this.sourceNode.connect(this.gainNode);
-    this.gainNode.connect(this.context.destination);
-    this.sourceNode.start(0, 0, 0.3);
+  public trigger(offset:number):void{
+    let sourceNode = this.context.createBufferSource();
+    sourceNode.buffer = this.buffer;
+    let gainNode = this.context.createGain();
+    sourceNode.connect(gainNode);
+    gainNode.connect(this.context.destination);
+    sourceNode.start(this.context.currentTime+offset, 0, 0.7);
   }
 
 }

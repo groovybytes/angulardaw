@@ -10,6 +10,7 @@ export class NoteTriggerViewModel implements NoteTrigger{
   column:number=0;
   row:number=0;
   offset:number=0;
+  _triggered:boolean=false;
 
   constructor(id: any, note: string,time?: number, length?: number, loudness?: number, articulation?: number) {
     this.id = id;
