@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {SequencerService} from "./sequencer.service";
 import {MusicMath} from "../model/utils/MusicMath";
@@ -7,8 +7,8 @@ import {ContentCell} from "../ui/flexytable/model/ContentCell";
 import {HeaderCell} from "../ui/flexytable/model/HeaderCell";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
 import {NoteTriggerViewModel} from "../model/viewmodel/NoteTriggerViewModel";
-import {NoteInfo} from "../model/utils/NoteInfo";
 import {TheoryService} from "../shared/services/theory.service";
+import {NoteLength} from "../model/mip/NoteLength";
 
 @Component({
   selector: 'sequencer',
@@ -27,20 +27,29 @@ export class SequencerComponent implements OnInit, OnChanges {
   entries: Array<FlexyGridEntry<NoteTriggerViewModel>> = [];
   allNotes:Array<string>;
 
+  private quantization:NoteLength;
+
   constructor(private element: ElementRef,
               private theoryService:TheoryService,
               private sequencerService: SequencerService,
               private transportService: TransportService) {
 
+
     this.allNotes=theoryService.getAllIds();
   }
 
   getTime(column: number): number {
-    return MusicMath.getTickTime(this.transportService.params.bpm, this.transportService.params.quantization) * column;
+    return MusicMath.getTickTime(this.transportService.params.bpm, this.transportService.params.quantization.getValue()) * column;
   }
 
   ngOnInit() {
+    this.transportService.params.quantization.subscribe(nextValue=>{
+      if (this.quantization !== nextValue){
+        this.quantization=nextValue;
+        this.updateCells();
+      }
 
+    })
   }
 
 
@@ -65,14 +74,21 @@ export class SequencerComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes.pattern && changes.pattern.currentValue) {
-      this.noteCells.length = 0;
-      this.headerCells.length = 0;
-      this.noteCells = this.sequencerService.createNoteCells(this.transportService.params, this.pattern);
-      this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params, this.pattern);
-      this.entries = this.sequencerService.createEntries(this.pattern, this.cellWidth, this.cellHeight, this.transportService.params);
+      this.updateCells();
     }
   }
+
+  private updateCells():void{
+    this.quantization=this.transportService.params.quantization.getValue();
+    this.noteCells.length = 0;
+    this.headerCells.length = 0;
+    this.noteCells = this.sequencerService.createNoteCells(this.transportService.params, this.pattern);
+    this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params, this.pattern);
+    this.entries = this.sequencerService.createEntries(this.pattern, this.cellWidth, this.cellHeight, this.transportService.params);
+  }
+
 
 
 }

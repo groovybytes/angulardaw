@@ -11,6 +11,7 @@ export class PerformanceStreamer {
   private loopQueue: Array<NoteTriggerViewModel> = [];
   private queueIndex: number = 0;
   private accuracy = 0.03;
+  private lookAhead:number=2;//seconds
   private subscriptions: Array<Subscription> = [];
   trigger: Observable<{ event: NoteTriggerViewModel, position: TransportPosition }>;
   private triggerSubject: Subject<{ event: NoteTriggerViewModel, position: TransportPosition }> = new Subject();
@@ -26,6 +27,7 @@ export class PerformanceStreamer {
 
     if (this.loopQueue.length > 0 && this.queueIndex < this.loopQueue.length) {
       let matches = 0;
+    
       for (let i = this.queueIndex; i < this.queue.length; i++) {
         if (this.loopQueue[i].time === 0 || this.matches(transportTime, (this.loopQueue[i].time) / 1000, this.accuracy)) {
           matches++;

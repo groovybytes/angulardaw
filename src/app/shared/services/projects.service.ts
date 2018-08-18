@@ -4,7 +4,7 @@ import {GridCellViewModel} from "../../model/viewmodel/GridCellViewModel";
 import {GridColumnViewModel} from "../../model/viewmodel/GridColumnViewModel";
 import {Inject, Injectable} from "@angular/core";
 import {ApiEndpoint} from "../api/ApiEndpoint";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {WstPlugin} from "../../model/daw/WstPlugin";
 import {Track} from "../../model/daw/Track";
 import {PluginId} from "../../model/daw/plugins/PluginId";
@@ -20,6 +20,7 @@ import {Metronome} from "../../model/daw/components/Metronome";
 import {FilesApi} from "../api/files.api";
 import {AppConfiguration} from "../../app.configuration";
 import {SamplesApi} from "../api/samples.api";
+import {NoteLength} from "../../model/mip/NoteLength";
 
 @Injectable()
 export class ProjectsService {
@@ -47,8 +48,8 @@ export class ProjectsService {
   loadProject(projectViewModel: ProjectViewModel): Promise<Project> {
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(projectViewModel);
-      this.transportService.params.quantization=projectViewModel.quantization;
-      this.transportService.params.bpm=projectViewModel.bpm;
+      this.transportService.params.quantization = new BehaviorSubject<NoteLength>(projectViewModel.quantization);
+      this.transportService.params.bpm = projectViewModel.bpm;
       let promises = [];
       projectViewModel.tracks.forEach(track => {
         let newTrack = this.addTrack(project, track);
@@ -58,10 +59,10 @@ export class ProjectsService {
 
       Promise.all(promises)
         .then(() => {
-          let metronome = new Metronome(this.filesService, this.config,this.transportService, this.samplesService);
+          let metronome = new Metronome(this.filesService, this.config, this.transportService, this.samplesService);
           metronome.load().then(metronome => {
-            project.metronome=metronome;
-            metronome.enabled=project.model.metronomeEnabled;
+            project.metronome = metronome;
+            metronome.enabled = project.model.metronomeEnabled;
 
             resolve(project);
           })
@@ -108,7 +109,7 @@ export class ProjectsService {
     track.resetEvents(pattern.events);
     pattern.notes = track.plugin.getNotes().reverse();
     transportParams.tickEnd =
-      pattern.length * MusicMath.getBeatTicks(transportParams.quantization);
+      pattern.length * MusicMath.getBeatTicks(transportParams.quantization.getValue());
   }
 
 

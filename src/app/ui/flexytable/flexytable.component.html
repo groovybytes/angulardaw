@@ -3,13 +3,13 @@
      id="containment-wrapper">
   <div *ngFor="let entry of entries"
        (mousedown)="onEntryMouseDown(entry,$event)"
-       class="cell-content"
+       class="cell-content border"
        (click)="onEntryClicked(entry)"
        (dblclick)="onEntryDblClicked(entry)"
-       [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px',left:entry.left+'px',top:entry.top+'px'}"
+       [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px',left:entry.left+1+'px',top:entry.top+'px'}"
        jquery-ui-draggable
        [params]="getDragParams(entry)"></div>
-  <table class="table table-striped table-bordered">
+  <table class="table table-bordered">
     <!-- <thead>
      <tr class="">
        <th

@@ -164,11 +164,11 @@ export class InteractiveComponent implements OnInit {
     this.params.cellWidth = reference[0].getBoundingClientRect().width;
     this.params.cellHeight = reference[0].getBoundingClientRect().height;
     this.params.fullTime = MusicMath.getTimeAtBeat(this.patternLength, this.transportService.params.bpm
-      , this.transportService.params.quantization);
+      , this.transportService.params.quantization.getValue());
     this.params.tickTime = MusicMath.getTickTime(this.transportService.params.bpm
-      , this.transportService.params.quantization);
+      , this.transportService.params.quantization.getValue());
 
-    this.params.width = MusicMath.getBeatTicks(this.transportService.params.quantization) * this.patternLength * this.params.cellWidth;
+    this.params.width = MusicMath.getBeatTicks(this.transportService.params.quantization.getValue()) * this.patternLength * this.params.cellWidth;
     this.params.pxTime=this.params.width/this.params.fullTime;
 
     //this.params.height=reference[0].getBoundingClientRect().height;

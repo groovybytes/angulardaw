@@ -11,5 +11,8 @@
   position: relative;
 }
 .table {
+  td,th{
+    padding:0;
+  }
   table-layout: fixed;
 }

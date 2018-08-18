@@ -24,16 +24,16 @@ export class Sample {
     this.sourceNode.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
     adsr.apply(this.gainNode, this.context.currentTime);
-    this.sourceNode.start(0, 0, 1);
+    this.sourceNode.start(0, 0, 0.3);
   }
 
-  public trigger():void{
+  public trigger(offset?:number):void{
     this.sourceNode = this.context.createBufferSource();
     this.sourceNode.buffer = this.buffer;
     this.gainNode = this.context.createGain();
     this.sourceNode.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
-    this.sourceNode.start(0, 0, 1);
+    this.sourceNode.start(0, 0, 0.3);
   }
 
 }

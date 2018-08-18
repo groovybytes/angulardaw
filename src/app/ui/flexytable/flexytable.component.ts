@@ -34,6 +34,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
     if (event.which === 16) this.useGrid = true;
   }
 
+  divSizeFactor=0.98;
   grid: Array<number>;
   useGrid: boolean = true;
 
@@ -73,6 +74,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   onCellClicked(cell: ContentCell): void {
     this.cellClicked.emit(cell);
   }
+
 
   getDragParams(entry: FlexyGridEntry<T>): DraggableOptions {
     return {

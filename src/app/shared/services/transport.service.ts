@@ -16,14 +16,14 @@ export class TransportService {
   transportEnd: EventEmitter<void> = new EventEmitter<void>();
   transportStart: EventEmitter<void> = new EventEmitter<void>();
   timeReset: EventEmitter<number> = new EventEmitter<number>();
-  private startTime:number=0;
-  private endTime:number=0;
+  private startTime: number = 0;
+  private endTime: number = 0;
   private position: TransportPosition;
   private paused: boolean = false;
   private transportStartTime: number = 0;
   private intervalHandle: any;
   private pauseTime: number = 0;
-  private accuracy = 0.01; //10ms
+  private accuracy = 0.005; //10ms
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
@@ -32,7 +32,7 @@ export class TransportService {
   //private timeSubscription: Subscription;
 
 
-  constructor(@Inject("AudioContext") private audioContext:AudioContext,private config:AppConfiguration) {
+  constructor(@Inject("AudioContext") private audioContext: AudioContext, private config: AppConfiguration) {
     this.tickTock = this.tickSubject.asObservable();
     this.beat = this.beatSubject.asObservable();
     this.time = this.timeSubject.asObservable();
@@ -69,17 +69,17 @@ export class TransportService {
       this.tick = this.params.tickStart;
       this.intervalHandle = setInterval(
         () => {
-          requestAnimationFrame(()=>{
-            let tickTime=MusicMath.getTickTime(this.params.bpm,this.params.quantization);
-            this.startTime=this.params.tickStart*tickTime;
-            this.endTime=this.params.tickEnd*tickTime;
+          requestAnimationFrame(() => {
+            let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
+            this.startTime = this.params.tickStart * tickTime;
+            this.endTime = this.params.tickEnd * tickTime;
             let sysTime = this.audioContext.currentTime;
             if (sysTime > intervalTime) {
               intervalTime = sysTime;
 
               if (resetTime) {
                 this.transportStartTime = sysTime;
-                if (resetTime) this.timeReset.emit( sysTime - this.transportStartTime);
+                if (resetTime) this.timeReset.emit(sysTime - this.transportStartTime);
                 resetTime = false;
               }
               let transportTime = sysTime - this.transportStartTime;
@@ -99,10 +99,10 @@ export class TransportService {
                 this.position.tick = this.tick;
 
                 if (this.tick < this.params.tickEnd) {
-                  let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization, this.params.signature);
+                  let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
                   this.beatSubject.next(newBeat);
                   this.position.beat = newBeat;
-                  this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization, this.params.signature);
+                  this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
 
                   this.tickSubject.next(this.tick);
                   this.tick += 1;
@@ -110,9 +110,9 @@ export class TransportService {
                 else {
                   if (this.params.loop) {
                     this.tick = this.params.tickStart;
-                    let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization, this.params.signature);
+                    let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
                     this.position.beat = newBeat;
-                    this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization, this.params.signature);
+                    this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
 
                     resetTime = true;
                     quantizationDelta = 0;
@@ -131,7 +131,7 @@ export class TransportService {
             }
           })
 
-        }, 0);
+        }, 1);
     }
   }
 
@@ -166,23 +166,23 @@ export class TransportService {
     return this.startTime;
   }
 
-  getEvents():TransportEvents{
+  getEvents(): TransportEvents {
     return {
-      tickTock:this.tickTock,
-      time:this.time,
-      beat:this.beat,
-      transportEnd:this.transportEnd,
-      transportStart:this.transportStart,
-      timeReset:this.timeReset
+      tickTock: this.tickTock,
+      time: this.time,
+      beat: this.beat,
+      transportEnd: this.transportEnd,
+      transportStart: this.transportStart,
+      timeReset: this.timeReset
     }
   }
 
-  getInfo():TransportInfo{
-    return{
-      getPositionInfo:()=>this.getPositionInfo(),
-      isRunning:()=>this.isRunning(),
-      getStartTime:()=>this.getStartTime(),
-      getEndTime:()=>this.getEndTime()
+  getInfo(): TransportInfo {
+    return {
+      getPositionInfo: () => this.getPositionInfo(),
+      isRunning: () => this.isRunning(),
+      getStartTime: () => this.getStartTime(),
+      getEndTime: () => this.getEndTime()
     }
   }
 }

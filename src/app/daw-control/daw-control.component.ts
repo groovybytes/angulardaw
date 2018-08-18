@@ -1,7 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 import {Project} from "../model/daw/Project";
 import {TrackViewModel} from "../model/viewmodel/TrackViewModel";
+import {NoteLength} from "../model/mip/NoteLength";
+import {TransportService} from "../shared/services/transport.service";
 
 @Component({
   selector: 'daw-control',
@@ -12,8 +14,7 @@ export class DawControlComponent implements OnInit {
 
   @Input() project: Project;
 
-  constructor(
-  ) {
+  constructor(private transportService:TransportService) {
 
   }
 
@@ -22,6 +23,7 @@ export class DawControlComponent implements OnInit {
 
   setQuantization(value:number):void{
     this.project.model.quantization=value;
+    this.transportService.params.quantization.next(value);
   }
 
   addMidiTrack(): void {
