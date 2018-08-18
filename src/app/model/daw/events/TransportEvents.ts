@@ -6,6 +6,7 @@ export interface TransportEvents {
   beat: Observable<number>;
   time: Observable<number>;
   transportEnd: EventEmitter<void>;
+  beforeStart: EventEmitter<void>;
   transportStart: EventEmitter<void>;
   timeReset: EventEmitter<number>;
 }

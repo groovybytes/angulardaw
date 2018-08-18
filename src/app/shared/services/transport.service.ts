@@ -15,6 +15,7 @@ export class TransportService {
   time: Observable<number>;
   transportEnd: EventEmitter<void> = new EventEmitter<void>();
   transportStart: EventEmitter<void> = new EventEmitter<void>();
+  beforeStart: EventEmitter<void> = new EventEmitter<void>();
   timeReset: EventEmitter<number> = new EventEmitter<number>();
   private startTime: number = 0;
   private endTime: number = 0;
@@ -23,7 +24,8 @@ export class TransportService {
   private transportStartTime: number = 0;
   private intervalHandle: any;
   private pauseTime: number = 0;
-  private accuracy = 0.01; //10ms
+  private accuracy = 0.005; //10ms
+  private run: boolean = false;
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
@@ -44,15 +46,40 @@ export class TransportService {
     this.position.tick = 0;
   }
 
-  private matches(val1: number, val2: number, accuracy: number): boolean {
-    return Math.abs(val2 - val1) < accuracy;
-  }
-
-  getPositionInfo(): TransportPosition {
+ /* getPositionInfo(): TransportPosition {
     return this.position;
-  }
+  }*/
 
   start(): void {
+
+    let start = this.audioContext.currentTime;
+    let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
+    this.startTime = this.params.tickStart * tickTime;
+    this.endTime = this.params.tickEnd * tickTime;
+    this.beforeStart.emit();
+
+    this.run = true;
+    this.timeReset.emit();
+
+    this.intervalHandle=setInterval(() => {
+      let currentTime = this.audioContext.currentTime - start;
+      if (currentTime > this.endTime/1000) {
+        if (this.params.loop){
+          start = this.audioContext.currentTime;
+        }
+        else{
+          this.run = false;
+          this.transportEnd.emit();
+        }
+
+      }
+      else this.timeSubject.next(currentTime);
+    }, 1)
+
+    //this.transportStart.emit();
+  }
+
+  /*start(): void {
     this.stop();
     this.transportStart.emit();
     if (this.paused) {
@@ -133,7 +160,7 @@ export class TransportService {
 
         }, 1);
     }
-  }
+  }*/
 
   destroy(): void {
     this.stop();
@@ -142,14 +169,11 @@ export class TransportService {
   }
 
   pause(): void {
-    this.pauseTime = this.audioContext.currentTime;
-    this.paused = true;
+
   }
 
   stop(): void {
-    this.pauseTime = 0;
-    this.paused = false;
-    this.transportStartTime = null;
+    this.run = false;
     if (this.intervalHandle) clearInterval(this.intervalHandle);
     this.transportEnd.emit();
   }
@@ -158,11 +182,12 @@ export class TransportService {
     return this.intervalHandle && this.intervalHandle >= 0;
   }
 
-  getEndTime(): number {
+
+
+  private getEndTime():number{
     return this.endTime;
   }
-
-  getStartTime(): number {
+  private getStartTime():number{
     return this.startTime;
   }
 
@@ -171,6 +196,7 @@ export class TransportService {
       tickTock: this.tickTock,
       time: this.time,
       beat: this.beat,
+      beforeStart:this.beforeStart,
       transportEnd: this.transportEnd,
       transportStart: this.transportStart,
       timeReset: this.timeReset
@@ -179,7 +205,6 @@ export class TransportService {
 
   getInfo(): TransportInfo {
     return {
-      getPositionInfo: () => this.getPositionInfo(),
       isRunning: () => this.isRunning(),
       getStartTime: () => this.getStartTime(),
       getEndTime: () => this.getEndTime()

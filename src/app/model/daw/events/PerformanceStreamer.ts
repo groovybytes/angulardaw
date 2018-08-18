@@ -8,43 +8,48 @@ import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 
 export class PerformanceStreamer {
   private queue: Array<NoteTriggerViewModel> = [];
-  private loopQueue: Array<NoteTriggerViewModel> = [];
   private queueIndex: number = 0;
-  private lookAhead:number=2;//seconds
+  private lookAhead: number = 2;//seconds
   private subscriptions: Array<Subscription> = [];
   trigger: Observable<{ event: NoteTriggerViewModel, offset: number }>;
   private triggerSubject: Subject<{ event: NoteTriggerViewModel, offset: number }> = new Subject();
+  private timeStamp:number;
+  private eventPool: Array<NoteTriggerViewModel> = [];
 
   constructor(events: Array<NoteTriggerViewModel>, protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
     this.queue = events;
     this.trigger = this.triggerSubject.asObservable();
     this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
-    this.subscriptions.push(this.transportEvents.timeReset.subscribe(() => this.initLoopQueue()));
+    /* this.subscriptions.push(this.transportEvents.timeReset.subscribe(() => this.initLoopQueue()));*/
+    this.subscriptions.push(this.transportEvents.beforeStart.subscribe(() => this.initLoopQueue()));
   }
 
   private onTransportTime(transportTime: number): void {
 
-    console.log(transportTime);
-    if (this.loopQueue.length > 0 && this.queueIndex < this.loopQueue.length) {
-      let nextEvents = this.loopQueue.filter(d=>!d._triggered && d.time/1000>=transportTime && d.time/1000<=transportTime+this.lookAhead);
-      nextEvents.forEach(event=>{
-        this.triggerSubject.next({event: event, offset: event.time/1000-transportTime});
-        event._triggered=true;
+    if (this.timeStamp && this.timeStamp>transportTime){
+      this.initLoopQueue();
+    }
+    this.timeStamp=transportTime;
+    if (this.eventPool.length > 0 && this.eventPool[0].time / 1000 <= transportTime) {
+      let nextEvents = _.remove(this.eventPool, ev => {
+        return ev.time / 1000 <= (transportTime + this.lookAhead)
+      });
+      nextEvents.forEach(event => {
+        this.triggerSubject.next({event: event, offset: event.time / 1000 - transportTime});
       });
     }
   }
 
-  private initLoopQueue():void{
+  private initLoopQueue(): void {
     let startTime = this.transportInfo.getStartTime();
     let endTime = this.transportInfo.getEndTime();
 
-    this.loopQueue = this.queue.filter(d => d.time >= startTime && d.time <= endTime);
-    this.loopQueue.forEach(e=>e._triggered=false);
+    this.eventPool = _.clone(this.queue.filter(ev => ev.time >= startTime && ev.time <= endTime));
+
   }
 
-  updateEventQueue(events: Array<NoteTriggerViewModel>):void{
+  updateEventQueue(events: Array<NoteTriggerViewModel>): void {
     this.queue = events;
-    this.initLoopQueue();
   }
 
   destroy() {

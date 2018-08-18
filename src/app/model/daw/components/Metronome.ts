@@ -22,7 +22,7 @@ export class Metronome {
               private samplesV2Service: SamplesApi) {
 
     this.transportSubscription = transportService.tickTock.subscribe(tick => {
-      this.feed(this.transportService.getPositionInfo())
+     // this.feed(this.transportService.getPositionInfo())
     });
   }
 
@@ -32,10 +32,10 @@ export class Metronome {
   }
 
   feed(position: TransportPosition): void {
-    if (position.beat !== this.lastBeat) {
+    /*if (position.beat !== this.lastBeat) {
       if (position.beat === 0) this.accentSample.trigger(0);
       else this.otherSample.trigger(0);
-    }
+    }*/
 
   }
 
