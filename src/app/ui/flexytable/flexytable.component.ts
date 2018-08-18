@@ -17,6 +17,8 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   @Input() contentCells: Array<Array<ContentCell>> = [];
   @Input() headerCells: Array<HeaderCell<any>> = [];
   @Input() entries: Array<FlexyGridEntry<T>> = [];
+  @Input() highlightColumn: number = 0;
+  @Input() useColumnHighlighting: boolean = false;
 
   @Output() entryAdded: EventEmitter<FlexyGridEntry<T>> = new EventEmitter();
   @Output() entryUpdated: EventEmitter<FlexyGridEntry<T>> = new EventEmitter();
@@ -26,6 +28,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
 
   @HostListener('window:keydown', ['$event'])
   keyDown(event: KeyboardEvent) {
+
     if (event.which === 16) {
       this.useGrid = false;
     }
@@ -33,10 +36,12 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
 
   @HostListener('window:keyup', ['$event'])
   keyUp(event: KeyboardEvent) {
-    if (event.which === 16) this.useGrid = true;
+    if (event.which === 16) {
+      this.useGrid = true;
+    }
   }
 
-  divSizeFactor=0.98;
+
   grid: Array<number>;
   useGrid: boolean = true;
 
@@ -56,7 +61,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   }
 
   onContentCellDblClicked(cell: ContentCell): void {
-    let newEntry = new FlexyGridEntry(null, cell.column * this.cellWidth, cell.row * this.cellHeight);
+    let newEntry = new FlexyGridEntry(null, cell.column * this.cellWidth, cell.row * this.cellHeight, cell.column);
     this.entries.push(newEntry);
     this.entryAdded.emit(newEntry);
 
@@ -77,26 +82,36 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
     this.cellClicked.emit(cell);
   }
 
+  onDrag(data: { event: Event, ui: DraggableEventUIParams, data: FlexyGridEntry<any> }) {
+    //console.log(data.data.offGrid);
+    /*if (data.data.offGrid && this.useGrid) {
+      console.log("here");
+      data.data.column = Math.ceil(data.data.left / this.cellWidth) - 1;
+      data.data.left = data.data.column * this.cellWidth;
+      data.data.offGrid = false;
+    }
+    else {*/
+      data.data.offGrid=this.useGrid===false;
+      data.data.left = data.ui.position.left;
+      data.data.top = data.ui.position.top;
+      data.data.column = Math.ceil(data.data.left / this.cellWidth) - 1;
+   /* }*/
+
+    this.entryUpdated.emit(data.data);
+  }
+
+  onDragStart(data: { event: Event, ui: DraggableEventUIParams, data: any }) {
+
+  }
 
   getDragParams(entry: FlexyGridEntry<T>): DraggableOptions {
     return {
       scroll: false,
-      scrollSensitivity: 100,
-      scrollSpeed: 100,
       containment: 'parent',
-      grid: this.useGrid ? [this.cellWidth, this.cellHeight] : [1, this.cellHeight],
-      start: (event: Event, ui: DraggableEventUIParams) => {
-
-      },
-      drag: (event: Event, ui: DraggableEventUIParams) => {
-        entry.left = ui.position.left;
-        entry.top = ui.position.top;
-        this.entryUpdated.emit(entry);
-        //entry.isOffGrid=!this.useGrid;
-      }
-      , stop: (event: Event, ui: DraggableEventUIParams) => {
-        //$(event.target).css({"left":"0px"})
-      },
+      grid: this.useGrid && entry.offGrid === false ? [this.cellWidth, this.cellHeight] : [1, this.cellHeight]
+      //grid: [1, this.cellHeight],
+     /* snapMode: "inner",
+      snap:".snap-cell"*/
     }
   }
 
@@ -119,3 +134,4 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
 
 
 }
+

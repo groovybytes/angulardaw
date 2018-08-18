@@ -24,6 +24,16 @@ export class DawControlComponent implements OnInit {
   setQuantization(value:number):void{
     this.project.model.quantization=value;
     this.transportService.params.quantization.next(value);
+
+  }
+
+  setBpm(value:number):void{
+    this.project.model.bpm=value;
+    this.transportService.params.bpm.next(value);
+  }
+
+  switchMetronome():void{
+    this.project.model.metronomeEnabled=! this.project.model.metronomeEnabled;
   }
 
   addMidiTrack(): void {

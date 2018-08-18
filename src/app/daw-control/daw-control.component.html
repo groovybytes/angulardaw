@@ -1,20 +1,22 @@
 <div class="fixed-bottom btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
   <transport></transport>
   <toolbar>
+   <rangeslider [min]="40" [max]="250" [value]="project.model.bpm" (valueChanged)="setBpm($event)"></rangeslider>
+    <span>{{project.model.bpm}}</span>
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project.model.quantization===0.25}"
             (click)="setQuantization(0.25)">1/4</button>
     <button type="button" class="btn btn-secondary"
             [ngClass]="{'active':project.model.quantization===0.125}"
             (click)="setQuantization(0.125)">1/8</button>
+    <button type="button" class="btn btn-secondary"
+            [ngClass]="{'active':project.model.quantization===0.0625}"
+            (click)="setQuantization(0.0625)">1/16</button>
+    <button type="button" class="btn btn-secondary"
+            [ngClass]="{'active':project.model.quantization===0.083333333333333}"
+            (click)="setQuantization(0.083333333333333)">8th Trip</button>
+    <button type="button" class="btn btn-secondary" [ngClass]="{'active':project.model.metronomeEnabled}"
+            (click)="switchMetronome()">Metronome</button>
   </toolbar>
-  <div class="btn-group-toggle" data-toggle="buttons" *ngIf="project">
-    <label class="btn btn-secondary active" [ngClass]="{'active':project.model.metronomeEnabled}">
-      <input id="metronomeEnabled"
-             (click)="project.model.metronomeEnabled=!project.model.metronomeEnabled"
-             type="checkbox" [attr.checked]="project.model.metronomeEnabled?'':null"
-             autocomplete="off"
-             name="metronomeEnabled"> metronome
-    </label>
-
-  </div>
 </div>
+<!--[attr.checked]="project.model.metronomeEnabled?'':null"-->
+<!--(click)="project.model.metronomeEnabled=!project.model.metronomeEnabled"-->

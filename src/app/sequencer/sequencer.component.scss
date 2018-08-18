@@ -1,28 +1,15 @@
 @import "../../variables";
 
-
-
-.noteTable{
-  table-layout:fixed;
- /* float:right;*/
-
-
-}
-
-.header-table {
+.table {
+  td,th{
+    padding:0;
+  }
   table-layout: fixed;
 }
+
 
 .flexy-table-wrapper{
   left:200px;
 }
-.card{
 
-  height: $main-height*1/3;
-  overflow: auto;
-}
 
-.card-body {
-  padding: 0;
-  overflow: auto;
-}

@@ -30,7 +30,7 @@ export class Track {
     this.model.events=events;
     this.streamer.updateEventQueue(events);
   }
-  addEvent(event: NoteTriggerViewModel): void {
+ /* addEvent(event: NoteTriggerViewModel): void {
     let insertIndex = _.sortedIndexBy(this.model.events, {'time': event.time}, event => event.time);
     this.model.events.splice(insertIndex, 0, event);
   }
@@ -39,7 +39,7 @@ export class Track {
     let index = this.model.events.findIndex(ev=>ev.id===id);
     this.model.events.splice(index, 1);
 
-  }
+  }*/
 
   destroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());

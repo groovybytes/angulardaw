@@ -9,7 +9,8 @@ export class ProjectViewModel {
   name: string="default";
   bpm: number=120;
   quantization: number=NoteLength.Quarter;
-  signature: string="4,4";
+  beatUnit:number=4;
+  barUnit:number=4;
   patterns: Array<PatternViewModel>=[];
   tracks: Array<TrackViewModel>=[];
   grid: GridViewModel=new GridViewModel();

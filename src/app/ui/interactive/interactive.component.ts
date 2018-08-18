@@ -163,9 +163,9 @@ export class InteractiveComponent implements OnInit {
     this.params.offsetTop = reference.offset().top - this.jqContainer.offset().top;
     this.params.cellWidth = reference[0].getBoundingClientRect().width;
     this.params.cellHeight = reference[0].getBoundingClientRect().height;
-    this.params.fullTime = MusicMath.getTimeAtBeat(this.patternLength, this.transportService.params.bpm
+    this.params.fullTime = MusicMath.getTimeAtBeat(this.patternLength, this.transportService.params.bpm.getValue()
       , this.transportService.params.quantization.getValue());
-    this.params.tickTime = MusicMath.getTickTime(this.transportService.params.bpm
+    this.params.tickTime = MusicMath.getTickTime(this.transportService.params.bpm.getValue()
       , this.transportService.params.quantization.getValue());
 
     this.params.width = MusicMath.getBeatTicks(this.transportService.params.quantization.getValue()) * this.patternLength * this.params.cellWidth;

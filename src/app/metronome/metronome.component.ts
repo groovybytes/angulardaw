@@ -43,8 +43,8 @@ export class MetronomeComponent implements OnInit {
   }
 
   increase(value: number): void {
-    let newBpm = this.transport.params.bpm + value;
-    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.transport.params.bpm = newBpm;
+    /*let newBpm = this.transport.params.bpm.getValue() + value;
+    if (newBpm >= this.minBpm && newBpm <= this.maxBpm) this.transport.params.bpm = newBpm;*/
   }
 
   activate(): void {

@@ -3,12 +3,10 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {TransportEvents} from "./TransportEvents";
 import {TransportInfo} from "../TransportInfo";
 import {Observable, Subject} from "rxjs";
-import {TransportPosition} from "../TransportPosition";
 import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 
 export class PerformanceStreamer {
   private queue: Array<NoteTriggerViewModel> = [];
-  private queueIndex: number = 0;
   private lookAhead: number = 2;//seconds
   private subscriptions: Array<Subscription> = [];
   trigger: Observable<{ event: NoteTriggerViewModel, offset: number }>;
@@ -25,7 +23,6 @@ export class PerformanceStreamer {
   }
 
   private onTransportTime(transportTime: number): void {
-
     if (this.timeStamp && this.timeStamp>transportTime){
       this.initLoopQueue();
     }

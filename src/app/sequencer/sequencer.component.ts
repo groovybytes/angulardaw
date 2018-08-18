@@ -22,34 +22,43 @@ export class SequencerComponent implements OnInit, OnChanges {
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 100;
 
+
+  highlightColumn: number = -1;
   noteCells: Array<Array<ContentCell>> = [];
   headerCells: Array<HeaderCell<any>> = [];
   entries: Array<FlexyGridEntry<NoteTriggerViewModel>> = [];
-  allNotes:Array<string>;
+  allNotes: Array<string>;
 
-  private quantization:NoteLength;
+  private quantization: NoteLength;
 
   constructor(private element: ElementRef,
-              private theoryService:TheoryService,
+              private theoryService: TheoryService,
               private sequencerService: SequencerService,
               private transportService: TransportService) {
 
 
-    this.allNotes=theoryService.getAllIds();
+    this.allNotes = theoryService.getAllIds();
   }
 
   getTime(column: number): number {
-    return MusicMath.getTickTime(this.transportService.params.bpm, this.transportService.params.quantization.getValue()) * column;
+    return MusicMath.getTickTime(this.transportService.params.bpm.getValue(), this.transportService.params.quantization.getValue()) * column;
   }
 
   ngOnInit() {
-    this.transportService.params.quantization.subscribe(nextValue=>{
-      if (this.quantization !== nextValue){
-        this.quantization=nextValue;
+    this.transportService.params.quantization.subscribe(nextValue => {
+      if (this.quantization !== nextValue) {
+        this.quantization = nextValue;
+        this.transportService.params.tickEnd = this.pattern.length *
+          MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());
         this.updateCells();
       }
+    });
 
-    })
+    this.transportService.time.subscribe(time => {
+      this.highlightColumn = MusicMath.getTickForTime(time * 1000, this.transportService.params.bpm.getValue(), this.transportService.params.quantization.getValue());
+    });
+
+    this.transportService.transportEnd.subscribe(() => this.highlightColumn = -1);
   }
 
 
@@ -62,6 +71,7 @@ export class SequencerComponent implements OnInit, OnChanges {
     this.sequencerService.addEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
 
   }
+
   onGridEntryUpdated(entry: FlexyGridEntry<NoteTriggerViewModel>): void {
     this.sequencerService.updateEvent(entry, this.cellWidth, this.cellHeight, this.pattern, this.transportService.params);
   }
@@ -83,15 +93,14 @@ export class SequencerComponent implements OnInit, OnChanges {
     }
   }
 
-  private updateCells():void{
-    this.quantization=this.transportService.params.quantization.getValue();
+  private updateCells(): void {
+    this.quantization = this.transportService.params.quantization.getValue();
     this.noteCells.length = 0;
     this.headerCells.length = 0;
     this.noteCells = this.sequencerService.createNoteCells(this.transportService.params, this.pattern);
     this.headerCells = this.sequencerService.createHeaderCells(this.transportService.params, this.pattern);
     this.entries = this.sequencerService.createEntries(this.pattern, this.cellWidth, this.cellHeight, this.transportService.params);
   }
-
 
 
 }

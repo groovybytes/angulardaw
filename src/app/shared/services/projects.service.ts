@@ -21,6 +21,7 @@ import {FilesApi} from "../api/files.api";
 import {AppConfiguration} from "../../app.configuration";
 import {SamplesApi} from "../api/samples.api";
 import {NoteLength} from "../../model/mip/NoteLength";
+import {TimeSignature} from "../../model/mip/TimeSignature";
 
 @Injectable()
 export class ProjectsService {
@@ -49,7 +50,10 @@ export class ProjectsService {
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(projectViewModel);
       this.transportService.params.quantization = new BehaviorSubject<NoteLength>(projectViewModel.quantization);
-      this.transportService.params.bpm = projectViewModel.bpm;
+      this.transportService.params.bpm = new BehaviorSubject<number>(projectViewModel.bpm);
+      this.transportService.params.signature =
+        new BehaviorSubject<TimeSignature>(new TimeSignature(projectViewModel.beatUnit, projectViewModel.barUnit));
+
       let promises = [];
       projectViewModel.tracks.forEach(track => {
         let newTrack = this.addTrack(project, track);
@@ -59,10 +63,9 @@ export class ProjectsService {
 
       Promise.all(promises)
         .then(() => {
-          let metronome = new Metronome(this.filesService, this.config, this.transportService, this.samplesService);
+          let metronome = new Metronome(this.filesService,projectViewModel, this.config, this.transportService, this.samplesService);
           metronome.load().then(metronome => {
             project.metronome = metronome;
-            metronome.enabled = project.model.metronomeEnabled;
 
             resolve(project);
           })

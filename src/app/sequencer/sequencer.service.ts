@@ -27,7 +27,7 @@ export class SequencerService {
     let nColumns = beatTicks * pattern.length;
     for (let i = 0; i < nColumns; i++) {
       let info = new HeaderCell();
-      info.beat= MusicMath.getBeatNumber(i, transportParams.quantization.getValue(), transportParams.signature);
+      info.beat= MusicMath.getBeatNumber(i, transportParams.quantization.getValue(), transportParams.signature.getValue());
       /* if (i % beatTicks === 0) {
          info.position = new TransportPosition();
          info.position.beat = MusicMath.getBeatNumber(i, transportParams.quantization, transportParams.signature);
@@ -59,14 +59,17 @@ export class SequencerService {
                 params: TransportParams): Array<FlexyGridEntry<NoteTriggerViewModel>> {
     let result = [];
     pattern.events.forEach(event => {
-      let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization.getValue());
-      let tick = MusicMath.getTickForTime(event.time, params.bpm, params.quantization.getValue());
-      let left = cellWidth * tick;
+      let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
+      let tick = MusicMath.getTickForTime(event.time, params.bpm.getValue(), params.quantization.getValue());
+      let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
+      let percentage = event.time / fullTime;
+      let fullWidth = cellWidth * pattern.length * ticksPerBeat;
+      let left = fullWidth * percentage;
       let notes = this.getPatternNotes(pattern);
       let rowIndex = notes.indexOf(event.note);
       let top = rowIndex * cellHeight;
 
-      let entry = new FlexyGridEntry(event,left,top);
+      let entry = new FlexyGridEntry(event,left,top,Math.ceil(left/cellWidth));
       result.push(entry);
     });
     return result;
@@ -83,7 +86,7 @@ export class SequencerService {
 
   addEvent(entry: FlexyGridEntry<NoteTriggerViewModel>, cellWidth: number, cellHeight: number, pattern: PatternViewModel, params: TransportParams): void {
 
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization.getValue());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
     let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
     let fullWidth = cellWidth * pattern.length * ticksPerBeat;
     let percentage = entry.left / fullWidth;
@@ -99,12 +102,16 @@ export class SequencerService {
 
   updateEvent(entry: FlexyGridEntry<NoteTriggerViewModel>, cellWidth: number, cellHeight: number, pattern: PatternViewModel, params: TransportParams): void {
 
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm, params.quantization.getValue());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
     let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
     let fullWidth = cellWidth * pattern.length * ticksPerBeat;
     let percentage = entry.left / fullWidth;
     let noteTime = fullTime * percentage;
+    let notes = this.getPatternNotes(pattern);
     let rowIndex = entry.top / cellHeight;
+
+    entry.data.column=entry.column;
+    entry.data.note=notes[rowIndex];
     entry.data.time=noteTime;
   }
 

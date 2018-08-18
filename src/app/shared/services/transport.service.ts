@@ -1,5 +1,5 @@
 import {TransportParams} from "../../model/daw/TransportParams";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, Subscription} from "rxjs";
 import {EventEmitter, Inject, Injectable} from "@angular/core";
 import {TransportPosition} from "../../model/daw/TransportPosition";
 import {MusicMath} from "../../model/utils/MusicMath";
@@ -17,21 +17,12 @@ export class TransportService {
   transportStart: EventEmitter<void> = new EventEmitter<void>();
   beforeStart: EventEmitter<void> = new EventEmitter<void>();
   timeReset: EventEmitter<number> = new EventEmitter<number>();
-  private startTime: number = 0;
-  private endTime: number = 0;
   private position: TransportPosition;
-  private paused: boolean = false;
-  private transportStartTime: number = 0;
   private intervalHandle: any;
-  private pauseTime: number = 0;
-  private accuracy = 0.005; //10ms
   private run: boolean = false;
   private tickSubject: Subject<number> = new Subject<number>();
   private beatSubject: Subject<number> = new Subject<number>();
   private timeSubject: Subject<number> = new Subject<number>();
-  private tick: number;
-
-  //private timeSubscription: Subscription;
 
 
   constructor(@Inject("AudioContext") private audioContext: AudioContext, private config: AppConfiguration) {
@@ -44,30 +35,41 @@ export class TransportService {
     this.position.bar = 0;
     this.position.time = 0;
     this.position.tick = 0;
+
   }
 
- /* getPositionInfo(): TransportPosition {
-    return this.position;
-  }*/
+  /* getPositionInfo(): TransportPosition {
+     return this.position;
+   }*/
 
+  private getTickTime():number{
+    return MusicMath.getTickTime(this.params.bpm.getValue(), this.params.quantization.getValue());
+  }
+  private getStartTime():number{
+    return this.params.tickStart * this.getTickTime();
+  }
+  private getEndTime():number{
+    return this.params.tickEnd * this.getTickTime();
+  }
   start(): void {
 
-    let start = this.audioContext.currentTime;
-    let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
-    this.startTime = this.params.tickStart * tickTime;
-    this.endTime = this.params.tickEnd * tickTime;
-    this.beforeStart.emit();
 
+    let start = this.audioContext.currentTime;
+    /*let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
+    this.startTime = this.params.tickStart * tickTime;
+    this.endTime = this.params.tickEnd * tickTime;*/
+    this.beforeStart.emit();
     this.run = true;
     this.timeReset.emit();
 
-    this.intervalHandle=setInterval(() => {
+    this.intervalHandle = setInterval(() => {
       let currentTime = this.audioContext.currentTime - start;
-      if (currentTime > this.endTime/1000) {
-        if (this.params.loop){
+      if (currentTime > this.getEndTime() / 1000) {
+
+        if (this.params.loop) {
           start = this.audioContext.currentTime;
         }
-        else{
+        else {
           this.run = false;
           this.transportEnd.emit();
         }
@@ -183,20 +185,12 @@ export class TransportService {
   }
 
 
-
-  private getEndTime():number{
-    return this.endTime;
-  }
-  private getStartTime():number{
-    return this.startTime;
-  }
-
   getEvents(): TransportEvents {
     return {
       tickTock: this.tickTock,
       time: this.time,
       beat: this.beat,
-      beforeStart:this.beforeStart,
+      beforeStart: this.beforeStart,
       transportEnd: this.transportEnd,
       transportStart: this.transportStart,
       timeReset: this.timeReset

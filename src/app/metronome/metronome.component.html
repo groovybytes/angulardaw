@@ -1,3 +1,4 @@
+<!--
 
 <div class="row">
   <div class="col-xs-12">
@@ -24,16 +25,16 @@
   <div class="col-xs-12">
     <div class="row">
       <div class="col-xs-6">
-        <label for="beats" class="range-label">{{transport.params.signature.beatUnit}}</label>
+        <label for="beats" class="range-label">{{transport.params.signature.beatUnit.getValue()}}</label>
         <div class="slidecontainer">
-          <input type="range" class="slider" [(ngModel)]="transport.params.signature.beatUnit" name="beats" id="beats" min="1" max="8"
+          <input type="range" class="slider" [(ngModel)]="transport.params.signature.beatUnit.getValue()" name="beats" id="beats" min="1" max="8"
                  step="1">
         </div>
       </div>
       <div class="col-xs-6">
         <label for="bars" class="range-label">{{transport.params.signature.barUnit}}</label>
         <div class="slidecontainer">
-          <input type="range" class="slider" [(ngModel)]="transport.params.signature.barUnit" name="bars" id="bars" min="1" max="8" step="1">
+          <input type="range" class="slider" [(ngModel)]="transport.params.signature.barUnit.getValue()" name="bars" id="bars" min="1" max="8" step="1">
         </div>
       </div>
     </div>
@@ -42,8 +43,8 @@
 <div class="row metronome-trigger-container">
   <div class="col-xs-12 center">
     <transport></transport>
-  <!--  <start-button (toggled)="onStartBtnToggled($event)" iconOff="fas fa-stop fa-3x"
-                  iconOn="fas fa-power-off fa-4x"></start-button>-->
+  &lt;!&ndash;  <start-button (toggled)="onStartBtnToggled($event)" iconOff="fas fa-stop fa-3x"
+                  iconOn="fas fa-power-off fa-4x"></start-button>&ndash;&gt;
 
   </div>
 </div>
@@ -55,3 +56,4 @@
 
 
 
+-->

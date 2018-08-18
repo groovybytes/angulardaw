@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import * as d3 from "d3";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'rangeslider',
@@ -8,12 +7,18 @@ import * as d3 from "d3";
 })
 export class RangesliderComponent implements OnInit {
 
-  @Input() scaleStart:number;
-  @Input() scaleEnd:number;
+  @Input() value:number=0;
+  @Input() min:number=0;
+  @Input() max:number=100;
+  @Output() valueChanged:EventEmitter<number> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onChange(value:number):void{
+    this.valueChanged.emit(value);
   }
 
 }

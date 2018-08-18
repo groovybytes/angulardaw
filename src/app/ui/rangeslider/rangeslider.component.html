@@ -1,3 +1,10 @@
-<p>
-  rangeslider works!
-</p>
+<div class="slidecontainer">
+  <input
+    type="range"
+    [min]="min"
+    [max]="max"
+    [value]="value"
+    class="slider"
+    [(ngModel)]="value"
+    (ngModelChange)="onChange($event)">
+</div>

@@ -52,6 +52,17 @@ export class MainPageComponent implements OnInit {
       this.projectsApi.get(params.projectId).subscribe(projecViewModel => {
         this.projectsService.loadProject(projecViewModel).then(project => {
           this.project = project;
+          let bpm = this.transportService.params.bpm.getValue();
+          this.transportService.params.bpm.subscribe(newBpm => {
+            if (newBpm !== bpm) {
+              let factor = bpm / newBpm ;
+              console.log(factor);
+              bpm=newBpm;
+              this.project.model.patterns.forEach(pattern=>{
+                pattern.events.forEach(event=>event.time=event.time*factor);
+              })
+            }
+          })
 
         });
       }, error => this.system.error(error));
