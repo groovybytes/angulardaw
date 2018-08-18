@@ -46,7 +46,7 @@ export class SequencerComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.transportService.params.quantization.subscribe(nextValue => {
-      if (this.quantization !== nextValue) {
+      if (this.pattern&&this.quantization !== nextValue) {
         this.quantization = nextValue;
         this.transportService.params.tickEnd = this.pattern.length *
           MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());

@@ -24,6 +24,7 @@ import {UiModule} from "./ui/ui.module";
 import { DawGridComponent } from './daw-grid/daw-grid.component';
 import {DawGridService} from "./daw-grid/daw-grid.service";
 import {ObserversModule} from "./modelobserver/observers.module";
+import { ConsoleComponent } from './console/console.component';
 
 let audioContext = new AudioContext();
 @NgModule({
@@ -36,7 +37,8 @@ let audioContext = new AudioContext();
     ProjectsPageComponent,
     TrackComponent,
     TrackControlComponent,
-    DawGridComponent
+    DawGridComponent,
+    ConsoleComponent
   ],
   imports: [
     BrowserModule,

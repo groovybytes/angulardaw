@@ -27,6 +27,7 @@ import {TimeSignature} from "../../model/mip/TimeSignature";
 export class ProjectsService {
 
   constructor(
+    @Inject("AudioContext") private audioContext: AudioContext,
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<ProjectViewModel>,
     private filesService: FilesApi,
     private transportService: TransportService,
@@ -57,13 +58,14 @@ export class ProjectsService {
       let promises = [];
       projectViewModel.tracks.forEach(track => {
         let newTrack = this.addTrack(project, track);
+        if (track.controlParameters) newTrack.gain.next(track.controlParameters.gain);
         if (track.pluginId) promises.push(this.setPlugin(newTrack, track.pluginId));
       });
 
 
       Promise.all(promises)
         .then(() => {
-          let metronome = new Metronome(this.filesService,projectViewModel, this.config, this.transportService, this.samplesService);
+          let metronome = new Metronome(this.audioContext,this.filesService,projectViewModel, this.config, this.transportService, this.samplesService);
           metronome.load().then(metronome => {
             project.metronome = metronome;
 
@@ -102,15 +104,18 @@ export class ProjectsService {
   }
 
   addTrack<T>(project: Project, trackDto: TrackViewModel): Track {
-    let track = new Track(trackDto, this.transportService.getEvents(), this.transportService.getInfo());
+    let track = new Track(this.audioContext,trackDto, this.transportService.getEvents(), this.transportService.getInfo());
     track.id = trackDto.id;
     project.tracks.push(track);
     return track;
   }
 
   onPatternChanged(track: Track, pattern: PatternViewModel, transportParams: TransportParams): void {
-    track.resetEvents(pattern.events);
-    pattern.notes = track.plugin.getNotes().reverse();
+    if (track) {
+      track.resetEvents(pattern.events);
+      pattern.notes = track.plugin.getNotes().reverse();
+    }
+
     transportParams.tickEnd =
       pattern.length * MusicMath.getBeatTicks(transportParams.quantization.getValue());
   }

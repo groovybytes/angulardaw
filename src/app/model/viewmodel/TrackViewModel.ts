@@ -1,4 +1,5 @@
 import {NoteTriggerViewModel} from "./NoteTriggerViewModel";
+import {TrackControlParameters} from "./TrackControlParameters";
 
 export class TrackViewModel {
   constructor(id:string){
@@ -11,4 +12,5 @@ export class TrackViewModel {
   projectId:any;
   ghost:boolean=false;
   events:Array<NoteTriggerViewModel>=[];
+  controlParameters:TrackControlParameters=new TrackControlParameters();
 }

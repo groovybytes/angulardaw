@@ -1,28 +1,17 @@
-<div class="card controls track-height-default">
-  <div class="card-body">
-    <div class="btn-group dropright btn-group-sm">
-      <button type="button" class="btn btn-secondary">
-        Instrument
-      </button>
-      <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="sr-only">Toggle</span>
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" [routerLink]="" (click)="selectInstrument('')">None</a>
-        <a *ngFor="let instr of instruments"
-           [ngClass]="{'dropdown-item':true,'active':track.instrument && track.instrument.getId().toString()===instr}"
-           [routerLink]=""
-           (click)="selectInstrument(instr)" >{{instr}}</a>
-      </div>
-    <!--  {{track.plugins[0]?.getId().toString()}}-->
-    <!--  -->
-    </div>
-    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="First group">
-        <button type="button" class="btn btn-secondary">S</button>
-        <button type="button" class="btn btn-secondary">M</button>
-        <button type="button" class="btn btn-secondary">R</button>
-      </div>
-    </div>
+
+<rangeslider [min]="0" [max]="100" [value]="track.gain.getValue()" (valueChanged)="setGain($event)" ></rangeslider>
+<div class="btn-toolbar" role="toolbar" aria-label="">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+    <button type="button" class="btn btn-secondary">S</button>
+    <button type="button" class="btn btn-secondary">M</button>
+    <button type="button" class="btn btn-secondary">R</button>
   </div>
+  <!-- <div class="btn-group mr-2" role="group" aria-label="Second group">
+     <button type="button" class="btn btn-secondary">5</button>
+     <button type="button" class="btn btn-secondary">6</button>
+     <button type="button" class="btn btn-secondary">7</button>
+   </div>
+   <div class="btn-group" role="group" aria-label="Third group">
+     <button type="button" class="btn btn-secondary">8</button>
+   </div>-->
 </div>

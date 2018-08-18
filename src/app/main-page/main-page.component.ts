@@ -94,12 +94,15 @@ export class MainPageComponent implements OnInit {
 
   focusedPatternChanged(params: { pattern: PatternViewModel, trackId: string }): void {
 
-    this.project.model.focusedPattern = params.pattern.id;
-    this.focusedPattern = params.pattern;
-    if (params.pattern) {
-      let track = this.project.tracks.find(t => t.id === params.trackId);
-      this.focusedTrack = track;
+    if (params.pattern){
+      this.project.model.focusedPattern = params.pattern.id;
+      this.focusedPattern = params.pattern;
+      if (params.pattern) {
+        let track = this.project.tracks.find(t => t.id === params.trackId);
+        this.focusedTrack = track;
+      }
     }
+
 
   }
 }

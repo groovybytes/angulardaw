@@ -3,6 +3,7 @@ import {Project} from "../model/daw/Project";
 import {Track} from "../model/daw/Track";
 import {System} from "../system/System";
 import {PluginId} from "../model/daw/plugins/PluginId";
+import {TrackViewModel} from "../model/viewmodel/TrackViewModel";
 
 @Component({
   selector: 'daw-track-control',
@@ -11,10 +12,7 @@ import {PluginId} from "../model/daw/plugins/PluginId";
 })
 export class TrackControlComponent implements OnInit {
 
-  @Input() project: Project;
   @Input() track: Track;
-
-  instruments: Array<string> = Object.keys(PluginId);
 
   constructor(private system: System) {
 
@@ -30,6 +28,10 @@ export class TrackControlComponent implements OnInit {
 
   ngOnInit(): void {
 
+  }
+
+  setGain(value:number):void{
+    this.track.gain.next(value);
   }
 
 

@@ -36,3 +36,17 @@
   [cellHeight]="cellHeight"
   [cellWidth]="cellWidth">
 </flexytable>
+<table *ngIf="project" class=" header-table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th *ngFor="let cell of project.grid.headerCells" [ngStyle]="
+    {'width':cellWidth+'px',
+    'max-width':cellWidth+'px',
+    'height':cellHeight+'px'}" class="">
+
+
+    </th>
+  </tr>
+  </thead>
+</table>
+

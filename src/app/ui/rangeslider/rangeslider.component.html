@@ -1,4 +1,4 @@
-<div class="slidecontainer">
+<div class="slidecontainer text-center">
   <input
     type="range"
     [min]="min"
@@ -6,5 +6,6 @@
     [value]="value"
     class="slider"
     [(ngModel)]="value"
+    orient="vertical"
     (ngModelChange)="onChange($event)">
 </div>

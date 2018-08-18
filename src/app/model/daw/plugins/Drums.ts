@@ -37,9 +37,9 @@ export class Drums implements WstPlugin {
   destroy(): void {
   }
 
-  feed(event: NoteTriggerViewModel, offset: number): any {
+  feed(event: NoteTriggerViewModel, offset: number,destinationNode?:AudioNode): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
-    trigger.sample.trigger(offset);
+    trigger.sample.trigger(offset,destinationNode);
   }
 
 
@@ -65,26 +65,5 @@ export class Drums implements WstPlugin {
         .catch(error => reject(error));
     })
   }
-
-  /*private chooseSample(note: NoteInfo): Sample {
-    let closestSampleByNote = this.closest(this.triggers.map(trigger => trigger.note.index), note.index);
-    return this.triggers.filter(trigger => trigger.note.index === closestSampleByNote)[0].sample;
-  }
-
-  private closest(array: Array<number>, num) {
-    var i = 0;
-    var minDiff = 1000;
-    var ans;
-    array.forEach(() => {
-      var m = Math.abs(num - array[i]);
-      if (m < minDiff) {
-        minDiff = m;
-        ans = array[i];
-      }
-      i++;
-    })
-    return ans;
-  }*/
-
 
 }

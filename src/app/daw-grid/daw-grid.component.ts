@@ -48,6 +48,7 @@ export class DawGridComponent implements OnInit, OnChanges {
   }
 
   onGridEntryAdded(entry: FlexyGridEntry<GridCellViewModel>): void {
+
     let newPattern = this.gridService.addEvent(entry, this.cellWidth, this.cellHeight, this.project.patterns);
     this.gridService.changePattern(this.project,entry,this.focusedPatternChanged);
 
@@ -67,7 +68,7 @@ export class DawGridComponent implements OnInit, OnChanges {
   }
 
   onCellClicked(cell: ContentCell): void {
-    this.gridService.changePattern(this.project,null,this.focusedPatternChanged);
+   // this.gridService.changePattern(this.project,null,this.focusedPatternChanged);
 
   }
 
@@ -75,6 +76,10 @@ export class DawGridComponent implements OnInit, OnChanges {
     let trackAdded = this.gridService.setPlugin(pluginId, cell, this.project);
     if (trackAdded) this.trackAdded.emit(cell.data);
     this.pluginChanged.emit(cell.data);
+  }
+
+  getTracks():Array<TrackViewModel>{
+    return this.project?this.project.tracks:[];
   }
 
 

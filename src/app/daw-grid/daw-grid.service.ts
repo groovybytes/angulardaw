@@ -108,7 +108,7 @@ export class DawGridService {
     if (entry){
       let pattern = project.patterns.find(p => p.id === entry.data.patternId);
       let headerCell = project.grid.headerCells.find(c => c.column === entry.data.column);
-      emitter.emit({pattern: pattern, trackId: headerCell.data.id});
+      emitter.emit({pattern: pattern, trackId: headerCell.data?headerCell.data.id:null});
     }
     else emitter.emit({pattern: null, trackId: null});
 

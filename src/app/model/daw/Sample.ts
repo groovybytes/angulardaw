@@ -14,24 +14,24 @@ export class Sample {
     this.buffer = buffer;
   }
 
-  public triggerWith(adsr: ADSREnvelope,offset:number,detune:number): void {
+  public triggerWith(adsr: ADSREnvelope,offset:number,detune:number,destination?:AudioNode): void {
 
     let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
     if (detune) sourceNode.detune.value=detune;
     let gainNode = this.context.createGain();
     sourceNode.connect(gainNode);
-    gainNode.connect(this.context.destination);
+    gainNode.connect(destination?destination:this.context.destination);
     //adsr.apply(gainNode, this.context.currentTime);
     sourceNode.start(this.context.currentTime+offset, 0, 0.7);
   }
 
-  public trigger(offset:number):void{
+  public trigger(offset:number,destination?:AudioNode):void{
     let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
     let gainNode = this.context.createGain();
     sourceNode.connect(gainNode);
-    gainNode.connect(this.context.destination);
+    gainNode.connect(destination?destination:this.context.destination);
     sourceNode.start(this.context.currentTime+offset, 0, 0.7);
   }
 

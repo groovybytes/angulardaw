@@ -13,6 +13,7 @@ import {NoteTriggerViewModel} from "../../viewmodel/NoteTriggerViewModel";
 import {WstPlugin} from "../WstPlugin";
 import {PluginId} from "../plugins/PluginId";
 import {ProjectViewModel} from "../../viewmodel/ProjectViewModel";
+import {Inject} from "@angular/core";
 
 
 export class Metronome implements WstPlugin{
@@ -24,7 +25,9 @@ export class Metronome implements WstPlugin{
 
   checked:boolean=true;
 
-  constructor(private fileService: FilesApi,
+  constructor(
+    private audioContext: AudioContext,
+    private fileService: FilesApi,
               private project:ProjectViewModel,
               private config: AppConfiguration,
               private transportService: TransportService,
@@ -40,7 +43,7 @@ export class Metronome implements WstPlugin{
     for (let i = 0; i < 100; i++) {
       model.events.push(new NoteTriggerViewModel(null, "",i*beatTime));
     }
-    let track = new Track(model, this.transportService.getEvents(), this.transportService.getInfo());
+    let track = new Track(this.audioContext,model, this.transportService.getEvents(), this.transportService.getInfo());
     track.plugin=this;
 
  /*   this.streamer = new PerformanceStreamer([], this.transportService.getEvents(), this.transportService.getInfo());

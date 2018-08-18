@@ -23,12 +23,12 @@ export abstract class AbstractInstrumentSampler implements WstPlugin {
 
   abstract destroy(): void;
 
-  feed(event: NoteTriggerViewModel, offset: number): any {
+  feed(event: NoteTriggerViewModel, offset: number,targetNode:AudioNode): any {
     let eventNote = this.theoryService.getNote(event.note);
     let sample = this.chooseSample(this.theoryService.getNote(event.note));
 
     let detune = this.theoryService.getInterval(sample.baseNote,eventNote)*100;
-    sample.triggerWith(ADSREnvelope.default(),offset,detune);
+    sample.triggerWith(ADSREnvelope.default(),offset,detune),targetNode;
   }
 
   abstract load(): Promise<AbstractInstrumentSampler>;
