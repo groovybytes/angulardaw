@@ -8,32 +8,29 @@
 
 
 
-<div class="row daw-grid-container">
+<div class="row daw-grid-container" *ngIf="project">
   <div class="col-xs-12">
     <daw-grid
       (focusedPatternChanged)="focusedPatternChanged($event)"
       (pluginChanged)="onPluginChanged($event)"
       (trackAdded)="onTrackAdded($event)"
       (trackRemoved)="onTrackRemoved($event)"
-      [project]="project?.model"
-      [cellWidth]="100"
-      [cellHeight]="50">
+      [project]="project.model">
     </daw-grid>
   </div>
 </div>
-<div class="row console-container">
+<div class="row console-container" *ngIf="project">
   <div class="col-xs-12">
     <console *ngIf="project" [project]="project"></console>
   </div>
 </div>
 
-<div class="row sequencer-container">
+<div class="row sequencer-container" *ngIf="project">
   <div class="col-xs-12">
-
-    <sequencer *ngIf="project" [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>
+  <!--  <sequencer *ngIf="project" [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>-->
   </div>
 </div>
-<pattern-observer [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
+<pattern-observer *ngIf="project" [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
 <nav class="navbar navbar-dark bg-light footer fixed-bottom">
   <daw-control *ngIf="project" [project]="project"></daw-control>
 </nav>

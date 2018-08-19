@@ -39,6 +39,7 @@ let audioContext = new AudioContext();
     TrackControlComponent,
     DawGridComponent,
     ConsoleComponent
+
   ],
   imports: [
     BrowserModule,

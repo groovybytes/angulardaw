@@ -9,7 +9,9 @@ import DraggableEventUIParams = JQueryUI.DraggableEventUIParams;
 })
 export class DraggableDirective implements OnInit, OnChanges {
 
-  @Input() params: DraggableOptions;
+  //@Input() params: DraggableOptions;
+  @Input() gridX: number=1;
+  @Input() gridY: number=1;
   @Input() data: any;
   @Output() onDrag: EventEmitter<{ event: Event, ui: DraggableEventUIParams, data: any }> = new EventEmitter();
   @Output() onDragStart: EventEmitter<{ event: Event, ui: DraggableEventUIParams, data: any }> = new EventEmitter();
@@ -36,7 +38,7 @@ export class DraggableDirective implements OnInit, OnChanges {
         }
       })
     }
-    else $(this.element.nativeElement).draggable("option", this.params);
+    else $(this.element.nativeElement).draggable("option", {grid:[this.gridX,this.gridY]});
   }
 
 

@@ -11,9 +11,14 @@ import {PressButtonComponent} from "./press-button/press-button.component";
 import {PanelComponent} from "./panel/panel.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {PatternComponent} from "./pattern/pattern.component";
-import { InteractiveComponent } from './interactive/interactive.component';
-import { FlexytableComponent } from './flexytable/flexytable.component';
+import {InteractiveComponent} from './interactive/interactive.component';
+import {FlexytableComponent} from './flexytable/flexytable.component';
 import {DraggableDirective} from "./directives/draggable.directive";
+import {GrideventComponent} from "./gridevent/gridevent.component";
+import {DomObserverDirective} from "./directives/domobserver.directive";
+import {TestsComponent} from './tests/tests.component';
+import {EventtableComponent} from "./eventtable/eventtable.component";
+import {EventtableModule} from "./eventtable/eventtable.module";
 
 
 @NgModule({
@@ -28,13 +33,17 @@ import {DraggableDirective} from "./directives/draggable.directive";
     PatternComponent,
     InteractiveComponent,
     FlexytableComponent,
-    DraggableDirective
+    GrideventComponent,
+    DraggableDirective,
+    DomObserverDirective,
+    TestsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    EventtableModule
   ],
   providers: [
 
@@ -51,7 +60,9 @@ import {DraggableDirective} from "./directives/draggable.directive";
     PatternComponent,
     InteractiveComponent,
     FlexytableComponent,
-    DraggableDirective
+    DraggableDirective,
+    DomObserverDirective,
+    EventtableComponent
   ]
 })
 export class UiModule {

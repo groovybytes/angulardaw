@@ -1,4 +1,14 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output, QueryList,
+  SimpleChanges, ViewChildren
+} from '@angular/core';
 import {PluginId} from "../model/daw/plugins/PluginId";
 import {PatternViewModel} from "../model/viewmodel/PatternViewModel";
 import {FlexyGridEntry} from "../ui/flexytable/model/FlexyGridEntry";
@@ -14,19 +24,19 @@ import {ProjectViewModel} from "../model/viewmodel/ProjectViewModel";
   templateUrl: './daw-grid.component.html',
   styleUrls: ['./daw-grid.component.scss']
 })
-export class DawGridComponent implements OnInit, OnChanges {
+export class DawGridComponent implements OnInit, OnChanges,AfterViewInit {
 
   @Input() project: ProjectViewModel;
   plugins: Array<string> = Object.keys(PluginId);
-
-
-  @Input() cellWidth: number;
-  @Input() cellHeight: number;
   @Output() focusedPatternChanged: EventEmitter<{pattern:PatternViewModel,trackId:string}> = new EventEmitter();
   @Output() pluginChanged: EventEmitter<TrackViewModel> = new EventEmitter<TrackViewModel>();
   @Output() trackAdded: EventEmitter<TrackViewModel> = new EventEmitter<TrackViewModel>();
   @Output() trackRemoved: EventEmitter<TrackViewModel> = new EventEmitter<TrackViewModel>();
 
+
+
+  cellWidth:number=197;
+  cellHeight:number=100;
   constructor(private gridService: DawGridService) {
   }
 
@@ -35,11 +45,14 @@ export class DawGridComponent implements OnInit, OnChanges {
 
   }
 
+  onDomChange(event):void{
+    console.log(event);
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.project && changes.project.currentValue) {
       if (this.project.grid.headerCells.length === 0) this.project.grid.headerCells = this.gridService.createHeaderCells(this.project.grid.nColumns);
       if (this.project.grid.contentCells.length === 0) this.project.grid.contentCells = this.gridService.createContentCells(this.project.grid.nRows, this.project.grid.nColumns);
-      this.gridService.updateEntryPositions(this.project.grid, this.cellWidth, this.cellHeight);
+      //this.gridService.updateEntryPositions(this.project.grid, this.cellWidth, this.cellHeight);
       if (this.project.focusedPattern) {
         let entry = this.project.grid.entries.find(entry=>entry.data&&entry.data.patternId===this.project.focusedPattern);
         this.gridService.changePattern(this.project,entry,this.focusedPatternChanged);
@@ -80,6 +93,10 @@ export class DawGridComponent implements OnInit, OnChanges {
 
   getTracks():Array<TrackViewModel>{
     return this.project?this.project.tracks:[];
+  }
+
+  ngAfterViewInit(): void {
+
   }
 
 

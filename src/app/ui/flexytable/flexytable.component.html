@@ -1,40 +1,51 @@
 <div class="container-wrapper"
-     [ngStyle]="{'width':cellWidth*headerCells.length+'px'}"
      id="containment-wrapper">
-  <div *ngFor="let entry of entries"
+  <!--  [ngStyle]="{'width':tableCellWidth*headerCells.length+'px'}"-->
+  <grid-event
+    (onEventMouseDown)="onEntryMouseDown(entry,$event)"
+    (onEventDrag)="onEntryMouseDown(entry,$event)"
+    (onEventDragStart)="onEntryMouseDown(entry,$event)"
+    (onEventClicked)="onEntryClicked(entry)"
+    (onEventDblClicked)="onEntryDblClicked(entry)"
+    [width]="tableCellWidth"
+    [height]="tableCellHeight"
+    [entry]="entry"
+    *ngFor="let entry of entries"></grid-event>
+  <!--<div *ngFor="let entry of entries"
        (mousedown)="onEntryMouseDown(entry,$event)"
        class="cell-content border"
        [ngClass]="{'highlight':useColumnHighlighting && entry.column===highlightColumn}"
        (click)="onEntryClicked(entry)"
        (dblclick)="onEntryDblClicked(entry)"
-       [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px',left:entry.left+1+'px',top:entry.top+'px'}"
+       [ngStyle]="{'width':tableCellWidth+'px','height':tableCellHeight+'px',left:entry.left+1+'px',top:entry.top+'px'}"
        jquery-ui-draggable
        (onDrag)="onDrag($event)"
        (onDragStart)="onDragStart($event)"
        [data]="entry"
-       [params]="getDragParams(entry)"></div>
-  <table class="table table-bordered">
-    <!-- <thead>
-     <tr class="">
-       <th
-         *ngFor="let header of headerCells" class="text-center">
-         <span>X</span>
-       </th>
-     </tr>
-     </thead>-->
-    <tbody>
-    <tr *ngFor="let row of contentCells">
-      <td *ngFor="let cell of row"
-          class="snap-cell"
-          (click)="onCellClicked(cell)"
-          (dblclick)="onContentCellDblClicked(cell)"
-          [ngClass]="{'highlight':useColumnHighlighting &&cell.column===highlightColumn}"
-          [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}">
+       [params]="getDragParams(entry)"></div>-->
 
-        <!--  [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}"-->
-      </td>
-    </tr>
-    </tbody>
-  </table>
 
 </div>
+
+<table #targetTable class="table table-bordered">
+  <!-- <thead>
+   <tr class="">
+     <th
+       *ngFor="let header of headerCells" class="text-center">
+       <span>X</span>
+     </th>
+   </tr>
+   </thead>-->
+  <tbody>
+  <tr *ngFor="let row of contentCells">
+    <td *ngFor="let cell of row"
+        class="snap-cell"
+        (click)="onCellClicked(cell)"
+        (dblclick)="onContentCellDblClicked(cell)"
+        [ngClass]="{'highlight':useColumnHighlighting &&cell.column===highlightColumn}">
+
+      <!--  [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}"-->
+    </td>
+  </tr>
+  </tbody>
+</table>

@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DoCheck,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output, ViewChild
+} from '@angular/core';
 import {ContentCell} from "./model/ContentCell";
 import {HeaderCell} from "./model/HeaderCell";
 import {FlexyGridEntry} from "./model/FlexyGridEntry";
@@ -10,15 +20,21 @@ import DraggableEventUIParams = JQueryUI.DraggableEventUIParams;
   templateUrl: './flexytable.component.html',
   styleUrls: ['./flexytable.component.scss']
 })
-export class FlexytableComponent<T> implements OnInit, AfterViewInit {
+export class FlexytableComponent<T> implements OnInit, AfterViewInit,DoCheck {
 
-  @Input() cellHeight: number = 50;
-  @Input() cellWidth: number = 100;
+  /* @Input() cellHeight: number = 50;
+   @Input() cellWidth: number = 100;*/
   @Input() contentCells: Array<Array<ContentCell>> = [];
   @Input() headerCells: Array<HeaderCell<any>> = [];
   @Input() entries: Array<FlexyGridEntry<T>> = [];
   @Input() highlightColumn: number = 0;
   @Input() useColumnHighlighting: boolean = false;
+
+  tableCellWidth: number;
+  tableCellHeight: number;
+
+  @ViewChild('targetTable')
+  targetTable: ElementRef;
 
   @Output() entryAdded: EventEmitter<FlexyGridEntry<T>> = new EventEmitter();
   @Output() entryUpdated: EventEmitter<FlexyGridEntry<T>> = new EventEmitter();
@@ -45,7 +61,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   grid: Array<number>;
   useGrid: boolean = true;
 
-  constructor() {
+  constructor(private el: ElementRef) {
   }
 
   ngOnInit() {
@@ -61,7 +77,7 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
   }
 
   onContentCellDblClicked(cell: ContentCell): void {
-    let newEntry = new FlexyGridEntry(null, cell.column * this.cellWidth, cell.row * this.cellHeight, cell.column);
+    let newEntry = new FlexyGridEntry(null, cell.column * this.tableCellWidth, cell.row * this.tableCellHeight, cell.column);
     this.entries.push(newEntry);
     this.entryAdded.emit(newEntry);
 
@@ -91,11 +107,11 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
       data.data.offGrid = false;
     }
     else {*/
-      data.data.offGrid=this.useGrid===false;
-      data.data.left = data.ui.position.left;
-      data.data.top = data.ui.position.top;
-      data.data.column = Math.ceil(data.data.left / this.cellWidth) - 1;
-   /* }*/
+    data.data.offGrid = this.useGrid === false;
+    data.data.left = data.ui.position.left;
+    data.data.top = data.ui.position.top;
+    data.data.column = Math.ceil(data.data.left / this.tableCellWidth) - 1;
+    /* }*/
 
     this.entryUpdated.emit(data.data);
   }
@@ -108,11 +124,16 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
     return {
       scroll: false,
       containment: 'parent',
-      grid: this.useGrid && entry.offGrid === false ? [this.cellWidth, this.cellHeight] : [1, this.cellHeight]
+      grid: this.getDragGrid(entry)
       //grid: [1, this.cellHeight],
-     /* snapMode: "inner",
-      snap:".snap-cell"*/
+      /* snapMode: "inner",
+       snap:".snap-cell"*/
     }
+  }
+
+  private getDragGrid(entry): any {
+    if (this.tableCellWidth) return this.useGrid && entry.offGrid === false ? [this.tableCellWidth, this.tableCellHeight] : [1, this.tableCellHeight];
+    else return [1, 1];
   }
 
   onEntryMouseDown(entry: FlexyGridEntry<T>, event): void {
@@ -126,12 +147,18 @@ export class FlexytableComponent<T> implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
 
-    /*console.log($(".cell-content").first().width());
-    this.grid=[$(".cell-content").first().width(),50];*/
   }
 
+  ngDoCheck(): void {
+    let reference = this.targetTable.nativeElement.querySelector("td");
+    if (reference){
+      this.tableCellWidth = reference.getBoundingClientRect().width;
+      this.tableCellHeight = reference.getBoundingClientRect().height;
+    }
+
+  }
 
 }
 

@@ -1,0 +1,35 @@
+<div class="container-wrapper">
+  <event-renderer
+    [width]="cellWidth"
+    [height]="cellHeight"
+    [event]="event"
+    *ngFor="let event of getActiveEvents()">
+
+  </event-renderer>
+
+  <div class="table-responsive">
+  <table #targetTable id="abc" class="table table-bordered">
+    <!-- <thead>
+     <tr class="">
+       <th
+         *ngFor="let header of headerCells" class="text-center">
+         <span>X</span>
+       </th>
+     </tr>
+     </thead>-->
+    <tbody>
+    <tr *ngFor="let row of rows">
+      <td *ngFor="let column of columns"
+          class="snap-cell"
+
+          (click)="onEventClicked(column,row)"
+          (dblclick)="onEventDblClicked(column,row)"
+          [ngClass]="{'highlight':useColumnHighlighting &&cell.column===highlightColumn}">
+        <span>&nbsp;</span>
+        <!--  [ngStyle]="{'width':cellWidth+'px','height':cellHeight+'px'}"-->
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
