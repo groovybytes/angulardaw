@@ -1,7 +1,0 @@
-
-<div class="beat-container" [ngClass]="{'active':transport.running && i===currentBeat+1}"
-     *ngFor="let i of getUnits()" [ngStyle]="{'left':50*i+'px'}">
-  <div class="beat"  [ngStyle]="{'left':50*i+'px'}"></div>
-  <div class="beat2" [ngClass]="{'animated pulse':transport.running && i===currentBeat+1}" [ngStyle]="{'left':50*i+'px'}"></div>
-</div>
-

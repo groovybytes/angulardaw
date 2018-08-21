@@ -1,22 +1,17 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {MainPageComponent} from "./main-page/main-page.component";
-import {ProjectsPageComponent} from "./projects-page/projects-page.component";
 import {TestsComponent} from "./ui/tests/tests.component";
+import {ProjectsCreateComponent} from "./daw/projects-create/projects-create.component";
+import {ProjectComponent} from "./daw/project/project.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: ProjectsPageComponent
-  },
-
-  {
-    path: 'projects',
-    component: ProjectsPageComponent
+    component: ProjectsCreateComponent
   },
   {
     path: 'main/:projectId',
-    component: MainPageComponent
+    component: ProjectComponent
   },
   {
     path: 'test',

@@ -1,0 +1,37 @@
+<nav class="navbar navbar-light bg-light fixed-top">
+  <form class="form-inline">
+    <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
+    <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
+
+  </form>
+</nav>
+
+<daw-matrix [project]="project" *ngIf="project"></daw-matrix>
+<!--
+<div class="row daw-grid-container" *ngIf="project">
+  <div class="col-xs-12">
+    <daw-grid
+      (focusedPatternChanged)="focusedPatternChanged($event)"
+      (pluginChanged)="onPluginChanged($event)"
+      (trackAdded)="onTrackAdded($event)"
+      (trackRemoved)="onTrackRemoved($event)"
+      [project]="project.model">
+    </daw-grid>
+  </div>
+</div>
+<div class="row console-container" *ngIf="project">
+  <div class="col-xs-12">
+    <console *ngIf="project" [project]="project"></console>
+  </div>
+</div>
+
+<div class="row sequencer-container" *ngIf="project">
+  <div class="col-xs-12">
+  &lt;!&ndash;  <sequencer *ngIf="project" [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>&ndash;&gt;
+  </div>
+</div>
+<pattern-observer *ngIf="project" [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
+<nav class="navbar navbar-dark bg-light footer fixed-bottom">
+  <daw-control *ngIf="project" [project]="project"></daw-control>
+</nav>
+-->

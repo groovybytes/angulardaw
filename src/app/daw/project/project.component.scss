@@ -1,0 +1,12 @@
+@import "../../../variables";
+
+
+.daw-grid-container{
+  height: $main-height*2/3;
+  overflow: auto;
+}
+
+.sequencer-container{
+  height: $main-height*1/3;
+  overflow: auto;
+}
