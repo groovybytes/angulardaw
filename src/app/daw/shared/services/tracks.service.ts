@@ -43,6 +43,7 @@ export class TracksService {
 
   addTrack(project: Project): Track {
     let track = new Track(this.guid(),this.audioContext, this.transportService.getEvents(), this.transportService.getInfo());
+    track.name="track name";
     project.tracks.push(track);
     return track;
   }

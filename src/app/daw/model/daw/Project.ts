@@ -1,7 +1,8 @@
 import {Track} from './Track';
 import {WstPlugin} from "./WstPlugin";
 import {NoteLength} from "../mip/NoteLength";
-import {MatrixCell} from "./MatrixCell";
+import {Matrix} from "./matrix/Matrix";
+
 
 
 export class Project {
@@ -14,7 +15,7 @@ export class Project {
   focusedPattern:string;
   metronomeEnabled:boolean=true;
   metronome:WstPlugin;
-  matrix:Array<Array<MatrixCell> >=[];
+  matrix:Matrix=new Matrix();
   readonly tracks: Array<Track> = [];
 
   constructor() {

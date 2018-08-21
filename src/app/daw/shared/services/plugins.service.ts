@@ -9,6 +9,7 @@ import {TheoryService} from "./theory.service";
 import {Piano} from "../../model/daw/plugins/Piano";
 import {System} from "../../../system/System";
 import {AppConfiguration} from "../../../app.configuration";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 
 @Injectable()
 export class PluginsService {
@@ -21,6 +22,10 @@ export class PluginsService {
     private samplesV2Service: SamplesApi,
   ) {
 
+  }
+
+  getPluginList():Array<PluginInfo>{
+    return [Drums.getInfo(),Bass.getInfo(),Piano.getInfo()];
   }
 
   loadPlugin(_id: string): Promise<WstPlugin> {

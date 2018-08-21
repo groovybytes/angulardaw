@@ -12,8 +12,9 @@ import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {Metronome} from "../../model/daw/components/Metronome";
-import {MatrixCell} from "../../model/daw/MatrixCell";
-import {Observable} from "rxjs/index";
+import {Observable} from "rxjs/internal/Observable";
+import {Cell} from "../../model/daw/matrix/Cell";
+
 
 
 @Injectable()
@@ -36,15 +37,23 @@ export class ProjectsService {
     project.id = this.guid();
     project.name = name;
 
-    for (let i = 0; i < 10; i++) {
+    let nColumns=10;
+    let nRows = 10;
+
+    for (let i = 0; i < nColumns; i++) {
+      project.matrix.header.push(new Cell<any>(-1,i));
+    }
+    for (let i = 0; i < nRows; i++) {
+      project.matrix.rowHeader.push(new Cell<any>(i,-1));
+    }
+    for (let i = 0; i < nRows; i++) {
       let row = [];
-      project.matrix.push(row);
-      for (let j = 0; j < 10; j++) {
-        row.push(new MatrixCell(i, j));
+      project.matrix.body.push(row);
+      for (let j = 0; j < nColumns; j++) {
+        row.push(new Cell(i, j));
       }
 
     }
-
 
     return project;
   }
@@ -94,6 +103,7 @@ export class ProjectsService {
     project.metronomeEnabled = json.metronomeEnabled;
     project.barUnit = json.barUnit;
     project.barUnit = json.barUnit;
+    project.matrix = json.matrix;
 
     json.tracks.forEach(t => {
       let track = new Track(t.id, this.audioContext, this.transportService.getEvents(), this.transportService.getInfo());

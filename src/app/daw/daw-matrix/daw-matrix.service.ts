@@ -1,10 +1,69 @@
 import {Injectable} from "@angular/core";
+import {Matrix} from "../model/daw/matrix/Matrix";
+import * as $ from "jquery";
+import * as _ from "lodash";
+import {Cell} from "../model/daw/matrix/Cell";
+import {TracksService} from "../shared/services/tracks.service";
+import {Project} from "../model/daw/Project";
+import {Track} from "../model/daw/Track";
+import {PluginsService} from "../shared/services/plugins.service";
+import {System} from "../../system/System";
 
 @Injectable()
 export class DawMatrixService {
 
-  constructor() {
+  constructor(private trackService:TracksService,private pluginService:PluginsService,private system:System) {
 
+  }
+
+  onDrop(event: DragEvent,project:Project,matrix:Matrix): void {
+    let data = JSON.parse(event.dataTransfer.getData("text"));
+    if (data.command==="plugin"){
+      let cell =this.findBodyCell($(event.target).attr("id"),matrix.body);
+      this.handlePluginDroppedOnBodyCell(data.id,cell,project)
+        .catch(error=>this.system.error(error));
+    }
+    else{
+
+    }
+  }
+
+  private handlePluginDroppedOnBodyCell(pluginId:string,cell:Cell<any>,project:Project):Promise<void>{
+
+    return new Promise((resolve,reject)=>{
+      let track:Track;
+      if (!cell.trackId){
+        track = this.trackService.addTrack(project);
+        this.getAllCellsForColumn(project.matrix,cell.column).forEach(_cell=>_cell.trackId=track.id);
+      }
+      else track = project.tracks.find(t=>t.id===cell.trackId);
+
+      this.pluginService.loadPlugin(pluginId)
+        .then(plugin=>{
+          track.plugin=plugin;
+          track.pluginId=plugin.getId();
+
+
+          resolve();
+        })
+        .catch(error=>reject(error));
+    })
+
+  }
+  private findBodyCell(id:string,cells:Array<Array<Cell<any>>>):Cell<any>{
+    return _.flatten(cells).find(cell=>cell.id===id);
+  }
+
+  private getAllCellsForColumn(matrix:Matrix,column:number):Array<Cell<any>>{
+    return this.getAllCells(matrix).filter(cell=>cell.column===column);
+  }
+
+  private getAllCells(matrix:Matrix):Array<Cell<any>>{
+    let result:Array<Cell<any>> =   _.flatten(matrix.body);
+    matrix.header.forEach(cell=>result.push(cell));
+    matrix.rowHeader.forEach(cell=>result.push(cell));
+
+    return result;
   }
 
 /*//returns true when a new track has been created

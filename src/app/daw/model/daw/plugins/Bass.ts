@@ -4,6 +4,7 @@ import {SamplesApi} from "../../../shared/api/samples.api";
 import {FilesApi} from "../../../shared/api/files.api";
 import {TheoryService} from "../../../shared/services/theory.service";
 import {Sample} from "../Sample";
+import {PluginInfo} from "./PluginInfo";
 
 export class Bass extends AbstractInstrumentSampler {
 
@@ -20,6 +21,12 @@ export class Bass extends AbstractInstrumentSampler {
   destroy(): void {
   }
 
+  static getInfo(): PluginInfo {
+    let info = new PluginInfo();
+    info.id=PluginId.BASS1;
+    info.name="bass";
+    return info;
+  }
 
   load(): Promise<AbstractInstrumentSampler> {
     return new Promise<AbstractInstrumentSampler>((resolve, reject) => {

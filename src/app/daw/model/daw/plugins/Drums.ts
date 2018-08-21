@@ -6,6 +6,7 @@ import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
+import {PluginInfo} from "./PluginInfo";
 
 
 export class Drums implements WstPlugin {
@@ -62,6 +63,13 @@ export class Drums implements WstPlugin {
         })
         .catch(error => reject(error));
     })
+  }
+
+  static getInfo(): PluginInfo {
+    let info = new PluginInfo();
+    info.id=PluginId.DRUMKIT1;
+    info.name="drums";
+    return info;
   }
 
 }

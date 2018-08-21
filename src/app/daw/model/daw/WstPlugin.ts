@@ -1,5 +1,6 @@
 import {PluginId} from "./plugins/PluginId";
 import {NoteTrigger} from "./NoteTrigger";
+import {PluginInfo} from "./plugins/PluginInfo";
 
 
 //web studio technology plugin :)

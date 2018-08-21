@@ -14,6 +14,7 @@ import {System} from "../../system/System";
 export class ProjectComponent implements OnInit {
 
   project: Project;
+  sideBarOpen: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +27,10 @@ export class ProjectComponent implements OnInit {
 
   close(): void {
     this.router.navigate(['/']);
+  }
+
+  toggleSidebar() {
+    this.sideBarOpen = !this.sideBarOpen;
   }
 
   ngOnInit() {

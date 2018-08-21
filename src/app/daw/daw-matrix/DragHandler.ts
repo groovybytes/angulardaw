@@ -1,9 +1,8 @@
 import * as $ from "jquery";
-import {ElementRef} from "@angular/core";
-import {MatrixCell} from "../model/daw/MatrixCell";
+import {Cell} from "../model/daw/matrix/Cell";
+
 
 export class DragHandler {
-  draggedCell: MatrixCell;
   draggedElement: JQuery<EventTarget>;
   lastDropTarget: JQuery<EventTarget>;
 
@@ -11,23 +10,24 @@ export class DragHandler {
 
   }
 
-  onDrag(event: DragEvent, cell: MatrixCell): void {
+  onDrag(event: DragEvent): void {
 
   }
 
-  onDragStart(event: DragEvent, cell: MatrixCell): void {
-    this.draggedCell = cell;
+  onDragStart(event: DragEvent, cell: Cell<any>): void {
+
+    event.dataTransfer.setData("text", JSON.stringify({command:"cell",id:cell.id}));
     this.draggedElement = $(event.target);
     this.draggedElement.addClass("drag-active");
   }
 
-  onDragOver(event: DragEvent, cell: MatrixCell): void {
+  onDragOver(event: DragEvent): void {
     event.preventDefault();
     $(event.target).addClass("drag-target");
     this.lastDropTarget = $(event.target);
   }
 
-  onDragLeave(event: DragEvent, cell: MatrixCell): void {
+  onDragLeave(event: DragEvent): void {
     $(event.target).removeClass("drag-target");
   }
 
@@ -40,7 +40,5 @@ export class DragHandler {
     }
   }
 
-  onDrop(event: DragEvent, cell: MatrixCell): void {
 
-  }
 }

@@ -1,12 +1,33 @@
 <nav class="navbar navbar-light bg-light fixed-top">
   <form class="form-inline">
+    <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <button (click)="toggleSidebar()">Open sidebar</button>
     <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
     <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
 
   </form>
 </nav>
 
-<daw-matrix [project]="project" *ngIf="project"></daw-matrix>
+
+<ng-sidebar-container>
+
+  <ng-sidebar [(opened)]="sideBarOpen" [mode]="'push'" [dock]="true" [dockedSize]="'50px'" >
+    <plugin-list></plugin-list>
+    <button (click)="toggleSidebar()">Close sidebar</button>
+  </ng-sidebar>
+
+
+  <div ng-sidebar-content>
+    <div class="container-fluid">
+      <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
+    </div>
+
+
+  </div>
+</ng-sidebar-container>
+
 <!--
 <div class="row daw-grid-container" *ngIf="project">
   <div class="col-xs-12">
