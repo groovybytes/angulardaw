@@ -34,7 +34,7 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.transportService.params.loop = true;
+
     this.route.params.subscribe(params => {
       this.projectsService.get(params.projectId)
         .then(project=>{
@@ -52,6 +52,22 @@ export class ProjectComponent implements OnInit {
         })
         .catch( error => this.system.error(error));
     });
+  }
+
+  setQuantization(value:number):void{
+
+    this.project.quantization=value;
+    this.transportService.params.quantization.next(value);
+
+  }
+
+  setBpm(value:number):void{
+    this.project.bpm=value;
+    this.transportService.params.bpm.next(value);
+  }
+
+  switchMetronome():void{
+    this.project.metronomeEnabled=! this.project.metronomeEnabled;
   }
 
   closeSequencer():void{

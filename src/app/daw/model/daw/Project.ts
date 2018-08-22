@@ -3,6 +3,7 @@ import {WstPlugin} from "./WstPlugin";
 import {NoteLength} from "../mip/NoteLength";
 import {Matrix} from "./matrix/Matrix";
 import {Pattern} from "./Pattern";
+import {WindowSpecs} from "./visual/WindowSpecs";
 
 
 
@@ -19,6 +20,7 @@ export class Project {
   selectedTrack:Track;
   sequencerOpen:boolean=false;
   readonly tracks: Array<Track> = [];
+  windows:Array<WindowSpecs>=[];
 
   constructor() {
 

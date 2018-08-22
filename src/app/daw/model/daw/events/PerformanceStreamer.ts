@@ -19,7 +19,6 @@ export class PerformanceStreamer {
     this.queue = events;
     this.trigger = this.triggerSubject.asObservable();
     this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
-    /* this.subscriptions.push(this.transportEvents.timeReset.subscribe(() => this.initLoopQueue()));*/
     this.subscriptions.push(this.transportEvents.beforeStart.subscribe(() => this.initLoopQueue()));
   }
 

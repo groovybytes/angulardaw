@@ -15,6 +15,7 @@ import {Metronome} from "../../model/daw/components/Metronome";
 import {Observable} from "rxjs/internal/Observable";
 import {Cell} from "../../model/daw/matrix/Cell";
 import {MusicMath} from "../../model/utils/MusicMath";
+import {WindowSpecs} from "../../model/daw/visual/WindowSpecs";
 
 
 
@@ -37,6 +38,9 @@ export class ProjectsService {
     let project = new Project();
     project.id = this.guid();
     project.name = name;
+    let sequencerWindow = new WindowSpecs();
+    sequencerWindow.id="sequencer";
+    project.windows.push(sequencerWindow);
 
     let nColumns=10;
     let nRows = 10;
@@ -76,11 +80,19 @@ export class ProjectsService {
 
   setPatternMode(track:Track,patternId:string):void{
     let pattern = track.patterns.find(p=>p.id===patternId);
-    this.transportService.params.tickEnd = pattern.length *
-      MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());
-    this.transportService.params.loop=true;
+    this.transportService.params.loopEnd.next(pattern.length);//  MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());
+    this.transportService.params.loop.next(true);
     track.resetEvents(pattern.events);
 
+  }
+
+  changeQuantization(project:Project,loopLength:number,quantization:NoteLength):void{
+   /* project.quantization=quantization;
+
+    this.transportService.params.tickEnd = pattern.length *
+      MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());
+    this.transportService.params.tickEnd=MusicMath.
+    this.transportService.params.quantization.next(quantization);*/
   }
 
   private serializeProject(project: Project): any {
@@ -95,6 +107,7 @@ export class ProjectsService {
       matrix: project.matrix,
       selectedTrackId:project.selectedTrack?project.selectedTrack.id:null,
       sequencerOpen:project.sequencerOpen,
+      windows:project.windows,
       tracks: project.tracks.map(track => ({
         id: track.id,
         name: track.name,
@@ -118,6 +131,7 @@ export class ProjectsService {
     project.barUnit = json.barUnit;
     project.matrix = json.matrix;
     project.sequencerOpen=json.sequencerOpen;
+    project.windows=json.windows;
 
     json.tracks.forEach(t => {
       let track = new Track(t.id, this.audioContext, this.transportService.getEvents(), this.transportService.getInfo());
@@ -128,6 +142,7 @@ export class ProjectsService {
       track.controlParameters = t.controlParameters;
       project.tracks.push(track);
       track.focusedPattern=t.focusedPattern?track.patterns.find(p=>p.id===t.focusedPattern):null;
+      if (track.focusedPattern)  this.setPatternMode(track,track.focusedPattern.id);
     });
     project.selectedTrack=json.selectedTrackId?project.tracks.find(t=>t.id===json.selectedTrackId):null;
 
@@ -137,11 +152,7 @@ export class ProjectsService {
       this.transportService.params.signature =
         new BehaviorSubject<TimeSignature>(new TimeSignature(project.beatUnit, project.barUnit));
 
-      this.transportService.params.loop=true;
-
-      if (project.selectedTrack){
-        this.setPatternMode(project.selectedTrack,project.selectedTrack.focusedPattern.id);
-      }
+      this.transportService.params.loop=new BehaviorSubject(true);
 
       let promises = [];
       project.tracks.forEach(track => {

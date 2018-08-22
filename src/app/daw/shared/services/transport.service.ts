@@ -30,11 +30,14 @@ export class TransportService {
     this.beat = this.beatSubject.asObservable();
     this.time = this.timeSubject.asObservable();
     this.position = new TransportPosition();
-    this.params.tickEnd = 1000;
     this.position.beat = 0;
     this.position.bar = 0;
     this.position.time = 0;
     this.position.tick = 0;
+
+    this.params.quantization.subscribe(quantization=>{
+
+    })
 
   }
 
@@ -45,18 +48,20 @@ export class TransportService {
   private getTickTime():number{
     return MusicMath.getTickTime(this.params.bpm.getValue(), this.params.quantization.getValue());
   }
-  private getStartTime():number{
-    return this.params.tickStart * this.getTickTime();
+  private getBeatTime():number{
+    return MusicMath.getBeatTime(this.params.bpm.getValue(), this.params.quantization.getValue());
   }
+
+  private getStartTime():number{
+    return this.params.loopStart.getValue() * this.getBeatTime();
+  }
+
   private getEndTime():number{
-    return this.params.tickEnd * this.getTickTime();
+    return this.params.loopEnd.getValue() * this.getBeatTime();
   }
   start(): void {
 
     let start = this.audioContext.currentTime;
-    /*let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
-    this.startTime = this.params.tickStart * tickTime;
-    this.endTime = this.params.tickEnd * tickTime;*/
     this.beforeStart.emit();
     this.run = true;
     this.timeReset.emit();
@@ -77,91 +82,7 @@ export class TransportService {
       else this.timeSubject.next(currentTime);
     }, 1)
 
-    //this.transportStart.emit();
   }
-
-  /*start(): void {
-    this.stop();
-    this.transportStart.emit();
-    if (this.paused) {
-      this.paused = false;
-      //this.transportStartTime += this.scheduler.getSysTime() - this.pauseTime;
-
-    }
-    else {
-      let prevQuantizationMatch = 0;
-      let quantizationDelta = 0;
-      let lastBeat = -1;
-      let intervalTime: number = -1;
-      let resetTime: boolean = true;
-      this.tick = this.params.tickStart;
-      this.intervalHandle = setInterval(
-        () => {
-          requestAnimationFrame(() => {
-            let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
-            this.startTime = this.params.tickStart * tickTime;
-            this.endTime = this.params.tickEnd * tickTime;
-            let sysTime = this.audioContext.currentTime;
-            if (sysTime > intervalTime) {
-              intervalTime = sysTime;
-
-              if (resetTime) {
-                this.transportStartTime = sysTime;
-                if (resetTime) this.timeReset.emit(sysTime - this.transportStartTime);
-                resetTime = false;
-              }
-              let transportTime = sysTime - this.transportStartTime;
-
-              quantizationDelta = (transportTime - prevQuantizationMatch);
-
-              this.position.time = transportTime;
-              this.timeSubject.next(transportTime);
-
-
-              if ((transportTime === 0) || this.matches(
-                quantizationDelta,
-                tickTime / 1000,
-                this.accuracy)) {
-                quantizationDelta = 0;
-                prevQuantizationMatch = transportTime;
-                this.position.tick = this.tick;
-
-                if (this.tick < this.params.tickEnd) {
-                  let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
-                  this.beatSubject.next(newBeat);
-                  this.position.beat = newBeat;
-                  this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
-
-                  this.tickSubject.next(this.tick);
-                  this.tick += 1;
-                }
-                else {
-                  if (this.params.loop) {
-                    this.tick = this.params.tickStart;
-                    let newBeat = MusicMath.getBeatNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
-                    this.position.beat = newBeat;
-                    this.position.bar = MusicMath.getBarNumber(this.tick, this.params.quantization.getValue(), this.params.signature);
-
-                    resetTime = true;
-                    quantizationDelta = 0;
-                    prevQuantizationMatch = 0;
-                    lastBeat = -1;
-                    intervalTime = -1;
-
-                    // this.position.bar = MusicMath.getBarNumber(this.tick, this.quantization, this.signature);
-                  }
-                  else {
-                    this.stop();
-                  }
-                }
-              }
-
-            }
-          })
-
-        }, 1);
-    }
-  }*/
 
   destroy(): void {
     this.stop();

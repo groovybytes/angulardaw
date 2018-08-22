@@ -1,10 +1,24 @@
 @import "../../../variables";
 
+.position-indicator{
+  stroke:red;
+  stroke-width: 5px;
+}
 .fill-rect{
-  fill:red;
   stroke:black;
-
+}
+.header{
+  .fill-rect{
+    fill:yellow !important;
+  }
+}
+.note-cell{
+  .fill-rect{
+    fill:white;
+  }
   &.active{
-    fill:blue;
+    .fill-rect{
+      fill:blue;
+    }
   }
 }

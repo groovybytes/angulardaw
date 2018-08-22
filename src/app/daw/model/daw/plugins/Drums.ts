@@ -38,7 +38,8 @@ export class Drums implements WstPlugin {
 
   feed(event: NoteTrigger, offset: number, destinationNode?:AudioNode): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
-    trigger.sample.trigger(offset,destinationNode);
+    if (!trigger) console.warn("no trigger found for "+event.note);
+    else trigger.sample.trigger(offset,destinationNode);
   }
 
 

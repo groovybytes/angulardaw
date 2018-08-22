@@ -10,11 +10,13 @@ export class NoteCell{
     this.height = height;
   }
 
+  header:boolean=false;
   id:string;
   x:number;
   y:number;
   width:number;
   height:number;
   data:NoteTrigger;
+  beat:number;
 
 }

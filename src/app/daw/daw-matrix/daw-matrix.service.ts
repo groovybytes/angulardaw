@@ -21,6 +21,7 @@ export class DawMatrixService {
   }
 
   onDrop(event: DragEvent, project: Project, matrix: Matrix): void {
+    $(event.target).removeClass("drag-target");
     let data = JSON.parse(event.dataTransfer.getData("text"));
     if (data.command === "plugin") {
       let cell = this.findBodyCell($(event.target).attr("id"), matrix.body);
