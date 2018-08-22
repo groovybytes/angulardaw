@@ -3,6 +3,8 @@ import {Project} from "../../model/daw/Project";
 import {Track} from "../../model/daw/Track";
 import {TransportService} from "./transport.service";
 import {Pattern} from "../../model/daw/Pattern";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import * as _ from "lodash";
 
 @Injectable()
 export class TracksService {
@@ -30,7 +32,7 @@ export class TracksService {
 
   addPattern(track:Track): Pattern {
 
-    let pattern = new Pattern();
+    let pattern = new Pattern(track.plugin.getNotes().reverse());
     pattern.id = this.guid();
 
     track.patterns.push(pattern);
@@ -48,6 +50,16 @@ export class TracksService {
     return track;
   }
 
+  insertNote(pattern: Pattern, note: NoteTrigger): void {
+    note.id=this.guid();
+    let index = _.sortedIndexBy(pattern.events, {'time': note.time}, d => d.time);
+    pattern.events.splice(index, 0, note);
+  }
+
+  removeNote(pattern: Pattern,id:string): void {
+    let index = pattern.events.findIndex(ev=>ev.id===id);
+    pattern.events.splice(index, 1);
+  }
 
   private guid() {
     function s4() {

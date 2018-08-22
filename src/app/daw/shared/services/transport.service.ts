@@ -53,7 +53,6 @@ export class TransportService {
   }
   start(): void {
 
-
     let start = this.audioContext.currentTime;
     /*let tickTime = MusicMath.getTickTime(this.params.bpm, this.params.quantization.getValue());
     this.startTime = this.params.tickStart * tickTime;

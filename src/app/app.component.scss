@@ -1,9 +1,6 @@
 @import "../variables";
 
 :host /deep/ {
-
-
-
   span{
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -12,11 +9,6 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
   }
-  .track-height-default{
-    height:100px;
-  }
-
-
 
 }
 

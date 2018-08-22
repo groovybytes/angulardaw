@@ -10,6 +10,10 @@ import {UiModule} from "../ui/ui.module";
 import {ProjectComponent} from "./project/project.component";
 import { SidebarModule } from 'ng-sidebar';
 import { PluginListComponent } from './plugin-list/plugin-list.component';
+import { EffectsPanelComponent } from './effects-panel/effects-panel.component';
+import {TransportComponent} from "./transport/transport.component";
+import { SequencerComponent } from './sequencer/sequencer.component';
+import {SequencerService} from "./sequencer/sequencer.service";
 
 let audioContext = new AudioContext();
 
@@ -19,7 +23,10 @@ let audioContext = new AudioContext();
     ProjectComponent,
     DawControlComponent,
     ConsoleComponent,
-    PluginListComponent
+    PluginListComponent,
+    EffectsPanelComponent,
+    TransportComponent,
+    SequencerComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +38,8 @@ let audioContext = new AudioContext();
   ],
   providers: [
     {provide: "lodash", useValue: window["_"]},
-    {provide: "AudioContext", useValue: audioContext}
+    {provide: "AudioContext", useValue: audioContext},
+    SequencerService
 
   ],
   exports: []

@@ -11,6 +11,7 @@ export class Track {
   id: any;
   index: number;
   name: string;
+  focusedPattern:Pattern;
   patterns: Array<Pattern> = [];
   pluginId: string;
   ghost: boolean = false;

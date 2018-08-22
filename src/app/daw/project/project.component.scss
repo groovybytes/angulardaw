@@ -1,6 +1,13 @@
 @import "../../../variables";
 
 
+.container-fluid{
+  height:$main-height;
+  overflow: auto;
+}
+nav{
+  padding:0;
+}
 .daw-grid-container{
   height: $main-height*2/3;
   overflow: auto;

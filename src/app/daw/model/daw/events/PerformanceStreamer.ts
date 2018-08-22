@@ -24,6 +24,7 @@ export class PerformanceStreamer {
   }
 
   private onTransportTime(transportTime: number): void {
+
     if (this.timeStamp && this.timeStamp>transportTime){
       this.initLoopQueue();
     }

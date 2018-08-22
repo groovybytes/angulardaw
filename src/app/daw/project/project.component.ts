@@ -54,6 +54,9 @@ export class ProjectComponent implements OnInit {
     });
   }
 
+  closeSequencer():void{
+    this.project.sequencerOpen=false;
+  }
   save(): void {
     this.projectsService.save(this.project);
   }

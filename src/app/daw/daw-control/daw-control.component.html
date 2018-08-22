@@ -1,7 +1,7 @@
-<div class="fixed-bottom btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-  <transport></transport>
-  <toolbar>
-   <rangeslider [min]="40" [max]="250" [value]="project.bpm" (valueChanged)="setBpm($event)"></rangeslider>
+<div class="btn-toolbar justify-content-between" role="toolbar" >
+
+  <!--<toolbar>
+  &lt;!&ndash; <rangeslider [min]="40" [max]="250" [value]="project.bpm" (valueChanged)="setBpm($event)"></rangeslider>&ndash;&gt;
     <span>{{project.bpm}}</span>
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project.quantization===0.25}"
             (click)="setQuantization(0.25)">1/4</button>
@@ -16,7 +16,7 @@
             (click)="setQuantization(0.083333333333333)">8th Trip</button>
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project.metronomeEnabled}"
             (click)="switchMetronome()">Metronome</button>
-  </toolbar>
+  </toolbar>-->
 </div>
 <!--[attr.checked]="project.metronomeEnabled?'':null"-->
 <!--(click)="project.metronomeEnabled=!project.metronomeEnabled"-->

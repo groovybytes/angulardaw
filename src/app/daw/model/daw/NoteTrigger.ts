@@ -7,9 +7,7 @@ export class NoteTrigger implements INoteTrigger{
   length: number;
   loudness: number;
   articulation: number;
-  column:number=0;
-  row:number=0;
-  offset:number=0;
+
 
   constructor(id: any, note: string,time?: number, length?: number, loudness?: number, articulation?: number) {
     this.id = id;

@@ -14,6 +14,7 @@ import {TimeSignature} from "../../model/mip/TimeSignature";
 import {Metronome} from "../../model/daw/components/Metronome";
 import {Observable} from "rxjs/internal/Observable";
 import {Cell} from "../../model/daw/matrix/Cell";
+import {MusicMath} from "../../model/utils/MusicMath";
 
 
 
@@ -73,6 +74,15 @@ export class ProjectsService {
     return this.projectsApi.put(json);
   }
 
+  setPatternMode(track:Track,patternId:string):void{
+    let pattern = track.patterns.find(p=>p.id===patternId);
+    this.transportService.params.tickEnd = pattern.length *
+      MusicMath.getBeatTicks(this.transportService.params.quantization.getValue());
+    this.transportService.params.loop=true;
+    track.resetEvents(pattern.events);
+
+  }
+
   private serializeProject(project: Project): any {
     return {
       id: project.id,
@@ -83,12 +93,15 @@ export class ProjectsService {
       barUnit: project.barUnit,
       metronomeEnabled: project.metronomeEnabled,
       matrix: project.matrix,
+      selectedTrackId:project.selectedTrack?project.selectedTrack.id:null,
+      sequencerOpen:project.sequencerOpen,
       tracks: project.tracks.map(track => ({
         id: track.id,
         name: track.name,
         patterns: track.patterns,
         pluginId: track.pluginId,
         events: track.events,
+        focusedPattern:track.focusedPattern?track.focusedPattern.id:null,
         controlParameters: track.controlParameters
       }))
     }
@@ -104,6 +117,7 @@ export class ProjectsService {
     project.barUnit = json.barUnit;
     project.barUnit = json.barUnit;
     project.matrix = json.matrix;
+    project.sequencerOpen=json.sequencerOpen;
 
     json.tracks.forEach(t => {
       let track = new Track(t.id, this.audioContext, this.transportService.getEvents(), this.transportService.getInfo());
@@ -113,13 +127,21 @@ export class ProjectsService {
       track.events = t.events;
       track.controlParameters = t.controlParameters;
       project.tracks.push(track);
+      track.focusedPattern=t.focusedPattern?track.patterns.find(p=>p.id===t.focusedPattern):null;
     });
+    project.selectedTrack=json.selectedTrackId?project.tracks.find(t=>t.id===json.selectedTrackId):null;
 
     return new Promise<Project>((resolve, reject) => {
       this.transportService.params.quantization = new BehaviorSubject<NoteLength>(project.quantization);
       this.transportService.params.bpm = new BehaviorSubject<number>(project.bpm);
       this.transportService.params.signature =
         new BehaviorSubject<TimeSignature>(new TimeSignature(project.beatUnit, project.barUnit));
+
+      this.transportService.params.loop=true;
+
+      if (project.selectedTrack){
+        this.setPatternMode(project.selectedTrack,project.selectedTrack.focusedPattern.id);
+      }
 
       let promises = [];
       project.tracks.forEach(track => {
@@ -140,6 +162,7 @@ export class ProjectsService {
             resolve(project);
           })
             .catch(error => reject(error));
+          resolve(project);
 
         })
         .catch(error => reject(error));

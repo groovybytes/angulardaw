@@ -1,0 +1,10 @@
+@import "../../../variables";
+
+.fill-rect{
+  fill:red;
+  stroke:black;
+
+  &.active{
+    fill:blue;
+  }
+}
