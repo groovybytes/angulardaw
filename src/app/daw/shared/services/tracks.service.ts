@@ -30,6 +30,15 @@ export class TracksService {
    }*/
 
 
+  resetEventsWithPattern(track:Track,patternId:string):void{
+    let pattern = track.patterns.find(p=>p.id===patternId);
+    this.transportService.params.loopEnd.next(pattern.length);
+    this.transportService.params.loop.next(true);
+    track.resetEvents(pattern.events);
+
+  }
+
+
   addPattern(track:Track): Pattern {
 
     let pattern = new Pattern(track.plugin.getNotes().reverse());

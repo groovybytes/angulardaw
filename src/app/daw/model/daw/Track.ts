@@ -23,7 +23,7 @@ export class Track {
   destinationNode: AudioNode;
   gainNode: GainNode;
 
-  gain: BehaviorSubject<number> = new BehaviorSubject(100);
+  //gain: BehaviorSubject<number> = new BehaviorSubject(100);
 
   constructor(
     id: string,
@@ -36,7 +36,7 @@ export class Track {
     this.destinationNode = this.audioContext.destination;
     this.gainNode = this.audioContext.createGain();
     this.gainNode.connect(this.destinationNode);
-    this.gain.subscribe(gain => {
+    this.controlParameters.gain.subscribe(gain => {
       if (gain) this.gainNode.gain.setValueAtTime(gain / 100, audioContext.currentTime);
     });
 

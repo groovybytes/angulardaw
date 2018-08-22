@@ -7,6 +7,7 @@ import {PressButtonComponent} from "./press-button/press-button.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {TestsComponent} from "./tests/tests.component";
 import {BootstrapModalDirective} from "./bootstrap-modal.directive";
+import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
 
 
 
@@ -24,7 +25,7 @@ import {BootstrapModalDirective} from "./bootstrap-modal.directive";
     FormsModule
   ],
   providers: [
-
+    DawMatrixService
 
   ],
   exports:[

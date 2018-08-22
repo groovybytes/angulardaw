@@ -2,8 +2,6 @@ import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
 import {ProjectsCreateComponent} from "./projects-create/projects-create.component";
-import {DawmatrixModule} from "./daw-matrix/dawmatrix.module";
-import {DawControlComponent} from "./daw-control/daw-control.component";
 import {ConsoleComponent} from "./console/console.component";
 import {SharedModule} from "./shared/shared.module";
 import {UiModule} from "../ui/ui.module";
@@ -14,6 +12,8 @@ import { EffectsPanelComponent } from './effects-panel/effects-panel.component';
 import {TransportComponent} from "./transport/transport.component";
 import { SequencerComponent } from './sequencer/sequencer.component';
 import {SequencerService} from "./sequencer/sequencer.service";
+import { TrackControlsComponent } from './track-controls/track-controls.component';
+import {DawMatrixComponent} from "./daw-matrix/daw-matrix.component";
 
 let audioContext = new AudioContext();
 
@@ -21,17 +21,17 @@ let audioContext = new AudioContext();
   declarations: [
     ProjectsCreateComponent,
     ProjectComponent,
-    DawControlComponent,
     ConsoleComponent,
     PluginListComponent,
     EffectsPanelComponent,
     TransportComponent,
-    SequencerComponent
+    SequencerComponent,
+    TrackControlsComponent,
+    DawMatrixComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    DawmatrixModule,
     SharedModule,
     UiModule,
     SidebarModule.forRoot()

@@ -85,6 +85,12 @@ export class SequencerService {
   }
 
   initializeWindow(element:ElementRef,specs:WindowSpecs):void{
+    if (!specs.x){
+      specs.x=$(element).position().left;
+      specs.y=$(element).position().top;
+      specs.width=$(element).width();
+      specs.height=$(element).height();
+    }
     $(element).draggable({
       handle: ".card-header",
       drag:(event,ui)=>{
@@ -92,12 +98,18 @@ export class SequencerService {
         specs.y=ui.position.top;
       }
     });
+    $(element).resizable({
+      resize:(event,ui)=>{
+        specs.width=ui.size.width;
+        specs.height=ui.size.height;
+      },
+      handles: "n, e, s, w"
+    });
   }
+
   updateWindow(element:ElementRef,specs:WindowSpecs):void{
-    specs.x=$(element).position().left;
-    specs.y=$(element).position().top;
-    specs.width=$(element).width();
-    specs.height=$(element).height();
+
+
 
   }
 

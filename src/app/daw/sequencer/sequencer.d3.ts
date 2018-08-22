@@ -44,8 +44,9 @@ export class SequencerD3 {
       .attr("width",this.specs.columns*this.specs.cellWidth+"px")
       .attr("height",this.specs.rows*this.specs.cellWidth+"px");
 
-    this.joinData = this.container.selectAll(".note-cell").data(this.cells);
+    this.joinData = this.container.selectAll(".note-cell").data(this.cells,(d:NoteCell)=>d.id);
     this.enterSelection = this.joinData.enter().append("g")
+      .attr("data-id",(d:NoteCell)=>d.id)
       .attr("text-anchor","middle")
       .attr("class", "note-cell");
 

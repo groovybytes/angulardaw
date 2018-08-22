@@ -55,7 +55,7 @@ export class DawMatrixService {
       }
 
       track.focusedPattern=cell.data;
-      this.projectsService.setPatternMode(track,track.focusedPattern.id);
+      this.trackService.resetEventsWithPattern(track,track.focusedPattern.id);
       project.sequencerOpen=true;
     }
   }
