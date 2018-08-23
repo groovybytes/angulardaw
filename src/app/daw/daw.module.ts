@@ -14,6 +14,7 @@ import { SequencerComponent } from './sequencer/sequencer.component';
 import {SequencerService} from "./sequencer/sequencer.service";
 import { TrackControlsComponent } from './track-controls/track-controls.component';
 import {DawMatrixComponent} from "./daw-matrix/daw-matrix.component";
+import { ProjectObserverComponent } from './project-observer/project-observer.component';
 
 let audioContext = new AudioContext();
 
@@ -27,7 +28,8 @@ let audioContext = new AudioContext();
     TransportComponent,
     SequencerComponent,
     TrackControlsComponent,
-    DawMatrixComponent
+    DawMatrixComponent,
+    ProjectObserverComponent
   ],
   imports: [
     BrowserModule,

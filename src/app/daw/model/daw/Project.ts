@@ -22,8 +22,13 @@ export class Project {
   readonly tracks: Array<Track> = [];
   windows:Array<WindowSpecs>=[];
 
+
   constructor() {
 
+  }
+
+  getTrack(id:string):Track{
+    return  this.tracks.find(track => track.id === id);
   }
 
   destroy(): void {

@@ -87,6 +87,7 @@ export class ProjectsService {
      this.transportService.params.quantization.next(quantization);*/
   }
 
+
   private serializeProject(project: Project): any {
     return {
       id: project.id,
@@ -108,7 +109,9 @@ export class ProjectsService {
         events: track.events,
         focusedPattern: track.focusedPattern ? track.focusedPattern.id : null,
         controlParameters: {
-          gain:track.controlParameters.gain.getValue()
+          gain:track.controlParameters.gain.getValue(),
+          mute:track.controlParameters.mute.getValue(),
+          solo:track.controlParameters.solo.getValue()
         }
       }))
     }
@@ -133,8 +136,9 @@ export class ProjectsService {
       track.patterns = t.patterns;
       track.pluginId = t.pluginId;
       track.events = t.events;
-      track.controlParameters = new TrackControlParameters();
-      track.controlParameters.gain.next(t.controlParameters.gain);
+      track.controlParameters.gain.next(t.controlParameters.gain?t.controlParameters.gain:100);
+      track.controlParameters.mute.next(t.controlParameters.mute?t.controlParameters.mute:false);
+      track.controlParameters.solo.next(t.controlParameters.solo?t.controlParameters.solo:false);
       project.tracks.push(track);
       track.focusedPattern = t.focusedPattern ? track.patterns.find(p => p.id === t.focusedPattern) : null;
       if (track.focusedPattern) this.trackService.resetEventsWithPattern(track, track.focusedPattern.id);

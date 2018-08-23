@@ -8,7 +8,7 @@ import {NoteTrigger} from "../NoteTrigger";
 
 export class PerformanceStreamer {
   private queue: Array<NoteTrigger> = [];
-  private lookAhead: number = 2;//seconds
+  private lookAhead: number = 1;//seconds
   private subscriptions: Array<Subscription> = [];
   trigger: Observable<{ event: NoteTrigger, offset: number }>;
   private triggerSubject: Subject<{ event: NoteTrigger, offset: number }> = new Subject();

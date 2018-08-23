@@ -10,12 +10,14 @@ import {PluginsService} from "../shared/services/plugins.service";
 import {System} from "../../system/System";
 import {Pattern} from "../model/daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
+import {TransportService} from "../shared/services/transport.service";
 
 @Injectable()
 export class DawMatrixService {
 
   constructor(private trackService: TracksService,
               private projectsService:ProjectsService,
+              private transportService:TransportService,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -58,6 +60,16 @@ export class DawMatrixService {
       this.trackService.resetEventsWithPattern(track,track.focusedPattern.id);
       project.sequencerOpen=true;
     }
+  }
+
+  onCellBtnClicked(cell:Cell<Pattern>, project: Project):void{
+    this.transportService.stop();
+    let track = project.getTrack(cell.trackId);
+    this.trackService.toggleSolo(project,track);
+    track.resetEvents(cell.data.events);
+    this.transportService.start();
+
+
   }
 
   private handlePluginDroppedOnBodyCell(pluginId: string, cell: Cell<any>, project: Project): Promise<void> {

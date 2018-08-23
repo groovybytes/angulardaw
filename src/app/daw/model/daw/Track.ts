@@ -37,14 +37,14 @@ export class Track {
     this.gainNode = this.audioContext.createGain();
     this.gainNode.connect(this.destinationNode);
     this.controlParameters.gain.subscribe(gain => {
-      if (gain) this.gainNode.gain.setValueAtTime(gain / 100, audioContext.currentTime);
+      this.gainNode.gain.setValueAtTime(gain / 100, audioContext.currentTime);
     });
 
     this.id = id;
   }
 
   private onNextEvent(offset: number, event: NoteTrigger): void {
-    this.plugin.feed(event, offset, this.gainNode);
+    if (this.controlParameters.mute.getValue()===false) this.plugin.feed(event, offset, this.gainNode);
   }
 
 

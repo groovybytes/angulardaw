@@ -59,6 +59,18 @@ export class TracksService {
     return track;
   }
 
+  toggleSolo(project:Project,track:Track):void{
+    track.controlParameters.solo.next(!track.controlParameters.solo.getValue());
+    let isSolo = track.controlParameters.solo.getValue();
+    if (isSolo) track.controlParameters.mute.next(false);
+    project.tracks.forEach(_track=>{
+      if (_track.id !== track.id) {
+        if ( _track.controlParameters.solo.getValue()===true)  _track.controlParameters.solo.next(false);
+        _track.controlParameters.mute.next(isSolo);
+      }
+    });
+  }
+
   insertNote(pattern: Pattern, note: NoteTrigger): void {
     note.id=this.guid();
     let index = _.sortedIndexBy(pattern.events, {'time': note.time}, d => d.time);

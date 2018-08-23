@@ -59,6 +59,7 @@ export class TransportService {
   private getEndTime():number{
     return this.params.loopEnd.getValue() * this.getBeatTime();
   }
+
   start(): void {
 
     let start = this.audioContext.currentTime;
