@@ -6,7 +6,6 @@ import {SamplesApi} from "./api/samples.api";
 import {FilesApi} from "./api/files.api";
 import {TheoryService} from "./services/theory.service";
 import {TracksService} from "./services/tracks.service";
-import {TransportService} from "./services/transport.service";
 let projectsApi=new InMemoryApiEndpoint("__projects");
 let tracksApi=new InMemoryApiEndpoint("__tracks");
 let eventsApi=new InMemoryApiEndpoint("__events");
@@ -27,7 +26,6 @@ let patternApi=new InMemoryApiEndpoint("__patterns");
     FilesApi,
     TheoryService,
     TracksService,
-    TransportService,
     { provide: "ProjectsApi", useValue: projectsApi },
     { provide: "TracksApi", useValue: tracksApi },
     { provide: "EventsApi", useValue: eventsApi },

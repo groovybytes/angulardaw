@@ -10,14 +10,12 @@ import {PluginsService} from "../shared/services/plugins.service";
 import {System} from "../../system/System";
 import {Pattern} from "../model/daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
-import {TransportService} from "../shared/services/transport.service";
 
 @Injectable()
 export class DawMatrixService {
 
   constructor(private trackService: TracksService,
               private projectsService:ProjectsService,
-              private transportService:TransportService,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -63,11 +61,17 @@ export class DawMatrixService {
   }
 
   onCellBtnClicked(cell:Cell<Pattern>, project: Project):void{
-    this.transportService.stop();
     let track = project.getTrack(cell.trackId);
-    this.trackService.toggleSolo(project,track);
-    track.resetEvents(cell.data.events);
-    this.transportService.start();
+    if (track.transport.isRunning()){
+      track.transport.stop();
+    }
+    else{
+      //this.trackService.toggleSolo(project,track);
+      track.resetEvents(cell.data.events);
+      track.transport.start();
+    }
+
+
 
 
   }

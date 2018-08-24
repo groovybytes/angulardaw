@@ -19,7 +19,7 @@ export class ProjectsCreateComponent implements OnInit {
   constructor(
     private route: Router,
     private system: System,
-    private projectService:ProjectsService,
+    private projectService: ProjectsService,
     @Inject("ProjectsApi") private projectsApi: ApiEndpoint<any>) {
 
   }
@@ -32,14 +32,16 @@ export class ProjectsCreateComponent implements OnInit {
 
   open(projectId: string): void {
     // this.workstation.openProject(projectViewModel.id);
-    this.route.navigate(['/main/' +projectId]);
+    this.route.navigate(['/main/' + projectId]);
   }
 
   onSubmit(): void {
+
     let project = this.projectService.createProject(this.newProjectName);
-    this.projectsApi.post(project).subscribe(project => {
+    this.projectService.save(project).then(() => {
       this.projects.push(project);
       console.log("projectViewModel saved");
-    }, error => this.system.error(error));
+    })
+      .catch(error => this.system.error(error));
   }
 }

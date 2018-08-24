@@ -1,6 +1,5 @@
 import {ElementRef, Injectable} from "@angular/core";
 import {MusicMath} from "../model/utils/MusicMath";
-import {TransportParams} from "../model/daw/TransportParams";
 import {Loudness} from "../model/mip/Loudness";
 import {NoteLength} from "../model/mip/NoteLength";
 import {TheoryService} from "../shared/services/theory.service";
@@ -9,8 +8,8 @@ import {NoteTrigger} from "../model/daw/NoteTrigger";
 import {TracksService} from "../shared/services/tracks.service";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
-import {p} from "@angular/core/src/render3";
 import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
+import {TransportReader} from "../model/daw/transport/TransportReader";
 
 @Injectable()
 export class SequencerService {
@@ -38,9 +37,9 @@ export class SequencerService {
     return result;
   }*/
 
-  createCells(pattern: Pattern, params: TransportParams, specs: SequencerD3Specs): Array<NoteCell> {
+  createCells(pattern: Pattern, transport:TransportReader, specs: SequencerD3Specs): Array<NoteCell> {
     let model = [];
-    let nColumns = MusicMath.getBeatTicks(params.quantization.getValue()) * pattern.length;
+    let nColumns = MusicMath.getBeatTicks(transport.getQuantization()) * pattern.length;
 
     specs.rows = pattern.notes.length;
     specs.columns = nColumns;
@@ -48,7 +47,7 @@ export class SequencerService {
     for (let j = 0; j < nColumns; j++) {
       let cell = new NoteCell(j * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
       cell.header = true;
-      cell.beat = MusicMath.getBeatNumber(j, params.quantization.getValue(), params.signature.getValue());
+      cell.beat = MusicMath.getBeatNumber(j, transport.getQuantization(), transport.getSignature());
       model.push(cell);
     }
 
@@ -61,7 +60,8 @@ export class SequencerService {
     }
 
     pattern.events.forEach(event => {
-      let left = this.getXPositionForTime(event.time, specs, pattern, params);
+
+      let left = this.getXPositionForTime(event.time, specs, pattern, transport);
       let notes = pattern.notes;
       let rowIndex = notes.indexOf(event.note);
       let top = (rowIndex + 1) * specs.cellHeight;
@@ -75,64 +75,63 @@ export class SequencerService {
 
   }
 
-  getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern, params: TransportParams): number {
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
+  getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern,transport:TransportReader): number {
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
     let percentage = time / fullTime;
-    let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
+    let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
     let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
     return fullWidth * percentage;
 
   }
 
-  initializeWindow(element:ElementRef,specs:WindowSpecs):void{
-    if (!specs.x){
-      specs.x=$(element).position().left;
-      specs.y=$(element).position().top;
-      specs.width=$(element).width();
-      specs.height=$(element).height();
+  initializeWindow(element: ElementRef, specs: WindowSpecs): void {
+    if (!specs.x) {
+      specs.x = $(element).position().left;
+      specs.y = $(element).position().top;
+      specs.width = $(element).width();
+      specs.height = $(element).height();
     }
     $(element).draggable({
       handle: ".card-header",
-      drag:(event,ui)=>{
-        specs.x=ui.position.left;
-        specs.y=ui.position.top;
+      drag: (event, ui) => {
+        specs.x = ui.position.left;
+        specs.y = ui.position.top;
       }
     });
     $(element).resizable({
-      resize:(event,ui)=>{
-        specs.width=ui.size.width;
-        specs.height=ui.size.height;
+      resize: (event, ui) => {
+        specs.width = ui.size.width;
+        specs.height = ui.size.height;
       },
       handles: "n, e, s, w"
     });
   }
 
-  updateWindow(element:ElementRef,specs:WindowSpecs):void{
-
+  updateWindow(element: ElementRef, specs: WindowSpecs): void {
 
 
   }
 
-  addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern, params: TransportParams): void {
+  addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern, transport:TransportReader): void {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
-    let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
+    let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
     let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
     let percentage = cell.x / fullWidth;
     let noteTime = fullTime * percentage;
     let rowIndex = cell.y / specs.cellHeight;
     let notes = pattern.notes;
-    let note = notes[rowIndex-1];
+    let note = notes[rowIndex - 1];
     let trigger = new NoteTrigger(null, note, noteTime, NoteLength.Quarter, Loudness.fff, 0);
     cell.data = trigger;
     cells.push(cell);
     this.trackService.insertNote(pattern, trigger);
   }
 
-  updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern, params: TransportParams): void {
+  updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern,transport:TransportReader): void {
 
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, params.bpm.getValue(), params.quantization.getValue());
-    let ticksPerBeat = MusicMath.getBeatTicks(params.quantization.getValue());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length,transport.getBpm(),transport.getQuantization());
+    let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
     let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
     let percentage = entry.x / fullWidth;
     let noteTime = fullTime * percentage;

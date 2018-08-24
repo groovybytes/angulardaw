@@ -1,9 +1,9 @@
 import * as _ from "lodash";
 import {Subscription} from "rxjs/internal/Subscription";
-import {TransportEvents} from "./TransportEvents";
-import {TransportInfo} from "../TransportInfo";
 import {Observable, Subject} from "rxjs";
 import {NoteTrigger} from "../NoteTrigger";
+import {TransportReader} from "../transport/TransportReader";
+import {TransportEvents} from "../transport/TransportEvents";
 
 
 export class PerformanceStreamer {
@@ -15,7 +15,7 @@ export class PerformanceStreamer {
   private timeStamp:number;
   private eventPool: Array<NoteTrigger> = [];
 
-  constructor(events: Array<NoteTrigger>, protected transportEvents: TransportEvents, protected transportInfo: TransportInfo) {
+  constructor(events: Array<NoteTrigger>,private transport:TransportReader,private transportEvents:TransportEvents) {
     this.queue = events;
     this.trigger = this.triggerSubject.asObservable();
     this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
@@ -38,9 +38,15 @@ export class PerformanceStreamer {
     }
   }
 
+ /* private getTickTime():number{
+    return MusicMath.getTickTime(this.transport.getBpm(), this.transport.getQuantization());
+  }*/
+
+
+
   private initLoopQueue(): void {
-    let startTime = this.transportInfo.getStartTime();
-    let endTime = this.transportInfo.getEndTime();
+    let startTime = this.transport.getStartTime();
+    let endTime = this.transport.getEndTime();
 
     this.eventPool = _.clone(this.queue.filter(ev => ev.time >= startTime && ev.time <= endTime));
 

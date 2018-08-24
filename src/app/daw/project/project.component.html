@@ -19,7 +19,7 @@
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project?.metronomeEnabled}"
             (click)="switchMetronome()">Metronome</button>
   </form>
-  <transport class="float-right"></transport>
+  <transport class="float-right" [project]="project"></transport>
 </nav>
 
 <div class="container-fluid">
@@ -34,13 +34,13 @@
   </div>
 </div>
 
-<sequencer *ngIf="project?.sequencerOpen"
+<sequencer *ngIf="project?.ready && project?.sequencerOpen"
            [track]="project?.selectedTrack"
            [pattern]="project?.selectedTrack?.focusedPattern"
            [window]="project?.windows[0]"
            (close)="closeSequencer()"></sequencer>
 
-<!--<project-observer [project]="project" [tracks]="project?.tracks"></project-observer>-->
+<project-observer *ngIf="project?.ready" [project]="project" [tracks]="project?.tracks"></project-observer>
 
 <nav class="navbar navbar-dark bg-light footer fixed-bottom">
   <effects-panel [track]="project?.selectedTrack"></effects-panel>

@@ -1,17 +1,16 @@
-import {TransportEvents} from "./events/TransportEvents";
-import {TransportInfo} from "./TransportInfo";
 import {PerformanceStreamer} from "./events/PerformanceStreamer";
 import {WstPlugin} from "./WstPlugin";
-import {BehaviorSubject, Subject, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {TrackControlParameters} from "./TrackControlParameters";
 import {Pattern} from "./Pattern";
 import {NoteTrigger} from "./NoteTrigger";
+import {Transport} from "./transport/Transport";
 
 export class Track {
   id: any;
   index: number;
   name: string;
-  focusedPattern:Pattern;
+  focusedPattern: Pattern;
   patterns: Array<Pattern> = [];
   pluginId: string;
   ghost: boolean = false;
@@ -22,16 +21,18 @@ export class Track {
   plugin: WstPlugin;
   destinationNode: AudioNode;
   gainNode: GainNode;
+  transport: Transport;
+
 
   //gain: BehaviorSubject<number> = new BehaviorSubject(100);
 
   constructor(
     id: string,
     private audioContext: AudioContext,
-    protected transportEvents: TransportEvents,
-    protected transportInfo: TransportInfo) {
+    transport: Transport) {
 
-    this.streamer = new PerformanceStreamer(this.events, transportEvents, this.transportInfo);
+    this.transport=transport;
+    this.streamer = new PerformanceStreamer(this.events, transport, transport);
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.offset, event.event)));
     this.destinationNode = this.audioContext.destination;
     this.gainNode = this.audioContext.createGain();
@@ -44,7 +45,7 @@ export class Track {
   }
 
   private onNextEvent(offset: number, event: NoteTrigger): void {
-    if (this.controlParameters.mute.getValue()===false) this.plugin.feed(event, offset, this.gainNode);
+    if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset, this.gainNode);
   }
 
 

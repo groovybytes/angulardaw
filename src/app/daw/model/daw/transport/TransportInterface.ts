@@ -1,14 +1,18 @@
-/*
-import {Observable} from "rxjs/internal/Observable";
+import {Observable} from "rxjs";
 import {EventEmitter} from "@angular/core";
 
-export interface TransportEvents {
+export interface TransportInterface{
   tickTock: Observable<number>;
   beat: Observable<number>;
   time: Observable<number>;
   transportEnd: EventEmitter<void>;
-  beforeStart: EventEmitter<void>;
   transportStart: EventEmitter<void>;
+  beforeStart: EventEmitter<void>;
   timeReset: EventEmitter<number>;
+
+  start(): void;
+  destroy(): void;
+  stop(): void;
+  isRunning(): boolean;
+
 }
-*/
