@@ -154,7 +154,7 @@ export class ProjectsService {
         t.loopEnd,
         t.loop);
 
-      let track = new Track(t.id, this.audioContext, new Transport(this.audioContext, transportParams, masterParams));
+      let track = new Track(t.id, this.audioContext,project.transport, new Transport(this.audioContext, transportParams, masterParams));
       track.name = t.name;
       track.patterns = t.patterns;
       track.pluginId = t.pluginId;
@@ -183,7 +183,7 @@ export class ProjectsService {
         .then(() => {
           let metronome = new Metronome(this.audioContext, this.filesService, project, this.config, this.samplesService);
           metronome.load().then(metronome => {
-            project.metronomeTrack = this.trackService.createDefaultTrack(project.transport.masterParams);
+            project.metronomeTrack = this.trackService.createDefaultTrack(project.transport);
             project.metronomeTrack.plugin=metronome;
             let pattern = this.trackService.addPattern(project.metronomeTrack);
             pattern.events = this.trackService.createMetronomeEvents(project.metronomeTrack);

@@ -45,7 +45,7 @@ export class Project {
     masterParams.signature = this.signatureSubject.asObservable();
     masterParams.bpm = this.bpmSubject.asObservable();
 
-    this.transport = new Transport(audioContext, transportParams, masterParams);
+    this.transport = new Transport(audioContext, transportParams,masterParams);
   }
 
   getTrack(id: string): Track {

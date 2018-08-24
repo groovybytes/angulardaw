@@ -29,10 +29,11 @@ export class Track {
   constructor(
     id: string,
     private audioContext: AudioContext,
+    master:Transport,
     transport: Transport) {
 
     this.transport=transport;
-    this.streamer = new PerformanceStreamer(this.events, transport, transport);
+    this.streamer = new PerformanceStreamer(this.events, master,transport, transport);
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.offset, event.event)));
     this.destinationNode = this.audioContext.destination;
     this.gainNode = this.audioContext.createGain();

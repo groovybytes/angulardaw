@@ -15,7 +15,7 @@ import {ProjectsService} from "../shared/services/projects.service";
 export class DawMatrixService {
 
   constructor(private trackService: TracksService,
-              private projectsService:ProjectsService,
+              private projectsService: ProjectsService,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -49,31 +49,43 @@ export class DawMatrixService {
     if (cell.trackId) {
       let track = project.tracks.find(track => track.id === cell.trackId);
       project.selectedTrack = track;
-      if (!cell.data){
+      if (!cell.data) {
         let pattern = this.trackService.addPattern(track);
         cell.data = pattern;
       }
 
-      track.focusedPattern=cell.data;
-      this.trackService.resetEventsWithPattern(track,track.focusedPattern.id);
-      project.sequencerOpen=true;
+      track.focusedPattern = cell.data;
+      this.trackService.resetEventsWithPattern(track, track.focusedPattern.id);
+      project.sequencerOpen = true;
     }
   }
 
-  onCellBtnClicked(cell:Cell<Pattern>, project: Project):void{
+  onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
     let track = project.getTrack(cell.trackId);
-    if (track.transport.isRunning()){
+    track.focusedPattern = cell.data;
+    project.selectedTrack = track;
+
+    project.sequencerOpen = true;
+  }
+
+  onCellBtnClicked(cell: Cell<Pattern>, project: Project, event: MouseEvent): void {
+    event.stopPropagation();
+    let track = project.getTrack(cell.trackId);
+    if (track.transport.isRunning()) {
       track.transport.stop();
     }
-    else{
+    else {
       //this.trackService.toggleSolo(project,track);
       track.resetEvents(cell.data.events);
       track.transport.start();
     }
 
 
+  }
 
-
+  trackIsRunning(trackId: string, project: Project): boolean {
+    let track = project.getTrack(trackId);
+    return track.transport.isRunning() || project.transport.isRunning();
   }
 
   private handlePluginDroppedOnBodyCell(pluginId: string, cell: Cell<any>, project: Project): Promise<void> {

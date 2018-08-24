@@ -36,8 +36,7 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
 
   constructor(
     private audioContext: AudioContext
-    ,transportParams:TransportParams,
-    masterParams:MasterTransportParams) {
+    ,transportParams:TransportParams,masterParams:MasterTransportParams) {
 
     this.params=transportParams;
     this.masterParams=masterParams;
@@ -51,6 +50,7 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
     this.position.tick = 0;
     masterParams.bpm.subscribe(bpm => this.bpm = bpm);
     masterParams.signature.subscribe(signature => this.signature = signature);
+
 
   }
 

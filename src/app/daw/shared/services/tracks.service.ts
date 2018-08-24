@@ -33,19 +33,20 @@ export class TracksService {
    }*/
 
 
-  createMetronomeEvents(metronomeTrack:Track):Array<NoteTrigger>{
+  createMetronomeEvents(metronomeTrack: Track): Array<NoteTrigger> {
     let pattern = new Pattern([]);
     let tickTime = MusicMath.getTickTime(metronomeTrack.transport.getBpm(), metronomeTrack.transport.getQuantization());
-    let beatTicks = MusicMath.getBeatTicks( metronomeTrack.transport.getQuantization());
+    let beatTicks = MusicMath.getBeatTicks(metronomeTrack.transport.getQuantization());
     let beatTime = tickTime * beatTicks;
     let beatUnit = metronomeTrack.transport.getSignature().beatUnit;
-    let events=[];
+    let events = [];
     for (let i = 0; i < 100; i++) {
-      events.push(new NoteTrigger(null, i%beatUnit===0?"A0":"",i*beatTime));
+      events.push(new NoteTrigger(null, i % beatUnit === 0 ? "A0" : "", i * beatTime));
     }
 
     return events;
   }
+
   resetEventsWithPattern(track: Track, patternId: string): void {
     let pattern = track.patterns.find(p => p.id === patternId);
     track.transport.params.loopEnd.next(pattern.length);
@@ -68,19 +69,19 @@ export class TracksService {
     return pattern;
   }
 
-  createDefaultTrack(masterParams:MasterTransportParams):Track{
+  createDefaultTrack(master: Transport): Track {
     let transport = new Transport(this.audioContext, new TransportParams(
       NoteLength.Quarter,
       0,
       1000,
       true
-    ), masterParams);
+    ), master.masterParams);
 
-    return new Track(this.guid(), this.audioContext, transport);
+    return new Track(this.guid(), this.audioContext, master, transport);
   }
 
   addTrack(project: Project): Track {
-    let track = this.createDefaultTrack(project.transport.masterParams);
+    let track = this.createDefaultTrack(project.transport);
     track.name = "track name";
     project.tracks.push(track);
     return track;

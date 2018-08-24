@@ -4,6 +4,7 @@ import {Observable, Subject} from "rxjs";
 import {NoteTrigger} from "../NoteTrigger";
 import {TransportReader} from "../transport/TransportReader";
 import {TransportEvents} from "../transport/TransportEvents";
+import {Transport} from "../transport/Transport";
 
 
 export class PerformanceStreamer {
@@ -15,11 +16,13 @@ export class PerformanceStreamer {
   private timeStamp:number;
   private eventPool: Array<NoteTrigger> = [];
 
-  constructor(events: Array<NoteTrigger>,private transport:TransportReader,private transportEvents:TransportEvents) {
+  constructor(events: Array<NoteTrigger>,private master:Transport,private transport:TransportReader,private transportEvents:TransportEvents) {
     this.queue = events;
     this.trigger = this.triggerSubject.asObservable();
     this.subscriptions.push(this.transportEvents.time.subscribe(time => this.onTransportTime(time)));
+    this.subscriptions.push(this.master.time.subscribe(time => this.onTransportTime(time)));
     this.subscriptions.push(this.transportEvents.beforeStart.subscribe(() => this.initLoopQueue()));
+    this.subscriptions.push(this.master.beforeStart.subscribe(() => this.initLoopQueue()));
   }
 
   private onTransportTime(transportTime: number): void {
