@@ -1,5 +1,6 @@
 @import "../../../variables";
 
+
 .position-indicator{
   stroke:red;
   stroke-width: 5px;
@@ -7,18 +8,34 @@
 .fill-rect{
   stroke:black;
 }
+
+.header-text{
+  fill:$color4;
+}
 .header{
   .fill-rect{
-    fill:yellow !important;
+    fill:$color1 !important;
+  }
+  &.tick-active{
+    .fill-rect{
+      fill:green;
+    }
   }
 }
 .note-cell{
   .fill-rect{
-    fill:white;
+    fill:$color11;
   }
   &.active{
     .fill-rect{
       fill:blue;
     }
   }
+  &.tick-active{
+    .fill-rect{
+      fill:green;
+    }
+  }
+
 }
+

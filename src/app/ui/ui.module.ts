@@ -8,6 +8,7 @@ import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {TestsComponent} from "./tests/tests.component";
 import {BootstrapModalDirective} from "./bootstrap-modal.directive";
 import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
+import {InteractDirective} from "./directives/interact.directive";
 
 
 
@@ -17,7 +18,8 @@ import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
     PressButtonComponent,
     ToolbarComponent,
     TestsComponent,
-    BootstrapModalDirective
+    BootstrapModalDirective,
+    InteractDirective
   ],
   imports: [
     BrowserModule,
@@ -32,7 +34,8 @@ import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
     RangesliderComponent,
     PressButtonComponent,
     ToolbarComponent,
-    BootstrapModalDirective
+    BootstrapModalDirective,
+    InteractDirective
 
   ]
 })

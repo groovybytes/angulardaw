@@ -34,9 +34,12 @@ $card-bg:lighten($body-bg,10%);
 $body-bg: lighten(#54647d,10%); //linear-gradient(#54647d, #313946);// no-repeat right top;
 $body-color: $gray-900;
 
-$header-height: 10vh;
-$main-height:70vh;
+$header-height: 5vh;
+$main-height:75vh;
 $footer-height: 20vh;
+$matrix-height:73vh;
+$sequencer-height:60vh;
+$sequencer-width:800px;
 
 $table-head-bg:darken($color2,15%);
 $table-bg:$color11;

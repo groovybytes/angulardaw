@@ -18,5 +18,6 @@ export class NoteCell{
   height:number;
   data:NoteTrigger;
   beat:number;
+  tick:number;
 
 }

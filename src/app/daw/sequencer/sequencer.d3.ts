@@ -4,8 +4,8 @@ import {Pattern} from "../model/daw/Pattern";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import {SequencerService} from "./sequencer.service";
 import {Track} from "../model/daw/Track";
-import {Observable} from "rxjs/internal/Observable";
 import {Subscription} from "rxjs/internal/Subscription";
+import {MusicMath} from "../model/utils/MusicMath";
 
 export class SequencerD3 {
 
@@ -15,6 +15,7 @@ export class SequencerD3 {
   private cells: Array<NoteCell>;
   private joinData: any;
   private enterSelection: d3.Selection<SVGElement, any, any, any>;
+  private mergeSelection: d3.Selection<SVGElement, any, any, any>;
   private positionIndicator: d3.Selection<SVGElement, any, any, any>;
   private timeSubscription: Subscription;
 
@@ -48,6 +49,11 @@ export class SequencerD3 {
       .attr("width", this.specs.columns * this.specs.cellWidth + "px")
       .attr("height", this.specs.rows * this.specs.cellWidth + "px");
 
+    if (!this.positionIndicator) {
+      this.positionIndicator = this.container.append("line");
+      this.positionIndicator.attr("class", "position-indicator");
+    }
+
     this.joinData = this.container.selectAll(".note-cell").data(this.cells, (d: NoteCell) => d.id);
     this.enterSelection = this.joinData.enter().append("g")
       .attr("data-id", (d: NoteCell) => d.id)
@@ -57,25 +63,22 @@ export class SequencerD3 {
     this.enterSelection.append("rect").attr("class", "fill-rect");
     this.enterSelection.filter((d: NoteCell) => d.header)
       .append("text")
-      .attr("class", "header-text")
+      .attr("class", "header-text no-select")
       .attr("alignment-baseline", "center")
       .attr("x", this.specs.cellWidth / 2)
       .attr("y", this.specs.cellHeight / 2)
 
-    if (!this.positionIndicator) {
-      this.positionIndicator = this.container.append("line");
-      this.positionIndicator.attr("class", "position-indicator");
-    }
 
   }
 
   private merge(): void {
 
-    let mergeSelection = this.enterSelection.merge(this.joinData);
+    let mergeSelection = this.mergeSelection = this.enterSelection.merge(this.joinData);
     mergeSelection
       .attr("transform", (d: NoteCell) => "translate(" + d.x + "," + d.y + ")")
       .classed("active", (d: NoteCell) => d.data != null)
       .classed("header", (d: NoteCell) => d.header)
+      .attr("data-tick", (d: NoteCell) => d.tick)
       .selectAll("rect")
       .attr("width", (d: NoteCell) => d.width)
       .attr("height", (d: NoteCell) => d.height)
@@ -92,12 +95,11 @@ export class SequencerD3 {
     /*this.updatePosition(0);*/
   }
 
+
   updatePosition(time: number): void {
-    let x = this.sequencerService.getXPositionForTime(time * 1000, this.specs, this.pattern, this.track.transport);
-    this.positionIndicator
-      .attr("x1", x)
-      .attr("x2", x)
-      .attr("y1", 0)
-      .attr("y2", 200)
+    let tick = MusicMath.getTickForTime(time*1000, this.track.transport.getBpm(), this.track.transport.getQuantization());
+    this.mergeSelection
+      .classed("tick-active", (d: NoteCell) => d.tick===tick && this.track.transport.isRunning());
+
   }
 }

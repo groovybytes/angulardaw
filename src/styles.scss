@@ -8,14 +8,16 @@ html, body {
   min-width:500px;
 }
 
+
 body{
-  padding-top: 70px;
+  padding-top: $header-height;
   background-color: $color1;
   overflow: auto;
 }
 
 .main-container {
   height: $main-height;
+  max-height: $main-height;
 }
 .no-wrap{
   white-space: nowrap;

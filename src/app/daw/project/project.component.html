@@ -1,44 +1,34 @@
-<nav class="navbar navbar-light bg-light fixed-top">
+<nav class="navbar navbar-light bg-light fixed-top top-navbar">
   <form class="form-inline">
     <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
       <span class="navbar-toggler-icon"></span>
     </button>
     <button class="btn btn-outline-success" type="button" (click)="save()">Save</button>
     <button class="btn btn-outline-success" type="button" (click)="close()">Close</button>
-    <button type="button" class="btn btn-secondary" [ngClass]="{'active':project?.quantization===0.25}"
-            (click)="setQuantization(0.25)">1/4</button>
-    <button type="button" class="btn btn-secondary"
-            [ngClass]="{'active':project?.quantization===0.125}"
-            (click)="setQuantization(0.125)">1/8</button>
-    <button type="button" class="btn btn-secondary"
-            [ngClass]="{'active':project?.quantization===0.0625}"
-            (click)="setQuantization(0.0625)">1/16</button>
-    <button type="button" class="btn btn-secondary"
-            [ngClass]="{'active':project?.quantization===0.083333333333333}"
-            (click)="setQuantization(0.083333333333333)">8th Trip</button>
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project?.metronomeEnabled}"
-            (click)="switchMetronome()">Metronome</button>
+            (click)="switchMetronome()">Metronome
+    </button>
   </form>
   <transport class="float-right" [project]="project"></transport>
 </nav>
+<div id="daw-main-container">
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-2">
+        <plugin-list></plugin-list>
 
-<div class="container-fluid">
-  <div class="row ">
-    <div class="col-2">
-      <plugin-list></plugin-list>
-
+      </div>
+      <div class="col-10">
+        <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
+      </div>
     </div>
-    <div class="col-10">
-      <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
-    </div>
+    <sequencer *ngIf="project?.ready && project?.sequencerOpen"
+               [track]="project?.selectedTrack"
+               [pattern]="project?.selectedTrack?.focusedPattern"
+               [window]="project?.windows[0]"
+               (close)="closeSequencer()"></sequencer>
   </div>
 </div>
-
-<sequencer *ngIf="project?.ready && project?.sequencerOpen"
-           [track]="project?.selectedTrack"
-           [pattern]="project?.selectedTrack?.focusedPattern"
-           [window]="project?.windows[0]"
-           (close)="closeSequencer()"></sequencer>
 
 <project-observer *ngIf="project?.ready" [project]="project" [tracks]="project?.tracks"></project-observer>
 

@@ -37,7 +37,7 @@ export class SequencerService {
     return result;
   }*/
 
-  createCells(pattern: Pattern, transport:TransportReader, specs: SequencerD3Specs): Array<NoteCell> {
+  createCells(pattern: Pattern, transport: TransportReader, specs: SequencerD3Specs): Array<NoteCell> {
     let model = [];
     let nColumns = MusicMath.getBeatTicks(transport.getQuantization()) * pattern.length;
 
@@ -48,6 +48,7 @@ export class SequencerService {
       let cell = new NoteCell(j * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
       cell.header = true;
       cell.beat = MusicMath.getBeatNumber(j, transport.getQuantization(), transport.getSignature());
+      cell.tick = j;
       model.push(cell);
     }
 
@@ -55,6 +56,7 @@ export class SequencerService {
       specs.rows++;
       for (let j = 0; j < nColumns; j++) {
         let cell = new NoteCell(j * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
+        cell.tick = j;
         model.push(cell);
       }
     }
@@ -75,7 +77,7 @@ export class SequencerService {
 
   }
 
-  getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern,transport:TransportReader): number {
+  getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern, transport: TransportReader): number {
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
     let percentage = time / fullTime;
     let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
@@ -85,14 +87,13 @@ export class SequencerService {
   }
 
   initializeWindow(element: ElementRef, specs: WindowSpecs): void {
-    if (!specs.x) {
-      specs.x = $(element).position().left;
-      specs.y = $(element).position().top;
-      specs.width = $(element).width();
-      specs.height = $(element).height();
-    }
-    $(element).draggable({
+   /* $(element).width(specs.width);
+    $(element).height(specs.height);
+*/
+   /* $(element).draggable({
       handle: ".card-header",
+      containment: "#main-container",
+      scroll: false,
       drag: (event, ui) => {
         specs.x = ui.position.left;
         specs.y = ui.position.top;
@@ -104,7 +105,7 @@ export class SequencerService {
         specs.height = ui.size.height;
       },
       handles: "n, e, s, w"
-    });
+    });*/
   }
 
   updateWindow(element: ElementRef, specs: WindowSpecs): void {
@@ -112,7 +113,7 @@ export class SequencerService {
 
   }
 
-  addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern, transport:TransportReader): void {
+  addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern, transport: TransportReader): void {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
     let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
@@ -128,9 +129,9 @@ export class SequencerService {
     this.trackService.insertNote(pattern, trigger);
   }
 
-  updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern,transport:TransportReader): void {
+  updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern, transport: TransportReader): void {
 
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length,transport.getBpm(),transport.getQuantization());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
     let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
     let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
     let percentage = entry.x / fullWidth;
