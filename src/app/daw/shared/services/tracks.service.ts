@@ -9,6 +9,7 @@ import {TransportParams} from "../../model/daw/transport/TransportParams";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {MasterTransportParams} from "../../model/daw/transport/MasterTransportParams";
 import {MusicMath} from "../../model/utils/MusicMath";
+import {Cell} from "../../model/daw/matrix/Cell";
 
 @Injectable()
 export class TracksService {
@@ -47,8 +48,8 @@ export class TracksService {
     return events;
   }
 
-  resetEventsWithPattern(track: Track, patternId: string): void {
-    let pattern = track.patterns.find(p => p.id === patternId);
+  resetEventsWithPattern(track: Track, pattern: Pattern): void {
+
     track.transport.params.loopEnd.next(pattern.length);
     track.transport.params.loop.next(true);
     track.resetEvents(pattern.events);
@@ -61,15 +62,11 @@ export class TracksService {
     let pattern = new Pattern(track.plugin.getNotes().reverse());
     pattern.id = this.guid();
 
-    track.patterns.push(pattern);
-    /* let row = entry.top / cellHeight;
-     let column = entry.left / cellWidth;
-     entry.data = new GridCellViewModel(null, row, column, pattern.id);*/
-
+   // track.patterns.push(pattern);
     return pattern;
   }
 
-  createDefaultTrack(master: Transport): Track {
+  createDefaultTrack(index:number,master: Transport): Track {
     let transport = new Transport(this.audioContext, new TransportParams(
       NoteLength.Quarter,
       0,
@@ -77,11 +74,11 @@ export class TracksService {
       true
     ), master.masterParams);
 
-    return new Track(this.guid(), this.audioContext, master, transport);
+    return new Track(this.guid(), index,this.audioContext, master, transport);
   }
 
-  addTrack(project: Project): Track {
-    let track = this.createDefaultTrack(project.transport);
+  addTrack(project: Project,index:number): Track {
+    let track = this.createDefaultTrack(index,project.transport);
     track.name = "track name";
     project.tracks.push(track);
     return track;

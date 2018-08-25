@@ -15,10 +15,8 @@ import {Transport} from "../../model/daw/transport/Transport";
 import {TransportParams} from "../../model/daw/transport/TransportParams";
 import {TimeSignature} from "../../model/mip/TimeSignature";
 import {Metronome} from "../../model/daw/components/Metronome";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
-import {MusicMath} from "../../model/utils/MusicMath";
-import {TransportReader} from "../../model/daw/transport/TransportReader";
-import {PerformanceStreamer} from "../../model/daw/events/PerformanceStreamer";
+import {Pattern} from "../../model/daw/Pattern";
+import {Matrix} from "../../model/daw/matrix/Matrix";
 
 
 @Injectable()
@@ -48,16 +46,20 @@ export class ProjectsService {
     let nRows = 10;
 
     for (let i = 0; i < nColumns; i++) {
-      project.matrix.header.push(new Cell<any>(-1, i));
+      project.matrix.header.push(new Cell<Track>(-1, i));
     }
     for (let i = 0; i < nRows; i++) {
-      project.matrix.rowHeader.push(new Cell<any>(i, -1));
+     // let scene=new Scene(project.transport,[]);
+      let cell = new Cell<any>(i, -1);
+      //cell.data=scene;
+      project.matrix.rowHeader.push(cell);
     }
     for (let i = 0; i < nRows; i++) {
       let row = [];
       project.matrix.body.push(row);
       for (let j = 0; j < nColumns; j++) {
-        row.push(new Cell(i, j));
+        let cell = new Cell<Pattern>(i, j);
+        row.push(cell);
       }
 
     }
@@ -97,6 +99,8 @@ export class ProjectsService {
 
 
   private serializeProject(project: Project): any {
+
+
     return {
       id: project.id,
       name: project.name,
@@ -105,21 +109,23 @@ export class ProjectsService {
       beatUnit: project.transport.getSignature().beatUnit,
       barUnit: project.transport.getSignature().barUnit,
       metronomeEnabled: project.metronomeEnabled,
-      matrix: project.matrix,
+      cells: project.matrix.body,
+      matrixColumns:project.matrix.header.length,
+      matrixRows:project.matrix.rowHeader.length,
       selectedTrackId: project.selectedTrack ? project.selectedTrack.id : null,
       sequencerOpen: project.sequencerOpen,
       windows: project.windows,
       tracks: project.tracks.map(track => ({
         id: track.id,
+        index:track.index,
         name: track.name,
-        patterns: track.patterns,
         pluginId: track.pluginId,
         quantization: track.transport.getQuantization(),
         loopStart: track.transport.getLoopStart(),
         loopEnd: track.transport.getLoopEnd(),
         loop: track.transport.isLoop(),
         events: track.events,
-        focusedPattern: track.focusedPattern ? track.focusedPattern.id : null,
+        focusedPattern: track.focusedPattern,
         controlParameters: {
           gain: track.controlParameters.gain.getValue(),
           mute: track.controlParameters.mute.getValue(),
@@ -137,13 +143,12 @@ export class ProjectsService {
       json.loopEnd,
       json.loop);
 
-
     let project = new Project(this.audioContext, transportParams, json.bpm, new TimeSignature(json.beatUnit, json.barUnit));
     let masterParams = project.transport.masterParams;
     project.id = json.id;
     project.name = json.name;
     project.metronomeEnabled = json.metronomeEnabled;
-    project.matrix = json.matrix;
+
     project.sequencerOpen = json.sequencerOpen;
     project.windows = json.windows;
 
@@ -154,19 +159,21 @@ export class ProjectsService {
         t.loopEnd,
         t.loop);
 
-      let track = new Track(t.id, this.audioContext,project.transport, new Transport(this.audioContext, transportParams, masterParams));
+      let track = new Track(t.id,t.index, this.audioContext,project.transport, new Transport(this.audioContext, transportParams, masterParams));
       track.name = t.name;
-      track.patterns = t.patterns;
+   /*   track.patterns = t.patterns;*/
       track.pluginId = t.pluginId;
       track.events = t.events;
       track.controlParameters.gain.next(t.controlParameters.gain ? t.controlParameters.gain : 100);
       track.controlParameters.mute.next(t.controlParameters.mute ? t.controlParameters.mute : false);
       track.controlParameters.solo.next(t.controlParameters.solo ? t.controlParameters.solo : false);
       project.tracks.push(track);
-      track.focusedPattern = t.focusedPattern ? track.patterns.find(p => p.id === t.focusedPattern) : null;
-      if (track.focusedPattern) this.trackService.resetEventsWithPattern(track, track.focusedPattern.id);
+      track.focusedPattern = t.focusedPattern;// ? track.patterns.find(p => p.id === t.focusedPattern) : null;
+      if (track.focusedPattern) this.trackService.resetEventsWithPattern(track, track.focusedPattern);
     });
     project.selectedTrack = json.selectedTrackId ? project.tracks.find(t => t.id === json.selectedTrackId) : null;
+
+    this.deserializeMatrix(project,json);
 
     return new Promise<Project>((resolve, reject) => {
       let promises = [];
@@ -183,11 +190,11 @@ export class ProjectsService {
         .then(() => {
           let metronome = new Metronome(this.audioContext, this.filesService, project, this.config, this.samplesService);
           metronome.load().then(metronome => {
-            project.metronomeTrack = this.trackService.createDefaultTrack(project.transport);
+            project.metronomeTrack = this.trackService.createDefaultTrack(0,project.transport);
             project.metronomeTrack.plugin=metronome;
             let pattern = this.trackService.addPattern(project.metronomeTrack);
             pattern.events = this.trackService.createMetronomeEvents(project.metronomeTrack);
-            this.trackService.resetEventsWithPattern(project.metronomeTrack,pattern.id);
+            this.trackService.resetEventsWithPattern(project.metronomeTrack,pattern);
             resolve(project);
           })
             .catch(error => reject(error));
@@ -196,6 +203,24 @@ export class ProjectsService {
         .catch(error => reject(error));
 
     })
+
+  }
+
+  private deserializeMatrix(project:Project,json:any):void{
+    project.matrix = new Matrix();
+    project.matrix.body=json.cells;
+    for (let i = 0; i < json.matrixColumns; i++) {
+      let cell = new Cell<Track>(-1, i);
+      project.matrix.header.push(cell);
+      let trackIndex = project.tracks.findIndex(track=>track.index === i);
+      if (trackIndex >= 0) cell.data=project.tracks[trackIndex];
+    }
+    for (let i = 0; i < json.matrixRows; i++) {
+      //let scene=new Scene(project.transport,[]);
+      let cell = new Cell<any>(i, -1);
+      //cell.data=scene;
+      project.matrix.rowHeader.push(cell);
+    }
 
   }
 

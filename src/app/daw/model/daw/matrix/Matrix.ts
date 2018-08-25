@@ -1,8 +1,10 @@
 import {Cell} from "./Cell";
+import {Pattern} from "../Pattern";
+import {Track} from "../Track";
 
 
 export class Matrix{
-  body:Array<Array<Cell<any>> >=[];
-  header:Array<Cell<any> >=[];
+  body:Array<Array<Cell<Pattern>> >=[];
+  header:Array<Cell<Track> >=[];
   rowHeader:Array<Cell<any> >=[];
 }

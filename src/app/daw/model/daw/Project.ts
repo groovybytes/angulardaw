@@ -1,6 +1,4 @@
 import {Track} from './Track';
-import {WstPlugin} from "./WstPlugin";
-import {NoteLength} from "../mip/NoteLength";
 import {Matrix} from "./matrix/Matrix";
 import {WindowSpecs} from "./visual/WindowSpecs";
 import {Transport} from "./transport/Transport";
@@ -8,7 +6,6 @@ import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {TimeSignature} from "../mip/TimeSignature";
 import {MasterTransportParams} from "./transport/MasterTransportParams";
 import {TransportParams} from "./transport/TransportParams";
-import {Metronome} from "./components/Metronome";
 import {EventEmitter} from "@angular/core";
 
 
@@ -32,6 +29,8 @@ export class Project {
   private bpmSubject: BehaviorSubject<number>;
   private signatureSubject: BehaviorSubject<TimeSignature>;
 
+  trackAdded:EventEmitter<Track>=new EventEmitter();
+  trackRemoved:EventEmitter<Track>=new EventEmitter();
 
   constructor(
     private audioContext: AudioContext,

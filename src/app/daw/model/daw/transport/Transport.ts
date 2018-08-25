@@ -76,6 +76,7 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
 
   start(): void {
 
+    if (this.isRunning()) this.stop();
     let start = this.audioContext.currentTime;
     this.beforeStart.emit();
     this.run = true;

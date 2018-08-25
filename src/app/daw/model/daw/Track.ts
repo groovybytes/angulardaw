@@ -11,7 +11,7 @@ export class Track {
   index: number;
   name: string;
   focusedPattern: Pattern;
-  patterns: Array<Pattern> = [];
+ /* patterns: Array<Pattern> = [];*/
   pluginId: string;
   ghost: boolean = false;
   events: Array<NoteTrigger> = [];
@@ -28,10 +28,12 @@ export class Track {
 
   constructor(
     id: string,
+    index:number,
     private audioContext: AudioContext,
     master:Transport,
     transport: Transport) {
 
+    this.index=index;
     this.transport=transport;
     this.streamer = new PerformanceStreamer(this.events, master,transport, transport);
     this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.offset, event.event)));
