@@ -22,12 +22,12 @@
         <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
       </div>
     </div>
-    <sequencer *ngIf="project?.ready && project?.sequencerOpen"
+    <sequencer2 *ngIf="project?.ready && project?.sequencerOpen"
                [project]="project"
                [track]="project?.selectedTrack"
                [pattern]="project?.selectedTrack?.focusedPattern"
                [window]="project?.windows[0]"
-               (close)="closeSequencer()"></sequencer>
+               (close)="closeSequencer()"></sequencer2>
   </div>
 </div>
 

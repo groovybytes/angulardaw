@@ -1,56 +1,56 @@
 @import "../../../variables";
 
-
-.position-indicator{
-  stroke:red;
+.position-indicator {
+  stroke: red;
   stroke-width: 5px;
 }
-.fill-rect{
-  stroke:$color2;
+
+.fill-rect {
+  stroke: $color2;
 }
 
-.header-text{
-  fill:white;
+.header-text {
+  fill: white;
 }
-.header{
-  .fill-rect{
-    fill:$color1 !important;
+
+.header {
+  .fill-rect {
+    fill: $color1 !important;
   }
 }
 
-.note-cell{
+.note-cell {
 
-
-
-  &.active{
-    .fill-rect{
-      fill:$color9;
+  &.active {
+    .fill-rect {
+      fill: $color9;
     }
+    cursor: pointer;
   }
-  &.active.tick-active{
-    .fill-rect{
-      fill:lighten($color9,5%);
-    }
-  }
-
-  &.drag-over{
-    .fill-rect{
-      fill:green;
+  &.active.tick-active {
+    .fill-rect {
+      fill: lighten($color9, 5%);
     }
   }
 
-}
-
-
-.note-cell{
-  .fill-rect{
-    fill:$color11;
+  &.drag-over {
+    .fill-rect {
+      fill: green;
+    }
   }
 
 }
-.tick-active{
-  .fill-rect{
-    fill:lighten($color11,5%);
+
+.note-cell {
+  .fill-rect {
+    fill: $color11;
+  }
+
+}
+
+.tick-active {
+  .fill-rect {
+    fill: lighten($color11, 5%);
   }
 }
 

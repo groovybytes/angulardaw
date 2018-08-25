@@ -11,11 +11,13 @@ import { PluginListComponent } from './plugin-list/plugin-list.component';
 import { EffectsPanelComponent } from './effects-panel/effects-panel.component';
 import {TransportComponent} from "./transport/transport.component";
 import { SequencerComponent } from './sequencer/sequencer.component';
-import {SequencerService} from "./sequencer/sequencer.service";
 import { TrackControlsComponent } from './track-controls/track-controls.component';
 import {DawMatrixComponent} from "./daw-matrix/daw-matrix.component";
 import { ProjectObserverComponent } from './project-observer/project-observer.component';
 import { QuantizationComponent } from './quantization/quantization.component';
+import { Sequencer2Component } from './sequencer2/sequencer2.component';
+import {SequencerService2} from "./sequencer2/sequencer2.service";
+import {SequencerService} from "./sequencer/sequencer.service";
 
 let audioContext = new AudioContext();
 
@@ -31,7 +33,8 @@ let audioContext = new AudioContext();
     TrackControlsComponent,
     DawMatrixComponent,
     ProjectObserverComponent,
-    QuantizationComponent
+    QuantizationComponent,
+    Sequencer2Component
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ let audioContext = new AudioContext();
   providers: [
     {provide: "lodash", useValue: window["_"]},
     {provide: "AudioContext", useValue: audioContext},
+    SequencerService2,
     SequencerService
 
   ],

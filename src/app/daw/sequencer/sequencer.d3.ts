@@ -19,8 +19,8 @@ export class SequencerD3 {
   private mergeSelection: d3.Selection<SVGElement, any, any, any>;
   private positionIndicator: d3.Selection<SVGElement, any, any, any>;
   private timeSubscription: Subscription;
-  private isDoubleClick:boolean=false;
-  private drag:DragBehavior<any,any,any>;
+  private isDoubleClick: boolean = false;
+  private drag: DragBehavior<any, any, any>;
 
   constructor(
     private svg: SVGElement,
@@ -30,22 +30,21 @@ export class SequencerD3 {
 
     this.container = d3.select(svg).append("g");
 
-    d3.selection.prototype.moveToFront = function() {
-      return this.each(function(){
+    d3.selection.prototype.moveToFront = function () {
+      return this.each(function () {
         this.parentNode.appendChild(this);
       });
     };
 
-    this.drag=d3.drag()
-      .on("start", (d: NoteCell) => this.sequencerService.dragStart(d,this.mergeSelection))
-      .on("drag", (d: NoteCell) => this.sequencerService.drag(d,this.cells,this.mergeSelection))
+    this.drag = d3.drag()
+      .clickDistance(0)
+      .on("start", (d: NoteCell) => this.sequencerService.dragStart(d, this.mergeSelection))
+      .on("drag", (d: NoteCell) => this.sequencerService.drag(d, this.cells, this.mergeSelection))
       .on("end", (d: NoteCell) => {
-        this.sequencerService.dragEnd(d,this.cells,this.mergeSelection,this.pattern,this.specs);
+        this.sequencerService.dragEnd(d, this.cells, this.mergeSelection, this.pattern, this.specs);
         this.enter();
         this.merge();
-      });
-
-
+      })
 
   }
 
@@ -74,26 +73,25 @@ export class SequencerD3 {
       this.positionIndicator.attr("class", "position-indicator");
     }
     this.joinData = this.container.selectAll(".note-cell").data(this.cells, (d: NoteCell) => d.id);
-    this.enterSelection = this.joinData.enter().append("g");
-    this.enterSelection.call(this.drag);
-    let enterContainer = this.enterSelection
+    this.enterSelection = this.joinData.enter().append("g")
       .attr("text-anchor", "middle")
-      .attr("class", "note-cell")
+      .attr("class", "note-cell");
 
-    enterContainer
+    this.enterSelection.call(this.drag);
+
+    this.enterSelection
       .append("rect")
       .attr("class", "fill-rect")
-      .on("dblclick", (d: NoteCell) => {
-        this.isDoubleClick=true;
+      .on("click", (d: NoteCell) => {
+        this.isDoubleClick = true;
         if (d.data) this.sequencerService.removeEvent(d, this.pattern);
         else this.sequencerService.addNote(d.x, d.y, this.cells, this.specs, this.pattern, this.track.transport);
         this.enter();
         this.merge();
-      })
+      });
 
 
-
-    enterContainer.filter((d: NoteCell) => d.header)
+    this.enterSelection.filter((d: NoteCell) => d.header)
       .append("text")
       .attr("class", "header-text no-select")
       .attr("alignment-baseline", "center")
@@ -101,6 +99,10 @@ export class SequencerD3 {
       .attr("y", this.specs.cellHeight / 2)
 
     this.joinData.exit().remove();
+
+    /* $(".note-cell").on("mouseover",ev=>{
+       console.log(ev);
+     })*/
   }
 
   private merge(): void {
