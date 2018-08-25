@@ -21,12 +21,18 @@ export class NoteCell{
   beat:number;
   tick:number;
   row:number;
+  column:number;
+  note:string;
+  time:number;
 
   applyAttributesFrom(cell:NoteCell):void{
     this.beat=cell.beat;
     this.tick=cell.tick;
     this.row=cell.row;
     this.header=cell.header;
+    this.column=cell.column;
+    this.note=cell.note;
+    this.time=cell.time;
     this.x=cell.x;
     this.y=cell.y;
   }

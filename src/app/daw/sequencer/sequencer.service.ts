@@ -44,6 +44,7 @@ export class SequencerService {
 
     specs.rows = pattern.notes.length;
     specs.columns = nColumns;
+    let tickTime = MusicMath.getTickTime(transport.getBpm(),transport.getQuantization());
 
     for (let j = 0; j < nColumns; j++) {
       let cell = new NoteCell(j * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
@@ -51,8 +52,10 @@ export class SequencerService {
       cell.beat = MusicMath.getBeatNumber(j, transport.getQuantization(), transport.getSignature());
       cell.tick = j;
       cell.row = -1;
+      cell.time=tickTime*j;
       model.push(cell);
     }
+
 
     for (let i = 0; i < pattern.notes.length; i++) {
       specs.rows++;
@@ -60,13 +63,14 @@ export class SequencerService {
         let cell = new NoteCell(j * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
         cell.tick = j;
         cell.row = i;
+        cell.column=j;
+        cell.note=pattern.notes[i];
+        cell.time=tickTime*j;
         model.push(cell);
       }
     }
 
     pattern.events.forEach(event => {
-
-
       let left = this.getXPositionForTime(event.time, specs, pattern, transport);
       let notes = pattern.notes;
       let rowIndex = notes.indexOf(event.note);
@@ -76,6 +80,9 @@ export class SequencerService {
       cell.tick = MusicMath.getTickForTime(event.time, transport.getBpm(), transport.getQuantization());
       cell.row = rowIndex;
       cell.data = event;
+      cell.column=cell.tick;
+      cell.note=pattern.notes[rowIndex];
+      cell.time=event.time;
 
       model.push(cell);
     });
@@ -179,12 +186,9 @@ export class SequencerService {
     if (dragOverCell) {
       mergeSelection.classed("drag-over", false);
       cell.applyAttributesFrom(dragOverCell);
-      let notes = pattern.notes;
-      cell.data.note = notes[dragOverCell.row];
-
+      cell.data.note = cell.note;
+      cell.data.time=cell.time;
     }
-
-
   }
 
   private getDragOverCells(cells: Array<NoteCell>): Array<NoteCell> {
