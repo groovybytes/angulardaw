@@ -16,6 +16,7 @@ export class DawMatrixService {
 
   constructor(private trackService: TracksService,
               private projectsService: ProjectsService,
+
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -71,7 +72,7 @@ export class DawMatrixService {
     project.sequencerOpen = true;
   }
 
-  startScene(cell: Cell<any>, project: Project): void {
+  /*startScene(cell: Cell<any>, project: Project): void {
     if (cell.data === true) {
       project.transport.stop();
       cell.data = false;
@@ -109,12 +110,8 @@ export class DawMatrixService {
     }
 
 
-  }
+  }*/
 
-  patternIsRunning(trackId: string, pattern: Pattern, project: Project): boolean {
-    let track = project.getTrack(trackId);
-    return (track.focusedPattern && track.focusedPattern.id === pattern.id) && (track.transport.isRunning() || project.transport.isRunning());
-  }
 
   private handlePluginDroppedOnBodyCell(pluginId: string, cell: Cell<Pattern>, matrix: Matrix, project: Project): Promise<void> {
 

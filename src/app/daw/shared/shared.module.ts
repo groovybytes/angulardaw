@@ -7,6 +7,7 @@ import {FilesApi} from "./api/files.api";
 import {TheoryService} from "./services/theory.service";
 import {TracksService} from "./services/tracks.service";
 import {MatrixService} from "./services/matrix.service";
+import {ClipsService} from "./services/clips.service";
 
 let projectsApi=new InMemoryApiEndpoint("__projects");
 let tracksApi=new InMemoryApiEndpoint("__tracks");
@@ -29,6 +30,7 @@ let patternApi=new InMemoryApiEndpoint("__patterns");
     TheoryService,
     TracksService,
     MatrixService,
+    ClipsService,
     { provide: "ProjectsApi", useValue: projectsApi },
     { provide: "TracksApi", useValue: tracksApi },
     { provide: "EventsApi", useValue: eventsApi },

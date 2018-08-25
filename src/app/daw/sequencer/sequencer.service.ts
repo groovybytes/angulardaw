@@ -10,6 +10,7 @@ import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
 import {TransportReader} from "../model/daw/transport/TransportReader";
+import * as d3 from "d3";
 
 @Injectable()
 export class SequencerService {
@@ -38,7 +39,7 @@ export class SequencerService {
   }*/
 
   createCells(pattern: Pattern, transport: TransportReader, specs: SequencerD3Specs): Array<NoteCell> {
-    let model = [];
+    let model: Array<NoteCell> = [];
     let nColumns = MusicMath.getBeatTicks(transport.getQuantization()) * pattern.length;
 
     specs.rows = pattern.notes.length;
@@ -49,6 +50,7 @@ export class SequencerService {
       cell.header = true;
       cell.beat = MusicMath.getBeatNumber(j, transport.getQuantization(), transport.getSignature());
       cell.tick = j;
+      cell.row = -1;
       model.push(cell);
     }
 
@@ -57,11 +59,13 @@ export class SequencerService {
       for (let j = 0; j < nColumns; j++) {
         let cell = new NoteCell(j * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
         cell.tick = j;
+        cell.row = i;
         model.push(cell);
       }
     }
 
     pattern.events.forEach(event => {
+
 
       let left = this.getXPositionForTime(event.time, specs, pattern, transport);
       let notes = pattern.notes;
@@ -69,7 +73,10 @@ export class SequencerService {
       let top = (rowIndex + 1) * specs.cellHeight;
 
       let cell = new NoteCell(left, top, specs.cellWidth, specs.cellHeight);
+      cell.tick = MusicMath.getTickForTime(event.time, transport.getBpm(), transport.getQuantization());
+      cell.row = rowIndex;
       cell.data = event;
+
       model.push(cell);
     });
 
@@ -87,25 +94,25 @@ export class SequencerService {
   }
 
   initializeWindow(element: ElementRef, specs: WindowSpecs): void {
-   /* $(element).width(specs.width);
-    $(element).height(specs.height);
-*/
-   /* $(element).draggable({
-      handle: ".card-header",
-      containment: "#main-container",
-      scroll: false,
-      drag: (event, ui) => {
-        specs.x = ui.position.left;
-        specs.y = ui.position.top;
-      }
-    });
-    $(element).resizable({
-      resize: (event, ui) => {
-        specs.width = ui.size.width;
-        specs.height = ui.size.height;
-      },
-      handles: "n, e, s, w"
-    });*/
+    /* $(element).width(specs.width);
+     $(element).height(specs.height);
+ */
+    /* $(element).draggable({
+       handle: ".card-header",
+       containment: "#main-container",
+       scroll: false,
+       drag: (event, ui) => {
+         specs.x = ui.position.left;
+         specs.y = ui.position.top;
+       }
+     });
+     $(element).resizable({
+       resize: (event, ui) => {
+         specs.width = ui.size.width;
+         specs.height = ui.size.height;
+       },
+       handles: "n, e, s, w"
+     });*/
   }
 
   updateWindow(element: ElementRef, specs: WindowSpecs): void {
@@ -147,6 +154,45 @@ export class SequencerService {
 
     this.trackService.removeNote(pattern, entry.data.id);
     entry.data = null;
+  }
+
+  dragStart(cell: NoteCell, container): void {
+    d3.select("#sequencer-svg #" + cell.id)["moveToFront"]();
+  }
+
+
+  drag(cell: NoteCell, cells: Array<NoteCell>, mergeSelection): void {
+    d3.select("#sequencer-svg #" + cell.id)
+      .attr("transform", "translate(" + d3.event.x + "," + d3.event.y + ")");
+    let dragOverCells = this.getDragOverCells(cells);
+    if (dragOverCells.length > 0) {
+      dragOverCells.forEach(cell => {
+        mergeSelection.classed("drag-over", (d: NoteCell) => d.id === cell.id);
+      })
+
+      //d3.select("#sequencer-svg #" + dragOverCell.id).classed("drag-over", true)
+    }
+  }
+
+  dragEnd(cell: NoteCell, cells: Array<NoteCell>, mergeSelection, pattern: Pattern, specs: SequencerD3Specs): void {
+    let dragOverCell = this.getDragOverCells(cells)[0];
+    if (dragOverCell) {
+      mergeSelection.classed("drag-over", false);
+      cell.applyAttributesFrom(dragOverCell);
+      let notes = pattern.notes;
+      cell.data.note = notes[dragOverCell.row];
+
+    }
+
+
+  }
+
+  private getDragOverCells(cells: Array<NoteCell>): Array<NoteCell> {
+    return cells.filter(cell => {
+      return cell.header === false &&
+        ((cell.x < d3.event.x + cell.width) && cell.x > d3.event.x) &&
+        ((cell.y >= d3.event.y) && cell.y <= d3.event.y + cell.height);
+    });
   }
 
 

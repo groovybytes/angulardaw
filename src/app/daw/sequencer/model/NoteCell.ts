@@ -1,5 +1,5 @@
-import * as _ from "lodash";
 import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import * as _ from "lodash";
 
 export class NoteCell{
 
@@ -8,6 +8,7 @@ export class NoteCell{
     this.y = y;
     this.width = width;
     this.height = height;
+    this.id = _.uniqueId("note-cell_");
   }
 
   header:boolean=false;
@@ -19,5 +20,15 @@ export class NoteCell{
   data:NoteTrigger;
   beat:number;
   tick:number;
+  row:number;
+
+  applyAttributesFrom(cell:NoteCell):void{
+    this.beat=cell.beat;
+    this.tick=cell.tick;
+    this.row=cell.row;
+    this.header=cell.header;
+    this.x=cell.x;
+    this.y=cell.y;
+  }
 
 }

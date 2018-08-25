@@ -23,6 +23,7 @@
       </div>
     </div>
     <sequencer *ngIf="project?.ready && project?.sequencerOpen"
+               [project]="project"
                [track]="project?.selectedTrack"
                [pattern]="project?.selectedTrack?.focusedPattern"
                [window]="project?.windows[0]"

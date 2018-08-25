@@ -49,4 +49,9 @@ export class ClipsService {
 
 
   }
+
+  clipIsRunning(trackId: string, pattern: Pattern, project: Project): boolean {
+    let track = project.getTrack(trackId);
+    return (track.focusedPattern && track.focusedPattern.id === pattern.id) && (track.transport.isRunning() || project.transport.isRunning());
+  }
 }

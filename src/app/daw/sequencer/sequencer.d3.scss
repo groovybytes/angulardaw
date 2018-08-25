@@ -6,36 +6,57 @@
   stroke-width: 5px;
 }
 .fill-rect{
-  stroke:black;
+  stroke:$color2;
 }
 
 .header-text{
-  fill:$color4;
+  fill:white;
 }
 .header{
   .fill-rect{
     fill:$color1 !important;
   }
-  &.tick-active{
-    .fill-rect{
-      fill:green;
-    }
-  }
 }
+
 .note-cell{
-  .fill-rect{
-    fill:$color11;
-  }
+
+
+
   &.active{
     .fill-rect{
-      fill:blue;
+      fill:$color9;
     }
   }
-  &.tick-active{
+  &.active.tick-active{
+    .fill-rect{
+      fill:lighten($color9,5%);
+    }
+  }
+
+  &.drag-over{
     .fill-rect{
       fill:green;
     }
   }
 
 }
+
+
+.note-cell{
+  .fill-rect{
+    fill:$color11;
+  }
+
+}
+.tick-active{
+  .fill-rect{
+    fill:lighten($color11,5%);
+  }
+}
+
+
+
+
+
+
 
