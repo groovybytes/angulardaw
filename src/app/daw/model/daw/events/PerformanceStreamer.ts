@@ -39,6 +39,7 @@ export class PerformanceStreamer {
       nextEvents.forEach(event => {
         let eventClone = _.clone(event);
         eventClone.time = eventClone.time*timeFactor;
+        eventClone.length=eventClone.length*timeFactor;
         this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - transportTime});
       });
     }

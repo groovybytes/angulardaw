@@ -1,4 +1,3 @@
-/*
 import {Transport} from "./Transport";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {EventEmitter} from "@angular/core";
@@ -64,70 +63,60 @@ export class TransportProxy implements TransportInterface,TransportReader,Transp
     masterParams.signature.subscribe(signature=>this.signature=signature);
   }
 
-
-  stop(): void {
-    this.transport.stop();
-
-  }
-
-  start(): void {
-    this.transport.start();
-  }
-
   destroy(): void {
-    this.transport.destroy();
-  }
-
-  isRunning(): boolean {
-    return this.transport.isRunning();
-  }
-
-  getEvents():void{
-
   }
 
   getBeat(): number {
-    return this.beatSubject.getValue();
+    return 0;
   }
 
   getBpm(): number {
-    return this.state.bpm;
-  }
-
-  getLoopEnd(): number {
-    return this.state.loopEnd;
-  }
-
-  getLoopStart(): number {
-    return this.state.loopStart;
-  }
-
-  getQuantization(): NoteLength {
-    return this.quantization.getValue();
-  }
-
-  getSignature(): TimeSignature {
-    return this.signature.get;
-  }
-
-  getTick(): number {
-    return this.state.tick;
-  }
-
-  getTime(): number {
-    return this.state.time;
-  }
-
-  isLoop(): boolean {
-    return this.state.loop;
+    return 0;
   }
 
   getEndTime(): number {
-    return this.getLoopEnd()*MusicMath.getBeatTime(this.getBpm(),this.getQuantization());
+    return 0;
+  }
+
+  getLoopEnd(): number {
+    return 0;
+  }
+
+  getLoopStart(): number {
+    return 0;
+  }
+
+  getQuantization(): NoteLength {
+    return undefined;
+  }
+
+  getSignature(): TimeSignature {
+    return undefined;
   }
 
   getStartTime(): number {
     return 0;
   }
+
+  getTick(): number {
+    return 0;
+  }
+
+  getTime(): number {
+    return 0;
+  }
+
+  isLoop(): boolean {
+    return false;
+  }
+
+  isRunning(): boolean {
+    return false;
+  }
+
+  start(): void {
+  }
+
+  stop(): void {
+  }
 }
-*/

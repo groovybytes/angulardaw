@@ -62,6 +62,7 @@ export class Project {
 
   destroy(): void {
     this.tracks.forEach(track => track.destroy());
+    this.tracks.length=0;
   }
 
 

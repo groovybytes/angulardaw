@@ -144,7 +144,7 @@ export class SequencerService2 {
 
   addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern, transport: TransportReader): void {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, 120, transport.getQuantization());
     let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
     let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
     let percentage = cell.x / fullWidth;
@@ -247,10 +247,10 @@ export class SequencerService2 {
   }
 
   private getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern, transport: TransportReader): number {
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length,120, transport.getQuantization());
     let percentage = time / fullTime;
     let ticksPerBeat = MusicMath.getBeatTicks(transport.getQuantization());
-    let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
+    let fullWidth = specs.cellWidth * specs.columns;
     return fullWidth * percentage;
 
   }
@@ -260,11 +260,11 @@ export class SequencerService2 {
     let fullWidth = specs.cellWidth * specs.columns;
     let timePerPixel = fullWidth / fullTime;
 
-    return timePerPixel * noteLength;
+    return  fullWidth*((noteLength*120/transport.getBpm())/fullTime);//  timePerPixel * noteLength*120/transport.getBpm();
   }
 
   private getNoteLength(width: number, pattern: Pattern, transport: TransportReader, specs: SequencerD3Specs): number {
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, transport.getBpm(), transport.getQuantization());
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, 120, transport.getQuantization());
 
     let fullWidth = specs.cellWidth * specs.columns;
     let timePerPixel = fullTime / fullWidth;
