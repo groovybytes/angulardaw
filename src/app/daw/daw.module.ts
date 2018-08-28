@@ -18,6 +18,7 @@ import { QuantizationComponent } from './quantization/quantization.component';
 import { Sequencer2Component } from './sequencer2/sequencer2.component';
 import {SequencerService2} from "./sequencer2/sequencer2.service";
 import {SequencerService} from "./sequencer/sequencer.service";
+import { Ng5SliderModule } from 'ng5-slider';
 
 let audioContext = new AudioContext();
 
@@ -41,7 +42,8 @@ let audioContext = new AudioContext();
     FormsModule,
     SharedModule,
     UiModule,
-    SidebarModule.forRoot()
+    SidebarModule.forRoot(),
+    Ng5SliderModule
   ],
   providers: [
     {provide: "lodash", useValue: window["_"]},

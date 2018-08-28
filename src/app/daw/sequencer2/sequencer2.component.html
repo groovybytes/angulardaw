@@ -1,0 +1,56 @@
+<div
+  class="card bg-secondary shadow-lg rounded"
+  interact
+  parent="#daw-main-container"
+  #card>
+  <!-- [ngStyle]="{'left':window.x+'px','top':window.y+'px','width':window.width+'px','height':window.height+'px'}"-->
+  <div class="card-header drag-handle">
+    <quantization [params]="track.transport.params"></quantization>
+    <button type="button"
+            (click)="toggleClip()"
+            class="btn btn-primary toggle-button shadow-sm float-left rounded-0">
+      <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
+      <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
+    </button>
+    <button type="button" class="close" (click)="close.emit()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="card-body shadow-lg">
+
+    <div *ngIf="pattern" class="sequencer-container">
+      <div class="cell"
+           interact-resizable
+           (start)="resizeStart()"
+           (end)="resizeEnd($event)"
+           [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+           parent=".sequencer-container"
+           *ngFor="let cell of cells"
+           [attr.data-id]="cell.id"
+           (click)="onCellClicked(cell)"
+           [draggable]="cell.data"
+           (dragstart)="dragHandler.onDragStart($event,cell)"
+           (dragover)="dragHandler.onDragOver($event)"
+           (dragleave)="dragHandler.onDragLeave($event)"
+           (drag)="dragHandler.onDrag($event)"
+           (dragend)="dragHandler.onDragEnd($event)"
+           (drop)="onDrop($event)"
+           [ngClass]="{
+           'header-cell':cell.row===-1,
+           'row-header-cell':cell.column===-1,
+           'event-cell':cell.data,
+           'tick-active':cell.tick === tick && this.track.transport.isRunning(),
+           'note-cell':cell.row>=0 && cell.column>=0}"
+           [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
+           'height':cell.height+'px','line-height':cell.height+'px'}">
+        <span *ngIf="cell.row===-1" class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
+        <span *ngIf="cell.column===-1" class="">{{cell.note}}</span>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+

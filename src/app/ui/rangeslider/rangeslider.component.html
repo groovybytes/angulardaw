@@ -5,8 +5,9 @@
     [max]="max"
     [value]="value"
     [disabled]="disabled"
+    [ngClass]="{'vertical':orientation==='vertical'}"
     class="slider"
     [(ngModel)]="value"
-    orient="vertical"
+    [attr.orient]="orientation"
     (ngModelChange)="onChange($event)">
 </div>

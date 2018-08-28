@@ -11,6 +11,7 @@ export class RangesliderComponent implements OnInit {
   @Input() min:number=0;
   @Input() max:number=100;
   @Input() disabled:boolean=false;
+  @Input() orientation:string="vertical";
   @Output() valueChanged:EventEmitter<number> = new EventEmitter();
 
   constructor() { }

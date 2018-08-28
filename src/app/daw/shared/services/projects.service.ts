@@ -17,6 +17,7 @@ import {TimeSignature} from "../../model/mip/TimeSignature";
 import {Metronome} from "../../model/daw/components/Metronome";
 import {Pattern} from "../../model/daw/Pattern";
 import {Matrix} from "../../model/daw/matrix/Matrix";
+import * as _ from "lodash";
 
 
 @Injectable()
@@ -49,7 +50,7 @@ export class ProjectsService {
       project.matrix.header.push(new Cell<Track>(-1, i));
     }
     for (let i = 0; i < nRows; i++) {
-     // let scene=new Scene(project.transport,[]);
+      // let scene=new Scene(project.transport,[]);
       let cell = new Cell<any>(i, -1);
       //cell.data=scene;
       project.matrix.rowHeader.push(cell);
@@ -97,6 +98,18 @@ export class ProjectsService {
      this.transportService.params.quantization.next(quantization);*/
   }
 
+  changeTempo(project: Project, bpm: number, oldBpm: number): void {
+
+    let factor = oldBpm / bpm;
+    let cells = _.flatten(project.matrix.body).filter(cell=>cell.data).forEach(cell=>{
+      cell.data.events.forEach(event => event.time = event.time * factor);
+    });
+    /* let cells = project.matrix.body.map(row=>row);*/
+    /*this.project.tracks.forEach(track => track.patterns.forEach(pattern => {
+      pattern.events.forEach(event => event.time = event.time * factor);
+    }));*/
+
+  }
 
   private serializeProject(project: Project): any {
 
@@ -110,14 +123,14 @@ export class ProjectsService {
       barUnit: project.transport.getSignature().barUnit,
       metronomeEnabled: project.metronomeEnabled,
       cells: project.matrix.body,
-      matrixColumns:project.matrix.header.length,
-      matrixRows:project.matrix.rowHeader.length,
+      matrixColumns: project.matrix.header.length,
+      matrixRows: project.matrix.rowHeader.length,
       selectedTrackId: project.selectedTrack ? project.selectedTrack.id : null,
       sequencerOpen: project.sequencerOpen,
       windows: project.windows,
       tracks: project.tracks.map(track => ({
         id: track.id,
-        index:track.index,
+        index: track.index,
         name: track.name,
         pluginId: track.pluginId,
         quantization: track.transport.getQuantization(),
@@ -159,9 +172,9 @@ export class ProjectsService {
         t.loopEnd,
         t.loop);
 
-      let track = new Track(t.id,t.index, this.audioContext,project.transport, new Transport(this.audioContext, transportParams, masterParams));
+      let track = new Track(t.id, t.index, this.audioContext, project.transport, new Transport(this.audioContext, transportParams, masterParams));
       track.name = t.name;
-   /*   track.patterns = t.patterns;*/
+      /*   track.patterns = t.patterns;*/
       track.pluginId = t.pluginId;
       track.events = t.events;
       track.controlParameters.gain.next(t.controlParameters.gain ? t.controlParameters.gain : 100);
@@ -173,7 +186,7 @@ export class ProjectsService {
     });
     project.selectedTrack = json.selectedTrackId ? project.tracks.find(t => t.id === json.selectedTrackId) : null;
 
-    this.deserializeMatrix(project,json);
+    this.deserializeMatrix(project, json);
 
     return new Promise<Project>((resolve, reject) => {
       let promises = [];
@@ -190,11 +203,11 @@ export class ProjectsService {
         .then(() => {
           let metronome = new Metronome(this.audioContext, this.filesService, project, this.config, this.samplesService);
           metronome.load().then(metronome => {
-            project.metronomeTrack = this.trackService.createDefaultTrack(0,project.transport);
-            project.metronomeTrack.plugin=metronome;
+            project.metronomeTrack = this.trackService.createDefaultTrack(0, project.transport);
+            project.metronomeTrack.plugin = metronome;
             let pattern = this.trackService.addPattern(project.metronomeTrack);
             pattern.events = this.trackService.createMetronomeEvents(project.metronomeTrack);
-            this.trackService.resetEventsWithPattern(project.metronomeTrack,pattern);
+            this.trackService.resetEventsWithPattern(project.metronomeTrack, pattern);
             resolve(project);
           })
             .catch(error => reject(error));
@@ -206,14 +219,14 @@ export class ProjectsService {
 
   }
 
-  private deserializeMatrix(project:Project,json:any):void{
+  private deserializeMatrix(project: Project, json: any): void {
     project.matrix = new Matrix();
-    project.matrix.body=json.cells;
+    project.matrix.body = json.cells;
     for (let i = 0; i < json.matrixColumns; i++) {
       let cell = new Cell<Track>(-1, i);
       project.matrix.header.push(cell);
-      let trackIndex = project.tracks.findIndex(track=>track.index === i);
-      if (trackIndex >= 0) cell.data=project.tracks[trackIndex];
+      let trackIndex = project.tracks.findIndex(track => track.index === i);
+      if (trackIndex >= 0) cell.data = project.tracks[trackIndex];
     }
     for (let i = 0; i < json.matrixRows; i++) {
       //let scene=new Scene(project.transport,[]);

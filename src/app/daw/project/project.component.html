@@ -8,6 +8,22 @@
     <button type="button" class="btn btn-secondary" [ngClass]="{'active':project?.metronomeEnabled}"
             (click)="switchMetronome()">Metronome
     </button>
+
+    <!--<rangeslider
+      [min]="30"
+      [max]="240"
+      [orientation]="'horizontal'"
+      [value]="project?.transport.getBpm()"
+      (valueChanged)="changeTempo($event)">
+    </rangeslider>-->
+  </form>
+  <form class="form-inline">
+    <div class="slider-container">
+      <ng5-slider [value]="project?.transport.getBpm()" [options]="slider.options" (userChange)="changeTempo($event)">
+
+      </ng5-slider>
+    </div>
+
   </form>
   <transport class="float-right" [project]="project"></transport>
 </nav>

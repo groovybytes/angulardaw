@@ -3,6 +3,18 @@ import {Project} from "../model/daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
 import {System} from "../../system/System";
+import {Options} from 'ng5-slider';
+
+interface SimpleSliderModel {
+  value: number;
+  options: Options;
+}
+
+interface RangeSliderModel {
+  minValue: number;
+  maxValue: number;
+  options: Options;
+}
 
 
 @Component({
@@ -14,6 +26,15 @@ export class ProjectComponent implements OnInit {
 
   project: Project;
   sideBarOpen: boolean = true;
+  slider: SimpleSliderModel = {
+    value: 50,
+    options: {
+      floor: 40,
+      ceil: 240,
+      vertical: false,
+      showSelectionBar: true
+    }
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -35,31 +56,34 @@ export class ProjectComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.projectsService.get(params.projectId)
-        .then(project=>{
+        .then(project => {
           this.project = project;
-          this.project.ready=true;
-         /* let bpm = this.transportService.params.bpm.getValue();
-          this.transportService.params.bpm.subscribe(newBpm => {
+          this.project.ready = true;
+          let bpm = project.transport.getBpm();
+         /* project.transport.masterParams.bpm.subscribe(newBpm => {
             if (newBpm !== bpm) {
-              let factor = bpm / newBpm;
+              this.projectsService.changeTempo(this.project, newBpm,bpm);
               bpm = newBpm;
-              /!*this.project.model.tracks.forEach(track => track.patterns.forEach(pattern => {
-                pattern.events.forEach(event => event.time = event.time * factor);
-              }));*!/
             }
           })*/
         })
-        .catch( error => this.system.error(error));
+        .catch(error => this.system.error(error));
     });
   }
 
 
-  switchMetronome():void{
-    this.project.metronomeEnabled=! this.project.metronomeEnabled;
+  switchMetronome(): void {
+    this.project.metronomeEnabled = !this.project.metronomeEnabled;
   }
 
-  closeSequencer():void{
-    this.project.sequencerOpen=false;
+  changeTempo(bpm: any): void {
+    this.project.setBpm(bpm.value);
+   /* this.projectsService.changeTempo(this.project,bpm.value)
+    this.project.setBpm(bpm.value);*/
+  }
+
+  closeSequencer(): void {
+    this.project.sequencerOpen = false;
   }
 
   save(): void {

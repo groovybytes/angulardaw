@@ -1,0 +1,129 @@
+@import "../../../variables";
+
+.card {
+  z-index: 2000;
+  position: absolute;
+  left: 100px;
+  top: 100px;
+  resize: both;
+  width: $sequencer-width;
+  height: $sequencer-height;
+}
+
+.card-body {
+  overflow: auto;
+}
+
+.toggle-button {
+  color: $color7;
+  height: 100%;
+}
+
+.scene-toggle-btn {
+  color: $color7;
+  height: 100%;
+}
+
+:host /deep/ {
+
+  span{
+    color:white;
+  }
+  .position-indicator {
+    stroke: red;
+    stroke-width: 5px;
+  }
+
+  .sequencer-container {
+    position: relative;
+    margin-left: 100px;
+  }
+  .cell {
+    position: absolute;
+    border: 1px solid $color2;
+    text-align: center;
+    vertical-align: middle;
+
+  }
+  .header-cell {
+    background-color: $color1;
+    &.tick-active{
+      background-color: lighten($color1, 5%);
+    }
+  }
+  .row-header-cell {
+    background-color: $color1;
+  }
+  .note-cell{
+    background-color: $color11;
+    &.tick-active{
+      background-color: lighten($color11, 5%);
+    }
+    &.drag-active{
+      background-color: darken($color11, 10%);
+    }
+    &.drag-target{
+      background-color: $color8;
+    }
+
+  }
+  .event-cell{
+    background-color: $color9;
+    /*resize: horizontal;
+    overflow: auto;*/
+    &.tick-active{
+      background-color: lighten($color9, 5%);
+    }
+
+  }
+  .fill-rect {
+    stroke: $color2;
+  }
+
+  .header-text {
+    fill: white;
+  }
+
+  .header {
+    .fill-rect {
+      fill: $color1 !important;
+    }
+  }
+
+  .note-cell {
+
+    &.active {
+      .fill-rect {
+        fill: $color9;
+      }
+      cursor: pointer;
+    }
+    &.active.tick-active {
+      .fill-rect {
+        fill: lighten($color9, 5%);
+      }
+    }
+
+    &.drag-over {
+      .fill-rect {
+        fill: green;
+      }
+    }
+
+  }
+
+  .note-cell {
+    .fill-rect {
+      fill: $color11;
+    }
+
+  }
+
+  .tick-active {
+    .fill-rect {
+      fill: lighten($color11, 5%);
+    }
+  }
+}
+
+

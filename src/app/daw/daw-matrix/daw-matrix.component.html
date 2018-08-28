@@ -1,0 +1,60 @@
+<div class="matrix-container">
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm matrix-table">
+      <thead>
+      <th></th>
+      <th *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">{{cell.data?.name}}</th>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of project.matrix.body;let i = index">
+        <td>
+          <button type="button"
+                  (click)="onRowHeaderClicked(project.matrix.rowHeader[i])"
+                  class="btn btn-primary scene-toggle-btn btn-block shadow-sm rounded-0">
+            <i class="fas fa-play fa-2x" *ngIf="!project.matrix.rowHeader[i].data" ></i>
+            <i class="fas fa-stop fa-2x" *ngIf="project.matrix.rowHeader[i].data===true"></i>
+          </button>
+        </td>
+        <td
+          draggable="true"
+          *ngFor="let cell of row"
+          class="draggable"
+          (dblclick)="bodyCellDblClicked(cell)"
+          [attr.id]="cell.id"
+          (dragstart)="dragHandler.onDragStart($event,cell)"
+          (dragover)="dragHandler.onDragOver($event)"
+          (dragleave)="dragHandler.onDragLeave($event)"
+          (drag)="dragHandler.onDrag($event)"
+          (dragend)="dragHandler.onDragEnd($event)"
+          (drop)="onDrop($event)">
+          <div class="cell-container" *ngIf="cell.data" (click)="onCellContainerClicked(cell)">
+            <button type="button"
+                    (click)="onCellBtnClicked(cell,$event)"
+                    class="btn btn-primary toggle-button shadow-sm float-left rounded-0">
+              <i class="fas fa-play-circle fa-2x" *ngIf="!patternIsRunning(cell.trackId,cell.data)"></i>
+              <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="patternIsRunning(cell.trackId,cell.data)"></i>
+            </button>
+          </div>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive console-container fixed-bottom position-sticky">
+    <table class="table table-bordered table-dark table-sm console-table">
+      <tbody>
+      <tr>
+        <td></td>
+        <td *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
+          <track-controls [project]="project" [track]="project.tracks[i]"></track-controls>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+

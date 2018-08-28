@@ -1,0 +1,30 @@
+@import "../../../variables";
+
+.mute-btn{
+  background-color:$red ;
+  &.active{
+    background-color:darken($red,10%);
+  }
+}
+.slider-container{
+  height:$console-height*0.8;
+}
+
+:host /deep/{
+  .ng5-slider {
+
+    .ng5-slider-pointer{
+      background-color: $color2;
+    }
+
+  }
+}
+
+.solo-btn{
+  background-color:$blue ;
+  &.active{
+    background-color:darken($blue,10%);
+  }
+}
+
+

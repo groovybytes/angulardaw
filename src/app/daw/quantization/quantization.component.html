@@ -1,0 +1,11 @@
+<button type="button" class="btn btn-secondary" [ngClass]="{'active':params?.quantization.getValue()===0.25}"
+        (click)="setQuantization(0.25)">1/4</button>
+<button type="button" class="btn btn-secondary"
+        [ngClass]="{'active':params?.quantization.getValue()===0.125}"
+        (click)="setQuantization(0.125)">1/8</button>
+<button type="button" class="btn btn-secondary"
+        [ngClass]="{'active':params?.quantization.getValue()===0.0625}"
+        (click)="setQuantization(0.0625)">1/16</button>
+<button type="button" class="btn btn-secondary"
+        [ngClass]="{'active':params?.quantization.getValue()===0.083333333333333}"
+        (click)="setQuantization(0.083333333333333)">8th Trip</button>

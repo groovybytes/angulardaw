@@ -10,6 +10,7 @@ import {NoteLength} from "../../mip/NoteLength";
 import {MasterTransportParams} from "./MasterTransportParams";
 import {TransportParams} from "./TransportParams";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
+import {logging} from "selenium-webdriver";
 
 
 export class Transport implements TransportInterface,TransportReader,TransportEvents {
@@ -63,6 +64,7 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
   }
 
   private getBeatTime(): number {
+
     return MusicMath.getBeatTime(this.bpm, this.params.quantization.getValue());
   }
 
@@ -96,7 +98,7 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
 
       }
       else this.timeSubject.next(currentTime);
-    }, 1)
+    }, 5)
 
   }
 

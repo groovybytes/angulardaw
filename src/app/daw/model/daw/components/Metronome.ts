@@ -7,6 +7,7 @@ import {PluginId} from "../plugins/PluginId";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
+import {ADSREnvelope} from "../../mip/ADSREnvelope";
 
 
 export class Metronome implements WstPlugin {
@@ -76,7 +77,7 @@ export class Metronome implements WstPlugin {
 
   feed(event: NoteTrigger, offset: number): any {
     if (this.project.metronomeEnabled) {
-      if (event.note === "A0") this.accentSample.trigger(offset);
+      if (event.note === "A0") this.accentSample.triggerWith(ADSREnvelope.default(),offset,0,event.length);//trigger(offset);
       else this.otherSample.trigger(offset);
     }
 

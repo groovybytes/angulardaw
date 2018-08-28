@@ -9,6 +9,7 @@ import {TestsComponent} from "./tests/tests.component";
 import {BootstrapModalDirective} from "./bootstrap-modal.directive";
 import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
 import {InteractDirective} from "./directives/interact.directive";
+import {ResizableDirective} from "./directives/resizable.directive";
 
 
 
@@ -19,7 +20,8 @@ import {InteractDirective} from "./directives/interact.directive";
     ToolbarComponent,
     TestsComponent,
     BootstrapModalDirective,
-    InteractDirective
+    InteractDirective,
+    ResizableDirective
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import {InteractDirective} from "./directives/interact.directive";
     PressButtonComponent,
     ToolbarComponent,
     BootstrapModalDirective,
-    InteractDirective
+    InteractDirective,
+    ResizableDirective
 
   ]
 })

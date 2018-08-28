@@ -52,6 +52,7 @@ export class Project {
   }
 
   setBpm(bpm: number): void {
+
     this.bpmSubject.next(bpm);
   }
 
