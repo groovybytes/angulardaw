@@ -9,7 +9,7 @@ import {Transport} from "../transport/Transport";
 
 export class PerformanceStreamer {
   private queue: Array<NoteTrigger> = [];
-  private lookAhead: number = 1;//seconds
+  private lookAhead: number = 0.5;//seconds
   private subscriptions: Array<Subscription> = [];
   trigger: Observable<{ event: NoteTrigger, offset: number }>;
   private triggerSubject: Subject<{ event: NoteTrigger, offset: number }> = new Subject();
@@ -27,16 +27,19 @@ export class PerformanceStreamer {
 
   private onTransportTime(transportTime: number): void {
 
+    let timeFactor = 120/this.transport.getBpm();
     if (this.timeStamp && this.timeStamp>transportTime){
       this.initLoopQueue();
     }
     this.timeStamp=transportTime;
-    if (this.eventPool.length > 0 && this.eventPool[0].time / 1000 <= transportTime) {
+    if (this.eventPool.length > 0 && this.eventPool[0].time*timeFactor / 1000 <= transportTime) {
       let nextEvents = _.remove(this.eventPool, ev => {
-        return ev.time / 1000 <= (transportTime + this.lookAhead)
+        return ev.time*timeFactor / 1000 <= (transportTime + this.lookAhead)
       });
       nextEvents.forEach(event => {
-        this.triggerSubject.next({event: event, offset: event.time / 1000 - transportTime});
+        let eventClone = _.clone(event);
+        eventClone.time = eventClone.time*timeFactor;
+        this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - transportTime});
       });
     }
   }
@@ -50,8 +53,8 @@ export class PerformanceStreamer {
   private initLoopQueue(): void {
     let startTime = this.transport.getStartTime();
     let endTime = this.transport.getEndTime();
-
-    this.eventPool = _.clone(this.queue.filter(ev => ev.time >= startTime && ev.time <= endTime));
+    let timeFactor = 120/this.transport.getBpm();
+    this.eventPool = _.clone(this.queue.filter(ev => ev.time*timeFactor >= startTime && ev.time*timeFactor <= endTime));
 
   }
 
