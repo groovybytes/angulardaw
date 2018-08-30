@@ -10,14 +10,12 @@ import { SidebarModule } from 'ng-sidebar';
 import { PluginListComponent } from './plugin-list/plugin-list.component';
 import { EffectsPanelComponent } from './effects-panel/effects-panel.component';
 import {TransportComponent} from "./transport/transport.component";
-import { SequencerComponent } from './sequencer/sequencer.component';
 import { TrackControlsComponent } from './track-controls/track-controls.component';
 import {DawMatrixComponent} from "./daw-matrix/daw-matrix.component";
 import { ProjectObserverComponent } from './project-observer/project-observer.component';
 import { QuantizationComponent } from './quantization/quantization.component';
 import { Sequencer2Component } from './sequencer2/sequencer2.component';
 import {SequencerService2} from "./sequencer2/sequencer2.service";
-import {SequencerService} from "./sequencer/sequencer.service";
 import { Ng5SliderModule } from 'ng5-slider';
 
 let audioContext = new AudioContext();
@@ -30,7 +28,6 @@ let audioContext = new AudioContext();
     PluginListComponent,
     EffectsPanelComponent,
     TransportComponent,
-    SequencerComponent,
     TrackControlsComponent,
     DawMatrixComponent,
     ProjectObserverComponent,
@@ -48,8 +45,7 @@ let audioContext = new AudioContext();
   providers: [
     {provide: "lodash", useValue: window["_"]},
     {provide: "AudioContext", useValue: audioContext},
-    SequencerService2,
-    SequencerService
+    SequencerService2
 
   ],
   exports: []

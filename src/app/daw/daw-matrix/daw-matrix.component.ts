@@ -15,7 +15,8 @@ import {DawMatrixService} from "./daw-matrix.service";
 import {Track} from "../model/daw/Track";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Pattern} from "../model/daw/Pattern";
-import {ClipsService} from "../shared/services/clips.service";
+import {TransportSettings} from "../model/daw/transport/TransportSettings";
+import {ProjectsService} from "../shared/services/projects.service";
 
 
 @Component({
@@ -31,7 +32,9 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   dragHandler: DragHandler = new DragHandler();
 
-  constructor(private el: ElementRef, private matrixService: DawMatrixService,  private clipsService:ClipsService) {
+  constructor(private el: ElementRef,
+              private projectsService:ProjectsService,
+              private matrixService: DawMatrixService) {
   }
 
 
@@ -44,28 +47,24 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  onCellBtnClicked(cell: Cell<Pattern>,event:MouseEvent): void {
-    let track = this.project.getTrack(cell.trackId);
-    this.clipsService.toggleClip(cell.data,track);
+  onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
+    this.projectsService.toggleChannel(this.project, cell.data.id, cell.data.transportContext.settings);
   }
+
   onCellContainerClicked(cell: Cell<Pattern>): void {
     this.matrixService.onCellContainerClicked(cell, this.project);
   }
 
-  onRowHeaderClicked(cell:Cell<any>):void{
-    let track = this.project.getTrack(cell.trackId);
-    this.clipsService.toggleScene(cell.row,this.project);
+  onRowHeaderClicked(cell: Cell<string>): void {
+    this.projectsService.toggleChannel(this.project, cell.data);
   }
+
   bodyCellDblClicked(cell: Cell<Pattern>): void {
     this.matrixService.bodyCellDblClicked(cell, this.project);
   }
 
   getTrack(trackId: string): Track {
     return this.project.tracks.find(track => track.id === trackId);
-  }
-
-  patternIsRunning(trackId: string,pattern:Pattern): boolean{
-    return this.clipsService.clipIsRunning(trackId,pattern,this.project);
   }
 
   onDrop(event: DragEvent): void {

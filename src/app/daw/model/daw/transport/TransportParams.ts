@@ -1,3 +1,4 @@
+/*
 import {BehaviorSubject} from "rxjs";
 import {NoteLength} from "../../mip/NoteLength";
 
@@ -20,3 +21,4 @@ export class TransportParams {
   metronomeEnabled: BehaviorSubject<boolean>;
 
 }
+*/

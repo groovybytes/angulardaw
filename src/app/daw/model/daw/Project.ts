@@ -1,68 +1,87 @@
 import {Track} from './Track';
 import {Matrix} from "./matrix/Matrix";
 import {WindowSpecs} from "./visual/WindowSpecs";
-import {Transport} from "./transport/Transport";
-import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {TimeSignature} from "../mip/TimeSignature";
-import {MasterTransportParams} from "./transport/MasterTransportParams";
-import {TransportParams} from "./transport/TransportParams";
 import {EventEmitter} from "@angular/core";
+import {GlobalTransportSettings} from "./transport/GlobalTransportSettings";
+import {Pattern} from "./Pattern";
+import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
+import {Transport} from "./transport/Transport";
+import {TransportSettings} from "./transport/TransportSettings";
+import {Subscription} from "rxjs/internal/Subscription";
+import {TransportContext} from "./transport/TransportContext";
+import {WstPlugin} from "./WstPlugin";
 
 
 export class Project {
-  id: any;
+  id: string;
   name: string = "default";
-  /* bpm: number=120;
-   quantization: number=NoteLength.Quarter;
-   beatUnit:number=4;
-   barUnit:number=4;*/
   metronomeEnabled: boolean = true;
+  selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
+  patterns: Array<Pattern> = [];
   matrix: Matrix = new Matrix();
-  selectedTrack: Track;
+  channel: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   sequencerOpen: boolean = false;
   readonly tracks: Array<Track> = [];
+  readonly systemTracks: Array<Track> = [];
   windows: Array<WindowSpecs> = [];
-  metronomeTrack:Track;
-  readonly transport: Transport;
-  ready:boolean=false;
+  metronomePattern: Pattern;
+  metronomePlugin: WstPlugin;
+  ready: boolean = false;
+  transportSettings: TransportSettings;
+  private transport: Transport;
+  trackAdded: EventEmitter<Track> = new EventEmitter();
+  trackRemoved: EventEmitter<Track> = new EventEmitter();
 
-  private bpmSubject: BehaviorSubject<number>;
-  private signatureSubject: BehaviorSubject<TimeSignature>;
-
-  trackAdded:EventEmitter<Track>=new EventEmitter();
-  trackRemoved:EventEmitter<Track>=new EventEmitter();
+  private subscriptions: Array<Subscription> = [];
 
   constructor(
-    private audioContext: AudioContext,
-    private transportParams: TransportParams,
-    private bpm: number,
-    private signature: TimeSignature) {
+    private audioContext: AudioContext, transportSettings: TransportSettings) {
 
-    this.bpmSubject = new BehaviorSubject<number>(bpm);
-    this.signatureSubject = new BehaviorSubject<TimeSignature>(signature);
-    let masterParams = new MasterTransportParams();
-    masterParams.signature = this.signatureSubject.asObservable();
-    masterParams.bpm = this.bpmSubject.asObservable();
+    this.transportSettings = transportSettings;
+    this.transport = new Transport(this.audioContext, transportSettings);
 
-    this.transport = new Transport(audioContext, transportParams,masterParams);
+    this.subscriptions.push(this.channel.subscribe(channel => this.transport.channel = channel));
   }
 
   getTrack(id: string): Track {
     return this.tracks.find(track => track.id === id);
   }
 
-  setBpm(bpm: number): void {
-
-    this.bpmSubject.next(bpm);
+  isRunning(channels: Array<string>): boolean {
+    return channels.indexOf(this.transport.channel) >= 0 && this.transport.isRunning();
   }
 
-  setSignature(signature: TimeSignature): void {
-    this.signatureSubject.next(signature);
+  createTransportContext():TransportContext{
+
+    let transportSettings = new TransportSettings();
+    transportSettings.loop = true;
+    transportSettings.loopStart = 0;
+    transportSettings.loopEnd = 8;
+    transportSettings.global = this.transportSettings.global;
+    let transportContext = new TransportContext();
+    transportContext.settings = transportSettings;
+    transportContext.time = this.transport.time;
+    transportContext.transportEnd = this.transport.transportEnd;
+    transportContext.transportStart = this.transport.transportStart;
+    transportContext.beforeStart = this.transport.beforeStart;
+
+    return transportContext;
+  }
+
+  start(channel: string, settings: TransportSettings): void {
+    this.transport.settings = settings;
+    this.transport.channel = channel;
+    this.transport.start();
+  }
+
+  stop(): void {
+    this.transport.stop();
   }
 
   destroy(): void {
     this.tracks.forEach(track => track.destroy());
-    this.tracks.length=0;
+    this.tracks.length = 0;
   }
 
 

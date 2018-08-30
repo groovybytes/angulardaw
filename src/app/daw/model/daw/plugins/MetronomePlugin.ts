@@ -3,14 +3,14 @@ import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {Subscription} from "rxjs/internal/Subscription";
 import {WstPlugin} from "../WstPlugin";
-import {PluginId} from "../plugins/PluginId";
+import {PluginId} from "./PluginId";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
 
 
-export class Metronome implements WstPlugin {
+export class MetronomePlugin implements WstPlugin {
 
   private lastBeat: number = -1;
   private accentSample: Sample;
@@ -39,7 +39,7 @@ export class Metronome implements WstPlugin {
 
      track.plugin=this;*/
 
-    /*   this.streamer = new PerformanceStreamer([], this.transportService.getEvents(), this.transportService.getInfo());
+    /*   this.streamer = new NoteStream([], this.transportService.getEvents(), this.transportService.getInfo());
        this.subscriptions.push(this.streamer.trigger.subscribe(event => this.onNextEvent(event.offset, event.event)));
 
        this.transportSubscription = transportService.tickTock.subscribe(tick => {

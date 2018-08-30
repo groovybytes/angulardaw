@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {TransportParams} from "../model/daw/transport/TransportParams";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {NoteLength} from "../model/mip/NoteLength";
 
 @Component({
   selector: 'quantization',
@@ -8,14 +8,14 @@ import {TransportParams} from "../model/daw/transport/TransportParams";
 })
 export class QuantizationComponent implements OnInit {
 
-  @Input() params:TransportParams;
+  @Input() quantization: NoteLength;
+  @Output() quantizationChanged: EventEmitter<NoteLength> = new EventEmitter<NoteLength>();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
-  setQuantization(value:number):void{
-    this.params.quantization.next(value);
-  }
+
 }

@@ -35,14 +35,14 @@ export class ProjectObserverComponent implements DoCheck {
         });
         this.trackSoloSubscriptions.push({id: track.id, subscription: subscription});
 
-        subscription = track.transport.beforeStart.subscribe(() => {
+        /*subscription = track.transport.beforeStart.subscribe(() => {
           this.project.metronomeTrack.transport.params = track.transport.params;
           this.project.metronomeTrack.transport.start();
         });
         this.trackTransportSubscriptions.push({id: track.id, subscription: subscription})
         subscription = track.transport.transportEnd.subscribe(() => {
           this.project.metronomeTrack.transport.stop();
-        });
+        });*/
         this.trackTransportSubscriptions.push({id: track.id, subscription: subscription})
 
         this.project.trackAdded.emit(track);

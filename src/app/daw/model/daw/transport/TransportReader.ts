@@ -1,3 +1,4 @@
+/*
 import {TimeSignature} from "../../mip/TimeSignature";
 import {NoteLength} from "../../mip/NoteLength";
 
@@ -14,3 +15,4 @@ export interface TransportReader{
   getEndTime():number;
   getStartTime():number;
 }
+*/

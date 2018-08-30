@@ -1,103 +1,87 @@
-import {Observable, Subject} from "rxjs";
+import {Observable} from "rxjs";
 import {EventEmitter} from "@angular/core";
 import {TransportPosition} from "./TransportPosition";
-import {TransportInterface} from "./TransportInterface";
 import {MusicMath} from "../../utils/MusicMath";
 import {TimeSignature} from "../../mip/TimeSignature";
-import {TransportReader} from "./TransportReader";
-import {TransportEvents} from "./TransportEvents";
-import {NoteLength} from "../../mip/NoteLength";
-import {MasterTransportParams} from "./MasterTransportParams";
-import {TransportParams} from "./TransportParams";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
-import {logging} from "selenium-webdriver";
+import {TransportSettings} from "./TransportSettings";
+import {TransportEvent} from "./TransportEvent";
 
 
-export class Transport implements TransportInterface,TransportReader,TransportEvents {
+export class Transport {
 
-  tickTock: Observable<number>;
-  beat: Observable<number>;
-  time: Observable<number>;
-  transportEnd: EventEmitter<void> = new EventEmitter<void>();
-  transportStart: EventEmitter<void> = new EventEmitter<void>();
-  beforeStart: EventEmitter<void> = new EventEmitter<void>();
-  timeReset: EventEmitter<number> = new EventEmitter<number>();
-  params:TransportParams;
-  masterParams:MasterTransportParams;
-
+  /* tickTock: Observable<number>;
+   beat: Observable<number>;*/
+  channel: string;
+  settings: TransportSettings;
+  time: Observable<TransportEvent<number>>;
+  transportEnd: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
+  transportStart: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
+  beforeStart: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
+  timeReset: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
   private position: TransportPosition;
   private intervalHandle: any;
   private run: boolean = false;
-  private tickSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private beatSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private timeSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private bpm: number;
-  private signature: TimeSignature;
+  /*private tickSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private beatSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);*/
+  private timeSubject: BehaviorSubject<TransportEvent<number>>
+    = new BehaviorSubject<TransportEvent<number>>(null);
 
 
   constructor(
-    private audioContext: AudioContext
-    ,transportParams:TransportParams,masterParams:MasterTransportParams) {
+    private audioContext: AudioContext, settings: TransportSettings) {
 
-    this.params=transportParams;
-    this.masterParams=masterParams;
-    this.tickTock = this.tickSubject.asObservable();
-    this.beat = this.beatSubject.asObservable();
+    /*  this.tickTock = this.tickSubject.asObservable();
+      this.beat = this.beatSubject.asObservable();*/
     this.time = this.timeSubject.asObservable();
+    this.settings = settings;
     this.position = new TransportPosition();
     this.position.beat = 0;
     this.position.bar = 0;
     this.position.time = 0;
     this.position.tick = 0;
-    masterParams.bpm.subscribe(bpm => this.bpm = bpm);
-    masterParams.signature.subscribe(signature => this.signature = signature);
-
 
   }
 
-  /* getPositionInfo(): TransportPosition {
-     return this.position;
-   }*/
 
-  private getTickTime(): number {
-    return MusicMath.getTickTime(this.bpm, this.params.quantization.getValue());
-  }
 
   private getBeatTime(): number {
 
-    return MusicMath.getBeatTime(this.bpm, this.params.quantization.getValue());
+    return MusicMath.getBeatTime(this.settings.global.bpm);
   }
 
-  getStartTime(): number {
-    return this.params.loopStart.getValue() * this.getBeatTime();
+  private getStartTime(): number {
+    return MusicMath.getStartTime(this.settings.loopStart, this.settings.global.bpm);
   }
 
-  getEndTime(): number {
-    return this.params.loopEnd.getValue() * this.getBeatTime();
+  private getEndTime(): number {
+    return this.settings.loopEnd * this.getBeatTime();
   }
 
   start(): void {
-
+    console.log("transport starting");
     if (this.isRunning()) this.stop();
     let start = this.audioContext.currentTime;
-    this.beforeStart.emit();
+    this.beforeStart.emit(new TransportEvent<void>(this.channel));
     this.run = true;
-    this.timeReset.emit();
+    this.timeReset.emit(new TransportEvent<void>(this.channel));
 
     this.intervalHandle = setInterval(() => {
       let currentTime = this.audioContext.currentTime - start;
       if (currentTime > this.getEndTime() / 1000) {
 
-        if (this.params.loop.getValue()) {
+        if (this.settings.loop) {
           start = this.audioContext.currentTime;
         }
         else {
           this.run = false;
-          this.transportEnd.emit();
+          this.transportEnd.emit(new TransportEvent<void>(this.channel));
         }
 
       }
-      else this.timeSubject.next(currentTime);
+      else {
+        this.timeSubject.next( new TransportEvent<number>(this.channel,currentTime));
+      }
     }, 5)
 
   }
@@ -116,49 +100,10 @@ export class Transport implements TransportInterface,TransportReader,TransportEv
 
     this.run = false;
     if (this.intervalHandle) clearInterval(this.intervalHandle);
-    this.transportEnd.emit();
+    this.transportEnd.emit(new TransportEvent<void>(this.channel));
   }
 
   isRunning(): boolean {
     return this.run;
   }
-
-  getBeat(): number {
-    return this.beatSubject.getValue();
-  }
-
-  getBpm(): number {
-    return this.bpm;
-  }
-
-  getLoopEnd(): number {
-    return this.params.loopEnd.getValue();
-  }
-
-  getLoopStart(): number {
-    return this.params.loopStart.getValue();
-  }
-
-  getQuantization(): NoteLength {
-    return this.params.quantization.getValue();
-  }
-
-  getSignature(): TimeSignature {
-    return this.signature;
-  }
-
-  getTick(): number {
-    return this.tickSubject.getValue();
-  }
-
-  getTime(): number {
-    return this.timeSubject.getValue();
-  }
-
-  isLoop(): boolean {
-    return this.params.loop.getValue();
-  }
-
-
-
 }

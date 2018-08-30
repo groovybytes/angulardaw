@@ -10,13 +10,16 @@ import {PluginsService} from "../shared/services/plugins.service";
 import {System} from "../../system/System";
 import {Pattern} from "../model/daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
+import {PatternsService} from "../shared/services/patterns.service";
+import {NoteLength} from "../model/mip/NoteLength";
+import {TransportSettings} from "../model/daw/transport/TransportSettings";
 
 @Injectable()
 export class DawMatrixService {
 
   constructor(private trackService: TracksService,
+              private patternService: PatternsService,
               private projectsService: ProjectsService,
-
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -48,29 +51,26 @@ export class DawMatrixService {
 
   bodyCellDblClicked(cell: Cell<Pattern>, project: Project): void {
     if (cell.trackId) {
-      let track = project.tracks.find(track => track.id === cell.trackId);
-      project.selectedTrack = track;
+      //let track = project.tracks.find(track => track.id === cell.trackId);
+      let rowHeaderCell = project.matrix.rowHeader.find(header => header.row === cell.row);
       if (!cell.data) {
-        let pattern = this.trackService.addPattern(track);
-        cell.data = pattern;
-        /*  let rowCell = project.matrix.rowHeader.find(header=>header.row===cell.row);
-          rowCell.data.patterns.push({track,pattern});*/
+        let pattern = this.patternService.addPattern(project, cell.trackId, NoteLength.Quarter, rowHeaderCell.data, 8);
         cell.data = pattern;
       }
-
-      track.focusedPattern = cell.data;
-      this.trackService.resetEventsWithPattern(track, track.focusedPattern);
+      project.selectedPattern.next(cell.data);
       project.sequencerOpen = true;
     }
   }
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
-    let track = project.getTrack(cell.trackId);
-    track.focusedPattern = cell.data;
-    project.selectedTrack = track;
+    /*  let track = project.getTrack(cell.trackId);
+      track.focusedPattern = cell.data;
+      project.selectedTrack = track;
 
-    project.sequencerOpen = true;
+      project.sequencerOpen = true;*/
   }
+
+
 
   /*startScene(cell: Cell<any>, project: Project): void {
     if (cell.data === true) {
@@ -128,9 +128,8 @@ export class DawMatrixService {
       this.pluginService.loadPlugin(pluginId)
         .then(plugin => {
           track.plugin = plugin;
-          track.pluginId = plugin.getId();
-          track.name=plugin.getId();
-          project.selectedTrack = track;
+          track.name = plugin.getId();
+
 
           resolve();
         })

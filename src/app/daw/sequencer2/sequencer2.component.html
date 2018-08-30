@@ -5,7 +5,8 @@
   #card>
   <!-- [ngStyle]="{'left':window.x+'px','top':window.y+'px','width':window.width+'px','height':window.height+'px'}"-->
   <div class="card-header drag-handle">
-    <quantization [params]="track.transport.params"></quantization>
+    <quantization [quantization]="pattern.quantization.getValue()"
+                  (quantizationChanged)="changeQuantization($event)"></quantization>
     <button type="button"
             (click)="toggleClip()"
             class="btn btn-primary toggle-button shadow-sm float-left rounded-0">
@@ -23,9 +24,9 @@
            interact-resizable
            (start)="resizeStart()"
            (end)="resizeEnd($event)"
-           [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
            parent=".sequencer-container"
            *ngFor="let cell of cells"
+           [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
            [attr.data-id]="cell.id"
            (click)="onCellClicked(cell)"
            [draggable]="cell.data"
@@ -39,7 +40,7 @@
            'header-cell':cell.row===-1,
            'row-header-cell':cell.column===-1,
            'event-cell':cell.data,
-           'tick-active':cell.tick === tick && this.track.transport.isRunning(),
+           'tick-active':cell.tick === tick &&clipIsRunning(),
            'note-cell':cell.row>=0 && cell.column>=0}"
            [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
            'height':cell.height+'px','line-height':cell.height+'px'}">

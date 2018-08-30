@@ -11,8 +11,8 @@
           <button type="button"
                   (click)="onRowHeaderClicked(project.matrix.rowHeader[i])"
                   class="btn btn-primary scene-toggle-btn btn-block shadow-sm rounded-0">
-            <i class="fas fa-play fa-2x" *ngIf="!project.matrix.rowHeader[i].data" ></i>
-            <i class="fas fa-stop fa-2x" *ngIf="project.matrix.rowHeader[i].data===true"></i>
+            <i class="fas fa-play fa-2x" *ngIf="!project.isRunning([project.matrix.rowHeader[i].data])" ></i>
+            <i class="fas fa-stop fa-2x" *ngIf="project.isRunning([project.matrix.rowHeader[i].data])"></i>
           </button>
         </td>
         <td
@@ -31,8 +31,8 @@
             <button type="button"
                     (click)="onCellBtnClicked(cell,$event)"
                     class="btn btn-primary toggle-button shadow-sm float-left rounded-0">
-              <i class="fas fa-play-circle fa-2x" *ngIf="!patternIsRunning(cell.trackId,cell.data)"></i>
-              <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="patternIsRunning(cell.trackId,cell.data)"></i>
+              <i class="fas fa-play-circle fa-2x" *ngIf="!project.isRunning([cell.data.id,cell.data.sceneId])"></i>
+              <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunning([cell.data.id,cell.data.sceneId])"></i>
             </button>
           </div>
 

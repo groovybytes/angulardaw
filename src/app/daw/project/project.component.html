@@ -19,7 +19,7 @@
   </form>
   <form class="form-inline">
     <div class="slider-container">
-      <ng5-slider [value]="project?.transport.getBpm()" [options]="slider.options" (userChange)="changeTempo($event)">
+      <ng5-slider [value]="project?.transportSettings.global.bpm" [options]="slider.options" (userChange)="changeTempo($event)">
 
       </ng5-slider>
     </div>
@@ -40,8 +40,7 @@
     </div>
     <sequencer2 *ngIf="project?.ready && project?.sequencerOpen"
                [project]="project"
-               [track]="project?.selectedTrack"
-               [pattern]="project?.selectedTrack?.focusedPattern"
+               [pattern]="project?.selectedPattern | async"
                [window]="project?.windows[0]"
                (close)="closeSequencer()"></sequencer2>
   </div>
@@ -50,7 +49,7 @@
 <project-observer *ngIf="project?.ready" [project]="project" [tracks]="project?.tracks"></project-observer>
 
 <nav class="navbar navbar-dark bg-light footer fixed-bottom">
-  <effects-panel [track]="project?.selectedTrack"></effects-panel>
+  <!--<effects-panel [track]="project?.selectedTrack"></effects-panel>-->
 </nav>
 
 <!--

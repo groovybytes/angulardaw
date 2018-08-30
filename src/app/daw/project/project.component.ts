@@ -53,19 +53,12 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.route.params.subscribe(params => {
+
       this.projectsService.get(params.projectId)
         .then(project => {
           this.project = project;
           this.project.ready = true;
-          let bpm = project.transport.getBpm();
-         /* project.transport.masterParams.bpm.subscribe(newBpm => {
-            if (newBpm !== bpm) {
-              this.projectsService.changeTempo(this.project, newBpm,bpm);
-              bpm = newBpm;
-            }
-          })*/
         })
         .catch(error => this.system.error(error));
     });
@@ -77,9 +70,7 @@ export class ProjectComponent implements OnInit {
   }
 
   changeTempo(bpm: any): void {
-    this.project.setBpm(bpm.value);
-   /* this.projectsService.changeTempo(this.project,bpm.value)
-    this.project.setBpm(bpm.value);*/
+    this.project.transportSettings.global.bpm = bpm.value;
   }
 
   closeSequencer(): void {

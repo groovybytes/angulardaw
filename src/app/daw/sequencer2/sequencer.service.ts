@@ -1,3 +1,4 @@
+/*
 import {ElementRef, Injectable} from "@angular/core";
 import {MusicMath} from "../model/utils/MusicMath";
 import {Loudness} from "../model/mip/Loudness";
@@ -9,8 +10,9 @@ import {TracksService} from "../shared/services/tracks.service";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
-import {TransportReader} from "../model/daw/transport/TransportReader";
+
 import * as d3 from "d3";
+import {TimeSignature} from "../model/mip/TimeSignature";
 
 @Injectable()
 export class SequencerService {
@@ -20,7 +22,7 @@ export class SequencerService {
 
   }
 
-  /*createHeaderCells(transportParams: TransportParams, pattern: Pattern): Array<HeaderCell> {
+  /!*createHeaderCells(transportParams: TransportParams, pattern: Pattern): Array<HeaderCell> {
     let result = [];
     let beatTicks = MusicMath.getBeatTicks(transportParams.quantization.getValue());
     let nColumns = beatTicks * pattern.length;
@@ -36,20 +38,21 @@ export class SequencerService {
     }
 
     return result;
-  }*/
+  }*!/
 
-  createCells(pattern: Pattern, transport: TransportReader, specs: SequencerD3Specs): Array<NoteCell> {
+  createCells(pattern: Pattern, specs: SequencerD3Specs): Array<NoteCell> {
     let model: Array<NoteCell> = [];
-    let nColumns = MusicMath.getBeatTicks(transport.getQuantization()) * pattern.length;
+    let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
 
     specs.rows = pattern.notes.length;
     specs.columns = nColumns;
-    let tickTime = MusicMath.getTickTime(transport.getBpm(),transport.getQuantization());
+    let tickTime = MusicMath.getTickTime(pattern.transportContext.global.bpm,pattern.quantization.getValue());
 
     for (let j = 0; j < nColumns; j++) {
       let cell = new NoteCell(j * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
       cell.header = true;
-      cell.beat = MusicMath.getBeatNumber(j, transport.getQuantization(), transport.getSignature());
+      cell.beat = MusicMath.getBeatNumber(j, pattern.quantization.getValue(),
+        new TimeSignature(pattern.transportContext.global.beatUnit,pattern.transportContext.global.barUnit));
       cell.tick = j;
       cell.row = -1;
       cell.time=tickTime*j;
@@ -101,10 +104,10 @@ export class SequencerService {
   }
 
   initializeWindow(element: ElementRef, specs: WindowSpecs): void {
-    /* $(element).width(specs.width);
+    /!* $(element).width(specs.width);
      $(element).height(specs.height);
- */
-    /* $(element).draggable({
+ *!/
+    /!* $(element).draggable({
        handle: ".card-header",
        containment: "#main-container",
        scroll: false,
@@ -119,7 +122,7 @@ export class SequencerService {
          specs.height = ui.size.height;
        },
        handles: "n, e, s, w"
-     });*/
+     });*!/
   }
 
   updateWindow(element: ElementRef, specs: WindowSpecs): void {
@@ -200,7 +203,7 @@ export class SequencerService {
   }
 
 
-  /*  onNoteCellClicked(cell: Cell, pattern: Pattern): void {
+  /!*  onNoteCellClicked(cell: Cell, pattern: Pattern): void {
       if (cell.events.length>0) {
 
       }
@@ -213,8 +216,8 @@ export class SequencerService {
       }
 
 
-    }*/
-  /*
+    }*!/
+  /!*
 
 
 
@@ -228,6 +231,7 @@ export class SequencerService {
   onEventCellPositionChanged(cell: EventCell, noteCells: Array<Array<Cell>>, pattern: Pattern, transportParams: TransportParams): void {
     cell.note.time = cell.column * MusicMath.getTickTime(transportParams.bpm, transportParams.quantization);
     cell.note.note = noteCells[cell.row][0].note;
-  }*/
+  }*!/
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Transport} from "./Transport";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {EventEmitter} from "@angular/core";
@@ -120,3 +121,4 @@ export class TransportProxy implements TransportInterface,TransportReader,Transp
   stop(): void {
   }
 }
+*/

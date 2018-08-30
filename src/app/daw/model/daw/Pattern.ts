@@ -1,15 +1,79 @@
+import {NoteStream} from "./events/NoteStream";
 import {NoteTrigger} from "./NoteTrigger";
+import {WstPlugin} from "./WstPlugin";
+import {BehaviorSubject, Subscription} from "rxjs/index";
+import {TrackControlParameters} from "./TrackControlParameters";
+import {NoteLength} from "../mip/NoteLength";
+import {TransportContext} from "./transport/TransportContext";
+import {EventEmitter} from "@angular/core";
+import * as _ from "lodash";
 
 
-export class Pattern{
-  constructor(notes:Array<string>){
-    this.notes=notes;
+export class Pattern {
+
+  id: string;
+  sceneId: string;
+  length: number = 8; //beats
+  readonly events: Array<NoteTrigger> = [];
+  notes: Array<string> = [];
+  time:EventEmitter<number>=new EventEmitter<number>();
+  quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
+  transportContext: TransportContext;
+  private subscriptions: Array<Subscription> = [];
+  private stream: NoteStream;
+
+  constructor(
+    id: string,
+    notes: Array<string>,
+    transportContext: TransportContext,
+    sceneId: string,
+    private plugin: WstPlugin,
+    private _quantization: NoteLength,
+    private  controlParameters: TrackControlParameters,
+    private gainNode: GainNode,
+    private channels?:Array<string>
+  ) {
+    this.id = id;
+    this.sceneId = sceneId;
+    this.transportContext = transportContext;
+    this.stream = new NoteStream(transportContext,channels?channels:[sceneId,this.id]);
+    this.stream.events = this.events;
+    this.subscriptions.push(this.stream.time.subscribe(time=>this.time.emit(time)));
+    this.notes = notes;
+    this.quantization.next(_quantization);
+    this.subscriptions.push(this.stream.trigger.subscribe(event => this.onNextEvent(event.offset, event.event)));
   }
-  id:string;
-  length:number=8; //beats
-  events: Array<NoteTrigger> = [];
-  notes:Array<string>=[];
-  isBeingEdited:boolean=false;
-  enabled:boolean=false;
-  //transportParams:TransportParams;
+
+
+  private onNextEvent(offset: number, event: NoteTrigger): void {
+    if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset, this.gainNode);
+  }
+
+
+  insertNote(note: NoteTrigger): void {
+    note.id = this.guid();
+    let index = _.sortedIndexBy(this.events, {'time': note.time}, d => d.time);
+    this.events.splice(index, 0, note);
+  }
+
+  removeNote(id: string): void {
+    let index = this.events.findIndex(ev => ev.id === id);
+    this.events.splice(index, 1);
+  }
+
+  destroy():void{
+    this.subscriptions.forEach(subscr=>subscr.unsubscribe());
+  }
+
+
+  private guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
+
 }

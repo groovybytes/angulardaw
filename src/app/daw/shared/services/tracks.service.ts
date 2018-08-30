@@ -4,12 +4,6 @@ import {Track} from "../../model/daw/Track";
 import {Pattern} from "../../model/daw/Pattern";
 import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import * as _ from "lodash";
-import {Transport} from "../../model/daw/transport/Transport";
-import {TransportParams} from "../../model/daw/transport/TransportParams";
-import {NoteLength} from "../../model/mip/NoteLength";
-import {MasterTransportParams} from "../../model/daw/transport/MasterTransportParams";
-import {MusicMath} from "../../model/utils/MusicMath";
-import {Cell} from "../../model/daw/matrix/Cell";
 
 @Injectable()
 export class TracksService {
@@ -34,51 +28,30 @@ export class TracksService {
    }*/
 
 
-  createMetronomeEvents(metronomeTrack: Track): Array<NoteTrigger> {
-    let pattern = new Pattern([]);
-    let tickTime = MusicMath.getTickTime(metronomeTrack.transport.getBpm(), metronomeTrack.transport.getQuantization());
-    let beatTicks = MusicMath.getBeatTicks(metronomeTrack.transport.getQuantization());
-    let beatTime = tickTime * beatTicks;
-    let beatUnit = metronomeTrack.transport.getSignature().beatUnit;
-    let events = [];
-    for (let i = 0; i < 100; i++) {
-      events.push(new NoteTrigger(null, i % beatUnit === 0 ? "A0" : "", i * beatTime));
-    }
+ /* resetEventsWithPattern(track: Track, pattern: Pattern): void {
 
-    return events;
-  }
-
-  resetEventsWithPattern(track: Track, pattern: Pattern): void {
-
-    track.transport.params.loopEnd.next(pattern.length);
-    track.transport.params.loop.next(true);
+    track.transportParams.loopEnd.next(pattern.length);
+    track.transportParams.loop.next(true);
     track.resetEvents(pattern.events);
 
-  }
+  }*/
 
 
-  addPattern(track: Track): Pattern {
+ /* addPattern(track: Track): Pattern {
 
     let pattern = new Pattern(track.plugin.getNotes().reverse());
     pattern.id = this.guid();
 
    // track.patterns.push(pattern);
     return pattern;
-  }
+  }*/
 
-  createDefaultTrack(index:number,master: Transport): Track {
-    let transport = new Transport(this.audioContext, new TransportParams(
-      NoteLength.Quarter,
-      0,
-      1000,
-      true
-    ), master.masterParams);
-
-    return new Track(this.guid(), index,this.audioContext, master, transport);
+  createDefaultTrack(index:number): Track {
+    return new Track(this.guid(), index,this.audioContext);
   }
 
   addTrack(project: Project,index:number): Track {
-    let track = this.createDefaultTrack(index,project.transport);
+    let track = this.createDefaultTrack(index);
     track.name = "track name";
     project.tracks.push(track);
     return track;
@@ -96,16 +69,6 @@ export class TracksService {
     });
   }
 
-  insertNote(pattern: Pattern, note: NoteTrigger): void {
-    note.id = this.guid();
-    let index = _.sortedIndexBy(pattern.events, {'time': note.time}, d => d.time);
-    pattern.events.splice(index, 0, note);
-  }
-
-  removeNote(pattern: Pattern, id: string): void {
-    let index = pattern.events.findIndex(ev => ev.id === id);
-    pattern.events.splice(index, 1);
-  }
 
   private guid() {
     function s4() {

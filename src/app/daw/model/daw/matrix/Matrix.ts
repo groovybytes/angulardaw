@@ -6,5 +6,5 @@ import {Track} from "../Track";
 export class Matrix{
   body:Array<Array<Cell<Pattern>> >=[];
   header:Array<Cell<Track> >=[];
-  rowHeader:Array<Cell<any> >=[];
+  rowHeader:Array<Cell<string> >=[];
 }
