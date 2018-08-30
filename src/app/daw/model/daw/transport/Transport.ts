@@ -59,7 +59,6 @@ export class Transport {
   }
 
   start(): void {
-    console.log("transport starting");
     if (this.isRunning()) this.stop();
     let start = this.audioContext.currentTime;
     this.beforeStart.emit(new TransportEvent<void>(this.channel));

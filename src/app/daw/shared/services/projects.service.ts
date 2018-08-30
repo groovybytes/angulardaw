@@ -296,7 +296,8 @@ export class ProjectsService {
           this.createMetronomeTrack(project)
             .then(track => {
               project.systemTracks.push(track);
-              project.patterns.push(this.createMetronomePattern(project, track));
+              this.createMetronomePattern(project, track)
+              //project.patterns.push(this.createMetronomePattern(project, track));
               resolve(project);
             })
             .catch(error => reject(error));
