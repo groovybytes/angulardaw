@@ -67,7 +67,10 @@ export class Transport {
 
     this.intervalHandle = setInterval(() => {
       let currentTime = this.audioContext.currentTime - start;
-      if (currentTime > this.getEndTime() / 1000) {
+      this.timeSubject.next( new TransportEvent<number>(this.channel,currentTime));
+
+
+      /*if (currentTime > this.getEndTime() / 1000) {
 
         if (this.settings.loop) {
           start = this.audioContext.currentTime;
@@ -80,7 +83,7 @@ export class Transport {
       }
       else {
         this.timeSubject.next( new TransportEvent<number>(this.channel,currentTime));
-      }
+      }*/
     }, 5)
 
   }

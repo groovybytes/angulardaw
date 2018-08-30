@@ -113,6 +113,7 @@ export class ProjectsService {
   createMetronomePattern(project: Project, track: Track): Pattern {
     let metronomeEvents = this.patternsService.createMetronomeEvents(project.transportSettings.global.beatUnit);
     let transportContext = project.createTransportContext();
+    transportContext.settings.loopEnd=project.transportSettings.global.beatUnit;
     let pattern = new Pattern(
       null,
       [],
@@ -169,6 +170,8 @@ export class ProjectsService {
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled;
+    projectDto.sequencerOpen = project.sequencerOpen;
+    projectDto.selectedPattern = project.selectedPattern.getValue()?project.selectedPattern.getValue().id:null;
     projectDto.tracks = [];
     projectDto.patterns = [];
     project.tracks.forEach(track => {
@@ -196,6 +199,8 @@ export class ProjectsService {
       patternDto.settings = pattern.transportContext.settings;
       projectDto.patterns.push(patternDto);
     });
+
+
 
     projectDto.matrix = new MatrixDto();
     project.matrix.body.forEach((_row) => {
@@ -263,6 +268,7 @@ export class ProjectsService {
             if (matrixCell) {
               let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.sceneId, p.length, p.id);
               p.events.forEach(ev => pattern.events.push(ev));
+              pattern.length=p.length;
             }
             else throw new Error("invalid matrix data");
 

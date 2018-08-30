@@ -84,16 +84,20 @@ export class SequencerService2 {
 
     //create event cells
     pattern.events.forEach(event => {
-      let left = this.getXPositionForTime(event.time, specs, pattern);
-      let notes = pattern.notes;
-      let rowIndex = notes.indexOf(event.note);
-      let top = (rowIndex + 1) * specs.cellHeight;
+      let eventTick = MusicMath.getTickForTime(event.time,pattern.transportContext.settings.global.bpm,pattern.quantization.getValue());
+      if (eventTick<nColumns){
+        let left = this.getXPositionForTime(event.time, specs, pattern);
+        let notes = pattern.notes;
+        let rowIndex = notes.indexOf(event.note);
+        let top = (rowIndex + 1) * specs.cellHeight;
 
-      let width = this.getEventWidth(event.length, pattern, specs);
-      let cell = new NoteCell(left, top, width, specs.cellHeight);
-      this.initializeNoteCell(cell, event, pattern);
+        let width = this.getEventWidth(event.length, pattern, specs);
+        let cell = new NoteCell(left, top, width, specs.cellHeight);
+        this.initializeNoteCell(cell, event, pattern);
 
-      model.push(cell);
+        model.push(cell);
+      }
+
     });
 
     return model;

@@ -26,7 +26,7 @@ export class PatternsService {
     let track = project.tracks.find(track => track.id === trackId);
 
     let transportContext = project.createTransportContext();
-
+    transportContext.settings.loopEnd=patternLength;
     let pattern = new Pattern(
       patternId?patternId:this.guid(),
       track.plugin.getNotes().reverse(),
@@ -37,6 +37,8 @@ export class PatternsService {
       track.controlParameters,
       track.gainNode
     );
+
+    pattern.length=patternLength;
 
     project.patterns.push(pattern);
 

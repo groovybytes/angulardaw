@@ -11,7 +11,6 @@ export class ProjectDto{
   selectedPattern:string;
   matrix: MatrixDto;
   patterns:Array<PatternDto>;
-  selectedTrack: string;
   sequencerOpen: boolean;
   tracks: Array<TrackDto> = [];
   windows: Array<WindowSpecs> = [];

@@ -4,17 +4,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
 import {System} from "../../system/System";
 import {Options} from 'ng5-slider';
+import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 
-interface SimpleSliderModel {
-  value: number;
-  options: Options;
-}
 
-interface RangeSliderModel {
-  minValue: number;
-  maxValue: number;
-  options: Options;
-}
+
 
 
 @Component({
@@ -69,7 +62,7 @@ export class ProjectComponent implements OnInit {
     this.project.metronomeEnabled = !this.project.metronomeEnabled;
   }
 
-  changeTempo(bpm: any): void {
+  changeTempo(bpm: SimpleSliderModel): void {
     this.project.transportSettings.global.bpm = bpm.value;
   }
 

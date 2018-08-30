@@ -30,23 +30,24 @@ export class NoteStream {
 
   }
 
-  private onTransportTime(transportTime: number): void {
-
-    this.time.emit(transportTime);
+  private onTransportTime(_transportTime: number): void {
+    let endTime =MusicMath.getEndTime(this.transportContext.settings.loopEnd,this.transportContext.settings.global.bpm)/1000;
+    let loopTime=_transportTime % endTime;
+    this.time.emit(loopTime);
     let timeFactor = 120 / this.transportContext.settings.global.bpm;
-    if (this.timeStamp && this.timeStamp > transportTime) {
+    if (this.timeStamp && this.timeStamp > loopTime) {
       this.initLoopQueue();
     }
-    this.timeStamp = transportTime;
-    if (this.eventPool.length > 0 && this.eventPool[0].time * timeFactor / 1000 <= transportTime) {
+    this.timeStamp = loopTime;
+    if (this.eventPool.length > 0 && this.eventPool[0].time * timeFactor / 1000 <= loopTime) {
       let nextEvents = _.remove(this.eventPool, ev => {
-        return ev.time * timeFactor / 1000 <= (transportTime + this.lookAhead)
+        return ev.time * timeFactor / 1000 <= (loopTime + this.lookAhead)
       });
       nextEvents.forEach(event => {
         let eventClone = _.clone(event);
         eventClone.time = eventClone.time * timeFactor;
         eventClone.length = eventClone.length * timeFactor;
-        this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - transportTime});
+        this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - loopTime});
       });
     }
   }

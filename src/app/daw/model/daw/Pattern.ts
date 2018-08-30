@@ -13,7 +13,7 @@ export class Pattern {
 
   id: string;
   sceneId: string;
-  length: number = 8; //beats
+  length: number = 8;//beats
   readonly events: Array<NoteTrigger> = [];
   notes: Array<string> = [];
   time:EventEmitter<number>=new EventEmitter<number>();
@@ -65,6 +65,14 @@ export class Pattern {
     this.subscriptions.forEach(subscr=>subscr.unsubscribe());
   }
 
+  getLengthInBars():number{
+    return this.length/this.transportContext.settings.global.beatUnit;
+  }
+
+  setLengthInBars(bars:number):void{
+    this.length=bars*this.transportContext.settings.global.beatUnit;
+    this.transportContext.settings.loopEnd=this.length;
+  }
 
   private guid() {
     function s4() {

@@ -5,7 +5,7 @@
   #card>
   <!-- [ngStyle]="{'left':window.x+'px','top':window.y+'px','width':window.width+'px','height':window.height+'px'}"-->
   <div class="card-header drag-handle">
-    <quantization [quantization]="pattern.quantization.getValue()"
+    <quantization [quantization]="pattern?.quantization.getValue()"
                   (quantizationChanged)="changeQuantization($event)"></quantization>
     <button type="button"
             (click)="toggleClip()"
@@ -16,9 +16,14 @@
     <button type="button" class="close" (click)="close.emit()" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
+
   </div>
   <div class="card-body shadow-lg">
+    <div class="slider-container">
+      <ng5-slider [value]="pattern?.getLengthInBars()" [options]="lengthSlider.options" (userChange)="changePatternLength($event)">
 
+      </ng5-slider>
+    </div>
     <div *ngIf="pattern" class="sequencer-container">
       <div class="cell"
            interact-resizable

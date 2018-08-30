@@ -24,6 +24,7 @@ import {DragHandler} from "./DragHandler";
 import {Subscription} from "rxjs/internal/Subscription";
 import {NoteLength} from "../model/mip/NoteLength";
 import {ProjectsService} from "../shared/services/projects.service";
+import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 
 
 @Component({
@@ -46,7 +47,15 @@ export class Sequencer2Component implements OnInit, OnChanges {
   allNotes: Array<string>;
   tick: number;
   dragHandler: DragHandler = new DragHandler();
-
+  lengthSlider: SimpleSliderModel = {
+    value: 8,
+    options: {
+      floor: 1,
+      ceil: 16,
+      vertical: false,
+      showSelectionBar: true
+    }
+  };
   private isResizing: boolean = false;
   private specs: SequencerD3Specs = new SequencerD3Specs();
   private subscriptions: Array<Subscription> = [];
@@ -77,8 +86,14 @@ export class Sequencer2Component implements OnInit, OnChanges {
 
   }
 
+
+  changePatternLength(value:SimpleSliderModel):void{
+    this.pattern.setLengthInBars(value.value);
+    this.updateCells();
+  }
+
   clipIsRunning(): boolean {
-    return this.project.isRunning([this.pattern.id]);
+    return this.pattern && this.project.isRunning([this.pattern.id]);
   }
 
   onCellClicked(cell: NoteCell): void {
@@ -118,16 +133,19 @@ export class Sequencer2Component implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
-      this.subscriptions.forEach(subscr => subscr.unsubscribe());
-      this.subscriptions.push(this.pattern.time.subscribe(time => {
-        this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
-      }));
+      if (this.pattern){
+        this.subscriptions.forEach(subscr => subscr.unsubscribe());
+        this.subscriptions.push(this.pattern.time.subscribe(time => {
+          this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
+        }));
 
-      this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
+        this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
 
-        if (nextValue) this.updateCells();
-      }));
-      this.updateCells();
+          if (nextValue) this.updateCells();
+        }));
+        this.updateCells();
+      }
+
 
     }
   }

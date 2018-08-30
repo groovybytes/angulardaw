@@ -3,17 +3,9 @@ import {Track} from "../model/daw/Track";
 import {Project} from "../model/daw/Project";
 import {TracksService} from "../shared/services/tracks.service";
 import { Options } from 'ng5-slider';
+import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 
-interface SimpleSliderModel {
-  value: number;
-  options: Options;
-}
 
-interface RangeSliderModel {
-  minValue: number;
-  maxValue: number;
-  options: Options;
-}
 
 @Component({
   selector: 'track-controls',
