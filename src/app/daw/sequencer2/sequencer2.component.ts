@@ -20,11 +20,13 @@ import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
 import {Project} from "../model/daw/Project";
 import {SequencerService2} from "./sequencer2.service";
-import {DragHandler} from "./DragHandler";
 import {Subscription} from "rxjs/internal/Subscription";
 import {NoteLength} from "../model/mip/NoteLength";
 import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
+import {PatternsService} from "../shared/services/patterns.service";
+import {DragHandler} from "../model/daw/visual/DragHandler";
+import {SequencerDragHandler} from "./SequencerDragHandler";
 
 
 @Component({
@@ -41,12 +43,15 @@ export class Sequencer2Component implements OnInit, OnChanges {
   @Input() window: WindowSpecs;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
-
   @ViewChild("card") card: ElementRef;
-  cells: Array<NoteCell> = [];
+  readonly cells: Array<NoteCell> = [];
   allNotes: Array<string>;
   tick: number;
-  dragHandler: DragHandler = new DragHandler();
+  dragHandler: DragHandler = new SequencerDragHandler(
+    this.cells,
+    () => this.pattern && this.pattern.quantizationEnabled.getValue(),
+    this.sequencerService);
+
   lengthSlider: SimpleSliderModel = {
     value: 8,
     options: {
@@ -57,13 +62,15 @@ export class Sequencer2Component implements OnInit, OnChanges {
     }
   };
   private isResizing: boolean = false;
+  private isDragging: boolean = false;
   private specs: SequencerD3Specs = new SequencerD3Specs();
   private subscriptions: Array<Subscription> = [];
 
   constructor(private element: ElementRef,
               private theoryService: TheoryService,
               private tracksService: TracksService,
-              private projectsService:ProjectsService,
+              private projectsService: ProjectsService,
+              private patternsService: PatternsService,
               private sequencerService: SequencerService2) {
 
 
@@ -82,30 +89,30 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   toggleClip(): void {
-    this.projectsService.toggleChannel(this.project,this.pattern.id,this.pattern.transportContext.settings);
+    this.patternsService.togglePattern(this.pattern.id, this.project);
 
   }
 
 
-  changePatternLength(value:SimpleSliderModel):void{
+  changePatternLength(value: SimpleSliderModel): void {
     this.pattern.setLengthInBars(value.value);
     this.updateCells();
   }
 
   clipIsRunning(): boolean {
-    return this.pattern && this.project.isRunning([this.pattern.id]);
+    return this.pattern && this.project.isRunningWithChannel(this.pattern.id);
   }
 
   onCellClicked(cell: NoteCell): void {
-    if (!this.isResizing) {
+    if (!this.isResizing && !this.isDragging) {
       if (cell.column >= 0 && cell.row >= 0) {
-        if (cell.data) this.sequencerService.removeEvent(cell, this.pattern);
+        if (cell.data) this.sequencerService.removeEvent(this.cells,cell, this.pattern);
         else this.sequencerService.addNote(cell.x, cell.y, this.cells, this.specs, this.pattern);
       }
     }
   }
 
-  changeQuantization(value:NoteLength):void{
+  changeQuantization(value: NoteLength): void {
     this.pattern.quantization.next(value);
   }
 
@@ -126,33 +133,42 @@ export class Sequencer2Component implements OnInit, OnChanges {
     }, 10);
   }
 
-  onDrop(event: DragEvent): void {
-    let cells = this.sequencerService.onDrop(event, this.cells);
-    this.sequencerService.moveCell(cells.source, cells.target);
+  dragStart(): void {
+    this.isDragging = true;
+
+  }
+
+  dragEnd(cell:NoteCell): void {
+
+    setTimeout(() => {
+      this.isDragging = false;
+      this.sequencerService.updateEvent(cell,this.specs,this.pattern);
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
-      if (this.pattern){
+      if (this.pattern) {
         this.subscriptions.forEach(subscr => subscr.unsubscribe());
         this.subscriptions.push(this.pattern.time.subscribe(time => {
           this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
         }));
-
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
 
           if (nextValue) this.updateCells();
         }));
+        /*  this.subscriptions.push(this.pattern.quantizationEnabled.subscribe(nextValue => {
+              this.dragHandler= new SequencerDragHandler();//  nextValue?new SequencerDragHandler():new RawDragHandler(this.cells);
+          }));*/
         this.updateCells();
       }
-
-
     }
   }
 
   private updateCells(): void {
     this.cells.length = 0;
-    this.cells = this.sequencerService.createCells(this.pattern, this.specs);
+    let newCells = this.sequencerService.createCells(this.pattern, this.specs);
+    newCells.forEach(cell=>this.cells.push(cell));
   }
 
 

@@ -10,6 +10,8 @@ import {BootstrapModalDirective} from "./bootstrap-modal.directive";
 import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
 import {InteractDirective} from "./directives/interact.directive";
 import {ResizableDirective} from "./directives/resizable.directive";
+import {DraggableDirective} from "./directives/draggable.directive";
+import {JqueryDraggableDirective} from "./directives/jquery.draggable.directive";
 
 
 
@@ -21,7 +23,9 @@ import {ResizableDirective} from "./directives/resizable.directive";
     TestsComponent,
     BootstrapModalDirective,
     InteractDirective,
-    ResizableDirective
+    ResizableDirective,
+    DraggableDirective,
+    JqueryDraggableDirective
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,8 @@ import {ResizableDirective} from "./directives/resizable.directive";
     ToolbarComponent,
     BootstrapModalDirective,
     InteractDirective,
-    ResizableDirective
+    ResizableDirective,
+    JqueryDraggableDirective
 
   ]
 })

@@ -10,9 +10,7 @@ import {TransportEvent} from "./TransportEvent";
 
 export class Transport {
 
-  /* tickTock: Observable<number>;
-   beat: Observable<number>;*/
-  channel: string;
+  channels: Array<string>=[];
   settings: TransportSettings;
   time: Observable<TransportEvent<number>>;
   transportEnd: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
@@ -22,8 +20,6 @@ export class Transport {
   private position: TransportPosition;
   private intervalHandle: any;
   private run: boolean = false;
-  /*private tickSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private beatSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);*/
   private timeSubject: BehaviorSubject<TransportEvent<number>>
     = new BehaviorSubject<TransportEvent<number>>(null);
 
@@ -61,13 +57,13 @@ export class Transport {
   start(): void {
     if (this.isRunning()) this.stop();
     let start = this.audioContext.currentTime;
-    this.beforeStart.emit(new TransportEvent<void>(this.channel));
+    this.beforeStart.emit(new TransportEvent<void>(this.channels));
     this.run = true;
-    this.timeReset.emit(new TransportEvent<void>(this.channel));
+    this.timeReset.emit(new TransportEvent<void>(this.channels));
 
     this.intervalHandle = setInterval(() => {
       let currentTime = this.audioContext.currentTime - start;
-      this.timeSubject.next( new TransportEvent<number>(this.channel,currentTime));
+      this.timeSubject.next( new TransportEvent<number>(this.channels,currentTime));
 
 
       /*if (currentTime > this.getEndTime() / 1000) {
@@ -102,7 +98,7 @@ export class Transport {
 
     this.run = false;
     if (this.intervalHandle) clearInterval(this.intervalHandle);
-    this.transportEnd.emit(new TransportEvent<void>(this.channel));
+    this.transportEnd.emit(new TransportEvent<void>(this.channels));
   }
 
   isRunning(): boolean {

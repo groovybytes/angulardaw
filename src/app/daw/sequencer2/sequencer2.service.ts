@@ -167,16 +167,17 @@ export class SequencerService2 {
     let percentage = entry.x / fullWidth;
     let noteTime = fullTime * percentage;
     let notes = pattern.notes;
-    let rowIndex = entry.y / specs.cellHeight;
+    let rowIndex = entry.y / specs.cellHeight-1;
 
     entry.data.note = notes[rowIndex];
     entry.data.time = noteTime;
   }
 
-  removeEvent(entry: NoteCell, pattern: Pattern): void {
-
+  removeEvent(cells:Array<NoteCell>,entry: NoteCell, pattern: Pattern): void {
     pattern.removeNote(entry.data.id);
     entry.data = null;
+    let cellIndex = cells.findIndex(cell=>cell.id===entry.id);
+    cells.splice(cellIndex,1);
   }
 
   dragStart(cell: NoteCell, container): void {
@@ -249,7 +250,6 @@ export class SequencerService2 {
   private getXPositionForTime(time: number, specs: SequencerD3Specs, pattern: Pattern): number {
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, 120, pattern.quantization.getValue());
     let percentage = time / fullTime;
-    let ticksPerBeat = MusicMath.getBeatTicks(pattern.quantization.getValue());
     let fullWidth = specs.cellWidth * specs.columns;
     return fullWidth * percentage;
 
@@ -258,8 +258,6 @@ export class SequencerService2 {
   private getEventWidth(noteLength: number, pattern: Pattern,specs: SequencerD3Specs): number {
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
     let fullWidth = specs.cellWidth * specs.columns;
-    let timePerPixel = fullWidth / fullTime;
-
     return fullWidth * ((noteLength * 120 / pattern.transportContext.settings.global.bpm) / fullTime);//  timePerPixel * noteLength*120/transport.getBpm();
   }
 

@@ -19,7 +19,6 @@ export class PatternsService {
   addPattern(project: Project,
              trackId: string,
              quantization: NoteLength,
-             sceneId: string,
              patternLength: number,
              patternId?:string): Pattern {
 
@@ -31,7 +30,6 @@ export class PatternsService {
       patternId?patternId:this.guid(),
       track.plugin.getNotes().reverse(),
       transportContext,
-      sceneId,
       track.plugin,
       quantization,
       track.controlParameters,
@@ -52,6 +50,34 @@ export class PatternsService {
     }
 
     return events;
+  }
+
+  toggleScene(row:number,project:Project):void{
+    if (project.activeSceneRow===row) {
+      project.activeSceneRow=null;
+      project.stop();
+    }
+    else{
+      let matrixRow = project.matrix.body[row];
+      let patterns = matrixRow.filter(cell=>cell.data).map(cell=>cell.data.id);
+      if (patterns.length >0){
+        project.setChannels(patterns);
+        project.activeSceneRow=row;
+        project.start();
+      }
+    }
+
+  }
+  togglePattern(patternId:string,project:Project):void{
+    if (project.isRunningWithChannel(patternId)) {
+      project.stop();
+    }
+    else{
+      project.setChannels([patternId]);
+      project.activeSceneRow=null;
+      project.start();
+    }
+
   }
 
   private guid() {

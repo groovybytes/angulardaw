@@ -1,12 +1,15 @@
 import * as $ from "jquery";
 import {Cell} from "../model/daw/matrix/Cell";
+import {DragHandler} from "../model/daw/visual/DragHandler";
+import {DawMatrixService} from "./daw-matrix.service";
+import {Project} from "../model/daw/Project";
 
 
-export class DragHandler {
+export class MatrixDragHandler implements DragHandler {
   draggedElement: JQuery<EventTarget>;
   lastDropTarget: JQuery<EventTarget>;
 
-  constructor() {
+  constructor(private project:Project,private matrixService:DawMatrixService) {
 
   }
 
@@ -40,5 +43,8 @@ export class DragHandler {
     }
   }
 
+  onDrop(event: DragEvent): void {
+    this.matrixService.onDrop(event, this.project, this.project.matrix);
+  }
 
 }

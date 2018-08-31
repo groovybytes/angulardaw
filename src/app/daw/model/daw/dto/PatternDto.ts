@@ -8,6 +8,7 @@ export class PatternDto {
   events: Array<NoteTrigger> = [];
   notes: Array<string> = [];
   quantization: number;
+  quantizationEnabled:boolean;
   settings: TransportSettings;
 
 }

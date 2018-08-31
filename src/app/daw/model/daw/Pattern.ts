@@ -12,11 +12,11 @@ import * as _ from "lodash";
 export class Pattern {
 
   id: string;
-  sceneId: string;
   length: number = 8;//beats
   readonly events: Array<NoteTrigger> = [];
   notes: Array<string> = [];
   time:EventEmitter<number>=new EventEmitter<number>();
+  quantizationEnabled:BehaviorSubject<boolean>=new BehaviorSubject<boolean>(true);
   quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
   transportContext: TransportContext;
   private subscriptions: Array<Subscription> = [];
@@ -26,17 +26,15 @@ export class Pattern {
     id: string,
     notes: Array<string>,
     transportContext: TransportContext,
-    sceneId: string,
     private plugin: WstPlugin,
     private _quantization: NoteLength,
     private  controlParameters: TrackControlParameters,
-    private gainNode: GainNode,
-    private channels?:Array<string>
+    private gainNode: GainNode
+/*    private channels?:Array<string>*/
   ) {
     this.id = id;
-    this.sceneId = sceneId;
     this.transportContext = transportContext;
-    this.stream = new NoteStream(transportContext,channels?channels:[sceneId,this.id]);
+    this.stream = new NoteStream(transportContext,this.id);
     this.stream.events = this.events;
     this.subscriptions.push(this.stream.time.subscribe(time=>this.time.emit(time)));
     this.notes = notes;

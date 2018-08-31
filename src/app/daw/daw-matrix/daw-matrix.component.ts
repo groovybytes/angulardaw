@@ -10,13 +10,13 @@ import {
   ViewChildren
 } from '@angular/core';
 import {Project} from "../model/daw/Project";
-import {DragHandler} from "./DragHandler";
 import {DawMatrixService} from "./daw-matrix.service";
 import {Track} from "../model/daw/Track";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Pattern} from "../model/daw/Pattern";
-import {TransportSettings} from "../model/daw/transport/TransportSettings";
-import {ProjectsService} from "../shared/services/projects.service";
+import {PatternsService} from "../shared/services/patterns.service";
+import {DragHandler} from "../model/daw/visual/DragHandler";
+import {MatrixDragHandler} from "./DragHandler";
 
 
 @Component({
@@ -30,15 +30,19 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChildren('cell')
   cells: QueryList<ElementRef>;
 
-  dragHandler: DragHandler = new DragHandler();
+  dragHandler: DragHandler;
 
   constructor(private el: ElementRef,
-              private projectsService:ProjectsService,
+              private patternsService:PatternsService,
               private matrixService: DawMatrixService) {
   }
 
 
   ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes.project && changes.currentValue){
+      this.dragHandler=new MatrixDragHandler(this.project,this.matrixService);
+    }
 
   }
 
@@ -48,7 +52,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
-    this.projectsService.toggleChannel(this.project, cell.data.id, cell.data.transportContext.settings);
+    this.patternsService.togglePattern( cell.data.id,this.project);
   }
 
   onCellContainerClicked(cell: Cell<Pattern>): void {
@@ -56,7 +60,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onRowHeaderClicked(cell: Cell<string>): void {
-    this.projectsService.toggleChannel(this.project, cell.data);
+    this.patternsService.toggleScene(cell.row,this.project);
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>): void {
@@ -65,10 +69,6 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   getTrack(trackId: string): Track {
     return this.project.tracks.find(track => track.id === trackId);
-  }
-
-  onDrop(event: DragEvent): void {
-    this.matrixService.onDrop(event, this.project, this.project.matrix);
   }
 
   ngAfterViewInit() {

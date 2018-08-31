@@ -19,14 +19,12 @@ export class Project {
   metronomeEnabled: boolean = true;
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   patterns: Array<Pattern> = [];
+  activeSceneRow:number;
   matrix: Matrix = new Matrix();
-  channel: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   sequencerOpen: boolean = false;
   readonly tracks: Array<Track> = [];
   readonly systemTracks: Array<Track> = [];
   windows: Array<WindowSpecs> = [];
-  metronomePattern: Pattern;
-  metronomePlugin: WstPlugin;
   ready: boolean = false;
   transportSettings: TransportSettings;
   private transport: Transport;
@@ -41,18 +39,29 @@ export class Project {
     this.transportSettings = transportSettings;
     this.transport = new Transport(this.audioContext, transportSettings);
 
-    this.subscriptions.push(this.channel.subscribe(channel => this.transport.channel = channel));
   }
 
   getTrack(id: string): Track {
     return this.tracks.find(track => track.id === id);
   }
 
-  isRunning(channels: Array<string>): boolean {
-    return channels.indexOf(this.transport.channel) >= 0 && this.transport.isRunning();
+  setChannels(channels: Array<string>): void {
+    this.transport.channels = channels;
   }
 
-  createTransportContext():TransportContext{
+  addChannel(channel: string): void {
+    this.transport.channels.push(channel);
+  }
+
+  removeChannel(channel: string): void {
+    this.transport.channels.splice(this.transport.channels.indexOf(channel), 1);
+  }
+
+  isRunningWithChannel(channel: string): boolean {
+    return this.transport.isRunning() && this.transport.channels.indexOf(channel)>=0;
+  }
+
+  createTransportContext(): TransportContext {
 
     let transportSettings = new TransportSettings();
     transportSettings.loop = true;
@@ -69,9 +78,8 @@ export class Project {
     return transportContext;
   }
 
-  start(channel: string, settings: TransportSettings): void {
-    this.transport.settings = settings;
-    this.transport.channel = channel;
+  start(): void {
+    if (this.transport.isRunning()) this.transport.stop();
     this.transport.start();
   }
 

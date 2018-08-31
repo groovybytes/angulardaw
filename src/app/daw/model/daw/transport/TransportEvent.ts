@@ -1,12 +1,12 @@
 export class TransportEvent<T> {
 
 
-  constructor(channel: string, value?: T) {
-    this.channel = channel;
+  constructor(channels: Array<string>, value?: T) {
+    this.channels = channels;
     this.value = value;
   }
 
-  channel: string;
+  channels: Array<string>;
   value: T;
 
 }

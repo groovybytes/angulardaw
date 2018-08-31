@@ -19,12 +19,12 @@ export class NoteStream {
   private eventPool: Array<NoteTrigger> = [];
   private subscriptions: Array<Subscription> = [];
 
-  constructor(protected transportContext: TransportContext, private channels: Array<String>) {
+  constructor(protected transportContext: TransportContext, private channel: string) {
     this.subscriptions.push(this.transportContext.time
-      .pipe(filter(event =>  event && (channels.length===0 || channels.indexOf(event.channel)>=0)))
+      .pipe(filter(event =>  event && (!channel || ( event.channels.indexOf(channel)>=0))))
       .subscribe(event =>  this.onTransportTime(event.value)));
     this.subscriptions.push(this.transportContext.beforeStart
-      .pipe(filter(event =>  event && (channels.length===0 ||channels.indexOf(event.channel)>=0)))
+      .pipe(filter(event =>  event && (!channel || ( event.channels.indexOf(channel)>=0))))
       .subscribe(event => this.initLoopQueue()));
     this.trigger = this.triggerSubject.asObservable();
 

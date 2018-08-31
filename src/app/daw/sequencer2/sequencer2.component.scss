@@ -37,14 +37,20 @@
   .sequencer-container {
     position: relative;
     margin-left: 100px;
+    height:800px;
   }
   .cell {
     position: absolute;
     border: 1px solid $color2;
     text-align: center;
     vertical-align: middle;
-
+/*    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;*/
   }
+
   .header-cell {
     background-color: $color1;
     &.tick-active{

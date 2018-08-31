@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 declare var interact;
 
 @Directive({
@@ -6,10 +6,10 @@ declare var interact;
 })
 export class InteractDirective implements OnInit {
 
-
-  @Input("parent") parent:string;
- /* @Input("x") x:number;
-  @Input("y") y:number;*/
+  @Input() parent:string;
+  @Input() enabled:boolean=true;
+  @Output() resizeStart:EventEmitter<void>=new EventEmitter();
+  @Output() resizeEnd:EventEmitter<EventTarget>=new EventEmitter();
 
   constructor(private element: ElementRef,
               private renderer: Renderer2) {
@@ -26,7 +26,6 @@ export class InteractDirective implements OnInit {
         restrict: {
           restriction: this.parent,
           endOnly: false,
-          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
         // enable autoScroll
         autoScroll: false,
@@ -39,14 +38,27 @@ export class InteractDirective implements OnInit {
       })
       .resizable({
         // resize from all edges and corners
-        edges: { left: true, right: true, bottom: true, top: true },
+        edges: { left: true, right: true, bottom: false, top: false },
         restrictEdges: {
           outer: this.parent,
           endOnly: false,
         },
-        inertia: false
+        enabled:this.enabled,
+        inertia: false,
+        restrictSize: {
+          min: { width: 10 },
+        },
+        axis: 'x',
+        snapSize: {
+          targets: [
+            // snap the width and height to multiples of 100 when the element size
+            // is 25 pixels away from the target size
+            { width: 50, range: 10 },
+          ]
+        }
       })
-      .on('resizemove', function (event) {
+      .on('resizemove',  (event)=> {
+
         var target = event.target,
           x = (parseFloat(target.getAttribute('data-x')) || 0),
           y = (parseFloat(target.getAttribute('data-y')) || 0);
@@ -64,7 +76,15 @@ export class InteractDirective implements OnInit {
 
         target.setAttribute('data-x', x);
         target.setAttribute('data-y', y);
-      });
+      })
+      .on('resizeend',(event)=>{
+        $(event.target).css("z-index","1");
+        this.resizeEnd.emit(event.target);
+      })
+      .on('resizestart',(event)=>{
+        $(event.target).css("z-index","10")
+        this.resizeStart.emit();
+      })
 
     function dragMoveListener (event) {
       var target = event.target,

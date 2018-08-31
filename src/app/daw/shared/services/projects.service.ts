@@ -118,12 +118,10 @@ export class ProjectsService {
       null,
       [],
       transportContext,
-      null,
       track.plugin,
       NoteLength.Quarter,
       track.controlParameters,
-      track.gainNode,
-      []);
+      track.gainNode);
 
     metronomeEvents.forEach(ev => pattern.events.push(ev));
 
@@ -146,23 +144,6 @@ export class ProjectsService {
 
   }
 
-  toggleChannel(project: Project, channelId: string, transportSettings?: TransportSettings): void {
-    if (project.isRunning([channelId])) project.stop();
-    else {
-      if (project.channel.getValue() !== channelId) {
-        project.channel.next(channelId);
-      }
-      if (!transportSettings) {
-        transportSettings = new TransportSettings();
-        transportSettings.global = project.transportSettings.global;
-        transportSettings.loop = true;
-        transportSettings.loopEnd = 8;
-      }
-
-      project.start(channelId, transportSettings);
-    }
-
-  }
 
   private serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
@@ -191,16 +172,14 @@ export class ProjectsService {
     project.patterns.forEach(pattern => {
       let patternDto = new PatternDto();
       patternDto.id = pattern.id;
-      patternDto.sceneId = pattern.sceneId;
       patternDto.length = pattern.length;
       patternDto.events = pattern.events;
       patternDto.notes = pattern.notes;
+      patternDto.quantizationEnabled=pattern.quantizationEnabled.getValue();
       patternDto.quantization = pattern.quantization.getValue();
       patternDto.settings = pattern.transportContext.settings;
       projectDto.patterns.push(patternDto);
     });
-
-
 
     projectDto.matrix = new MatrixDto();
     project.matrix.body.forEach((_row) => {
@@ -231,11 +210,6 @@ export class ProjectsService {
   private deSerializeProject(dto: ProjectDto): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
-      /*   let transportParams = new TransportParams(
-           json.quantization,
-           json.loopStart,
-           json.loopEnd,
-           json.loop);*/
       let project = new Project(this.audioContext, dto.transportSettings);
       project.id = dto.id;
       project.name = dto.name;
@@ -266,7 +240,8 @@ export class ProjectsService {
           dto.patterns.forEach(p => {
             let matrixCell = cells.find(cell => cell.data === p.id);
             if (matrixCell) {
-              let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.sceneId, p.length, p.id);
+              let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
+              pattern.quantizationEnabled.next(p.quantizationEnabled);
               p.events.forEach(ev => pattern.events.push(ev));
               pattern.length=p.length;
             }
@@ -310,73 +285,8 @@ export class ProjectsService {
         })
         .catch(error => reject(error))
     })
-    /*    return new Promise<Project>((resolve, reject) => {
-          let promises = [];
-          project.tracks.forEach(track => {
-            if (track.pluginId) {
-              let promise = this.pluginsService.loadPlugin(track.pluginId);
-              promises.push(promise);
-              promise.then(plugin => track.plugin = plugin);
-            }
-          });
-
-
-          Promise.all(promises)
-            .then(() => {
-              let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
-              metronome.load().then(metronome => {
-                project.metronomeTrack = this.trackService.createDefaultTrack(0, project.transport);
-                project.metronomeTrack.plugin = metronome;
-                let pattern = this.trackService.addPattern(project.metronomeTrack);
-                pattern.events = this.trackService.createMetronomeEvents(project.metronomeTrack);
-                this.trackService.resetEventsWithPattern(project.metronomeTrack, pattern);
-                resolve(project);
-              })
-                .catch(error => reject(error));
-
-            })
-            .catch(error => reject(error));
-
-        })*/
 
   }
-
-
-  /*  setPlugin(track: Track, id: string): Promise<WstPlugin> {
-      return new Promise<WstPlugin>((resolve, reject) => {
-        try {
-          if (track.plugin) track.plugin.destroy();
-          track.plugin = null;
-          this.pluginsService.loadPlugin(id)
-            .then(plugin => {
-              track.plugin = plugin;
-              resolve(plugin);
-            })
-            .catch(error => reject(error));
-        }
-        catch (e) {
-          reject(e);
-        }
-
-      })
-    }
-
-    removePlugin(track: Track): void {
-      track.plugin.destroy();
-      track.plugin = null;
-    }
-
-
-
-    onPatternChanged(track: Track, pattern: PatternViewModel, transportParams: TransportParams): void {
-      if (track) {
-        track.resetEvents(pattern.events);
-        pattern.notes = track.plugin.getNotes().reverse();
-      }
-
-      transportParams.tickEnd =
-        pattern.length * MusicMath.getBeatTicks(transportParams.quantization.getValue());
-    }*/
 
 
   guid() {
