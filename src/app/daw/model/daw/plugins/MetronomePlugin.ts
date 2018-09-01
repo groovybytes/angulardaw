@@ -3,7 +3,6 @@ import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {Subscription} from "rxjs/internal/Subscription";
 import {WstPlugin} from "../WstPlugin";
-import {PluginId} from "./PluginId";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
@@ -60,9 +59,11 @@ export class MetronomePlugin implements WstPlugin {
 
    }*/
 
+/*
   isChecked(): boolean {
     return this.project.metronomeEnabled;
   }
+*/
 
   load(): Promise<WstPlugin> {
     return new Promise((resolve, reject) => {
@@ -77,14 +78,14 @@ export class MetronomePlugin implements WstPlugin {
 
   feed(event: NoteTrigger, offset: number): any {
     if (this.project.metronomeEnabled) {
-      if (event.note === "A0") this.accentSample.triggerWith(ADSREnvelope.default(),offset,0,event.length);//trigger(offset);
+      if (event.note === "A0") this.accentSample.triggerWith(offset,0,null,event.length);//trigger(offset);
       else this.otherSample.trigger(offset);
     }
 
   }
 
-  getId(): PluginId {
-    return undefined;
+  getId(): string {
+    return "metronome";
   }
 
   getNotes(): Array<string> {

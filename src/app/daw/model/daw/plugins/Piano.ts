@@ -1,9 +1,9 @@
+/*
 import {AbstractInstrumentSampler} from "./AbstractInstrumentSampler";
 import {PluginId} from "./PluginId";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {FilesApi} from "../../../shared/api/files.api";
 import {TheoryService} from "../../../shared/services/theory.service";
-import {Sample} from "../Sample";
 import {AppConfiguration} from "../../../../app.configuration";
 import {PluginInfo} from "./PluginInfo";
 
@@ -49,3 +49,4 @@ export class Piano extends AbstractInstrumentSampler {
 
 
 }
+*/

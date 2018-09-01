@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {PluginsService} from "../shared/services/plugins.service";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {ProjectsService} from "../shared/services/projects.service";
 
 @Component({
   selector: 'plugin-list',
@@ -9,12 +10,12 @@ import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 })
 export class PluginListComponent implements OnInit {
 
-  plugins:Array<PluginInfo>;
+  @Input() plugins:Array<PluginInfo>;
 
-  constructor(private pluginService:PluginsService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.plugins=this.pluginService.getPluginList();
+
   }
 
   dragStart(event:DragEvent,plugin:PluginInfo):void{

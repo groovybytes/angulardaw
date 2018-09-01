@@ -8,6 +8,7 @@ import {TheoryService} from "./services/theory.service";
 import {TracksService} from "./services/tracks.service";
 import {MatrixService} from "./services/matrix.service";
 import {PatternsService} from "./services/patterns.service";
+import {KeyboardState} from "./model/KeyboardState";
 
 let projectsApi=new InMemoryApiEndpoint("__projects");
 let tracksApi=new InMemoryApiEndpoint("__tracks");
@@ -35,7 +36,11 @@ let patternApi=new InMemoryApiEndpoint("__patterns");
     { provide: "TracksApi", useValue: tracksApi },
     { provide: "EventsApi", useValue: eventsApi },
     { provide: "GridApi", useValue: gridApi },
-    { provide: "PatternApi", useValue: patternApi }
+    { provide: "PatternApi", useValue: patternApi },
+    {
+      provide: "KeyboardState",
+      useClass: KeyboardState
+    }
   ],
   exports:[
 

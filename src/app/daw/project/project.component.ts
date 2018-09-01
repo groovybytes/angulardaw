@@ -59,7 +59,7 @@ export class ProjectComponent implements OnInit {
 
 
   switchMetronome(): void {
-    this.project.metronomeEnabled = !this.project.metronomeEnabled;
+    this.project.metronomeEnabled.next(!this.project.metronomeEnabled.getValue());
   }
 
   changeTempo(bpm: SimpleSliderModel): void {

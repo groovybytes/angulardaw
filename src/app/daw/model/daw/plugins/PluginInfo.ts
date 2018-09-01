@@ -1,6 +1,6 @@
-import {PluginId} from "./PluginId";
-
 export class PluginInfo{
-  id:PluginId;
+  id:string;
   name:string;
+  noteRange:{start:string,end:string};
+  folder:string;
 }

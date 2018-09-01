@@ -2,6 +2,7 @@
 @import 'scrollbar';
 @import 'app/scss/utils';
 @import '~bootstrap/scss/bootstrap';
+@import '~hover.css/scss/hover';
 
 
 html, body {
@@ -22,7 +23,6 @@ html, body {
 
 body{
   padding-top: $header-height;
-  background-color: $color1;
   overflow: auto;
 }
 

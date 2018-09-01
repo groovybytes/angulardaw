@@ -13,25 +13,29 @@ $color2:  #C1D2E9;//rgba(191, 192, 192, 1);
 $color3: rgba(255, 255, 255, 1);
 $color4: rgba(239, 131, 84, 1);
 $color5: rgba(79, 93, 117, 1);
-$color11: #8897af;
+$color11: #858585;
+$color12: #8897af;
 
 $red:red;
 $blue:$color6;
 
+$daw-primary:#858585;
+$daw-secondary:#585858;
+$daw-tertiary: rgba(79, 93, 117, 1);
 
 $theme-colors: (
-  "primary": $color1,
-  "secondary": $color2,
-  "tertiary": $color10,
+  "primary": $daw-primary,
+  "secondary": $daw-secondary,
+  "tertiary": $daw-tertiary,
   "danger": $color9,
   "info":$color3,
   "warning":$color5
 );
 
-$enable-gradients:true;
+$enable-gradients:false;
 $enable-shadows:true;
 $card-bg:lighten($body-bg,10%);
-$body-bg: lighten(#54647d,10%); //linear-gradient(#54647d, #313946);// no-repeat right top;
+$body-bg: $color2;
 $body-color: $gray-900;
 
 $header-height: 5vh;
@@ -42,7 +46,7 @@ $sequencer-height:60vh;
 $sequencer-width:1200px;
 $console-height:20vh;
 
-$table-head-bg:darken($color2,15%);
+$table-head-bg:red;
 $table-bg:$color11;
 $table-accent-bg:$color11;//darken($color2,5%);
 $table-border-color:$color1;

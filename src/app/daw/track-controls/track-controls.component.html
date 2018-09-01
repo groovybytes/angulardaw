@@ -6,14 +6,16 @@
   (valueChanged)="changeGain($event)">
 </rangeslider>-->
 <div class="row">
-  <div class="w-50">
+  <div class="w-100">
     <div class="slider-container">
       <ng5-slider [(value)]="slider.value" [options]="slider.options" (userChange)="changeGain($event)">
 
       </ng5-slider>
     </div>
   </div>
-  <div class="w-50">
+</div>
+<div class="row">
+  <div class="w-100">
 
     <div class="btn-group-vertical" role="group" aria-label="Basic example">
       <button type="button" class="btn mute-btn" [disabled]="!track"

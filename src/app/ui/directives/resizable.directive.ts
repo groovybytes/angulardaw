@@ -10,8 +10,8 @@ export class ResizableDirective implements OnInit {
 
   @Input() parent:string;
   @Input() enabled:boolean=true;
-  @Output() start:EventEmitter<void>=new EventEmitter();
-  @Output() end:EventEmitter<EventTarget>=new EventEmitter();
+  @Output() resizeStart:EventEmitter<void>=new EventEmitter();
+  @Output() resizeEnd:EventEmitter<EventTarget>=new EventEmitter();
 
   constructor(private element: ElementRef) {
 
@@ -27,18 +27,18 @@ export class ResizableDirective implements OnInit {
           outer: this.parent,
           endOnly: false,
         },
-        enabled:this.enabled,
+        enabled:true,//this.enabled,
         inertia: false,
         restrictSize: {
           min: { width: 10 },
         },
         axis: 'x',
         snapSize: {
-          targets: [
+         /* targets: [
             // snap the width and height to multiples of 100 when the element size
             // is 25 pixels away from the target size
             { width: 50, range: 10 },
-          ]
+          ]*/
         }
       })
       .on('resizemove',  (event)=> {
@@ -63,11 +63,11 @@ export class ResizableDirective implements OnInit {
       })
       .on('resizeend',(event)=>{
         $(event.target).css("z-index","1");
-        this.end.emit(event.target);
+        this.resizeEnd.emit(event.target);
       })
       .on('resizestart',(event)=>{
         $(event.target).css("z-index","10")
-        this.start.emit();
+        this.resizeStart.emit();
       })
 
   }

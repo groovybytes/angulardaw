@@ -52,6 +52,7 @@
     "midiconvert": "^0.4.7",
     "midiutils": "0.0.4",
     "morgan": "^1.9.0",
+    "mousetrap": "^1.6.2",
     "ng-sidebar": "^8.0.0",
     "ng5-slider": "^1.1.2",
     "packery": "^2.1.2",

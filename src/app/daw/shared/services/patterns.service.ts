@@ -1,11 +1,10 @@
 import {Inject, Injectable} from "@angular/core";
 import {Project} from "../../model/daw/Project";
 import {Pattern} from "../../model/daw/Pattern";
-import {TransportContext} from "../../model/daw/transport/TransportContext";
-import {TransportSettings} from "../../model/daw/transport/TransportSettings";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import * as _ from "lodash";
 
 @Injectable()
 export class PatternsService {
@@ -43,6 +42,32 @@ export class PatternsService {
     return pattern;
   }
 
+  copyPattern(pattern:Pattern,trackId:string,project:Project):Pattern{
+    let track = project.tracks.find(track => track.id === trackId);
+
+    let transportContext = project.createTransportContext();
+    transportContext.settings.loopEnd=pattern.length;
+    let patternClone = new Pattern(
+      this.guid(),
+      track.plugin.getNotes().reverse(),
+      transportContext,
+      track.plugin,
+      pattern.quantization.getValue(),
+      track.controlParameters,
+      track.gainNode
+    );
+
+    patternClone.length=pattern.length;
+
+    pattern.events.forEach(event=>{
+      patternClone.events.push(_.clone(event));
+    });
+
+    project.patterns.push(patternClone);
+
+    return patternClone;
+  }
+
   createMetronomeEvents(beatUnit:number): Array<NoteTrigger> {
     let events = [];
     for (let i = 0; i < beatUnit; i++) {
@@ -68,6 +93,7 @@ export class PatternsService {
     }
 
   }
+
   togglePattern(patternId:string,project:Project):void{
     if (project.isRunningWithChannel(patternId)) {
       project.stop();

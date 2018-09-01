@@ -13,7 +13,6 @@ export class SequencerDragHandler implements DragHandler {
 
   constructor(
     private cells: Array<NoteCell>,
-    private quantizationEnabled: () => boolean,
     private sequencerService: SequencerService2) {
 
   }
@@ -24,18 +23,19 @@ export class SequencerDragHandler implements DragHandler {
   }
 
   onDragStart(event: DragEvent, cell: Cell<any>): void {
+    console.log("drag start");
     event.dataTransfer.setData("text", JSON.stringify({command: "cell", id: cell.id}));
     this.draggedElement = $(event.target);
     this.draggedCell = this.cells.find(cell => cell.id === $(event.target).attr("data-id"));
-    if (this.quantizationEnabled()) this.draggedElement.addClass("drag-active");
+    this.draggedElement.addClass("drag-active");
   }
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
-    if (this.quantizationEnabled()) {
-      $(event.target).addClass("drag-target");
-      this.lastDropTarget = $(event.target);
-    }
+
+    $(event.target).addClass("drag-target");
+    this.lastDropTarget = $(event.target);
+
 
   }
 
@@ -44,22 +44,22 @@ export class SequencerDragHandler implements DragHandler {
   }
 
   onDragEnd(event: DragEvent): void {
-    if (this.quantizationEnabled()) {
-      this.draggedElement.removeClass("drag-active");
-      this.draggedElement = null;
-      if (this.lastDropTarget) {
-        this.lastDropTarget.removeClass("drag-target");
-        this.lastDropTarget = null;
-      }
+
+    this.draggedElement.removeClass("drag-active");
+    this.draggedElement = null;
+    if (this.lastDropTarget) {
+      this.lastDropTarget.removeClass("drag-target");
+      this.lastDropTarget = null;
     }
+
   }
 
   onDrop(event: DragEvent): void {
-    if (this.quantizationEnabled()){
-      $(event.target).removeClass("drag-target");
-      let targetCell = this.cells.find(cell => cell.id === $(event.target).attr("data-id"));
-      this.sequencerService.moveCell(this.draggedCell, targetCell);
-    }
+
+    $(event.target).removeClass("drag-target");
+    let targetCell = this.cells.find(cell => cell.id === $(event.target).attr("data-id"));
+    this.sequencerService.moveCell(this.draggedCell, targetCell);
+
   }
 
 

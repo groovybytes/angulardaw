@@ -49,7 +49,6 @@ export class Sequencer2Component implements OnInit, OnChanges {
   tick: number;
   dragHandler: DragHandler = new SequencerDragHandler(
     this.cells,
-    () => this.pattern && this.pattern.quantizationEnabled.getValue(),
     this.sequencerService);
 
   lengthSlider: SimpleSliderModel = {
@@ -61,7 +60,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
       showSelectionBar: true
     }
   };
-  private isResizing: boolean = false;
+  isResizing: boolean = false;
   private isDragging: boolean = false;
   private specs: SequencerD3Specs = new SequencerD3Specs();
   private subscriptions: Array<Subscription> = [];
@@ -104,6 +103,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   onCellClicked(cell: NoteCell): void {
+    console.log("click");
     if (!this.isResizing && !this.isDragging) {
       if (cell.column >= 0 && cell.row >= 0) {
         if (cell.data) this.sequencerService.removeEvent(this.cells,cell, this.pattern);

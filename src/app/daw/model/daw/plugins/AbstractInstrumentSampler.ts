@@ -1,11 +1,9 @@
 import {Sample} from "../Sample";
 import {WstPlugin} from "../WstPlugin";
-import {PluginId} from "./PluginId";
 import {NoteInfo} from "../../utils/NoteInfo";
 import {TheoryService} from "../../../shared/services/theory.service";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {NoteTrigger} from "../NoteTrigger";
-import {PluginInfo} from "./PluginInfo";
 
 export abstract class AbstractInstrumentSampler implements WstPlugin {
 
@@ -19,7 +17,7 @@ export abstract class AbstractInstrumentSampler implements WstPlugin {
 
   abstract getNotes(): Array<string>;
 
-  abstract getId(): PluginId;
+  abstract getId(): string;
 
   abstract destroy(): void;
 
@@ -30,7 +28,7 @@ export abstract class AbstractInstrumentSampler implements WstPlugin {
 
     let detune = this.theoryService.getInterval(sample.baseNote,eventNote)*100;
 
-    sample.triggerWith(ADSREnvelope.default(),offset,detune,event.length/1000,targetNode);
+    sample.triggerWith(offset,detune,ADSREnvelope.fromNote(event),event.length/1000,targetNode);
 
   }
 

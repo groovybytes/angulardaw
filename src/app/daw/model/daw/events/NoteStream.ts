@@ -47,6 +47,7 @@ export class NoteStream {
         let eventClone = _.clone(event);
         eventClone.time = eventClone.time * timeFactor;
         eventClone.length = eventClone.length * timeFactor;
+        console.log(eventClone);
         this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - loopTime});
       });
     }

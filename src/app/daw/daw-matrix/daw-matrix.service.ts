@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {Matrix} from "../model/daw/matrix/Matrix";
 import * as $ from "jquery";
 import * as _ from "lodash";
@@ -13,6 +13,7 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model/mip/NoteLength";
 import {TransportSettings} from "../model/daw/transport/TransportSettings";
+import {KeyboardState} from "../shared/model/KeyboardState";
 
 @Injectable()
 export class DawMatrixService {
@@ -20,6 +21,7 @@ export class DawMatrixService {
   constructor(private trackService: TracksService,
               private patternService: PatternsService,
               private projectsService: ProjectsService,
+              @Inject("KeyboardState") private keyboardState: KeyboardState,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -29,15 +31,21 @@ export class DawMatrixService {
     let data = JSON.parse(event.dataTransfer.getData("text"));
     if (data.command === "plugin") {
       let cell = this.findBodyCell($(event.target).attr("id"), matrix.body);
-      this.handlePluginDroppedOnBodyCell(data.id, cell, matrix, project)
+      this.addTrackWithPlugin(data.id, cell, matrix, project)
         .catch(error => this.system.error(error));
     }
     else {
       let sourceCell: Cell<Pattern> = this.findBodyCell(data.id, matrix.body);
       let targetCell: Cell<Pattern> = this.findBodyCell($(event.target).attr("id"), matrix.body);
+      if (this.keyboardState.Ctrl.getValue() === true) {
+        let patternCopy = this.patternService.copyPattern(sourceCell.data, sourceCell.trackId, project);
+        targetCell.data = patternCopy;
+      }
+      else {
+        targetCell.data = sourceCell.data;
+        sourceCell.data = null;
+      }
 
-      targetCell.data = sourceCell.data;
-      sourceCell.data = null;
 
       /*if (targetCell.trackId !== sourceCell.trackId) {
         let sourceTrack = project.tracks.find(t => t.id === sourceCell.trackId);
@@ -62,6 +70,11 @@ export class DawMatrixService {
     }
   }
 
+  bodyCellClicked(cell: Cell<Pattern>, project: Project): void {
+    if (cell.data) cell.data.marked = !cell.data.marked;
+    console.log(cell);
+  }
+
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
     /*  let track = project.getTrack(cell.trackId);
       track.focusedPattern = cell.data;
@@ -69,7 +82,6 @@ export class DawMatrixService {
 
       project.sequencerOpen = true;*/
   }
-
 
 
   /*startScene(cell: Cell<any>, project: Project): void {
@@ -113,7 +125,7 @@ export class DawMatrixService {
   }*/
 
 
-  private handlePluginDroppedOnBodyCell(pluginId: string, cell: Cell<Pattern>, matrix: Matrix, project: Project): Promise<void> {
+  private addTrackWithPlugin(pluginId: string, cell: Cell<Pattern>, matrix: Matrix, project: Project): Promise<void> {
 
     return new Promise((resolve, reject) => {
       let track: Track;
@@ -125,7 +137,8 @@ export class DawMatrixService {
       }
       else track = project.tracks.find(t => t.id === cell.trackId);
 
-      this.pluginService.loadPlugin(pluginId)
+      let pluginInfo = project.plugins.find(p => p.id === pluginId);
+      this.pluginService.loadPluginWithInfo(pluginInfo)
         .then(plugin => {
           track.plugin = plugin;
           track.name = plugin.getId();
@@ -135,7 +148,6 @@ export class DawMatrixService {
         })
         .catch(error => reject(error));
     })
-
   }
 
   private findBodyCell(id: string, cells: Array<Array<Cell<any>>>): Cell<any> {

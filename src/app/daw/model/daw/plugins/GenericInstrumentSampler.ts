@@ -1,37 +1,30 @@
-/*
 import {AbstractInstrumentSampler} from "./AbstractInstrumentSampler";
-import {PluginId} from "./PluginId";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {FilesApi} from "../../../shared/api/files.api";
 import {TheoryService} from "../../../shared/services/theory.service";
-import {Sample} from "../Sample";
+import {AppConfiguration} from "../../../../app.configuration";
 import {PluginInfo} from "./PluginInfo";
 
-export class Bass extends AbstractInstrumentSampler {
+export class GenericInstrumentSampler extends AbstractInstrumentSampler {
 
-  constructor(protected theoryService: TheoryService,
+  constructor(private pluginInfo:PluginInfo,
+              protected theoryService: TheoryService,
               private fileService: FilesApi,
+              private config: AppConfiguration,
               private samplesV2Service: SamplesApi) {
     super(theoryService);
   }
 
-  getId(): PluginId {
-    return PluginId.BASS1;
+  getId(): string {
+    return this.pluginInfo.id;
   }
 
   destroy(): void {
   }
 
-  static getInfo(): PluginInfo {
-    let info = new PluginInfo();
-    info.id=PluginId.BASS1;
-    info.name="bass";
-    return info;
-  }
-
   load(): Promise<AbstractInstrumentSampler> {
     return new Promise<AbstractInstrumentSampler>((resolve, reject) => {
-      this.samplesV2Service.loadAllInstrumentSamples("Acoustic Bass")
+      this.samplesV2Service.loadAllInstrumentSamples(this.pluginInfo.folder)
         .then(result => {
           this.samples = result.samples;
           this.baseSampleNotes = result.baseNotes;
@@ -42,9 +35,16 @@ export class Bass extends AbstractInstrumentSampler {
   }
 
   getNotes(): Array<string> {
-    return this.theoryService.getNoteRange("E1", "Di5");
+    if (this.pluginInfo.noteRange) return this.theoryService.getNoteRange(this.pluginInfo.noteRange.start,this.pluginInfo.noteRange.end);
+    else this.theoryService.getNoteRange("C0", "B10");
   }
+
+ /* static getInfo(): PluginInfo {
+    let info = new PluginInfo();
+    info.id=PluginId.PIANO1;
+    info.name=this.nam;
+    return info;
+  }*/
 
 
 }
-*/

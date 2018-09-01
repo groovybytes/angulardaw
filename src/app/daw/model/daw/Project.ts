@@ -11,12 +11,13 @@ import {TransportSettings} from "./transport/TransportSettings";
 import {Subscription} from "rxjs/internal/Subscription";
 import {TransportContext} from "./transport/TransportContext";
 import {WstPlugin} from "./WstPlugin";
+import {PluginInfo} from "./plugins/PluginInfo";
 
 
 export class Project {
   id: string;
   name: string = "default";
-  metronomeEnabled: boolean = true;
+  metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   patterns: Array<Pattern> = [];
   activeSceneRow:number;
@@ -30,7 +31,9 @@ export class Project {
   private transport: Transport;
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
+  plugins:Array<PluginInfo>=[];
 
+  private systemChannels=["_metronome"];
   private subscriptions: Array<Subscription> = [];
 
   constructor(
@@ -38,6 +41,10 @@ export class Project {
 
     this.transportSettings = transportSettings;
     this.transport = new Transport(this.audioContext, transportSettings);
+    this.metronomeEnabled.subscribe(isEnabled=>{
+      if (isEnabled) this.addChannel("_metronome");
+      else this.removeChannel("_metronome");
+    })
 
   }
 
@@ -46,7 +53,7 @@ export class Project {
   }
 
   setChannels(channels: Array<string>): void {
-    this.transport.channels = channels;
+    this.transport.channels = channels.concat(this.metronomeEnabled.getValue()?["_metronome"]:[]);
   }
 
   addChannel(channel: string): void {

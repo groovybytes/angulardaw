@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, Inject,
   Input,
   OnChanges,
   OnInit,
@@ -17,6 +17,7 @@ import {Pattern} from "../model/daw/Pattern";
 import {PatternsService} from "../shared/services/patterns.service";
 import {DragHandler} from "../model/daw/visual/DragHandler";
 import {MatrixDragHandler} from "./DragHandler";
+import {KeyboardState} from "../shared/model/KeyboardState";
 
 
 @Component({
@@ -31,17 +32,18 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   cells: QueryList<ElementRef>;
 
   dragHandler: DragHandler;
+  colors = ["red", "yellow", "blue"];
 
   constructor(private el: ElementRef,
-              private patternsService:PatternsService,
+              private patternsService: PatternsService,
               private matrixService: DawMatrixService) {
   }
 
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes.project && changes.currentValue){
-      this.dragHandler=new MatrixDragHandler(this.project,this.matrixService);
+    if (changes.project && changes.project.currentValue) {
+      this.dragHandler = new MatrixDragHandler(this.project, this.matrixService);
     }
 
   }
@@ -52,7 +54,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
-    this.patternsService.togglePattern( cell.data.id,this.project);
+    this.patternsService.togglePattern(cell.data.id, this.project);
   }
 
   onCellContainerClicked(cell: Cell<Pattern>): void {
@@ -60,15 +62,23 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onRowHeaderClicked(cell: Cell<string>): void {
-    this.patternsService.toggleScene(cell.row,this.project);
+    this.patternsService.toggleScene(cell.row, this.project);
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>): void {
     this.matrixService.bodyCellDblClicked(cell, this.project);
   }
 
+  bodyCellClicked(cell: Cell<Pattern>): void {
+    this.matrixService.bodyCellClicked(cell, this.project);
+  }
+
   getTrack(trackId: string): Track {
     return this.project.tracks.find(track => track.id === trackId);
+  }
+
+  colorChanged(color: string, trackId: string): void {
+    this.project.tracks.find(track => track.id === trackId).color = color;
   }
 
   ngAfterViewInit() {

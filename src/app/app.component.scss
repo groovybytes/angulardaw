@@ -1,5 +1,6 @@
 @import "../variables";
 
+
 :host /deep/ {
   span{
     -webkit-touch-callout: none; /* iOS Safari */
@@ -10,7 +11,18 @@
     user-select: none;
   }
 
+  .footer{
+    height: $footer-height;
+    background-color: $color10;
+  }
+
+  .btn{
+    color:$daw-secondary;
+  }
+
+
 }
+
 
 :host {
 

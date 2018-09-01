@@ -14,7 +14,7 @@ export class Sample {
     this.buffer = buffer;
   }
 
-  public triggerWith(adsr: ADSREnvelope,offset:number,detune:number,duration?:number,destination?:AudioNode): void {
+  public triggerWith(offset:number,detune:number,adsr?: ADSREnvelope,duration?:number,destination?:AudioNode): void {
 
     let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
@@ -22,7 +22,17 @@ export class Sample {
     let gainNode = this.context.createGain();
     sourceNode.connect(gainNode);
     gainNode.connect(destination?destination:this.context.destination);
-    //adsr.apply(gainNode, this.context.currentTime);
+    //if (adsr) adsr.apply(gainNode, this.context.currentTime+offset);
+    gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime+offset+duration);
+
+    /*var waveArray = new Float32Array(3);
+    waveArray[0] = 0.8;
+    waveArray[1] = 0.5;
+    waveArray[2] = 0;
+    console.log(duration);
+
+    gainNode.gain.setValueCurveAtTime(waveArray, this.context.currentTime+offset+duration-0.5,0.5);
+*/
     sourceNode.start(this.context.currentTime+offset, 0, duration?duration:0.7);
   }
 

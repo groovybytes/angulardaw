@@ -12,6 +12,7 @@ import {InteractDirective} from "./directives/interact.directive";
 import {ResizableDirective} from "./directives/resizable.directive";
 import {DraggableDirective} from "./directives/draggable.directive";
 import {JqueryDraggableDirective} from "./directives/jquery.draggable.directive";
+import { ColorpickerComponent } from './colorpicker/colorpicker.component';
 
 
 
@@ -25,7 +26,8 @@ import {JqueryDraggableDirective} from "./directives/jquery.draggable.directive"
     InteractDirective,
     ResizableDirective,
     DraggableDirective,
-    JqueryDraggableDirective
+    JqueryDraggableDirective,
+    ColorpickerComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +45,8 @@ import {JqueryDraggableDirective} from "./directives/jquery.draggable.directive"
     BootstrapModalDirective,
     InteractDirective,
     ResizableDirective,
-    JqueryDraggableDirective
+    JqueryDraggableDirective,
+    ColorpickerComponent
 
   ]
 })

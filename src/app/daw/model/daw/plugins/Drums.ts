@@ -1,12 +1,10 @@
 import {Sample} from "../Sample";
 import {WstPlugin} from "../WstPlugin";
-import {PluginId} from "./PluginId";
 import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
 import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
-import {PluginInfo} from "./PluginInfo";
 
 
 export class Drums implements WstPlugin {
@@ -29,9 +27,7 @@ export class Drums implements WstPlugin {
     return this.triggers.map(t => t.note);
   }
 
-  getId(): PluginId {
-    return PluginId.DRUMKIT1;
-  }
+
 
   destroy(): void {
   }
@@ -43,7 +39,7 @@ export class Drums implements WstPlugin {
   }
 
 
-  load(): Promise<Drums> {
+  load(): Promise<WstPlugin> {
     return new Promise((resolve, reject) => {
 
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/drumkit1.json"))
@@ -66,11 +62,15 @@ export class Drums implements WstPlugin {
     })
   }
 
-  static getInfo(): PluginInfo {
+  getId(): string {
+    return "drumkit1";
+  }
+
+ /* static getInfo(): PluginInfo {
     let info = new PluginInfo();
     info.id=PluginId.DRUMKIT1;
     info.name="drums";
     return info;
-  }
+  }*/
 
 }

@@ -46,7 +46,6 @@ export class JqueryDraggableDirective implements OnInit,OnChanges {
           this.jqDragEnd.emit(this.draggedCell);
           this.draggedCell.x = ui.position.left;
           this.draggedCell.y = ui.position.top;
-          console.log(this.draggedCell.x);
           $(event.target).css("z-index","1");
 
 

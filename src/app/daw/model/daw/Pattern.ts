@@ -19,6 +19,7 @@ export class Pattern {
   quantizationEnabled:BehaviorSubject<boolean>=new BehaviorSubject<boolean>(true);
   quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
   transportContext: TransportContext;
+  marked:boolean=false;
   private subscriptions: Array<Subscription> = [];
   private stream: NoteStream;
 

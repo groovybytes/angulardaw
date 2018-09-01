@@ -115,7 +115,7 @@ export class ProjectsService {
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd=project.transportSettings.global.beatUnit;
     let pattern = new Pattern(
-      null,
+      "_metronome",
       [],
       transportContext,
       track.plugin,
@@ -150,16 +150,18 @@ export class ProjectsService {
     projectDto.id = project.id;
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
-    projectDto.metronomeEnabled = project.metronomeEnabled;
+    projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
     projectDto.sequencerOpen = project.sequencerOpen;
     projectDto.selectedPattern = project.selectedPattern.getValue()?project.selectedPattern.getValue().id:null;
     projectDto.tracks = [];
     projectDto.patterns = [];
+    projectDto.windows = project.windows;
     project.tracks.forEach(track => {
       let trackDto = new TrackDto();
       trackDto.id = track.id;
       trackDto.index = track.index;
       trackDto.name = track.name;
+      trackDto.color = track.color;
       trackDto.pluginId = track.plugin.getId();
       trackDto.controlParameters = new TrackControlParametersDto();
       trackDto.controlParameters.gain = track.controlParameters.gain.getValue();
@@ -213,77 +215,87 @@ export class ProjectsService {
       let project = new Project(this.audioContext, dto.transportSettings);
       project.id = dto.id;
       project.name = dto.name;
-      project.metronomeEnabled = dto.metronomeEnabled;
+      project.metronomeEnabled.next(dto.metronomeEnabled);
       project.sequencerOpen = dto.sequencerOpen;
       project.windows = dto.windows;
 
-      let pluginPromises = [];
+      this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
+        .then(plugins=>{
 
-      dto.tracks.forEach(t => {
-        let track = new Track(t.id, t.index, this.audioContext);
-        track.name = t.name;
-        track.controlParameters.gain.next(t.controlParameters.gain ? t.controlParameters.gain : 100);
-        track.controlParameters.mute.next(t.controlParameters.mute ? t.controlParameters.mute : false);
-        track.controlParameters.solo.next(t.controlParameters.solo ? t.controlParameters.solo : false);
-        project.tracks.push(track);
+          project.plugins=plugins;
+          let pluginPromises = [];
 
-        if (t.pluginId) {
-          let promise = this.pluginsService.loadPlugin(t.pluginId);
-          pluginPromises.push(promise);
-          promise.then(plugin => track.plugin = plugin);
-        }
-      });
+          dto.tracks.forEach(t => {
+            let track = new Track(t.id, t.index, this.audioContext);
+            track.name = t.name;
+            track.color = t.color;
+            track.controlParameters.gain.next(t.controlParameters.gain ? t.controlParameters.gain : 100);
+            track.controlParameters.mute.next(t.controlParameters.mute ? t.controlParameters.mute : false);
+            track.controlParameters.solo.next(t.controlParameters.solo ? t.controlParameters.solo : false);
+            project.tracks.push(track);
 
-      let cells = _.flatten(dto.matrix.body);
-      Promise.all(pluginPromises)
-        .then(() => {
-          dto.patterns.forEach(p => {
-            let matrixCell = cells.find(cell => cell.data === p.id);
-            if (matrixCell) {
-              let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
-              pattern.quantizationEnabled.next(p.quantizationEnabled);
-              p.events.forEach(ev => pattern.events.push(ev));
-              pattern.length=p.length;
+            if (t.pluginId) {
+              let pluginInfo=project.plugins.find(p=>p.id===t.pluginId);
+              if (!pluginInfo) throw "plugin not found with id "+t.pluginId;
+              let promise = this.pluginsService.loadPluginWithInfo(pluginInfo);
+              pluginPromises.push(promise);
+              promise.then(plugin => track.plugin = plugin);
             }
-            else throw new Error("invalid matrix data");
-
           });
-          dto.matrix.body.forEach(_row => {
-            let row = [];
-            project.matrix.body.push(row);
-            _row.forEach(_cell => {
-              let cell = new Cell<Pattern>(_cell.row, _cell.column);
-              cell.trackId = _cell.trackId;
-              cell.id = _cell.id;
-              cell.data = project.patterns.find(p => p.id === _cell.data);
-              row.push(cell);
+
+          let cells = _.flatten(dto.matrix.body);
+          Promise.all(pluginPromises)
+            .then(() => {
+              dto.patterns.forEach(p => {
+                let matrixCell = cells.find(cell => cell.data === p.id);
+                if (matrixCell) {
+                  let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
+                  pattern.quantizationEnabled.next(p.quantizationEnabled);
+                  p.events.forEach(ev => pattern.events.push(ev));
+                  pattern.length=p.length;
+                }
+                else throw new Error("invalid matrix data");
+
+              });
+              dto.matrix.body.forEach(_row => {
+                let row = [];
+                project.matrix.body.push(row);
+                _row.forEach(_cell => {
+                  let cell = new Cell<Pattern>(_cell.row, _cell.column);
+                  cell.trackId = _cell.trackId;
+                  cell.id = _cell.id;
+                  cell.data = project.patterns.find(p => p.id === _cell.data);
+                  row.push(cell);
+                })
+              });
+
+              dto.matrix.header.forEach(_cell => {
+                let cell = new Cell<Track>(_cell.row, _cell.column);
+                cell.trackId = _cell.trackId;
+                cell.id = _cell.id;
+                cell.data = project.tracks.find(t => t.id === _cell.data);
+                project.matrix.header.push(cell);
+              });
+              project.matrix.rowHeader = dto.matrix.rowHeader;
+
+              if (dto.selectedPattern)
+                project
+                  .selectedPattern
+                  .next(project.patterns.find(p => p.id === dto.selectedPattern));
+
+              this.createMetronomeTrack(project)
+                .then(track => {
+                  project.systemTracks.push(track);
+                  this.createMetronomePattern(project, track)
+                  //project.patterns.push(this.createMetronomePattern(project, track));
+                  resolve(project);
+                })
+                .catch(error => reject(error));
             })
-          });
-
-          dto.matrix.header.forEach(_cell => {
-            let cell = new Cell<Track>(_cell.row, _cell.column);
-            cell.trackId = _cell.trackId;
-            cell.id = _cell.id;
-            cell.data = project.tracks.find(t => t.id === _cell.data);
-            project.matrix.header.push(cell);
-          });
-          project.matrix.rowHeader = dto.matrix.rowHeader;
-
-          if (dto.selectedPattern)
-            project
-              .selectedPattern
-              .next(project.patterns.find(p => p.id === dto.selectedPattern));
-
-          this.createMetronomeTrack(project)
-            .then(track => {
-              project.systemTracks.push(track);
-              this.createMetronomePattern(project, track)
-              //project.patterns.push(this.createMetronomePattern(project, track));
-              resolve(project);
-            })
-            .catch(error => reject(error));
+            .catch(error => reject(error))
         })
         .catch(error => reject(error))
+
     })
 
   }
