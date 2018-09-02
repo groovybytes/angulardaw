@@ -1,5 +1,6 @@
 @import "variables";
 @import 'scrollbar';
+@import 'slider';
 @import 'app/scss/utils';
 @import '~bootstrap/scss/bootstrap';
 @import '~hover.css/scss/hover';
@@ -33,13 +34,5 @@ body{
 .no-wrap{
   white-space: nowrap;
   display:inline-block !important;
-}
-:host /deep/ {
-  .footer {
-    border-top: 1px solid black;
-    padding: 0;
-    height: 300px;
-  }
-
 }
 

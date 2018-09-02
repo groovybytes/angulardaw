@@ -17,6 +17,8 @@ import { QuantizationComponent } from './quantization/quantization.component';
 import { Sequencer2Component } from './sequencer2/sequencer2.component';
 import {SequencerService2} from "./sequencer2/sequencer2.service";
 import { Ng5SliderModule } from 'ng5-slider';
+import { PluginDropdownComponent } from './plugin-dropdown/plugin-dropdown.component';
+import {AppRoutingModule} from "../app-routing.module";
 
 let audioContext = new AudioContext();
 
@@ -32,13 +34,15 @@ let audioContext = new AudioContext();
     DawMatrixComponent,
     ProjectObserverComponent,
     QuantizationComponent,
-    Sequencer2Component
+    Sequencer2Component,
+    PluginDropdownComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     SharedModule,
     UiModule,
+    AppRoutingModule,
     SidebarModule.forRoot(),
     Ng5SliderModule
   ],

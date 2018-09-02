@@ -30,20 +30,8 @@
 <div id="daw-main-container">
   <div class="container-fluid">
     <div class="row ">
-      <div class="col-2">
-        <plugin-list [plugins]="project?.plugins"></plugin-list>
-      </div>
-      <div class="col-10">
-        <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
-      </div>
-    </div>
-    <div class="row">
       <div class="col-12">
-        <sequencer2 *ngIf="project?.ready && project?.sequencerOpen"
-                    [project]="project"
-                    [pattern]="project?.selectedPattern | async"
-                    [window]="project?.windows[0]"
-                    (close)="closeSequencer()"></sequencer2>
+        <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
       </div>
     </div>
 
@@ -71,39 +59,19 @@
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <sequencer2 *ngIf="project?.ready && project?.sequencerOpen"
+                  [project]="project"
+                  [pattern]="project?.selectedPattern | async"
+                  [window]="project?.windows[0]"
+                  (close)="closeSequencer()"></sequencer2>
+    </div>
+    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+    </div>
     <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
     <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
   </div>
  <!-- <effects-panel [track]="project?.selectedTrack"></effects-panel>-->
 </div>
 
-<!--
-<div class="row daw-grid-container" *ngIf="project">
-  <div class="col-xs-12">
-    <daw-grid
-      (focusedPatternChanged)="focusedPatternChanged($event)"
-      (pluginChanged)="onPluginChanged($event)"
-      (trackAdded)="onTrackAdded($event)"
-      (trackRemoved)="onTrackRemoved($event)"
-      [project]="project.model">
-    </daw-grid>
-  </div>
-</div>
-<div class="row console-container" *ngIf="project">
-  <div class="col-xs-12">
-    <console *ngIf="project" [project]="project"></console>
-  </div>
-</div>
-
-<div class="row sequencer-container" *ngIf="project">
-  <div class="col-xs-12">
-  &lt;!&ndash;  <sequencer *ngIf="project" [pattern]="focusedPattern" [cellWidth]="100" [cellHeight]="50"></sequencer>&ndash;&gt;
-  </div>
-</div>
-<pattern-observer *ngIf="project" [project]="project" [pattern]="focusedPattern" [track]="focusedTrack"></pattern-observer>
-<nav class="navbar navbar-dark bg-light footer fixed-bottom">
-  <daw-control *ngIf="project" [project]="project"></daw-control>
-</nav>
--->

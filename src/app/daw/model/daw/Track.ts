@@ -9,7 +9,7 @@ export class Track {
   id: string;
   index: number;
   name: string;
-  color:string="red";
+  color:string;
   controlParameters: TrackControlParameters=new TrackControlParameters();
   private subscriptions: Array<Subscription> = [];
   plugin: WstPlugin;

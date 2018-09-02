@@ -1,95 +1,91 @@
 @import "../../../variables";
+@import "add-row-btn";
 
-$width:150px;
+$width: 150px;
 
-
-.color-picker{
-
-}
-
-
-.matrix-table{
-  th{
-    position: relative;
-    background-color: $daw-secondary;
-    height:30px;
-    padding:0;
-    span{
-      //white-space:nowrap;
-    }
-  }
-  td{
-    width:$width;
-    max-width: $width;
-    height:50px;
-    padding:0;
-
-
-  }
-  td:hover{
-    background-color: lighten($daw-primary,5%);
-  }
+.color-picker {
+  width: 30px;
 }
 
 .matrix-container {
   position: relative;
   overflow: auto;
-  height:$matrix-height;
+  height: $matrix-height;
+  background-color: $primary;
 }
 
-.cell-container{
-  width: 100%;
-  height:100%;
+.table {
+  margin-bottom: 0;
+}
 
-  &.marked{
+.cell-container {
+  width: 100%;
+  height: 100%;
+
+  &.marked {
 
     //background-color: darken($patternColor,20%);
   }
 }
 
-.console-table{
+.console-table {
   margin-bottom: 0;
-  height:$console-height;
+  height: $console-height;
   position: absolute;
-  bottom:0;
-  td{
-    width:$width;
+  bottom: 0;
+  td {
+    width: $width;
     max-width: $width;
-    padding:0;
+    padding: 0;
   }
 }
 
-.matrix-table{
+.matrix-table {
 
-  .row-header{
-    width:20px;
+  border-bottom: 0;
+  .add-row-cell {
+    border: 0;
   }
-  td{
-
-    &.drag-active{
+  th {
+    background-color: $secondary;
+    height: 50px;
+    padding: 0;
+    /*  border-bottom: 1px solid $primary-color;
+      border-right: 1px solid $primary-color;*/
+  }
+  td {
+    height: 50px;
+    padding: 0;
+    /*   border-right: 1px solid $primary-color;
+       border-bottom: 1px solid $primary-color;*/
+    &.drag-active {
       //background-color: yellow;
     }
-    &.drag-target{
-      background-color: darken($color11,10%);
+    &.drag-target {
+      background-color: darken($color11, 10%);
     }
-/*
-    &.active{
-      background-color: red;
-    }*/
+  }
 
+  td:hover {
+    background-color: lighten($primary, 5%);
+  }
+
+  .row-header {
 
   }
+
 }
 
-.toggle-button{
-  //color:$patternColor;
-  border:none;
-  border-right: 1px solid $daw-secondary;
+.toggle-button {
+  border: none;
+  border-right: 1px solid $secondary;
   background-color: transparent;
   height: 100%;
 
 }
-.scene-toggle-btn{
+
+.scene-toggle-btn {
 
   height: 100%;
 }
+

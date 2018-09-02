@@ -11,5 +11,6 @@ export class Cell<T>{
   row:number;
   column:number;
   data:T;
+  animation:string;
 
 }

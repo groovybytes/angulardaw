@@ -18,6 +18,8 @@ import {PatternsService} from "../shared/services/patterns.service";
 import {DragHandler} from "../model/daw/visual/DragHandler";
 import {MatrixDragHandler} from "./DragHandler";
 import {KeyboardState} from "../shared/model/KeyboardState";
+import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {MatrixService} from "../shared/services/matrix.service";
 
 
 @Component({
@@ -32,18 +34,18 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   cells: QueryList<ElementRef>;
 
   dragHandler: DragHandler;
-  colors = ["red", "yellow", "blue"];
 
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
-              private matrixService: DawMatrixService) {
+              private matrixService:MatrixService,
+              private dawMatrixService: DawMatrixService) {
   }
 
 
   ngOnChanges(changes: SimpleChanges): void {
 
     if (changes.project && changes.project.currentValue) {
-      this.dragHandler = new MatrixDragHandler(this.project, this.matrixService);
+      this.dragHandler = new MatrixDragHandler(this.project, this.dawMatrixService);
     }
 
   }
@@ -58,19 +60,29 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onCellContainerClicked(cell: Cell<Pattern>): void {
-    this.matrixService.onCellContainerClicked(cell, this.project);
+    this.dawMatrixService.onCellContainerClicked(cell, this.project);
   }
 
   onRowHeaderClicked(cell: Cell<string>): void {
     this.patternsService.toggleScene(cell.row, this.project);
   }
 
+  pluginSelected(plugin:PluginInfo):void{
+    this.dawMatrixService.addTrackWithPlugin(plugin,this.project);
+  }
+
+  addRow():void{
+    this.matrixService.addRow(this.project.matrix);
+  }
+  removeRow(row:number):void{
+    this.matrixService.removeRow(this.project.matrix,row);
+  }
   bodyCellDblClicked(cell: Cell<Pattern>): void {
-    this.matrixService.bodyCellDblClicked(cell, this.project);
+    this.dawMatrixService.bodyCellDblClicked(cell, this.project);
   }
 
   bodyCellClicked(cell: Cell<Pattern>): void {
-    this.matrixService.bodyCellClicked(cell, this.project);
+    this.dawMatrixService.bodyCellClicked(cell, this.project);
   }
 
   getTrack(trackId: string): Track {

@@ -39,11 +39,11 @@ export class Sequencer2Component implements OnInit, OnChanges {
   @Input() project: Project;
   @Input() pattern: Pattern;
   @Input() cellWidth: number = 50;
-  @Input() cellHeight: number = 100;
+  @Input() cellHeight: number = 50;
   @Input() window: WindowSpecs;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
-  @ViewChild("card") card: ElementRef;
+/*  @ViewChild("card") card: ElementRef;*/
   readonly cells: Array<NoteCell> = [];
   allNotes: Array<string>;
   tick: number;
@@ -56,7 +56,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
     options: {
       floor: 1,
       ceil: 16,
-      vertical: false,
+      vertical: true,
       showSelectionBar: true
     }
   };
@@ -82,8 +82,8 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.sequencerService.initializeWindow(this.card.nativeElement, this.window);
-    this.sequencerService.updateWindow(this.card.nativeElement, this.window);
+   /* this.sequencerService.initializeWindow(this.card.nativeElement, this.window);
+    this.sequencerService.updateWindow(this.card.nativeElement, this.window);*/
 
   }
 
@@ -93,8 +93,12 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
 
-  changePatternLength(value: SimpleSliderModel): void {
+  /*changePatternLength(value: SimpleSliderModel): void {
     this.pattern.setLengthInBars(value.value);
+    this.updateCells();
+  }*/
+  changePatternLength(value: number): void {
+    this.pattern.setLengthInBars(value);
     this.updateCells();
   }
 

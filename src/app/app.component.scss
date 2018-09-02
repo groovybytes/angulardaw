@@ -12,14 +12,22 @@
   }
 
   .footer{
+  /*  border-top: 1px solid black;
+    padding: 0;*/
     height: $footer-height;
-    background-color: $color10;
+    background-color: $primary;
   }
 
-  .btn{
-    color:$daw-secondary;
+  .btn-primary{
+    color:$secondary;
+  }
+  .btn-tertiary{
+    color:$primary-color;
   }
 
+  .btn:focus, btn.focus{
+    box-shadow: none !important;
+  }
 
 }
 

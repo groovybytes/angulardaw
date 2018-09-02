@@ -14,6 +14,8 @@ import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model/mip/NoteLength";
 import {TransportSettings} from "../model/daw/transport/TransportSettings";
 import {KeyboardState} from "../shared/model/KeyboardState";
+import {MatrixService} from "../shared/services/matrix.service";
+import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 
 @Injectable()
 export class DawMatrixService {
@@ -22,6 +24,7 @@ export class DawMatrixService {
               private patternService: PatternsService,
               private projectsService: ProjectsService,
               @Inject("KeyboardState") private keyboardState: KeyboardState,
+              private matrixService: MatrixService,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -29,32 +32,18 @@ export class DawMatrixService {
   onDrop(event: DragEvent, project: Project, matrix: Matrix): void {
     $(event.target).removeClass("drag-target");
     let data = JSON.parse(event.dataTransfer.getData("text"));
-    if (data.command === "plugin") {
-      let cell = this.findBodyCell($(event.target).attr("id"), matrix.body);
-      this.addTrackWithPlugin(data.id, cell, matrix, project)
-        .catch(error => this.system.error(error));
+
+    let sourceCell: Cell<Pattern> = this.findBodyCell(data.id, matrix.body);
+    let targetCell: Cell<Pattern> = this.findBodyCell($(event.target).attr("id"), matrix.body);
+    if (this.keyboardState.Ctrl.getValue() === true) {
+      let patternCopy = this.patternService.copyPattern(sourceCell.data, sourceCell.trackId, project);
+      targetCell.data = patternCopy;
     }
     else {
-      let sourceCell: Cell<Pattern> = this.findBodyCell(data.id, matrix.body);
-      let targetCell: Cell<Pattern> = this.findBodyCell($(event.target).attr("id"), matrix.body);
-      if (this.keyboardState.Ctrl.getValue() === true) {
-        let patternCopy = this.patternService.copyPattern(sourceCell.data, sourceCell.trackId, project);
-        targetCell.data = patternCopy;
-      }
-      else {
-        targetCell.data = sourceCell.data;
-        sourceCell.data = null;
-      }
-
-
-      /*if (targetCell.trackId !== sourceCell.trackId) {
-        let sourceTrack = project.tracks.find(t => t.id === sourceCell.trackId);
-        let targetTrack = project.tracks.find(t => t.id === targetCell.trackId);
-        let patternIndex = sourceTrack.patterns.findIndex(p => p.id === targetCell.data.id);
-        targetTrack.patterns.push(sourceTrack.patterns[patternIndex]);
-        sourceTrack.patterns.splice(patternIndex, 1);
-      }*/
+      targetCell.data = sourceCell.data;
+      sourceCell.data = null;
     }
+
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>, project: Project): void {
@@ -72,7 +61,6 @@ export class DawMatrixService {
 
   bodyCellClicked(cell: Cell<Pattern>, project: Project): void {
     if (cell.data) cell.data.marked = !cell.data.marked;
-    console.log(cell);
   }
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
@@ -84,71 +72,32 @@ export class DawMatrixService {
   }
 
 
-  /*startScene(cell: Cell<any>, project: Project): void {
-    if (cell.data === true) {
-      project.transport.stop();
-      cell.data = false;
-    }
-    else {
-      let row = project.matrix.body[cell.row];
-      let cellsToPlay = row.filter(cell => cell.trackId && cell.data);
-      let maxPatternLength = 0;
-      project.tracks.forEach(track=>track.focusedPattern=null);
-      cellsToPlay.forEach(cell => {
-        let track = project.getTrack(cell.trackId);
-        track.focusedPattern = cell.data;
-        if (cell.data.length > maxPatternLength) maxPatternLength = cell.data.length;
-      });
-      project.matrix.rowHeader.forEach(header => header.data = false);
-      cell.data = true;
-      project.transport.params.loopEnd.next(maxPatternLength);
-      project.transport.params.loop.next(true);
-      project.transport.start();
-    }
-
-  }
-
-  startClip(cell: Cell<Pattern>, project: Project, event: MouseEvent): void {
-    event.stopPropagation();
-    let track = project.getTrack(cell.trackId);
-    if (track.transport.isRunning()) {
-      track.transport.stop();
-    }
-    else {
-      //this.trackService.toggleSolo(project,track);
-      track.resetEvents(cell.data.events);
-      track.focusedPattern=cell.data;
-      track.transport.start();
-    }
-
-
-  }*/
-
-
-  private addTrackWithPlugin(pluginId: string, cell: Cell<Pattern>, matrix: Matrix, project: Project): Promise<void> {
+  addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
 
     return new Promise((resolve, reject) => {
-      let track: Track;
-      if (!cell.trackId) {
-        track = this.trackService.addTrack(project, cell.column);
-        let header = matrix.header.find(header => header.column === cell.column);
-        header.data = track;
-        this.getAllCellsForColumn(project.matrix, cell.column).forEach(_cell => _cell.trackId = track.id);
-      }
-      else track = project.tracks.find(t => t.id === cell.trackId);
+      let matrix=project.matrix;
+      let newColumnIndex = this.matrixService.addColumn(matrix, 4);
+      let track: Track = this.trackService.addTrack(project, newColumnIndex);
 
-      let pluginInfo = project.plugins.find(p => p.id === pluginId);
+      let header=  matrix.header.find(cell => cell.column === newColumnIndex);
+      header.data = track;
+      header.trackId=track.id;
+      _.flatten(matrix.body).filter(cell => cell.column === newColumnIndex).forEach(cell => {
+        cell.trackId = track.id;
+      });
+
+      let pluginInfo = project.plugins.find(p => p.id === plugin.id);
       this.pluginService.loadPluginWithInfo(pluginInfo)
         .then(plugin => {
           track.plugin = plugin;
           track.name = plugin.getId();
 
-
-          resolve();
+          resolve(track);
         })
         .catch(error => reject(error));
     })
   }
+
 
   private findBodyCell(id: string, cells: Array<Array<Cell<any>>>): Cell<any> {
     return _.flatten(cells).find(cell => cell.id === id);

@@ -1,6 +1,6 @@
 export class SequencerD3Specs {
-  cellWidth: number = 100;
-  cellHeight: number = 80;
+  cellWidth: number = 80;
+  cellHeight: number = 40;
   columns:number=0;
   rows:number=0;
 }

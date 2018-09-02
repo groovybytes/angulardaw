@@ -32,6 +32,7 @@ export class Project {
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   plugins:Array<PluginInfo>=[];
+  colors = ["lightblue", "yellow", "red"];
 
   private systemChannels=["_metronome"];
   private subscriptions: Array<Subscription> = [];

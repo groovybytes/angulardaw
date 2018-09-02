@@ -1,12 +1,7 @@
 @import "../../../variables";
 
 .card {
-  z-index: 2000;
-  position: absolute;
-  left: 100px;
-  top: 100px;
-  resize: both;
-  width: $sequencer-width;
+  width: 100%;
   height: $sequencer-height;
 
   &.maximized{
@@ -19,10 +14,12 @@
 .card-body {
   overflow: auto;
 }
-
+.slider-container{
+  width:200px;
+  float:right;
+}
 .toggle-button {
-  color: $color7;
-  height: 100%;
+
 }
 
 .scene-toggle-btn {
@@ -42,7 +39,6 @@
 
   .sequencer-container {
     position: relative;
-    margin-left: 100px;
     height:800px;
   }
   .cell {

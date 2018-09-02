@@ -19,40 +19,47 @@ $color12: #8897af;
 $red:red;
 $blue:$color6;
 
-$daw-primary:#858585;
-$daw-secondary:#585858;
-$daw-tertiary: rgba(79, 93, 117, 1);
+$primary:#858585;
+$secondary:#585858;
+$tertiary: rgba(79, 93, 117, 1);
+
+$primary-color:black;
+$alt-color:rgba(162, 62, 72, 1);
 
 $theme-colors: (
-  "primary": $daw-primary,
-  "secondary": $daw-secondary,
-  "tertiary": $daw-tertiary,
+  "primary": $primary,
+  "secondary": $secondary,
+  "tertiary": $tertiary,
   "danger": $color9,
   "info":$color3,
   "warning":$color5
 );
 
 $enable-gradients:false;
-$enable-shadows:true;
+$enable-shadows:false;
 $card-bg:lighten($body-bg,10%);
-$body-bg: $color2;
-$body-color: $gray-900;
+$body-bg: white;
+$body-color: black;
 
+$active-background:red;
 $header-height: 5vh;
-$main-height:75vh;
-$footer-height: 20vh;
-$matrix-height:73vh;
+$main-height:55vh;
+$footer-height: 40vh;
+$matrix-height:55vh;
 $sequencer-height:60vh;
 $sequencer-width:1200px;
 $console-height:20vh;
 
-$table-head-bg:red;
+
 $table-bg:$color11;
 $table-accent-bg:$color11;//darken($color2,5%);
-$table-border-color:$color1;
-
+$table-border-color:$secondary;
 $table-hover-bg:lighten($color2,10%);
 $table-active-bg:$color7;
-$table-head-color:red;
+
+
+$link-color:$primary-color;
+$nav-tabs-border-color:$tertiary;
+
 
 

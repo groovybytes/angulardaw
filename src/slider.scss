@@ -1,0 +1,15 @@
+@import "variables";
+
+.ng5-slider{
+  .ng5-slider-span{
+    color: $primary-color !important;
+  }
+
+  .ng5-slider-pointer{
+    background-color: $primary-color !important;
+    outline-style: none !important;
+  }
+  .ng5-slider-selection{
+    background-color: $alt-color !important;
+  }
+}

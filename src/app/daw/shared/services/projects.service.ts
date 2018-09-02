@@ -57,8 +57,8 @@ export class ProjectsService {
     sequencerWindow.id = "sequencer";
     project.windows.push(sequencerWindow);
 
-    let nColumns = 10;
-    let nRows = 10;
+    let nColumns = 0;
+    let nRows = 0;
 
     for (let i = 0; i < nColumns; i++) {
       project.matrix.header.push(new Cell<Track>(-1, i));
@@ -113,7 +113,7 @@ export class ProjectsService {
   createMetronomePattern(project: Project, track: Track): Pattern {
     let metronomeEvents = this.patternsService.createMetronomeEvents(project.transportSettings.global.beatUnit);
     let transportContext = project.createTransportContext();
-    transportContext.settings.loopEnd=project.transportSettings.global.beatUnit;
+    transportContext.settings.loopEnd = project.transportSettings.global.beatUnit;
     let pattern = new Pattern(
       "_metronome",
       [],
@@ -144,7 +144,6 @@ export class ProjectsService {
 
   }
 
-
   private serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
@@ -152,7 +151,7 @@ export class ProjectsService {
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
     projectDto.sequencerOpen = project.sequencerOpen;
-    projectDto.selectedPattern = project.selectedPattern.getValue()?project.selectedPattern.getValue().id:null;
+    projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
     projectDto.tracks = [];
     projectDto.patterns = [];
     projectDto.windows = project.windows;
@@ -177,7 +176,7 @@ export class ProjectsService {
       patternDto.length = pattern.length;
       patternDto.events = pattern.events;
       patternDto.notes = pattern.notes;
-      patternDto.quantizationEnabled=pattern.quantizationEnabled.getValue();
+      patternDto.quantizationEnabled = pattern.quantizationEnabled.getValue();
       patternDto.quantization = pattern.quantization.getValue();
       patternDto.settings = pattern.transportContext.settings;
       projectDto.patterns.push(patternDto);
@@ -205,6 +204,7 @@ export class ProjectsService {
     });
 
     projectDto.matrix.rowHeader = project.matrix.rowHeader;
+    projectDto.matrix.rowHeader.forEach(cell=>cell.animation=null);
 
     return projectDto;
   }
@@ -220,9 +220,9 @@ export class ProjectsService {
       project.windows = dto.windows;
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
-        .then(plugins=>{
+        .then(plugins => {
 
-          project.plugins=plugins;
+          project.plugins = plugins;
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
@@ -235,8 +235,8 @@ export class ProjectsService {
             project.tracks.push(track);
 
             if (t.pluginId) {
-              let pluginInfo=project.plugins.find(p=>p.id===t.pluginId);
-              if (!pluginInfo) throw "plugin not found with id "+t.pluginId;
+              let pluginInfo = project.plugins.find(p => p.id === t.pluginId);
+              if (!pluginInfo) throw "plugin not found with id " + t.pluginId;
               let promise = this.pluginsService.loadPluginWithInfo(pluginInfo);
               pluginPromises.push(promise);
               promise.then(plugin => track.plugin = plugin);
@@ -252,7 +252,7 @@ export class ProjectsService {
                   let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
                   pattern.quantizationEnabled.next(p.quantizationEnabled);
                   p.events.forEach(ev => pattern.events.push(ev));
-                  pattern.length=p.length;
+                  pattern.length = p.length;
                 }
                 else throw new Error("invalid matrix data");
 

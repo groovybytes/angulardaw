@@ -1,46 +1,48 @@
-<div
-  class="card bg-secondary shadow-lg rounded"
-  interact
-  [ngClass]="{'maximized':window?.isMaximized}"
-  parent="#daw-main-container"
-  #card>
-  <!-- [ngStyle]="{'left':window.x+'px','top':window.y+'px','width':window.width+'px','height':window.height+'px'}"-->
-  <div class="card-header drag-handle">
-    <quantization [quantization]="pattern?.quantization.getValue()"
-                  (quantizationChanged)="changeQuantization($event)"></quantization>
-    <button type="button"
-            (click)="toggleClip()"
-            class="btn btn-primary toggle-button shadow-sm float-left rounded-0">
-      <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
-      <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
-    </button>
-    <button type="button"
-            (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
-            [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
-            class="btn btn-secondary">
-      Quantization Enabled
-    </button>
+<div class="row">
+  <div class="col-2">
+    <div class="row">
+      <div class="col-12">
+        <quantization [quantization]="pattern?.quantization.getValue()"
+                      (quantizationChanged)="changeQuantization($event)"></quantization>
+        <div class="btn-group-vertical">
 
-    <div class="btn-group float-right" role="group" >
-      <button type="button" class="close" (click)="window.isMaximized=true" aria-label="maximize">
-        <i class="far fa-window-maximize"></i>
-      </button>
-      <button type="button" class="close" (click)="close.emit()" aria-label="Close">
-      <i class="far fa-window-close"></i>
-    </button>
+          <button type="button"
+                  (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
+                  [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
+                  class="btn btn-secondary">
+            Q
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+
+        <div class="btn-group">
+          <button type="button" (click)="changePatternLength(1)" class="btn btn-primary">1</button>
+          <button type="button" (click)="changePatternLength(1)" class="btn btn-primary">2</button>
+          <button type="button" (click)="changePatternLength(1)" class="btn btn-primary">3</button>
+          <button type="button" (click)="changePatternLength(1)" class="btn btn-primary">4</button>
+        </div>
+      </div>
     </div>
 
 
-
-  </div>
-  <div class="card-body shadow-lg">
-    <div class="slider-container">
+    <!--<div class="slider-container">
       <ng5-slider [value]="pattern?.getLengthInBars()" [options]="lengthSlider.options"
                   (userChange)="changePatternLength($event)">
-
       </ng5-slider>
-    </div>
-    <div *ngIf="pattern" class="sequencer-container">
+    </div>-->
+  </div>
+  <div class="col-10">
+    <!-- <button type="button"
+             (click)="toggleClip()"
+             class="btn btn-primary toggle-button rounded-0">
+       <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
+       <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
+     </button>-->
+    <div *ngIf="pattern" class="sequencer-container" [ngStyle]="{'margin-left':cells[0]?.width+'px'}">
+
       <div class="cell"
            *ngFor="let cell of cells"
            [attr.data-id]="cell.id"
@@ -76,19 +78,14 @@
            [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
            'height':cell.height+'px','line-height':cell.height+'px'}">
 
-        <span *ngIf="cell.data!=null" class="">T</span>
         <span *ngIf="cell.row===-1" class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
         <span *ngIf="cell.column===-1" class="">{{cell.note}}</span>
       </div>
     </div>
-
-
   </div>
 </div>
 
-<!--
 
--->
 
 
 

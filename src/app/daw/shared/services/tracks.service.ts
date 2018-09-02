@@ -53,6 +53,7 @@ export class TracksService {
   addTrack(project: Project,index:number): Track {
     let track = this.createDefaultTrack(index);
     track.name = "track name";
+    track.color=project.colors[0];
     project.tracks.push(track);
     return track;
   }
