@@ -1,0 +1,29 @@
+<!--
+<div class="btn-group">
+  <button type="button" class="btn dropdown-toggle btn-block rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    &nbsp;
+  </button>
+  <div class="dropdown-menu">
+    <a class="btn btn-primary dropdown-item"
+       href
+       [routerLink]=""
+       [ngStyle]="{'background-color':color}"
+       *ngFor="let plugin of plugins">{{plugin.name}}</a>
+
+  </div>
+</div>
+-->
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Add Track
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="btn btn-primary dropdown-item"
+       href
+       (click)="pluginSelected.emit(plugin)"
+       [routerLink]=""
+       [ngStyle]="{'background-color':color}"
+       *ngFor="let plugin of plugins">{{plugin.name}}</a>
+  </div>
+</div>

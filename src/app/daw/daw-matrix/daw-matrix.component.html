@@ -28,11 +28,11 @@
         }"
         *ngFor="let row of project.matrix.body;let i = index">
       <td class="row-header col-1">
-        <div class="btn-group">
+        <div class="btn-group  w-100">
           <button type="button" class="btn btn-primary" (click)="removeRow(i)"><i class="far fa-trash-alt"></i></button>
           <button type="button"
                   (click)="onRowHeaderClicked(project.matrix.rowHeader[i])"
-                  class="btn btn-primary scene-toggle-btn rounded-0 btn-block">
+                  class="btn btn-primary scene-toggle-btn rounded-0">
             <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
             <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
           </button>

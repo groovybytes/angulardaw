@@ -71,6 +71,9 @@ export class DawMatrixService {
       project.sequencerOpen = true;*/
   }
 
+  removePatternsFromRow(project:Project,row:number):void{
+
+  }
 
   addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
 
