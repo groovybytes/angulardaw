@@ -1,0 +1,41 @@
+@import "../../../../variables";
+
+.mute-btn {
+  background-color: yellow;
+  &.active {
+    background-color: darken(yellow, 10%);
+  }
+}
+
+.solo-btn {
+  background-color: yellow;
+  &.active {
+    background-color: darken(yellow, 10%);
+  }
+}
+
+.btn-group{
+  position: absolute;
+  bottom:0;
+}
+
+.controls-container{
+  width:100%;
+  height:100%;
+}
+:host{
+
+}
+:host /deep/ {
+  .ng5-slider {
+    height:70%;
+    .ng5-slider-pointer {
+      background-color: yellow;
+    }
+
+  }
+}
+
+
+
+

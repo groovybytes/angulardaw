@@ -55,13 +55,29 @@ export class DawMatrixService {
         cell.data = pattern;
       }
       project.selectedPattern.next(cell.data);
-      project.sequencerOpen = true;
+      project.openedWindows = ["sequencer"];
     }
   }
 
   bodyCellClicked(cell: Cell<Pattern>, project: Project): void {
-    if (cell.data) cell.data.marked = !cell.data.marked;
+    //if (cell.data) cell.data.marked = !cell.data.marked;
+    if (cell.data) project.selectedPattern.next(cell.data);
   }
+
+  bodyCellMenuBtnClicked(cell: Cell<Pattern>, project: Project): void {
+
+      let nextRowCell = project.matrix.body[cell.row + 1][cell.column];
+      if (nextRowCell.patternMenu) {
+        cell.menuOpen=false;
+        nextRowCell.patternMenu=null;
+      }
+      else {
+        nextRowCell.patternMenu = cell.data;
+        cell.menuOpen=true;
+      }
+
+  }
+
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
     /*  let track = project.getTrack(cell.trackId);
@@ -71,20 +87,24 @@ export class DawMatrixService {
       project.sequencerOpen = true;*/
   }
 
-  removePatternsFromRow(project:Project,row:number):void{
-
+  removePatternsFromRow(project: Project, row: number): void {
+    let cells = project.matrix.body[row].filter(cell => cell.data);
+    cells.forEach(cell => {
+      this.patternService.removePattern(project, cell.data.id);
+      cell.data = null;
+    })
   }
 
   addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
 
     return new Promise((resolve, reject) => {
-      let matrix=project.matrix;
+      let matrix = project.matrix;
       let newColumnIndex = this.matrixService.addColumn(matrix, 4);
       let track: Track = this.trackService.addTrack(project, newColumnIndex);
 
-      let header=  matrix.header.find(cell => cell.column === newColumnIndex);
+      let header = matrix.header.find(cell => cell.column === newColumnIndex);
       header.data = track;
-      header.trackId=track.id;
+      header.trackId = track.id;
       _.flatten(matrix.body).filter(cell => cell.column === newColumnIndex).forEach(cell => {
         cell.trackId = track.id;
       });

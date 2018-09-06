@@ -29,6 +29,14 @@
     box-shadow: none !important;
   }
 
+  .btn-primary.dropdown-toggle{
+    color: $primary-color;
+  }
+
+  .dropdown-toggle::after {
+    display:none;
+  }
+
 }
 
 

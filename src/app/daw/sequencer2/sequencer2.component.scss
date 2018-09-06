@@ -4,132 +4,124 @@
   width: 100%;
   height: $sequencer-height;
 
-  &.maximized{
-    width:100%;
-    height:100%;
+  &.maximized {
+    width: 100%;
+    height: 100%;
   }
 }
 
-
 .card-body {
+  div {
+    margin-left: $cell-width;
+    margin-top: 10px;
+  }
   overflow: auto;
 }
-.slider-container{
-  width:200px;
-  float:right;
-}
-.toggle-button {
 
+.slider-container {
+  width: 200px;
+  float: right;
+}
+
+.toggle-button {
+  padding: 0;
 }
 
 .scene-toggle-btn {
-  color: $color7;
   height: 100%;
+}
+
+.card-body {
+  position: relative;
 }
 
 :host /deep/ {
 
-  span{
-    color:white;
-  }
-  .position-indicator {
-    stroke: red;
-    stroke-width: 5px;
-  }
-
-  .sequencer-container {
+  /*.sequencer-container {
     position: relative;
     height:800px;
-  }
+  }*/
   .cell {
     position: absolute;
-    border: 1px solid $color2;
+    border: 1px solid black;
     text-align: center;
     vertical-align: middle;
-/*    -webkit-user-drag: none;
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -o-user-drag: none;
-    user-drag: none;*/
   }
 
   .header-cell {
-    background-color: $color1;
-    &.tick-active{
-      background-color: lighten($color1, 5%);
+
+    &.tick-active {
+      background-color: lighten(yellow, 5%);
     }
   }
   .row-header-cell {
-    background-color: $color1;
+
   }
-  .note-cell{
-    background-color: $color11;
-    &.tick-active{
-      background-color: lighten($color11, 5%);
+  .note-cell {
+
+    &.tick-active {
+      background-color: lighten($primary, 5%);
     }
-    &.drag-active{
-      background-color: darken($color11, 10%);
+    &.drag-active {
+      background-color: darken($primary, 10%);
     }
-    &.drag-target{
-      background-color: $color8;
+    &.drag-target {
+      background-color: $alt-color;
     }
 
   }
-  .event-cell{
-    background-color: $color9;
+  .event-cell {
+    background-color: $red;
     /*resize: horizontal;
     overflow: auto;*/
-    &.tick-active{
-      background-color: lighten($color9, 5%);
+    &.tick-active {
+      background-color: lighten($red, 5%);
     }
 
   }
   .fill-rect {
-    stroke: $color2;
+    // stroke: $color2;
   }
 
   .header-text {
-    fill: white;
+    // fill: white;
   }
 
   .header {
     .fill-rect {
-      fill: $color1 !important;
+      //  fill: $color1 !important;
     }
   }
 
   .note-cell {
 
+    .fill-rect {
+      fill: $primary;
+    }
+
     &.active {
       .fill-rect {
-        fill: $color9;
+        fill: orange;
       }
       cursor: pointer;
     }
     &.active.tick-active {
       .fill-rect {
-        fill: lighten($color9, 5%);
+        fill: lighten(orange, 5%);
       }
     }
 
     &.drag-over {
       .fill-rect {
-        fill: green;
+        fill: orange;
       }
-    }
-
-  }
-
-  .note-cell {
-    .fill-rect {
-      fill: $color11;
     }
 
   }
 
   .tick-active {
     .fill-rect {
-      fill: lighten($color11, 5%);
+      fill: lighten(green, 5%);
     }
   }
 }

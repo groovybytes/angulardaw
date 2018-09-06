@@ -17,7 +17,6 @@ import {Pattern} from "../model/daw/Pattern";
 import {NoteCell} from "./model/NoteCell";
 import {TracksService} from "../shared/services/tracks.service";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
-import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
 import {Project} from "../model/daw/Project";
 import {SequencerService2} from "./sequencer2.service";
 import {Subscription} from "rxjs/internal/Subscription";
@@ -40,7 +39,6 @@ export class Sequencer2Component implements OnInit, OnChanges {
   @Input() pattern: Pattern;
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 50;
-  @Input() window: WindowSpecs;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
 /*  @ViewChild("card") card: ElementRef;*/

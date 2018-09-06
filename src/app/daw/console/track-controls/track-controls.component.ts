@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Track} from "../model/daw/Track";
-import {Project} from "../model/daw/Project";
-import {TracksService} from "../shared/services/tracks.service";
-import { Options } from 'ng5-slider';
-import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 
+import { Options } from 'ng5-slider';
+import {Project} from "../../model/daw/Project";
+import {SimpleSliderModel} from "../../model/daw/visual/SimpleSliderModel";
+import {Track} from "../../model/daw/Track";
+import {TracksService} from "../../shared/services/tracks.service";
 
 
 @Component({

@@ -1,4 +1,3 @@
-import {WindowSpecs} from "../visual/WindowSpecs";
 import {TrackDto} from "./TrackDto";
 import {MatrixDto} from "./MatrixDto";
 import {PatternDto} from "./PatternDto";
@@ -11,8 +10,7 @@ export class ProjectDto{
   selectedPattern:string;
   matrix: MatrixDto;
   patterns:Array<PatternDto>;
-  sequencerOpen: boolean;
+  openedWindows: Array<string>;
   tracks: Array<TrackDto> = [];
-  windows: Array<WindowSpecs> = [];
   transportSettings:TransportSettings;
 }

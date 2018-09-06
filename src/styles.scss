@@ -1,25 +1,9 @@
 @import "variables";
+@import "bootstrap.variables";
 @import 'scrollbar';
 @import 'slider';
 @import 'app/scss/utils';
-@import '~bootstrap/scss/bootstrap';
 @import '~hover.css/scss/hover';
-
-
-html, body {
-  min-width:500px;
-}
-.slider {
-  -webkit-appearance: none;  /* Override default CSS styles */
-  appearance: none;
-  width: 100%; /* Full-width */
-  height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
-  outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
-}
 
 
 body{
@@ -27,10 +11,11 @@ body{
   overflow: auto;
 }
 
-.main-container {
-  height: $main-height;
-  max-height: $main-height;
+.container-fluid{
+  margin:0;
+  padding:0;
 }
+
 .no-wrap{
   white-space: nowrap;
   display:inline-block !important;

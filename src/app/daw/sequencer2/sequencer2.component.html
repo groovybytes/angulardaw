@@ -1,8 +1,8 @@
-<div class="row">
+<!--<div class="row" *ngIf="pattern">
   <div class="col-2">
     <div class="row">
       <div class="col-12">
-        <quantization [quantization]="pattern?.quantization.getValue()"
+        <quantization [quantization]="pattern.quantization.getValue()"
                       (quantizationChanged)="changeQuantization($event)"></quantization>
         <div class="btn-group-vertical">
 
@@ -28,19 +28,67 @@
     </div>
 
 
-    <!--<div class="slider-container">
+    &lt;!&ndash;<div class="slider-container">
       <ng5-slider [value]="pattern?.getLengthInBars()" [options]="lengthSlider.options"
                   (userChange)="changePatternLength($event)">
       </ng5-slider>
-    </div>-->
+    </div>&ndash;&gt;
   </div>
   <div class="col-10">
-    <!-- <button type="button"
+    &lt;!&ndash; <button type="button"
              (click)="toggleClip()"
              class="btn btn-primary toggle-button rounded-0">
        <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
        <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
-     </button>-->
+     </button>&ndash;&gt;
+    <div *ngIf="pattern" class="sequencer-container" [ngStyle]="{'margin-left':cells[0]?.width+'px'}">
+
+      <div class="cell"
+           *ngFor="let cell of cells"
+           [attr.data-id]="cell.id"
+           (click)="onCellClicked(cell)"
+
+           jquery-draggable
+           [dragEnabled]="cell.data && cell.row>=0 && cell.column>=0 && !isResizing && pattern.quantizationEnabled.getValue()===false"
+           (jqDragStart)="dragStart()"
+           (jqDragEnd)="dragEnd($event)"
+           [draggedCell]="cell"
+
+           [draggable]="cell.data && cell.row>=0 && cell.column>=0 && pattern.quantizationEnabled.getValue()"
+           (dragstart)="dragHandler.onDragStart($event,cell)"
+           (dragover)="dragHandler.onDragOver($event)"
+           (dragleave)="dragHandler.onDragLeave($event)"
+           (drag)="dragHandler.onDrag($event)"
+           (dragend)="dragHandler.onDragEnd($event)"
+           (drop)="dragHandler.onDrop($event)"
+
+           interact-resizable
+           (resizeStart)="resizeStart()"
+           (resizeEnd)="resizeEnd($event)"
+           [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+           parent=".sequencer-container"
+
+           [ngClass]="{
+           'header-cell':cell.row===-1,
+           'row-header-cell':cell.column===-1,
+           'event-cell':cell.data,
+           'tick-active':cell.tick === tick &&clipIsRunning(),
+           'note-cell':cell.row>=0 && cell.column>=0}"
+
+           [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
+           'height':cell.height+'px','line-height':cell.height+'px'}">
+
+        <span *ngIf="cell.row===-1" class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
+        <span *ngIf="cell.column===-1" class="">{{cell.note}}</span>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<!--
+<div class="card" style="width: 100%;">
+  <img class="card-img-top" src=".../100px180/" alt="Card image cap">
+  <div class="card-body">
     <div *ngIf="pattern" class="sequencer-container" [ngStyle]="{'margin-left':cells[0]?.width+'px'}">
 
       <div class="cell"
@@ -84,7 +132,91 @@
     </div>
   </div>
 </div>
+-->
 
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div *ngIf="pattern" [ngStyle]="{'margin-left':cells[0]?.width+'px'}">
+          <div class="cell" [ngStyle]="{
+          'left':-cells[0]?.width+'px',
+          'top':0,
+          'width':cells[0]?.width+'px',
+          'height':cells[0]?.height+'px',
+          'line-height':cells[0]?.height+'px'}">
+            <button type="button"
+                    (click)="toggleClip()"
+                    class="btn btn-primary btn-block toggle-button rounded-0 h-100">
+              <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
+              <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
+            </button>
+          </div>
+
+          <div class="cell"
+               *ngFor="let cell of cells"
+               [attr.data-id]="cell.id"
+               (click)="onCellClicked(cell)"
+
+               jquery-draggable
+               [dragEnabled]="cell.data && cell.row>=0 && cell.column>=0 && !isResizing && pattern.quantizationEnabled.getValue()===false"
+               (jqDragStart)="dragStart()"
+               (jqDragEnd)="dragEnd($event)"
+               [draggedCell]="cell"
+
+               [draggable]="cell.data && cell.row>=0 && cell.column>=0 && pattern.quantizationEnabled.getValue()"
+               (dragstart)="dragHandler.onDragStart($event,cell)"
+               (dragover)="dragHandler.onDragOver($event)"
+               (dragleave)="dragHandler.onDragLeave($event)"
+               (drag)="dragHandler.onDrag($event)"
+               (dragend)="dragHandler.onDragEnd($event)"
+               (drop)="dragHandler.onDrop($event)"
+
+               interact-resizable
+               (resizeStart)="resizeStart()"
+               (resizeEnd)="resizeEnd($event)"
+               [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+               parent=".sequencer-container"
+
+               [ngClass]="{
+           'header-cell':cell.row===-1,
+           'row-header-cell':cell.column===-1,
+           'event-cell':cell.data,
+           'tick-active':cell.tick === tick &&clipIsRunning(),
+           'note-cell':cell.row>=0 && cell.column>=0}"
+
+               [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
+           'height':cell.height+'px','line-height':cell.height+'px'}">
+
+            <span *ngIf="cell.row===-1" class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
+            <span *ngIf="cell.column===-1" class="">{{cell.note}}</span>
+          </div>
+        </div>
+        <!--
+                class="sequencer-container"
+        -->
+      </div>
+      <div class="card-footer">
+        <quantization [quantization]="pattern.quantization.getValue()"
+                      (quantizationChanged)="changeQuantization($event)"></quantization>
+
+        <div class="btn-group">
+
+          <button type="button"
+                  (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
+                  [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
+                  class="btn btn-secondary">
+            Q
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!--<ng5-slider [value]="pattern?.getLengthInBars()" [options]="lengthSlider.options"
+            (userChange)="changePatternLength($event)">
+</ng5-slider>-->
 
 
 

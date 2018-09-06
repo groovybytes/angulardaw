@@ -74,8 +74,14 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   addRow():void{
     this.matrixService.addRow(this.project.matrix);
   }
+
   removeRow(row:number):void{
+    this.dawMatrixService.removePatternsFromRow(this.project,row);
     this.matrixService.removeRow(this.project.matrix,row);
+  }
+
+  bodyCellMenuBtnClicked(cell:Cell<Pattern>):void{
+    this.dawMatrixService.bodyCellMenuBtnClicked(cell,this.project);
   }
   bodyCellDblClicked(cell: Cell<Pattern>): void {
     this.dawMatrixService.bodyCellDblClicked(cell, this.project);

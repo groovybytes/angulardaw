@@ -2,22 +2,33 @@
 
 .top-navbar{
   height:$header-height;
+  background-color: $alt-color;
 }
-.container-fluid{
+/*.container-fluid{
   height:$main-height;
-  padding:0;
 
+}*/
+.tab-pane{
+  height: $footer-height;
 }
 
-.slider-container{
-  width:200px;
+.footer{
+  background-color: $secondary;
 }
-
 
 nav{
   padding:0;
 }
-.daw-grid-container{
+
+
+.sequencer-container{
+  position: absolute;
+}
+/*.daw-grid-container{
   height: $main-height*2/3;
   overflow: auto;
-}
+}*/
+
+/*.matrix-container{
+  overflow: auto;
+}*/

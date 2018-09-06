@@ -1,0 +1,40 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import "_variables.scss";
+
+$body-bg: $primary;
+$body-color: black;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "tertiary": $tertiary,
+  "danger": red,
+  "info":white,
+  "warning":red
+);
+
+$enable-gradients:false;
+$enable-shadows:false;
+$card-bg:lighten($body-bg,10%);
+
+
+
+/*$table-bg:$color11;
+$table-accent-bg:$color11;//darken($color2,5%);
+$table-border-color:$secondary;
+$table-hover-bg:lighten($color2,10%);
+$table-active-bg:$color7;*/
+
+$dropdown-bg:$white;
+
+$active-background:red;
+
+$link-color:$primary-color;
+$nav-tabs-border-color:$tertiary;
+
+@import '~bootstrap/scss/bootstrap';
+
+
+

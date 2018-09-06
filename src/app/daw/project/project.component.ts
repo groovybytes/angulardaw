@@ -6,10 +6,6 @@ import {System} from "../../system/System";
 import {Options} from 'ng5-slider';
 import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 
-
-
-
-
 @Component({
   selector: 'project',
   templateUrl: './project.component.html',
@@ -19,6 +15,7 @@ export class ProjectComponent implements OnInit {
 
   project: Project;
   sideBarOpen: boolean = true;
+  slideOut:boolean=false;
   slider: SimpleSliderModel = {
     value: 50,
     options: {
@@ -57,7 +54,6 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-
   switchMetronome(): void {
     this.project.metronomeEnabled.next(!this.project.metronomeEnabled.getValue());
   }
@@ -66,12 +62,33 @@ export class ProjectComponent implements OnInit {
     this.project.transportSettings.global.bpm = bpm.value;
   }
 
-  closeSequencer(): void {
-    this.project.sequencerOpen = false;
-  }
-
   save(): void {
     this.projectsService.save(this.project);
+  }
+
+
+  toggleSequencer(): void {
+    if (this.project.openedWindows.indexOf("sequencer")>=0) {
+      this.slideOut=true;
+      setTimeout(()=>{
+        this.slideOut=false;
+        this.project.openedWindows=[];
+      },700);
+
+  }
+    else this.project.openedWindows=["sequencer"];
+
+  }
+
+  toggleEffectsPanel(): void {
+    if (this.project.openedWindows.indexOf("effects")>=0) {
+      this.slideOut=true;
+      setTimeout(()=>{
+        this.slideOut=false;
+        this.project.openedWindows=[];
+      },700);
+
+    }
   }
 
 }

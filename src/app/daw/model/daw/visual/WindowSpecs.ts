@@ -1,3 +1,4 @@
+/*
 export class WindowSpecs{
   id:string;
   x:number;
@@ -7,3 +8,4 @@ export class WindowSpecs{
   isMaximized:boolean=false;
 
 }
+*/

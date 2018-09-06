@@ -10,7 +10,6 @@ import { SidebarModule } from 'ng-sidebar';
 import { PluginListComponent } from './plugin-list/plugin-list.component';
 import { EffectsPanelComponent } from './effects-panel/effects-panel.component';
 import {TransportComponent} from "./transport/transport.component";
-import { TrackControlsComponent } from './track-controls/track-controls.component';
 import {DawMatrixComponent} from "./daw-matrix/daw-matrix.component";
 import { ProjectObserverComponent } from './project-observer/project-observer.component';
 import { QuantizationComponent } from './quantization/quantization.component';
@@ -19,6 +18,9 @@ import {SequencerService2} from "./sequencer2/sequencer2.service";
 import { Ng5SliderModule } from 'ng5-slider';
 import { PluginDropdownComponent } from './plugin-dropdown/plugin-dropdown.component';
 import {AppRoutingModule} from "../app-routing.module";
+import { BodyCellMenuComponent } from './daw-matrix/body-cell-menu/body-cell-menu.component';
+import { HeaderCellMenuComponent } from './daw-matrix/header-cell-menu/header-cell-menu.component';
+import {TrackControlsComponent} from "./console/track-controls/track-controls.component";
 
 let audioContext = new AudioContext();
 
@@ -35,7 +37,9 @@ let audioContext = new AudioContext();
     ProjectObserverComponent,
     QuantizationComponent,
     Sequencer2Component,
-    PluginDropdownComponent
+    PluginDropdownComponent,
+    BodyCellMenuComponent,
+    HeaderCellMenuComponent
   ],
   imports: [
     BrowserModule,

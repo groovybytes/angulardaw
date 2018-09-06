@@ -1,3 +1,30 @@
+
+
+$primary:#858585;
+$secondary:#585858;
+$tertiary: rgba(79, 93, 117, 1);
+$red:#EE163B;
+
+$primary-color:black;
+$alt-color:rgba(239, 131, 84, 1);
+
+$header-height: 5vh;
+$main-height:55vh;
+$footer-height: 40vh;
+
+$matrix-height:55vh;
+$sequencer-height:60vh;
+$sequencer-width:1200px;
+$console-height:20vh;
+$cell-width:150px;
+
+
+
+
+
+
+
+/*
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
@@ -24,7 +51,7 @@ $secondary:#585858;
 $tertiary: rgba(79, 93, 117, 1);
 
 $primary-color:black;
-$alt-color:rgba(162, 62, 72, 1);
+$alt-color:$color5;
 
 $theme-colors: (
   "primary": $primary,
@@ -38,13 +65,14 @@ $theme-colors: (
 $enable-gradients:false;
 $enable-shadows:false;
 $card-bg:lighten($body-bg,10%);
-$body-bg: white;
+$body-bg: $primary;
 $body-color: black;
 
 $active-background:red;
 $header-height: 5vh;
 $main-height:55vh;
 $footer-height: 40vh;
+
 $matrix-height:55vh;
 $sequencer-height:60vh;
 $sequencer-width:1200px;
@@ -57,9 +85,13 @@ $table-border-color:$secondary;
 $table-hover-bg:lighten($color2,10%);
 $table-active-bg:$color7;
 
+$dropdown-bg:$white;
+
+$active-background:red;
 
 $link-color:$primary-color;
 $nav-tabs-border-color:$tertiary;
+$cell-width:150px;
 
 
-
+*/

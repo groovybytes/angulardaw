@@ -9,7 +9,6 @@ import {Project} from "../../model/daw/Project";
 import {Track} from "../../model/daw/Track";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {Cell} from "../../model/daw/matrix/Cell";
-import {WindowSpecs} from "../../model/daw/visual/WindowSpecs";
 import {Pattern} from "../../model/daw/Pattern";
 import * as _ from "lodash";
 import {ProjectDto} from "../../model/daw/dto/ProjectDto";
@@ -53,9 +52,7 @@ export class ProjectsService {
     project.patterns = [];
     project.id = this.guid();
     project.name = name;
-    let sequencerWindow = new WindowSpecs();
-    sequencerWindow.id = "sequencer";
-    project.windows.push(sequencerWindow);
+    project.openedWindows=[];
 
     let nColumns = 0;
     let nRows = 0;
@@ -150,11 +147,10 @@ export class ProjectsService {
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
-    projectDto.sequencerOpen = project.sequencerOpen;
+    projectDto.openedWindows = project.openedWindows;
     projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
     projectDto.tracks = [];
     projectDto.patterns = [];
-    projectDto.windows = project.windows;
     project.tracks.forEach(track => {
       let trackDto = new TrackDto();
       trackDto.id = track.id;
@@ -216,8 +212,7 @@ export class ProjectsService {
       project.id = dto.id;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
-      project.sequencerOpen = dto.sequencerOpen;
-      project.windows = dto.windows;
+      project.openedWindows = dto.openedWindows;
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {

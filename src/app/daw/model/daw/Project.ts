@@ -1,16 +1,12 @@
 import {Track} from './Track';
 import {Matrix} from "./matrix/Matrix";
-import {WindowSpecs} from "./visual/WindowSpecs";
-import {TimeSignature} from "../mip/TimeSignature";
 import {EventEmitter} from "@angular/core";
-import {GlobalTransportSettings} from "./transport/GlobalTransportSettings";
 import {Pattern} from "./Pattern";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {Transport} from "./transport/Transport";
 import {TransportSettings} from "./transport/TransportSettings";
 import {Subscription} from "rxjs/internal/Subscription";
 import {TransportContext} from "./transport/TransportContext";
-import {WstPlugin} from "./WstPlugin";
 import {PluginInfo} from "./plugins/PluginInfo";
 
 
@@ -22,10 +18,9 @@ export class Project {
   patterns: Array<Pattern> = [];
   activeSceneRow:number;
   matrix: Matrix = new Matrix();
-  sequencerOpen: boolean = false;
+  openedWindows:Array<string>;
   readonly tracks: Array<Track> = [];
   readonly systemTracks: Array<Track> = [];
-  windows: Array<WindowSpecs> = [];
   ready: boolean = false;
   transportSettings: TransportSettings;
   private transport: Transport;

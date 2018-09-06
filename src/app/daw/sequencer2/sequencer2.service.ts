@@ -7,7 +7,6 @@ import {NoteTrigger} from "../model/daw/NoteTrigger";
 import {TracksService} from "../shared/services/tracks.service";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
-import {WindowSpecs} from "../model/daw/visual/WindowSpecs";
 import * as d3 from "d3";
 import * as $ from "jquery";
 import {TimeSignature} from "../model/mip/TimeSignature";
@@ -115,32 +114,7 @@ export class SequencerService2 {
   }
 
 
-  initializeWindow(element: ElementRef, specs: WindowSpecs): void {
-    /* $(element).width(specs.width);
-     $(element).height(specs.height);
- */
-    /* $(element).draggable({
-       handle: ".card-header",
-       containment: "#main-container",
-       scroll: false,
-       drag: (event, ui) => {
-         specs.x = ui.position.left;
-         specs.y = ui.position.top;
-       }
-     });
-     $(element).resizable({
-       resize: (event, ui) => {
-         specs.width = ui.size.width;
-         specs.height = ui.size.height;
-       },
-       handles: "n, e, s, w"
-     });*/
-  }
 
-  updateWindow(element: ElementRef, specs: WindowSpecs): void {
-
-
-  }
 
   addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);

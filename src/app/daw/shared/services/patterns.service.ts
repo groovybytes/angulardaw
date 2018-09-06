@@ -42,6 +42,11 @@ export class PatternsService {
     return pattern;
   }
 
+  removePattern(project:Project,patternId:string):void{
+    let selectedPattern = project.selectedPattern.getValue();
+    _.remove(project.patterns,pattern=>pattern.id===patternId);
+    if (selectedPattern && selectedPattern.id===patternId) project.selectedPattern.next(null);
+  }
   copyPattern(pattern:Pattern,trackId:string,project:Project):Pattern{
     let track = project.tracks.find(track => track.id === trackId);
 

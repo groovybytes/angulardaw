@@ -1,21 +1,32 @@
 @import "../../../variables";
 @import "add-row-btn";
 
-$width: 150px;
+.btn {
+  border: none !important;
+}
 
-.color-picker {
+.menu-btn, .body-menu-btn {
   width: 30px;
+
+  &.menu-open {
+    filter: brightness(50%);
+    //background-color: $secondary !important;
+  }
 }
 
 .matrix-container {
-  position: relative;
+ /* position: relative;
   overflow: auto;
-  height: $matrix-height;
-  background-color: $primary;
+
+  //height: $matrix-height;
+  background-color: $primary;*/
 }
 
 .table {
-  margin-bottom: 0;
+
+  td:hover, th:hover {
+    filter: brightness(95%);
+  }
 }
 
 .cell-container {
@@ -23,25 +34,33 @@ $width: 150px;
   height: 100%;
 
   &.marked {
-
-    //background-color: darken($patternColor,20%);
+    //filter: brightness(50%);
+    border: 1px solid black;
   }
+  &.editing {
+
+    filter: brightness(80%);
+  }
+
 }
 
-.console-table {
-  margin-bottom: 0;
-  height: $console-height;
-  position: absolute;
-  bottom: 0;
-  td {
-    width: $width;
-    max-width: $width;
-    padding: 0;
-  }
-}
 
 .matrix-table {
 
+/*  border: 2px solid black;
+  td{border: 2px solid black;}*/
+
+  margin-bottom: $console-height;
+  margin-top: $header-height;
+  thead {
+    top: $header-height;
+  }
+  tbody {
+
+  }
+  th,td{
+    width:200px;
+  }
   border-bottom: 0;
   .add-row-cell {
     border: 0;
@@ -53,7 +72,7 @@ $width: 150px;
     /*  border-bottom: 1px solid $primary-color;
       border-right: 1px solid $primary-color;*/
   }
-  td {
+  tbody td {
     height: 50px;
     padding: 0;
     /*   border-right: 1px solid $primary-color;
@@ -62,30 +81,39 @@ $width: 150px;
       //background-color: yellow;
     }
     &.drag-target {
-      background-color: darken($color11, 10%);
+      background-color: darken(red, 10%);
     }
   }
 
-  td:hover {
-    background-color: lighten($primary, 5%);
+  tfoot {
+    left:1px;
+    background-color: $secondary;
   }
+  tfoot td {
+    padding: 0;
+    height: $console-height;
 
-  .row-header {
-
+    //height: 300px;
   }
-
 }
 
 .toggle-button {
-  border: none;
-  border-right: 1px solid $secondary;
-  background-color: transparent;
+
   height: 100%;
 
 }
 
 .scene-toggle-btn {
-width:100%;
+  width: 100%;
   height: 100%;
+}
+
+:host /deep/ {
+  .cell-btn {
+    filter: brightness(90%);
+    &:hover {
+      filter: brightness(80%);
+    }
+  }
 }
 
