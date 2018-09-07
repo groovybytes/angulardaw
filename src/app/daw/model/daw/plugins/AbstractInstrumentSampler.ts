@@ -4,13 +4,14 @@ import {NoteInfo} from "../../utils/NoteInfo";
 import {TheoryService} from "../../../shared/services/theory.service";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {NoteTrigger} from "../NoteTrigger";
+import {PluginInfo} from "./PluginInfo";
 
 export abstract class AbstractInstrumentSampler implements WstPlugin {
 
   protected samples:Array<Sample>=[];
   protected baseSampleNotes:Array<number>=[];
 
-  constructor(protected theoryService: TheoryService) {
+  constructor(protected theoryService: TheoryService,private info:PluginInfo) {
 
   }
 
@@ -21,6 +22,9 @@ export abstract class AbstractInstrumentSampler implements WstPlugin {
 
   abstract destroy(): void;
 
+  getInfo():PluginInfo{
+    return this.info;
+  }
 
   feed(event: NoteTrigger, offset: number, targetNode:AudioNode): any {
     let eventNote = this.theoryService.getNote(event.note);

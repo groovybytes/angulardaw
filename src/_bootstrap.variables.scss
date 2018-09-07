@@ -6,35 +6,52 @@
 $body-bg: $primary;
 $body-color: black;
 
+
 $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
   "tertiary": $tertiary,
   "danger": red,
-  "info":white,
+  "info":$white,
   "warning":red
 );
 
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    @include button-outline-variant($value);
+  }
+}
+
+$theme-colors: map-remove($theme-colors, "success", "info", "danger");
+
+$input-color:red;
 $enable-gradients:false;
 $enable-shadows:false;
 $card-bg:lighten($body-bg,10%);
-
-
-
-/*$table-bg:$color11;
-$table-accent-bg:$color11;//darken($color2,5%);
-$table-border-color:$secondary;
-$table-hover-bg:lighten($color2,10%);
-$table-active-bg:$color7;*/
-
 $dropdown-bg:$white;
-
-$active-background:red;
-
 $link-color:$primary-color;
-$nav-tabs-border-color:$tertiary;
+$table-border-color:$black;
+$table-head-bg:red;
+
 
 @import '~bootstrap/scss/bootstrap';
+
+
+/*.btn-primary{
+  color:$secondary;
+}
+.btn-tertiary{
+  color:$primary-color;
+}
+
+.btn:focus, btn.focus{
+  box-shadow: none !important;
+}
+
+.btn-primary.dropdown-toggle{
+  color: $primary-color;
+}*/
 
 
 

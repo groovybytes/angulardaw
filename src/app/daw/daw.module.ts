@@ -21,6 +21,9 @@ import {AppRoutingModule} from "../app-routing.module";
 import { BodyCellMenuComponent } from './daw-matrix/body-cell-menu/body-cell-menu.component';
 import { HeaderCellMenuComponent } from './daw-matrix/header-cell-menu/header-cell-menu.component';
 import {TrackControlsComponent} from "./console/track-controls/track-controls.component";
+import {DrumsComponent} from "./plugins/drums/drums.component";
+import { PushComponent } from './push/push.component';
+import { PadsComponent } from './pads/pads.component';
 
 let audioContext = new AudioContext();
 
@@ -39,7 +42,10 @@ let audioContext = new AudioContext();
     Sequencer2Component,
     PluginDropdownComponent,
     BodyCellMenuComponent,
-    HeaderCellMenuComponent
+    HeaderCellMenuComponent,
+    DrumsComponent,
+    PushComponent,
+    PadsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,26 +1,30 @@
 <nav class="navbar fixed-top top-navbar">
-  <form class="form-inline w-100">
-    <div class="w-50">
-      <div class="btn-group">
-        <button class="btn btn-tertiary" type="button" (click)="save()">Save</button>
-        <button class="btn btn-tertiary" type="button" (click)="close()">Close</button>
-        <button type="button" class="btn btn-secondary" [ngClass]="{'active':project?.metronomeEnabled | async}"
-                (click)="switchMetronome()">Metronome
-        </button>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-tertiary" type="button"
-                [ngClass]="{'active': project.openedWindows.indexOf('sequencer')>=0}"
-                (click)="toggleSequencer()">Sequencer
-        </button>
-        <button class="btn btn-tertiary" type="button" (click)="toggleEffectsPanel()">Effects</button>
-      </div>
-    </div>
-    <div class="w-50">
-      <ng5-slider class="w-25" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
-                  (userChange)="changeTempo($event)">
+  <form class="form-inline w-100 h-100">
+    <div class="w-25 h-100">
 
+      <button class="btn default-btn h-100" type="button"
+              [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
+              (click)="toggleSequencer()">Sequencer
+      </button>
+      <button class="btn default-btn h-100" type="button"
+              [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
+              (click)="togglePlugin()">Plugin
+      </button>
+    </div>
+    <div class="w-50 h-100">
+      <button type="button" class="btn default-btn h-100" [ngClass]="{'active':project?.metronomeEnabled | async}"
+              (click)="switchMetronome()"> <img class="icon-image" src="assets/icons/metronome.png">
+      </button>
+      <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
+                  (userChange)="changeTempo($event)">
       </ng5-slider>
+      <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
+    </div>
+    <div class="w-25 ">
+      <div class="btn-group float-right">
+        <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
+        <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+      </div>
     </div>
 
 
@@ -37,7 +41,7 @@
 </nav>
 <!--<div id="daw-main-container">-->
 
-<div class="row no-gutters">
+<div class="row no-gutters main-container">
   <div class="col-12">
     <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
   </div>
@@ -51,62 +55,25 @@
                 (close)="toggleSequencer()"></sequencer2>
   </div>
   <div
-    class="col-12 effects-container animated"
-    *ngIf="project && project?.ready && project.openedWindows.indexOf('effects')>=0"
+    class="col-12 plugin-container d-flex justify-content-center animated"
+    *ngIf="project && project?.ready && project.openedWindows.indexOf('plugin')>=0"
     [ngClass]="{'slideOutUp': slideOut,
-   'slideInDown': project.openedWindows.indexOf('effects')>=0}">
+   'slideInDown': project.openedWindows.indexOf('plugin')>=0}">
 
-    <effects-panel ></effects-panel>
+   <pads class="" [rows]="3" [columns]="3" [plugin]="project.selectedTrack.getValue()?.plugin"></pads>
   </div>
+
 </div>
 
 <!--
 </div>
 -->
 
+<div class="plugin-window">
+</div>
+<drums style="width:800px;height:800px"></drums>
 <project-observer *ngIf="project?.ready" [project]="project" [tracks]="project?.tracks"></project-observer>
 
-<!--<div class=" footer fixed-bottom">
-
-  &lt;!&ndash;<div class="container-fluid">
-    <div class="row">
-      <div class="col-2">
-      </div>
-      <div class="col-10">
-
-      </div>
-    </div>
-  </div>&ndash;&gt;
-&lt;!&ndash;   Tab panes
-  <div class="tab-content" *ngIf="project?.tracks.length>0">
-    <div class="tab-pane" [ngClass]="{'active':project.openedWindows==='sequencer'}" id="home" role="tabpanel"
-         aria-labelledby="home-tab">
-
-    </div>
-    <div class="tab-pane" id="profile" [ngClass]="{'active':project.openedWindows==='console'}" role="tabpanel"
-         aria-labelledby="profile-tab">
-      <console *ngIf="project?.ready" [project]="project"></console>
-    </div>
-    <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-    <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
-  </div>
-   Nav tabs
-  <ul class="nav nav-tabs" id="myTab" *ngIf="project?.tracks.length>0" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link" (click)="changeTab('sequencer')" [ngClass]="{'active':project.openedWindows==='sequencer'}"
-         id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-         aria-selected="true">Sequencer</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" (click)="changeTab('console')" [ngClass]="{'active':project.openedWindows==='console'}"
-         id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-         aria-selected="false">Console</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages"
-         aria-selected="false">Effects</a>
-    </li>
-  </ul>
-   <effects-panel [track]="project?.selectedTrack"></effects-panel>&ndash;&gt;
-</div>-->
-
+<div class=" footer fixed-bottom">
+  <effects-panel class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
+</div>

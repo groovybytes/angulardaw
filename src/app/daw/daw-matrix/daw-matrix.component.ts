@@ -91,6 +91,10 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.dawMatrixService.bodyCellClicked(cell, this.project);
   }
 
+  onHeaderClicked(cell:Cell<Track>):void{
+    this.project.selectedTrack.next(cell.data);
+  }
+
   getTrack(trackId: string): Track {
     return this.project.tracks.find(track => track.id === trackId);
   }

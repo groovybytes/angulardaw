@@ -1,0 +1,22 @@
+@import "../../../variables";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+.table {
+  table-layout: fixed;
+  th, td {
+    padding: 0;
+
+  }
+
+  tfoot {
+    td {
+      height: $console-height;
+    }
+  }
+}
+
+.console-table {
+
+}

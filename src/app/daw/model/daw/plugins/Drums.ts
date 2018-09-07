@@ -5,6 +5,7 @@ import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
+import {PluginInfo} from "./PluginInfo";
 
 
 export class Drums implements WstPlugin {
@@ -12,12 +13,17 @@ export class Drums implements WstPlugin {
   constructor(
     private fileService: FilesApi,
     private config: AppConfiguration,
+    private info:PluginInfo,
     private samplesV2Service: SamplesApi
   ) {
 
   }
 
   private triggers: Array<{ note: string, sample: Sample }> = [];
+
+  getInfo():PluginInfo{
+    return this.info;
+  }
 
   addTrigger(note: string, sample: Sample): void {
     this.triggers.push({note: note, sample: sample});

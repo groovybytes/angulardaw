@@ -15,6 +15,7 @@ export class Project {
   name: string = "default";
   metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
+  selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
   activeSceneRow:number;
   matrix: Matrix = new Matrix();

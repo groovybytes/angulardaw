@@ -12,7 +12,7 @@ export class GenericInstrumentSampler extends AbstractInstrumentSampler {
               private fileService: FilesApi,
               private config: AppConfiguration,
               private samplesV2Service: SamplesApi) {
-    super(theoryService);
+    super(theoryService,pluginInfo);
   }
 
   getId(): string {

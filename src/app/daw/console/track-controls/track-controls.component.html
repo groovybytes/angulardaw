@@ -6,27 +6,26 @@
   (valueChanged)="changeGain($event)">
 </rangeslider>-->
 
-<div class="controls-container d-flex justify-content-center">
-  <ng5-slider [(value)]="slider.value" [options]="slider.options" (userChange)="changeGain($event)">
 
-  </ng5-slider>
-
-  <div class="btn-group" role="group" aria-label="Basic example">
-    <button type="button" class="btn mute-btn" [disabled]="!track"
-            [ngClass]="{'active':track?.controlParameters.mute.getValue()}" (click)="mute()">M</button>
-    <button type="button" class="btn solo-btn" [disabled]="!track"
-            [ngClass]="{'active':track?.controlParameters.solo.getValue()}" (click)="solo()">S</button>
-    <button type="button" disabled="disabled" class="btn arm.btn" [disabled]="!track" (click)="solo()">R</button>
+<div class="row h-75">
+  <div class="col-12 d-flex justify-content-center ">
+    <ng5-slider [(value)]="slider.value" [options]="slider.options" (userChange)="changeGain($event)">
+    </ng5-slider>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 d-flex justify-content-center">
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn mute-btn" [disabled]="!track"
+              [ngClass]="{'active':track?.controlParameters.mute.getValue()}" (click)="mute()">M
+      </button>
+      <button type="button" class="btn solo-btn" [disabled]="!track"
+              [ngClass]="{'active':track?.controlParameters.solo.getValue()}" (click)="solo()">S
+      </button>
+      <button type="button" disabled="disabled" class="btn arm.btn" [disabled]="!track" (click)="solo()">R</button>
+    </div>
   </div>
 </div>
 
-
-<!--<div class="row">
-  <div class="w-100">
-
-
-
-  </div>
-</div>-->
 
 

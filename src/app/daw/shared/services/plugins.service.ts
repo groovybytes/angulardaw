@@ -46,7 +46,7 @@ export class PluginsService {
 
     let plugin: WstPlugin;
 
-    if (info.id==="drumkit1") plugin = new Drums(this.fileService, this.config, this.samplesV2Service);
+    if (info.id==="drumkit1") plugin = new Drums(this.fileService, this.config,info, this.samplesV2Service);
     else plugin = new GenericInstrumentSampler(info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
 
     return plugin.load();

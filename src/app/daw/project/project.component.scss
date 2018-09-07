@@ -1,34 +1,49 @@
 @import "../../../variables";
 
-.top-navbar{
-  height:$header-height;
-  background-color: $alt-color;
-}
-/*.container-fluid{
-  height:$main-height;
+.top-navbar {
+  height: $header-height;
+  background-color: $white;
 
-}*/
-.tab-pane{
+  .btn {
+    margin-right: 5px;
+  }
+}
+
+.tab-pane {
   height: $footer-height;
 }
 
-.footer{
+.main-container{
+  margin-bottom: $footer-height;
+}
+
+.footer {
   background-color: $secondary;
+  height: $footer-height;
+  /* background-color: $primary;*/
 }
 
-nav{
-  padding:0;
+.dropdown-toggle::after {
+  display: none;
 }
 
+nav {
+  padding: 0;
+}
 
-.sequencer-container{
+.sequencer-container,.plugin-container {
   position: absolute;
+  z-index: $z-index-sequencer;
 }
-/*.daw-grid-container{
-  height: $main-height*2/3;
-  overflow: auto;
-}*/
 
-/*.matrix-container{
-  overflow: auto;
-}*/
+.plugin-window{
+  width:800px;
+  height:800px;
+}
+:host /deep/ {
+  .ng5-slider {
+    margin: 0;
+    width: 200px;
+
+  }
+}

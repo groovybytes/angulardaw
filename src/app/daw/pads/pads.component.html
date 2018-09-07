@@ -1,0 +1,9 @@
+<table class="table table-bordered">
+  <tbody>
+  <tr *ngFor="let row of plugin.getInfo().pad.grid;let i=index">
+    <td *ngFor="let triggerInfo of row;let j=index" (click)="trigger(triggerInfo?.note)">
+      {{triggerInfo.title}}
+    </td>
+  </tr>
+  </tbody>
+</table>

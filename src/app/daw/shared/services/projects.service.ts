@@ -149,6 +149,7 @@ export class ProjectsService {
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
     projectDto.openedWindows = project.openedWindows;
     projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
+    projectDto.selectedTrack = project.selectedTrack.getValue() ? project.selectedTrack.getValue().id : null;
     projectDto.tracks = [];
     projectDto.patterns = [];
     project.tracks.forEach(track => {
@@ -277,6 +278,11 @@ export class ProjectsService {
                 project
                   .selectedPattern
                   .next(project.patterns.find(p => p.id === dto.selectedPattern));
+
+              if (dto.selectedTrack)
+                project
+                  .selectedTrack
+                  .next(project.tracks.find(t => t.id === dto.selectedTrack));
 
               this.createMetronomeTrack(project)
                 .then(track => {

@@ -1,0 +1,43 @@
+@import "_variables.scss";
+@import '~bootstrap/scss/mixins';
+
+$default-btn-color: $black;
+.default-btn {
+  @include button-variant($color-2, $black, darken($color-2, 10%));
+  /*@include button-outline-variant($color-4,red,yellow,blue);*/
+  color: $black;
+  border-width: 1px;
+
+  border-radius: 0;
+
+  &.active {
+    background-color: $color-3 !important;
+    //filter: brightness(80%);
+  }
+  &:hover {
+    filter: brightness(97%);
+  }
+
+  outline: none;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.icon-image {
+  width: 30px;
+  height: 30px;
+}
+:host /deep/ {
+  .ng5-slider {
+
+    .ng5-slider-pointer {
+      background-color: yellow;
+    }
+
+  }
+}
+
+
+
+

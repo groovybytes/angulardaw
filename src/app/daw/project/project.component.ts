@@ -15,14 +15,15 @@ export class ProjectComponent implements OnInit {
 
   project: Project;
   sideBarOpen: boolean = true;
-  slideOut:boolean=false;
+  slideOut: boolean = false;
   slider: SimpleSliderModel = {
     value: 50,
     options: {
       floor: 40,
       ceil: 240,
       vertical: false,
-      showSelectionBar: true
+      hidePointerLabels: true,
+      hideLimitLabels: true
     }
   };
 
@@ -68,27 +69,28 @@ export class ProjectComponent implements OnInit {
 
 
   toggleSequencer(): void {
-    if (this.project.openedWindows.indexOf("sequencer")>=0) {
-      this.slideOut=true;
-      setTimeout(()=>{
-        this.slideOut=false;
-        this.project.openedWindows=[];
-      },700);
-
-  }
-    else this.project.openedWindows=["sequencer"];
-
-  }
-
-  toggleEffectsPanel(): void {
-    if (this.project.openedWindows.indexOf("effects")>=0) {
-      this.slideOut=true;
-      setTimeout(()=>{
-        this.slideOut=false;
-        this.project.openedWindows=[];
-      },700);
+    if (this.project.openedWindows.indexOf("sequencer") >= 0) {
+      this.slideOut = true;
+      setTimeout(() => {
+        this.slideOut = false;
+        this.project.openedWindows = [];
+      }, 700);
 
     }
+    else this.project.openedWindows = ["sequencer"];
+
+  }
+  togglePlugin(): void {
+    if (this.project.openedWindows.indexOf("plugin") >= 0) {
+      this.slideOut = true;
+      setTimeout(() => {
+        this.slideOut = false;
+        this.project.openedWindows = [];
+      }, 700);
+
+    }
+    else this.project.openedWindows = ["plugin"];
+
   }
 
 }

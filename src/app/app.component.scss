@@ -1,8 +1,7 @@
 @import "../variables";
 
-
 :host /deep/ {
-  span{
+  span {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -11,34 +10,9 @@
     user-select: none;
   }
 
-  .footer{
-  /*  border-top: 1px solid black;
-    padding: 0;*/
-    height: $footer-height;
-    background-color: $primary;
-  }
 
-  .btn-primary{
-    color:$secondary;
-  }
-  .btn-tertiary{
-    color:$primary-color;
-  }
-
-  .btn:focus, btn.focus{
-    box-shadow: none !important;
-  }
-
-  .btn-primary.dropdown-toggle{
-    color: $primary-color;
-  }
-
-  .dropdown-toggle::after {
-    display:none;
-  }
 
 }
-
 
 :host {
 

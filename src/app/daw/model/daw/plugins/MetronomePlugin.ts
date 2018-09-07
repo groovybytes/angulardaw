@@ -7,6 +7,7 @@ import {Project} from "../Project";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
+import {PluginInfo} from "./PluginInfo";
 
 
 export class MetronomePlugin implements WstPlugin {
@@ -90,6 +91,10 @@ export class MetronomePlugin implements WstPlugin {
 
   getNotes(): Array<string> {
     return [];
+  }
+
+  getInfo(): PluginInfo {
+    return undefined;
   }
 
 }

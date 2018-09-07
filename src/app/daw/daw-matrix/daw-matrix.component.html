@@ -1,10 +1,11 @@
-<table class="table table-bordered table-sm matrix-table animated fadeIn">
-  <thead class="fixed-top">
+<table class="table table-bordered matrix-table size-1">
+  <thead class="">
   <tr class="d-flex">
-    <th class="row-header"></th>
-    <th class="text-center"
+    <th class="col-1"></th>
+    <th class="text-center col-1"
+        (click)="onHeaderClicked(project.matrix.header[i])"
         [ngStyle]="{'background-color':getTrack(cell.trackId)?.color}"
-        *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
+        *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
       <span>{{cell.data?.name}}</span>
       <header-cell-menu class="menu-btn float-right"
                         (colorChanged)="colorChanged($event,cell.trackId)"
@@ -13,20 +14,20 @@
 
       </header-cell-menu>
     </th>
-    <th class="text-center">
+    <th class="text-center add-track-header">
       <plugin-dropdown [plugins]="project.plugins" (pluginSelected)="pluginSelected($event)"></plugin-dropdown>
     </th>
   </tr>
   </thead>
   <tbody>
-  <tr class="d-flex animated"
+  <tr class=" d-flex animated"
       [ngClass]="{
         'fadeInLeft':project.matrix.rowHeader[i].animation==='1',
         'fadeOut':project.matrix.rowHeader[i].animation==='2'
         }"
       [ngStyle]="{'z-index':project.matrix.rowHeader.length-i}"
       *ngFor="let row of project.matrix.body;let i = index">
-    <td class="row-header ">
+    <td class="col-1 " >
       <div class="btn-group h-100 w-100">
         <button type="button" class="btn btn-primary" (click)="removeRow(i)"><i class="far fa-trash-alt"></i></button>
         <button type="button"
@@ -39,10 +40,14 @@
 
     </td>
     <td
-      [ngStyle]="{'z-index':project.matrix.rowHeader.length-i}"
+      [ngStyle]="{'z-index':project.matrix.rowHeader.length-i,
+      'background-color':cell.data?getTrack(cell.trackId).color:''}"
+      [ngClass]="{
+             'marked':cell.data?.marked,
+             'editing': project.selectedPattern.getValue()?.id===cell.data?.id}"
       draggable="true"
       *ngFor="let cell of row"
-      class="draggable"
+      class="draggable col-1"
       (dblclick)="bodyCellDblClicked(cell)"
       (click)="bodyCellClicked(cell)"
       [attr.id]="cell.id"
@@ -52,12 +57,7 @@
       (drag)="dragHandler.onDrag($event)"
       (dragend)="dragHandler.onDragEnd($event)"
       (drop)="dragHandler.onDrop($event)">
-      <div class="cell-container"
-           [ngStyle]="{'background-color':getTrack(cell.trackId).color}"
-           [ngClass]="{
-             'marked':cell.data?.marked,
-             'editing': project.selectedPattern.getValue()?.id===cell.data?.id}"
-           *ngIf="cell.data && !cell.patternMenu" (click)="onCellContainerClicked(cell)">
+      <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (click)="onCellContainerClicked(cell)">
         <button type="button"
                 (click)="onCellBtnClicked(cell,$event)"
                 [ngStyle]="{'background-color':getTrack(cell.trackId).color}"
@@ -86,9 +86,9 @@
 
   </tr>
   </tbody>
-  <tfoot class="fixed-bottom">
+  <tfoot class="">
   <tr class="d-flex">
-    <td class=" ">
+    <td class="col-1">
       <button
         *ngIf="project?.matrix.rowHeader.length>0"
         (click)="addRow()"
@@ -96,14 +96,13 @@
         <span>Add Row </span>
       </button>
     </td>
-    <td class=""
+    <td class="col-1"
         *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
       <track-controls></track-controls>
     </td>
   </tr>
   </tfoot>
 </table>
-
 
 <!--<div class="table-responsive console-container">
   <table class="table table-bordered table-dark table-sm console-table">

@@ -8,6 +8,7 @@ export class ProjectDto{
   name: string;
   metronomeEnabled: boolean;
   selectedPattern:string;
+  selectedTrack:string;
   matrix: MatrixDto;
   patterns:Array<PatternDto>;
   openedWindows: Array<string>;
