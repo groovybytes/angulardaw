@@ -1,0 +1,11 @@
+<div class="card h-100">
+  <div class="card-header drag-handle">
+  <!--  <span>{{plugin.getInfo().name}}</span>-->
+    <button type="button" class="btn default-btn float-right" (click)="close()"><i class="fas fa-times"></i></button>
+    <ng-content select=".header"></ng-content>
+  </div>
+  <div class="card-body">
+    <ng-content select=".body"></ng-content>
+   <!-- <pads class="" *ngIf="plugin" [rows]="3" [columns]="3" [plugin]="plugin"></pads>-->
+  </div>
+</div>

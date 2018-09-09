@@ -1,0 +1,9 @@
+@import "../../../variables";
+
+:host {
+  position: absolute;
+  top:200px;
+  left:200px;
+  z-index:$z-index-plugin-window;
+  overflow: auto;
+}
