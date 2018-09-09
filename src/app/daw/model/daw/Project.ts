@@ -36,7 +36,6 @@ export class Project {
   pluginTypes:Array<PluginInfo>=[];
   colors = ["lightblue", "yellow", "red"];
 
-  private systemChannels=["_metronome"];
   private subscriptions: Array<Subscription> = [];
 
   constructor(

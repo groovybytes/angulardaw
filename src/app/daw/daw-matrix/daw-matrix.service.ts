@@ -119,17 +119,8 @@ export class DawMatrixService {
       this.pluginService.loadPluginWithInfo(pluginInfo)
         .then(plugin => {
           track.plugins = [plugin];
-          plugin.inputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.PANNER,meta);
-          plugin.outputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.GAIN,meta);
-
-          project.nodes.push(plugin.inputNode);
-          project.nodes.push(plugin.outputNode);
-          track.inputNode.connect(plugin.inputNode);
-          plugin.inputNode.connect(plugin.outputNode);
-          plugin.outputNode.connect(track.outputNode);
-
+          this.pluginService.setupInstrumentRoutes(project,track,plugin);
           track.name = pluginInfo.name;
-
           resolve(track);
         })
         .catch(error => reject(error));

@@ -132,14 +132,18 @@ export class ProjectsService {
 
   }
 
-  createMetronomeTrack(project: Project): Promise<Track> {
+ /* createMetronomeTrack(project: Project): Promise<Track> {
 
     return new Promise((resolve, reject) => {
       let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
       metronome.load().then(metronome => {
+
+
         metronome.inputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, null);
         metronome.outputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, null);
 
+        project.nodes.push(metronome.inputNode);
+        project.nodes.push(metronome.outputNode);
         let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
 
@@ -153,8 +157,23 @@ export class ProjectsService {
     })
 
 
-  }
+  }*/
+  createMetronomeTrack(project: Project): Promise<Track> {
 
+      return new Promise((resolve, reject) => {
+        let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
+        metronome.load().then(metronome => {
+          let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
+          track.plugins = [metronome];
+          this.pluginsService.setupInstrumentRoutes(project,track,metronome);
+
+          resolve(track);
+        })
+          .catch(error => reject(error));
+      })
+
+
+    }
 
   private serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();

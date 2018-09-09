@@ -9,6 +9,10 @@ import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {GenericInstrumentSampler} from "../../model/daw/plugins/GenericInstrumentSampler";
 import {Drums} from "../../model/daw/plugins/Drums";
 import * as _ from "lodash";
+import {Track} from "../../model/daw/Track";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
+import {AudioNodesService} from "./audionodes.service";
+import {Project} from "../../model/daw/Project";
 
 @Injectable()
 export class PluginsService {
@@ -18,6 +22,7 @@ export class PluginsService {
     private system: System,
     private config: AppConfiguration,
     private theoryService: TheoryService,
+    private nodesService:AudioNodesService,
     private samplesV2Service: SamplesApi,
   ) {
 
@@ -43,6 +48,17 @@ export class PluginsService {
 
   }*/
 
+  setupInstrumentRoutes(project:Project,track:Track,plugin:WstPlugin):void{
+    let meta = "plugin_"+plugin.getInfo().name;
+    plugin.inputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.PANNER,meta);
+    plugin.outputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.GAIN,meta);
+
+    project.nodes.push(plugin.inputNode);
+    project.nodes.push(plugin.outputNode);
+    track.inputNode.connect(plugin.inputNode);
+    plugin.inputNode.connect(plugin.outputNode);
+    plugin.outputNode.connect(track.outputNode);
+  }
   loadPluginWithInfo(info:PluginInfo): Promise<WstPlugin> {
 
     let plugin: WstPlugin;

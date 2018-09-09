@@ -99,6 +99,6 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
   }
 
   getInfo(): PluginInfo {
-    return undefined;
+    return new PluginInfo();
   }
 }
