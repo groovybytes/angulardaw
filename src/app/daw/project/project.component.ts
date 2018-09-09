@@ -5,6 +5,10 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {System} from "../../system/System";
 import {Options} from 'ng5-slider';
 import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
+import {WstPlugin} from "../model/daw/plugins/WstPlugin";
+import {WindowState} from "../model/daw/visual/desktop/WindowState";
+import {NoteTrigger} from "../model/daw/NoteTrigger";
+import {Pattern} from "../model/daw/Pattern";
 
 @Component({
   selector: 'project',
@@ -67,7 +71,6 @@ export class ProjectComponent implements OnInit {
     this.projectsService.save(this.project);
   }
 
-
   toggleSequencer(): void {
     if (this.project.openedWindows.indexOf("sequencer") >= 0) {
       this.slideOut = true;
@@ -80,6 +83,7 @@ export class ProjectComponent implements OnInit {
     else this.project.openedWindows = ["sequencer"];
 
   }
+
   togglePlugin(): void {
     if (this.project.openedWindows.indexOf("plugin") >= 0) {
       this.slideOut = true;
@@ -91,6 +95,18 @@ export class ProjectComponent implements OnInit {
     }
     else this.project.openedWindows = ["plugin"];
 
+  }
+
+  onNoteOutStart(event:{note:string,pattern:Pattern}):void{
+    console.log(event);
+    //this.plugin.feed(new NoteTrigger(null,note),0);
+  }
+  onNoteOutEnd():void{
+    console.log("end");
+  }
+
+  getOpenPlugins():Array<WstPlugin>{
+    return [];
   }
 
 }

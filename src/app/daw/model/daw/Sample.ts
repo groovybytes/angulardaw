@@ -14,16 +14,16 @@ export class Sample {
     this.buffer = buffer;
   }
 
-  public triggerWith(offset:number,detune:number,adsr?: ADSREnvelope,duration?:number,destination?:AudioNode): void {
+  public triggerWith(offset:number,detune:number,destination:AudioNode,adsr?: ADSREnvelope,duration?:number): void {
 
     let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
     if (detune) sourceNode.detune.value=detune;
     let gainNode = this.context.createGain();
     sourceNode.connect(gainNode);
-    gainNode.connect(destination?destination:this.context.destination);
+    gainNode.connect(destination);
     //if (adsr) adsr.apply(gainNode, this.context.currentTime+offset);
-    gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime+offset+duration);
+    //gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime+offset+duration?duration:0.7);
 
     /*var waveArray = new Float32Array(3);
     waveArray[0] = 0.8;
@@ -36,12 +36,12 @@ export class Sample {
     sourceNode.start(this.context.currentTime+offset, 0, duration?duration:0.7);
   }
 
-  public trigger(offset:number,duration?:number,destination?:AudioNode):void{
+  public trigger(offset:number,destination:AudioNode,duration?:number,):void{
     let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
     let gainNode = this.context.createGain();
     sourceNode.connect(gainNode);
-    gainNode.connect(destination?destination:this.context.destination);
+    gainNode.connect(destination);
     sourceNode.start(this.context.currentTime+offset, 0, duration?duration:0.7);
   }
 

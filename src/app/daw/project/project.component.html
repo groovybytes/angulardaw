@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top top-navbar">
+<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
   <form class="form-inline w-100 h-100">
     <div class="w-25 h-100">
 
@@ -12,13 +12,15 @@
       </button>
     </div>
     <div class="w-50 h-100">
-      <button type="button" class="btn default-btn h-100" [ngClass]="{'active':project?.metronomeEnabled | async}"
-              (click)="switchMetronome()"> <img class="icon-image" src="assets/icons/metronome.png">
-      </button>
+      <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
+              (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
+
       <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
                   (userChange)="changeTempo($event)">
       </ng5-slider>
       <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
+    <!--  <transport class="float-right"></transport>-->
+
     </div>
     <div class="w-25 ">
       <div class="btn-group float-right">
@@ -29,51 +31,41 @@
 
 
   </form>
-  <!-- <form class="form-inline float-left w-25 h-100">
-
-     <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
-                 (userChange)="changeTempo($event)">
-
-     </ng5-slider>
-
-   </form>-->
-  <!-- <transport class="float-right" [project]="project"></transport>-->
 </nav>
-<!--<div id="daw-main-container">-->
 
-<div class="row no-gutters main-container">
-  <div class="col-12">
-    <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
-  </div>
-  <div
-    class="col-12 sequencer-container animated"
-    *ngIf="project && project?.ready && project.openedWindows.indexOf('sequencer')>=0"
-    [ngClass]="{'slideOutUp': slideOut,
+<div class="drag-container" *ngIf="project?.ready">
+  <div class="row no-gutters main-container">
+    <div class="col-12">
+      <daw-matrix [project]="project" *ngIf="project"></daw-matrix>
+    </div>
+    <div
+      class="col-12 sequencer-container animated"
+      *ngIf="project && project?.ready && project.openedWindows.indexOf('sequencer')>=0"
+      [ngClass]="{'slideOutUp': slideOut,
    'slideInDown': project.openedWindows.indexOf('sequencer')>=0}">
 
-    <sequencer2 [project]="project" [pattern]="project.selectedPattern | async"
-                (close)="toggleSequencer()"></sequencer2>
-  </div>
-  <div
-    class="col-12 plugin-container d-flex justify-content-center animated"
-    *ngIf="project && project?.ready && project.openedWindows.indexOf('plugin')>=0"
-    [ngClass]="{'slideOutUp': slideOut,
-   'slideInDown': project.openedWindows.indexOf('plugin')>=0}">
-
-   <pads class="" [rows]="3" [columns]="3" [plugin]="project.selectedTrack.getValue()?.plugin"></pads>
+      <sequencer2 [project]="project" [pattern]="project.selectedPattern | async"
+                  (close)="toggleSequencer()"></sequencer2>
+    </div>
   </div>
 
-</div>
+  <!--<plugin-panel *ngFor="let track of project?.tracks"
+                [plugin]="track.plugin"
+                [ngStyle]="{'width':track.plugin.windowSpecs.width+'px','height':track.plugin.windowSpecs.height+'px'}"
+                class="" interact>
+    <h1 class="header">test</h1>
+    <pads class="body"  [rows]="3" [columns]="3"
+          [pattern]="project.selectedPattern?.getValue()"
+          [pad]="track.plugin.getInfo().pad"
+          (noteEnd)="onNoteOutEnd()"
+          (noteStart)="onNoteOutStart($event)">
 
-<!--
-</div>
--->
+    </pads>
 
-<div class="plugin-window">
-</div>
-<drums style="width:800px;height:800px"></drums>
-<project-observer *ngIf="project?.ready" [project]="project" [tracks]="project?.tracks"></project-observer>
+  </plugin-panel>-->
+  <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
 
-<div class=" footer fixed-bottom">
-  <effects-panel class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
+  <div class=" footer fixed-bottom">
+    <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
+  </div>
 </div>

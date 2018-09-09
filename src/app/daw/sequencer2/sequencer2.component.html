@@ -61,16 +61,13 @@
   <div class="card-footer">
     <quantization [quantization]="pattern.quantization.getValue()"
                   (quantizationChanged)="changeQuantization($event)"></quantization>
-
-    <div class="btn-group">
-
-      <button type="button"
-              (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
-              [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
-              class="btn btn-secondary">
-        Q
-      </button>
-    </div>
+    <button type="button"
+            (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
+            [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
+            class="btn btn-secondary">
+      Q
+    </button>
+    <button type="button" class="btn record-btn" (click)="toggleRecord()">REC</button>
   </div>
 </div>
 

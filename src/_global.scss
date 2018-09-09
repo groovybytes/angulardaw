@@ -24,6 +24,20 @@ $default-btn-color: $black;
   box-shadow: none !important;
 }
 
+
+.record-btn{
+  background-color: $red;
+  border-color: darken($red,10%);
+
+  &.active {
+    background-color: $red !important;
+    //filter: brightness(80%);
+  }
+  &:hover {
+    filter: brightness(97%);
+  }
+}
+
 .icon-image {
   width: 30px;
   height: 30px;

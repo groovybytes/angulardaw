@@ -1,6 +1,7 @@
 <div class="row h-100">
   <div class="col-6 effects-block">
-
+    <span>{{getPluginInfo()?.name}}</span>
+    <button type="button" class="btn default-btn" (click)="openPlugin()">Open</button>
   </div>
   <div class="col-2 effects-block ">
     <button type="button" class="btn default-btn" disabled>Add Effects</button>

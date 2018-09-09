@@ -27,12 +27,11 @@ export class PatternsService {
     transportContext.settings.loopEnd=patternLength;
     let pattern = new Pattern(
       patternId?patternId:this.guid(),
-      track.plugin.getNotes().reverse(),
+      track.getInstrumentPlugin().getNotes().reverse(),
       transportContext,
-      track.plugin,
+      track.getInstrumentPlugin(),
       quantization,
-      track.controlParameters,
-      track.gainNode
+      track.controlParameters
     );
 
     pattern.length=patternLength;
@@ -54,12 +53,11 @@ export class PatternsService {
     transportContext.settings.loopEnd=pattern.length;
     let patternClone = new Pattern(
       this.guid(),
-      track.plugin.getNotes().reverse(),
+      track.getInstrumentPlugin().getNotes().reverse(),
       transportContext,
-      track.plugin,
+      track.getInstrumentPlugin(),
       pattern.quantization.getValue(),
-      track.controlParameters,
-      track.gainNode
+      track.controlParameters
     );
 
     patternClone.length=pattern.length;

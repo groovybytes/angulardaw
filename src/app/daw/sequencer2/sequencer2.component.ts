@@ -105,7 +105,6 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   onCellClicked(cell: NoteCell): void {
-    console.log("click");
     if (!this.isResizing && !this.isDragging) {
       if (cell.column >= 0 && cell.row >= 0) {
         if (cell.data) this.sequencerService.removeEvent(this.cells,cell, this.pattern);
@@ -165,6 +164,10 @@ export class Sequencer2Component implements OnInit, OnChanges {
         this.updateCells();
       }
     }
+  }
+
+  toggleRecord():void{
+
   }
 
   private updateCells(): void {

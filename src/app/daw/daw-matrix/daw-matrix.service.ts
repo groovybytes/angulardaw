@@ -12,10 +12,13 @@ import {Pattern} from "../model/daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
 import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model/mip/NoteLength";
-import {TransportSettings} from "../model/daw/transport/TransportSettings";
 import {KeyboardState} from "../shared/model/KeyboardState";
 import {MatrixService} from "../shared/services/matrix.service";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {TrackCategory} from "../model/daw/TrackCategory";
+import {AudioNodesService} from "../shared/services/audionodes.service";
+import {AudioNodeTypes} from "../model/daw/AudioNodeTypes";
+import {VirtualAudioNode} from "../model/daw/VirtualAudioNode";
 
 @Injectable()
 export class DawMatrixService {
@@ -25,6 +28,7 @@ export class DawMatrixService {
               private projectsService: ProjectsService,
               @Inject("KeyboardState") private keyboardState: KeyboardState,
               private matrixService: MatrixService,
+              private nodesService:AudioNodesService,
               private pluginService: PluginsService, private system: System) {
 
   }
@@ -47,6 +51,7 @@ export class DawMatrixService {
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>, project: Project): void {
+
     if (cell.trackId) {
       //let track = project.tracks.find(track => track.id === cell.trackId);
       let rowHeaderCell = project.matrix.rowHeader.find(header => header.row === cell.row);
@@ -100,8 +105,8 @@ export class DawMatrixService {
     return new Promise((resolve, reject) => {
       let matrix = project.matrix;
       let newColumnIndex = this.matrixService.addColumn(matrix, 4);
-      let track: Track = this.trackService.addTrack(project, newColumnIndex);
-
+      let track: Track = this.trackService.createTrack(project.nodes, TrackCategory.DEFAULT, project.getMasterBus().inputNode);
+      project.tracks.push(track);
       let header = matrix.header.find(cell => cell.column === newColumnIndex);
       header.data = track;
       header.trackId = track.id;
@@ -109,11 +114,21 @@ export class DawMatrixService {
         cell.trackId = track.id;
       });
 
-      let pluginInfo = project.plugins.find(p => p.id === plugin.id);
+      let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
+      let meta = "plugin_"+pluginInfo.name;
       this.pluginService.loadPluginWithInfo(pluginInfo)
         .then(plugin => {
-          track.plugin = plugin;
-          track.name = plugin.getId();
+          track.plugins = [plugin];
+          plugin.inputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.PANNER,meta);
+          plugin.outputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.GAIN,meta);
+
+          project.nodes.push(plugin.inputNode);
+          project.nodes.push(plugin.outputNode);
+          track.inputNode.connect(plugin.inputNode);
+          plugin.inputNode.connect(plugin.outputNode);
+          plugin.outputNode.connect(track.outputNode);
+
+          track.name = pluginInfo.name;
 
           resolve(track);
         })

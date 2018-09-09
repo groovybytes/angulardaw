@@ -1,0 +1,19 @@
+<!--<div class="card">
+  <div class="card-header">
+<button type="button" class="btn default-btn" (click)="increaseSize()">+</button>
+<button type="button" class="btn default-btn" (click)="decreaseSize()">-</button>
+  </div>-->
+
+<table class="table table-bordered">
+  <tbody>
+  <tr *ngFor="let row of pad.grid;let i=index">
+    <td #trigger
+        *ngFor="let triggerInfo of row;let j=index"
+        [attr.data-note]="triggerInfo.note"
+        [className]="'size-'+size">
+      {{triggerInfo.title}}
+    </td>
+  </tr>
+  </tbody>
+</table>
+

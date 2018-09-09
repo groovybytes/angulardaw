@@ -1,27 +1,35 @@
 import {Sample} from "../Sample";
-import {WstPlugin} from "../WstPlugin";
+import {WstPlugin} from "./WstPlugin";
 import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
 import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
 import {PluginInfo} from "./PluginInfo";
+import {Instrument} from "./Instrument";
+import {VirtualAudioNode} from "../VirtualAudioNode";
 
 
-export class Drums implements WstPlugin {
+export class Drums extends Instrument implements WstPlugin {
+
+  inputNode: VirtualAudioNode<AudioNode>;
+  outputNode: VirtualAudioNode<AudioNode>;
+  private readonly id: string;
 
   constructor(
+    id:string,
     private fileService: FilesApi,
     private config: AppConfiguration,
-    private info:PluginInfo,
+    private info: PluginInfo,
     private samplesV2Service: SamplesApi
   ) {
-
+    super();
+    this.id=id;
   }
 
   private triggers: Array<{ note: string, sample: Sample }> = [];
 
-  getInfo():PluginInfo{
+  getInfo(): PluginInfo {
     return this.info;
   }
 
@@ -34,14 +42,13 @@ export class Drums implements WstPlugin {
   }
 
 
-
   destroy(): void {
   }
 
-  feed(event: NoteTrigger, offset: number, destinationNode?:AudioNode): any {
+  feed(event: NoteTrigger, offset: number): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
-    if (!trigger) console.warn("no trigger found for "+event.note);
-    else trigger.sample.trigger(offset,null,destinationNode);
+    if (!trigger) console.warn("no trigger found for " + event.note);
+    else trigger.sample.trigger(offset, this.outputNode.node);
   }
 
 
@@ -69,14 +76,14 @@ export class Drums implements WstPlugin {
   }
 
   getId(): string {
-    return "drumkit1";
+    return this.id;
   }
 
- /* static getInfo(): PluginInfo {
-    let info = new PluginInfo();
-    info.id=PluginId.DRUMKIT1;
-    info.name="drums";
-    return info;
-  }*/
+  /* static getInfo(): PluginInfo {
+     let info = new PluginInfo();
+     info.id=PluginId.DRUMKIT1;
+     info.name="drums";
+     return info;
+   }*/
 
 }

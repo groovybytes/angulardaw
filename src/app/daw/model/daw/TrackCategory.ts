@@ -1,4 +1,5 @@
 export enum TrackCategory{
-  MIDI=0,
-  CLICK=1
+  DEFAULT=0,
+  BUS=1,
+  SYSTEM=2
 }

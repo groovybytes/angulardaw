@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Track} from "../model/daw/Track";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 import {Project} from "../model/daw/Project";
+import {WindowState} from "../model/daw/visual/desktop/WindowState";
 
 @Component({
   selector: 'effects-panel',
@@ -19,7 +20,11 @@ export class EffectsPanelComponent implements OnInit {
   }
 
   getPluginInfo():PluginInfo{
-    return this.track&&this.track.plugin?this.project.plugins.find(p=>p.id===this.track.plugin.getId()):null;
+    return this.track.getInstrumentPlugin().getInfo();
+  }
+
+  openPlugin():void{
+   // this.track.plugin.windowSpecs.state=WindowState.OPENED;
   }
 
 }

@@ -8,6 +8,10 @@ import {TransportSettings} from "./transport/TransportSettings";
 import {Subscription} from "rxjs/internal/Subscription";
 import {TransportContext} from "./transport/TransportContext";
 import {PluginInfo} from "./plugins/PluginInfo";
+import {ProjectSettings} from "./ProjectSettings";
+import {DesktopManager} from "./visual/desktop/DesktopManager";
+import {VirtualAudioNode} from "./VirtualAudioNode";
+import {TrackCategory} from "./TrackCategory";
 
 
 export class Project {
@@ -20,14 +24,16 @@ export class Project {
   activeSceneRow:number;
   matrix: Matrix = new Matrix();
   openedWindows:Array<string>;
+  nodes:Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
-  readonly systemTracks: Array<Track> = [];
   ready: boolean = false;
   transportSettings: TransportSettings;
+  desktop:DesktopManager=new DesktopManager();
+  settings:ProjectSettings=new ProjectSettings();
   private transport: Transport;
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
-  plugins:Array<PluginInfo>=[];
+  pluginTypes:Array<PluginInfo>=[];
   colors = ["lightblue", "yellow", "red"];
 
   private systemChannels=["_metronome"];
@@ -94,6 +100,14 @@ export class Project {
   destroy(): void {
     this.tracks.forEach(track => track.destroy());
     this.tracks.length = 0;
+  }
+
+  getPluginInstances():Array<Plugin>{
+    return [];
+  }
+
+  getMasterBus():Track{
+    return this.tracks.find(t=>t.category===TrackCategory.BUS);
   }
 
 

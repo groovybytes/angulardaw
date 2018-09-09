@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {WstPlugin} from "../../model/daw/WstPlugin";
+import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {FilesApi} from "../api/files.api";
 import {SamplesApi} from "../api/samples.api";
 import {TheoryService} from "./theory.service";
@@ -8,6 +8,7 @@ import {AppConfiguration} from "../../../app.configuration";
 import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {GenericInstrumentSampler} from "../../model/daw/plugins/GenericInstrumentSampler";
 import {Drums} from "../../model/daw/plugins/Drums";
+import * as _ from "lodash";
 
 @Injectable()
 export class PluginsService {
@@ -46,8 +47,8 @@ export class PluginsService {
 
     let plugin: WstPlugin;
 
-    if (info.id==="drumkit1") plugin = new Drums(this.fileService, this.config,info, this.samplesV2Service);
-    else plugin = new GenericInstrumentSampler(info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
+    if (info.id==="drumkit1") plugin = new Drums(_.uniqueId("instrument-"),this.fileService, this.config,info, this.samplesV2Service);
+    else plugin = new GenericInstrumentSampler(_.uniqueId("instrument-"),info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
 
     return plugin.load();
 

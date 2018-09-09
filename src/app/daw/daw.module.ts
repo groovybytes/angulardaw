@@ -23,7 +23,8 @@ import { HeaderCellMenuComponent } from './daw-matrix/header-cell-menu/header-ce
 import {TrackControlsComponent} from "./console/track-controls/track-controls.component";
 import {DrumsComponent} from "./plugins/drums/drums.component";
 import { PushComponent } from './push/push.component';
-import { PadsComponent } from './pads/pads.component';
+import { PadsComponent } from './plugins/pads/pads.component';
+import { PluginPanelComponent } from './plugin-panel/plugin-panel.component';
 
 let audioContext = new AudioContext();
 
@@ -45,7 +46,8 @@ let audioContext = new AudioContext();
     HeaderCellMenuComponent,
     DrumsComponent,
     PushComponent,
-    PadsComponent
+    PadsComponent,
+    PluginPanelComponent
   ],
   imports: [
     BrowserModule,

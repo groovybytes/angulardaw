@@ -1,6 +1,6 @@
 import {NoteStream} from "./events/NoteStream";
 import {NoteTrigger} from "./NoteTrigger";
-import {WstPlugin} from "./WstPlugin";
+import {WstPlugin} from "./plugins/WstPlugin";
 import {BehaviorSubject, Subscription} from "rxjs/index";
 import {TrackControlParameters} from "./TrackControlParameters";
 import {NoteLength} from "../mip/NoteLength";
@@ -29,8 +29,7 @@ export class Pattern {
     transportContext: TransportContext,
     private plugin: WstPlugin,
     private _quantization: NoteLength,
-    private  controlParameters: TrackControlParameters,
-    private gainNode: GainNode
+    private  controlParameters: TrackControlParameters
 /*    private channels?:Array<string>*/
   ) {
     this.id = id;
@@ -45,7 +44,7 @@ export class Pattern {
 
 
   private onNextEvent(offset: number, event: NoteTrigger): void {
-    if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset, this.gainNode);
+    if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset);
   }
 
 

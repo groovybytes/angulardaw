@@ -6,7 +6,7 @@ declare var interact;
 })
 export class InteractDirective implements OnInit {
 
-  @Input() parent:string;
+  @Input() parent:string="parent";
   @Input() enabled:boolean=true;
   @Output() resizeStart:EventEmitter<void>=new EventEmitter();
   @Output() resizeEnd:EventEmitter<EventTarget>=new EventEmitter();
@@ -26,9 +26,12 @@ export class InteractDirective implements OnInit {
         restrict: {
           restriction: this.parent,
           endOnly: false,
+          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         },
         // enable autoScroll
         autoScroll: false,
+        endOnly: true,
+
 
         // call this function on every dragmove event
         onmove: dragMoveListener,

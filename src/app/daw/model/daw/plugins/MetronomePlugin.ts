@@ -2,15 +2,19 @@ import {Sample} from "../Sample";
 import {FilesApi} from "../../../shared/api/files.api";
 import {SamplesApi} from "../../../shared/api/samples.api";
 import {Subscription} from "rxjs/internal/Subscription";
-import {WstPlugin} from "../WstPlugin";
+import {WstPlugin} from "./WstPlugin";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../../app.configuration";
 import {NoteTrigger} from "../NoteTrigger";
-import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {PluginInfo} from "./PluginInfo";
+import {VirtualAudioNode} from "../VirtualAudioNode";
+import {Instrument} from "./Instrument";
 
 
-export class MetronomePlugin implements WstPlugin {
+export class MetronomePlugin extends Instrument implements WstPlugin {
+
+  inputNode: VirtualAudioNode<AudioNode>;
+  outputNode: VirtualAudioNode<AudioNode>;
 
   private lastBeat: number = -1;
   private accentSample: Sample;
@@ -25,7 +29,7 @@ export class MetronomePlugin implements WstPlugin {
     private project: Project,
     private config: AppConfiguration,
     private samplesV2Service: SamplesApi) {
-
+    super();
     /* let track = this.tracksService.createDefaultTrack(this.project.transport.masterParams);
      let tickTime =
        MusicMath.getTickTime(track.transport.getBpm(),
@@ -52,6 +56,7 @@ export class MetronomePlugin implements WstPlugin {
     this.transportSubscription.unsubscribe();
   }
 
+
   /* feed(position: TransportPosition): void {
      /!*if (position.beat !== this.lastBeat) {
        if (position.beat === 0) this.accentSample.trigger(0);
@@ -60,11 +65,11 @@ export class MetronomePlugin implements WstPlugin {
 
    }*/
 
-/*
-  isChecked(): boolean {
-    return this.project.metronomeEnabled;
-  }
-*/
+  /*
+    isChecked(): boolean {
+      return this.project.metronomeEnabled;
+    }
+  */
 
   load(): Promise<WstPlugin> {
     return new Promise((resolve, reject) => {
@@ -79,8 +84,8 @@ export class MetronomePlugin implements WstPlugin {
 
   feed(event: NoteTrigger, offset: number): any {
     if (this.project.metronomeEnabled) {
-      if (event.note === "A0") this.accentSample.triggerWith(offset,0,null,event.length);//trigger(offset);
-      else this.otherSample.trigger(offset);
+      if (event.note === "A0") this.accentSample.trigger(offset, this.outputNode.node);//trigger(offset);
+      else this.otherSample.trigger(offset, this.outputNode.node);
     }
 
   }
@@ -96,5 +101,4 @@ export class MetronomePlugin implements WstPlugin {
   getInfo(): PluginInfo {
     return undefined;
   }
-
 }

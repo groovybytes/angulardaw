@@ -7,16 +7,17 @@ import {PluginInfo} from "./PluginInfo";
 
 export class GenericInstrumentSampler extends AbstractInstrumentSampler {
 
-  constructor(private pluginInfo:PluginInfo,
+  constructor(
+    protected id:string,private pluginInfo:PluginInfo,
               protected theoryService: TheoryService,
               private fileService: FilesApi,
               private config: AppConfiguration,
               private samplesV2Service: SamplesApi) {
-    super(theoryService,pluginInfo);
+    super(id,theoryService,pluginInfo);
   }
 
   getId(): string {
-    return this.pluginInfo.id;
+    return this.id;
   }
 
   destroy(): void {

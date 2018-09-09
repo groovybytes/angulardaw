@@ -11,11 +11,19 @@
 }
 
 .card-body {
+  position: relative;
   div {
     margin-left: $cell-width;
     margin-top: 10px;
   }
   overflow: auto;
+}
+
+.card-footer{
+  .btn{
+    margin-right: 5px;
+    margin-left: 5px;
+  }
 }
 
 .slider-container {
@@ -29,10 +37,6 @@
 
 .scene-toggle-btn {
   height: 100%;
-}
-
-.card-body {
-  position: relative;
 }
 
 :host{

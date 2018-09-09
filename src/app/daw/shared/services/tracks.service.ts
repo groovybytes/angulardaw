@@ -1,62 +1,99 @@
 import {Inject, Injectable} from "@angular/core";
 import {Project} from "../../model/daw/Project";
 import {Track} from "../../model/daw/Track";
-import {Pattern} from "../../model/daw/Pattern";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
+import {TrackDto} from "../../model/daw/dto/TrackDto";
+import {PluginDto} from "../../model/daw/dto/PluginDto";
+import {TrackControlParametersDto} from "../../model/daw/dto/TrackControlParametersDto";
 import * as _ from "lodash";
+import {AudioNodesService} from "./audionodes.service";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
+import {TrackCategory} from "../../model/daw/TrackCategory";
 
 @Injectable()
 export class TracksService {
 
   constructor(
-    @Inject("AudioContext") private audioContext: AudioContext
+    @Inject("AudioContext") private audioContext: AudioContext,
+    private audioNodesService: AudioNodesService
   ) {
 
   }
 
-  /* create(projectViewModel:Project):Promise<Pattern>{
-     return new Promise((resolve,reject)=>{
-       let pattern = new Pattern();
-       this.patternApi.post(pattern).subscribe(pattern=>{
-         projectViewModel.patterns.push(pattern);
-         resolve(pattern);
-       },error=>reject(error));
-     })
 
+  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>, category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>,hint?:string): Track {
+    let trackId=_.uniqueId("track-"+(hint?hint:""));
+    let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER,"track: "+trackId);
+    let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN,"track: "+trackId);
 
+    let track = new Track(trackId, inputNode, outputNode, this.audioContext);
 
-   }*/
+    nodes.push(track.inputNode);
+    nodes.push(track.outputNode);
 
+    if (category === TrackCategory.DEFAULT || category===TrackCategory.SYSTEM) track.outputNode.connect(masterIn);
+    else {
+      track.inputNode.connect(track.outputNode);
+      track.outputNode.node.connect(this.audioContext.destination);
+    }
 
- /* resetEventsWithPattern(track: Track, pattern: Pattern): void {
+    track.category = category;
+    track.name = "default-name";
+    track.color = "red";
 
-    track.transportParams.loopEnd.next(pattern.length);
-    track.transportParams.loop.next(true);
-    track.resetEvents(pattern.events);
-
-  }*/
-
-
- /* addPattern(track: Track): Pattern {
-
-    let pattern = new Pattern(track.plugin.getNotes().reverse());
-    pattern.id = this.guid();
-
-   // track.patterns.push(pattern);
-    return pattern;
-  }*/
-
-  createDefaultTrack(index:number): Track {
-    return new Track(this.guid(), index,this.audioContext);
-  }
-
-  addTrack(project: Project,index:number): Track {
-    let track = this.createDefaultTrack(index);
-    track.name = "track name";
-    track.color=project.colors[0];
-    project.tracks.push(track);
     return track;
   }
+
+  convertTrackFromJson(trackDto: TrackDto, nodes: Array<VirtualAudioNode<AudioNode>>): Track {
+    let inputNode = <VirtualAudioNode<PannerNode>>nodes.find(n => n.id === trackDto.inputNode);
+    let outputNode = <VirtualAudioNode<GainNode>>nodes.find(n => n.id === trackDto.outputNode);
+    let track = new Track(trackDto.id, inputNode, outputNode, this.audioContext);
+
+    track.category = trackDto.category;
+    track.name = trackDto.name;
+    track.color = trackDto.color;
+    track.controlParameters.gain.next(trackDto.controlParameters.gain ? trackDto.controlParameters.gain : 100);
+    track.controlParameters.mute.next(trackDto.controlParameters.mute ? trackDto.controlParameters.mute : false);
+    track.controlParameters.solo.next(trackDto.controlParameters.solo ? trackDto.controlParameters.solo : false);
+    return track;
+  }
+
+  convertTrackToJson(track: Track): TrackDto {
+    let trackDto = new TrackDto();
+    trackDto.id = track.id;
+    trackDto.name = track.name;
+    trackDto.color = track.color;
+    trackDto.category = track.category;
+    trackDto.plugins = [];
+    trackDto.inputNode = track.inputNode.id;
+    trackDto.outputNode = track.outputNode.id;
+    track.plugins.forEach(p => {
+      let dto = new PluginDto();
+      dto.pluginTypeId = p.getInfo().id;
+      dto.inputNode = p.inputNode.id;
+      dto.outputNode = p.outputNode.id;
+      trackDto.plugins.push(dto);
+    });
+    trackDto.controlParameters = new TrackControlParametersDto();
+    trackDto.controlParameters.gain = track.controlParameters.gain.getValue();
+    trackDto.controlParameters.mute = track.controlParameters.mute.getValue();
+    trackDto.controlParameters.solo = track.controlParameters.solo.getValue();
+
+    return trackDto;
+  }
+
+  /*createTrack(category:TrackCategory,id?:string): Track {
+    let track = new Track(id?id:_.uniqueId("track-"),this.audioContext);
+    track.inputNode = new VirtualAudioNode<PannerNode>(new PannerNode());
+    track.outputNode = new VirtualAudioNode<GainNode>(this.audioContext.createGain());
+    project.nodes.push(track.inputNode);
+    project.nodes.push(track.outputNode);
+    track.inputNode.connect(track.outputNode);
+    if (category===TrackCategory.DEFAULT) track.outputNode.connect(project.getMasterBus().inputNode);
+    else track.outputNode.node.connect(this.audioContext.destination);
+    project.tracks.push(track);
+    return track;
+  }*/
 
   toggleSolo(project: Project, track: Track): void {
     track.controlParameters.solo.next(!track.controlParameters.solo.getValue());
@@ -71,13 +108,4 @@ export class TracksService {
   }
 
 
-  private guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 }

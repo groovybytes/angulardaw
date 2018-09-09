@@ -12,14 +12,16 @@ import {Cell} from "../../model/daw/matrix/Cell";
 import {Pattern} from "../../model/daw/Pattern";
 import * as _ from "lodash";
 import {ProjectDto} from "../../model/daw/dto/ProjectDto";
-import {TrackDto} from "../../model/daw/dto/TrackDto";
-import {TrackControlParametersDto} from "../../model/daw/dto/TrackControlParametersDto";
 import {PatternDto} from "../../model/daw/dto/PatternDto";
 import {MatrixDto} from "../../model/daw/dto/MatrixDto";
 import {TransportSettings} from "../../model/daw/transport/TransportSettings";
 import {GlobalTransportSettings} from "../../model/daw/transport/GlobalTransportSettings";
 import {PatternsService} from "./patterns.service";
 import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
+import {AudioNodesService} from "./audionodes.service";
+import {TrackCategory} from "../../model/daw/TrackCategory";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
+import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
 
 
 @Injectable()
@@ -31,6 +33,7 @@ export class ProjectsService {
     private filesService: FilesApi,
     private trackService: TracksService,
     private config: AppConfiguration,
+    private audioNodesService: AudioNodesService,
     private samplesService: SamplesApi,
     private patternsService: PatternsService,
     private pluginsService: PluginsService) {
@@ -52,7 +55,11 @@ export class ProjectsService {
     project.patterns = [];
     project.id = this.guid();
     project.name = name;
-    project.openedWindows=[];
+    project.openedWindows = [];
+    project.nodes = [];
+    let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
+    masterBus.category = TrackCategory.BUS;
+    project.tracks.push(masterBus);
 
     let nColumns = 0;
     let nRows = 0;
@@ -115,10 +122,9 @@ export class ProjectsService {
       "_metronome",
       [],
       transportContext,
-      track.plugin,
+      track.getInstrumentPlugin(),
       NoteLength.Quarter,
-      track.controlParameters,
-      track.gainNode);
+      track.controlParameters);
 
     metronomeEvents.forEach(ev => pattern.events.push(ev));
 
@@ -131,8 +137,16 @@ export class ProjectsService {
     return new Promise((resolve, reject) => {
       let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
       metronome.load().then(metronome => {
-        let track = new Track("_metronome_track", -1, this.audioContext);
-        track.plugin = metronome;
+        metronome.inputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, null);
+        metronome.outputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, null);
+
+        let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
+        track.plugins = [metronome];
+
+        track.inputNode.connect(metronome.inputNode);
+        metronome.inputNode.connect(metronome.outputNode);
+        metronome.outputNode.connect(track.outputNode);
+
         resolve(track);
       })
         .catch(error => reject(error));
@@ -140,6 +154,7 @@ export class ProjectsService {
 
 
   }
+
 
   private serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
@@ -152,18 +167,12 @@ export class ProjectsService {
     projectDto.selectedTrack = project.selectedTrack.getValue() ? project.selectedTrack.getValue().id : null;
     projectDto.tracks = [];
     projectDto.patterns = [];
-    project.tracks.forEach(track => {
-      let trackDto = new TrackDto();
-      trackDto.id = track.id;
-      trackDto.index = track.index;
-      trackDto.name = track.name;
-      trackDto.color = track.color;
-      trackDto.pluginId = track.plugin.getId();
-      trackDto.controlParameters = new TrackControlParametersDto();
-      trackDto.controlParameters.gain = track.controlParameters.gain.getValue();
-      trackDto.controlParameters.mute = track.controlParameters.mute.getValue();
-      trackDto.controlParameters.solo = track.controlParameters.solo.getValue();
+    projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
+    projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
+    projectDto.desktop = project.desktop;
 
+    project.tracks.forEach(track => {
+      let trackDto = this.trackService.convertTrackToJson(track);
       projectDto.tracks.push(trackDto);
     });
 
@@ -201,7 +210,7 @@ export class ProjectsService {
     });
 
     projectDto.matrix.rowHeader = project.matrix.rowHeader;
-    projectDto.matrix.rowHeader.forEach(cell=>cell.animation=null);
+    projectDto.matrix.rowHeader.forEach(cell => cell.animation = null);
 
     return projectDto;
   }
@@ -214,31 +223,33 @@ export class ProjectsService {
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.openedWindows = dto.openedWindows;
+      project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
+      project.desktop = dto.desktop;
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {
-
-          project.plugins = plugins;
+          project.pluginTypes = plugins;
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
-            let track = new Track(t.id, t.index, this.audioContext);
-            track.name = t.name;
-            track.color = t.color;
-            track.controlParameters.gain.next(t.controlParameters.gain ? t.controlParameters.gain : 100);
-            track.controlParameters.mute.next(t.controlParameters.mute ? t.controlParameters.mute : false);
-            track.controlParameters.solo.next(t.controlParameters.solo ? t.controlParameters.solo : false);
-            project.tracks.push(track);
 
-            if (t.pluginId) {
-              let pluginInfo = project.plugins.find(p => p.id === t.pluginId);
-              if (!pluginInfo) throw "plugin not found with id " + t.pluginId;
+            let track = this.trackService.convertTrackFromJson(t, project.nodes);
+            project.tracks.push(track);
+            track.plugins = [];
+            t.plugins.forEach(pluginDto => {
+              let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
+              if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
               let promise = this.pluginsService.loadPluginWithInfo(pluginInfo);
               pluginPromises.push(promise);
-              promise.then(plugin => track.plugin = plugin);
-            }
+              promise.then(_plugin => {
+                _plugin.inputNode = project.nodes.find(n => n.id === pluginDto.inputNode);
+                _plugin.outputNode = project.nodes.find(n => n.id === pluginDto.outputNode);
+                track.plugins.push(_plugin);
+              });
+            })
           });
 
+          project.getMasterBus().outputNode.connect(this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.DESTINATION, "end-node"));
           let cells = _.flatten(dto.matrix.body);
           Promise.all(pluginPromises)
             .then(() => {
@@ -286,8 +297,7 @@ export class ProjectsService {
 
               this.createMetronomeTrack(project)
                 .then(track => {
-                  project.systemTracks.push(track);
-                  this.createMetronomePattern(project, track)
+                  this.createMetronomePattern(project, track);
                   //project.patterns.push(this.createMetronomePattern(project, track));
                   resolve(project);
                 })

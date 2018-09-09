@@ -9,6 +9,7 @@ import {TracksService} from "./services/tracks.service";
 import {MatrixService} from "./services/matrix.service";
 import {PatternsService} from "./services/patterns.service";
 import {KeyboardState} from "./model/KeyboardState";
+import {AudioNodesService} from "./services/audionodes.service";
 
 let projectsApi=new InMemoryApiEndpoint("__projects");
 let tracksApi=new InMemoryApiEndpoint("__tracks");
@@ -32,6 +33,7 @@ let patternApi=new InMemoryApiEndpoint("__patterns");
     TracksService,
     MatrixService,
     PatternsService,
+    AudioNodesService,
     { provide: "ProjectsApi", useValue: projectsApi },
     { provide: "TracksApi", useValue: tracksApi },
     { provide: "EventsApi", useValue: eventsApi },
