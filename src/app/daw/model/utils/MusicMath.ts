@@ -45,8 +45,17 @@ export class MusicMath {
     return beat * beatTicks * tickTime;
   }
 
-  public static getBarNumber(tick: number, quantization: NoteLength, signature: TimeSignature): number {
+  public static getBarNumber(time: number, bpm:number,quantization: NoteLength, signature: TimeSignature): number {
+    let tick = MusicMath.getTickForTime(time,bpm,quantization);
     return Math.floor(tick / MusicMath.getBeatTicks(quantization) / signature.beatUnit);
+  }
+
+  public static getBeatNumberWithTime(time: number, bpm:number,quantization: NoteLength, signature: TimeSignature): number {
+    let beatTicks = MusicMath.getBeatTicks(quantization);
+    let tick = MusicMath.getTickForTime(time,bpm,quantization);
+    if (tick % beatTicks != 0) return -1;
+    return Math.floor(tick / beatTicks % signature.beatUnit);
+    //return tick*quantization*4 % signature.beatUnit;
   }
 
   public static getBeatNumber(tick: number, quantization: NoteLength, signature: TimeSignature): number {

@@ -20,8 +20,10 @@ export class Pattern {
   quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
   transportContext: TransportContext;
   marked:boolean=false;
+  noteInserted:EventEmitter<NoteTrigger>=new EventEmitter();
+  noteRemoved:EventEmitter<NoteTrigger>=new EventEmitter();
   private subscriptions: Array<Subscription> = [];
-  private stream: NoteStream;
+  stream: NoteStream;
 
   constructor(
     id: string,
@@ -48,15 +50,19 @@ export class Pattern {
   }
 
 
-  insertNote(note: NoteTrigger): void {
+  insertNote(note: NoteTrigger,publish?:boolean): void {
     note.id = this.guid();
     let index = _.sortedIndexBy(this.events, {'time': note.time}, d => d.time);
     this.events.splice(index, 0, note);
+    if (publish) this.noteInserted.emit(note);
   }
 
-  removeNote(id: string): void {
+  removeNote(id: string,publish?:boolean): void {
     let index = this.events.findIndex(ev => ev.id === id);
+    let event=this.events[index];
     this.events.splice(index, 1);
+    if (publish) this.noteRemoved.emit(event);
+
   }
 
   destroy():void{

@@ -83,19 +83,8 @@ export class SequencerService2 {
 
     //create event cells
     pattern.events.forEach(event => {
-      let eventTick = MusicMath.getTickForTime(event.time,pattern.transportContext.settings.global.bpm,pattern.quantization.getValue());
-      if (eventTick<nColumns){
-        let left = this.getXPositionForTime(event.time, specs, pattern);
-        let notes = pattern.notes;
-        let rowIndex = notes.indexOf(event.note);
-        let top = (rowIndex + 1) * specs.cellHeight;
-
-        let width = this.getEventWidth(event.length, pattern, specs);
-        let cell = new NoteCell(left, top, width, specs.cellHeight);
-        this.initializeNoteCell(cell, event, pattern);
-
-        model.push(cell);
-      }
+      let cell = this.createEventCell(event, pattern, specs, nColumns);
+      if (cell) model.push(cell);
 
     });
 
@@ -103,8 +92,26 @@ export class SequencerService2 {
 
   }
 
+  private createEventCell(event: NoteTrigger, pattern: Pattern, specs: SequencerD3Specs, nColumns): NoteCell {
+    let eventTick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
+    if (eventTick < nColumns) {
+      let left = this.getXPositionForTime(event.time, specs, pattern);
+      let notes = pattern.notes;
+      let rowIndex = notes.indexOf(event.note);
+      let top = (rowIndex + 1) * specs.cellHeight;
+
+      let width = this.getEventWidth(event.length, pattern, specs);
+      let cell = new NoteCell(left, top, width, specs.cellHeight);
+      this.initializeNoteCell(cell, event, pattern);
+
+      return cell;
+    }
+
+    return null;
+  }
+
   private initializeNoteCell(cell: NoteCell, event: NoteTrigger, pattern: Pattern): void {
-    cell.tick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm,pattern.quantization.getValue());
+    cell.tick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
     let rowIndex = pattern.notes.indexOf(event.note);
     cell.row = rowIndex;
     cell.data = event;
@@ -112,8 +119,6 @@ export class SequencerService2 {
     cell.note = pattern.notes[rowIndex];
     cell.time = event.time;
   }
-
-
 
 
   addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
@@ -133,6 +138,13 @@ export class SequencerService2 {
     pattern.insertNote(trigger);
   }
 
+
+  addCellWithNote(note: NoteTrigger, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
+    let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
+    let cell = this.createEventCell(note, pattern, specs, nColumns);
+    if (cell) cells.push(cell);
+  }
+
   updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
 
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
@@ -141,17 +153,17 @@ export class SequencerService2 {
     let percentage = entry.x / fullWidth;
     let noteTime = fullTime * percentage;
     let notes = pattern.notes;
-    let rowIndex = entry.y / specs.cellHeight-1;
+    let rowIndex = entry.y / specs.cellHeight - 1;
 
     entry.data.note = notes[rowIndex];
     entry.data.time = noteTime;
   }
 
-  removeEvent(cells:Array<NoteCell>,entry: NoteCell, pattern: Pattern): void {
+  removeEvent(cells: Array<NoteCell>, entry: NoteCell, pattern: Pattern): void {
     pattern.removeNote(entry.data.id);
     entry.data = null;
-    let cellIndex = cells.findIndex(cell=>cell.id===entry.id);
-    cells.splice(cellIndex,1);
+    let cellIndex = cells.findIndex(cell => cell.id === entry.id);
+    cells.splice(cellIndex, 1);
   }
 
   dragStart(cell: NoteCell, container): void {
@@ -229,7 +241,7 @@ export class SequencerService2 {
 
   }
 
-  private getEventWidth(noteLength: number, pattern: Pattern,specs: SequencerD3Specs): number {
+  private getEventWidth(noteLength: number, pattern: Pattern, specs: SequencerD3Specs): number {
     let fullTime = MusicMath.getTimeAtBeat(pattern.length, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
     let fullWidth = specs.cellWidth * specs.columns;
     return fullWidth * ((noteLength * 120 / pattern.transportContext.settings.global.bpm) / fullTime);//  timePerPixel * noteLength*120/transport.getBpm();

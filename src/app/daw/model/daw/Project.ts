@@ -12,6 +12,8 @@ import {ProjectSettings} from "./ProjectSettings";
 import {DesktopManager} from "./visual/desktop/DesktopManager";
 import {VirtualAudioNode} from "./VirtualAudioNode";
 import {TrackCategory} from "./TrackCategory";
+import {Plugin} from "./plugins/Plugin";
+import {NoteTrigger} from "./NoteTrigger";
 
 
 export class Project {
@@ -21,20 +23,25 @@ export class Project {
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
-  activeSceneRow:number;
+  activeSceneRow: number;
   matrix: Matrix = new Matrix();
-  openedWindows:Array<string>;
-  nodes:Array<VirtualAudioNode<AudioNode>>;
+  openedWindows: Array<string>;
+  nodes: Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
   ready: boolean = false;
   transportSettings: TransportSettings;
-  desktop:DesktopManager=new DesktopManager();
-  settings:ProjectSettings=new ProjectSettings();
-  private transport: Transport;
+  desktop: DesktopManager = new DesktopManager();
+  settings: ProjectSettings = new ProjectSettings();
+  readonly transport: Transport;
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
-  pluginTypes:Array<PluginInfo>=[];
+  pluginTypes: Array<PluginInfo> = [];
+  plugins: Array<Plugin> = [];
   colors = ["lightblue", "yellow", "red"];
+  record: EventEmitter<Pattern> = new EventEmitter<Pattern>();
+  recordNoteStart:EventEmitter<NoteTrigger>=new EventEmitter<NoteTrigger>();
+  recordNoteEnd:EventEmitter<void>=new EventEmitter<void>();
+  metronomePattern:Pattern;
 
   private subscriptions: Array<Subscription> = [];
 
@@ -43,7 +50,7 @@ export class Project {
 
     this.transportSettings = transportSettings;
     this.transport = new Transport(this.audioContext, transportSettings);
-    this.metronomeEnabled.subscribe(isEnabled=>{
+    this.metronomeEnabled.subscribe(isEnabled => {
       if (isEnabled) this.addChannel("_metronome");
       else this.removeChannel("_metronome");
     })
@@ -54,8 +61,13 @@ export class Project {
     return this.tracks.find(track => track.id === id);
   }
 
+  getPlugin(id: string): Plugin {
+    let result = this.plugins.find(pl => pl.getId() === id);
+    return result;
+  }
+
   setChannels(channels: Array<string>): void {
-    this.transport.channels = channels.concat(this.metronomeEnabled.getValue()?["_metronome"]:[]);
+    this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
   }
 
   addChannel(channel: string): void {
@@ -67,7 +79,7 @@ export class Project {
   }
 
   isRunningWithChannel(channel: string): boolean {
-    return this.transport.isRunning() && this.transport.channels.indexOf(channel)>=0;
+    return this.transport.isRunning() && this.transport.channels.indexOf(channel) >= 0;
   }
 
   createTransportContext(): TransportContext {
@@ -92,6 +104,10 @@ export class Project {
     this.transport.start();
   }
 
+  startRecord(): void {
+
+  }
+
   stop(): void {
     this.transport.stop();
   }
@@ -101,12 +117,8 @@ export class Project {
     this.tracks.length = 0;
   }
 
-  getPluginInstances():Array<Plugin>{
-    return [];
-  }
-
-  getMasterBus():Track{
-    return this.tracks.find(t=>t.category===TrackCategory.BUS);
+  getMasterBus(): Track {
+    return this.tracks.find(t => t.category === TrackCategory.BUS);
   }
 
 

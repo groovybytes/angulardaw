@@ -18,6 +18,7 @@ export class NoteStream {
   private timeStamp: number;
   private eventPool: Array<NoteTrigger> = [];
   private subscriptions: Array<Subscription> = [];
+  transportTimeOffset:number=0;
 
   constructor(protected transportContext: TransportContext, private channel: string) {
     this.subscriptions.push(this.transportContext.time
@@ -31,8 +32,9 @@ export class NoteStream {
   }
 
   private onTransportTime(_transportTime: number): void {
+    let actualTransportTime = _transportTime-this.transportTimeOffset;
     let endTime =MusicMath.getEndTime(this.transportContext.settings.loopEnd,this.transportContext.settings.global.bpm)/1000;
-    let loopTime=_transportTime % endTime;
+    let loopTime=actualTransportTime % endTime;
     this.time.emit(loopTime);
     let timeFactor = 120 / this.transportContext.settings.global.bpm;
     if (this.timeStamp && this.timeStamp > loopTime) {
@@ -47,10 +49,13 @@ export class NoteStream {
         let eventClone = _.clone(event);
         eventClone.time = eventClone.time * timeFactor;
         eventClone.length = eventClone.length * timeFactor;
-        console.log(eventClone);
         this.triggerSubject.next({event: eventClone, offset: eventClone.time / 1000 - loopTime});
       });
     }
+  }
+
+  setTimeOffset(offset:number):void{
+    this.transportTimeOffset=offset;
   }
 
   private initLoopQueue(): void {

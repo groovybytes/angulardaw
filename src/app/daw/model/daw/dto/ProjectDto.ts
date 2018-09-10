@@ -3,7 +3,7 @@ import {MatrixDto} from "./MatrixDto";
 import {PatternDto} from "./PatternDto";
 import {TransportSettings} from "../transport/TransportSettings";
 import {AudioNodeDto} from "./AudioNodeDto";
-import {DesktopManager} from "../visual/desktop/DesktopManager";
+import {DesktopDto} from "./DesktopDto";
 
 export class ProjectDto{
   id: any;
@@ -17,6 +17,6 @@ export class ProjectDto{
   tracks: Array<TrackDto> = [];
   routes:Array<{source:string,target:string}>;
   nodes:Array<AudioNodeDto>;
-  desktop:DesktopManager;
+  desktop:DesktopDto;
   transportSettings:TransportSettings;
 }

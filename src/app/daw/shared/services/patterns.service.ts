@@ -46,6 +46,7 @@ export class PatternsService {
     _.remove(project.patterns,pattern=>pattern.id===patternId);
     if (selectedPattern && selectedPattern.id===patternId) project.selectedPattern.next(null);
   }
+
   copyPattern(pattern:Pattern,trackId:string,project:Project):Pattern{
     let track = project.tracks.find(track => track.id === trackId);
 
@@ -107,6 +108,10 @@ export class PatternsService {
       project.start();
     }
 
+  }
+  stopAndClear(project:Project):void{
+    project.stop();
+    project.setChannels([]);
   }
 
   private guid() {

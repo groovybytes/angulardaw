@@ -18,4 +18,7 @@ export class TransportComponent implements OnInit {
 
   }
 
+  toggleRecord():void{
+
+  }
 }

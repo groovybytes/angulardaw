@@ -5,7 +5,12 @@
     <ng-content select=".header"></ng-content>
   </div>
   <div class="card-body">
-    <ng-content select=".body"></ng-content>
-   <!-- <pads class="" *ngIf="plugin" [rows]="3" [columns]="3" [plugin]="plugin"></pads>-->
+    <pads  class="body"  [rows]="3" [columns]="3"
+           (noteStart)="onNoteOutStart($event)"
+           (noteEnd)="onNoteOutEnd()"
+           *ngIf="project.getPlugin(pluginId)"
+          [pad]="project.getPlugin(pluginId).getInfo().pad">
+
+    </pads>
   </div>
 </div>

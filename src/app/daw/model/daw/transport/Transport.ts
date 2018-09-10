@@ -23,6 +23,8 @@ export class Transport {
   private timeSubject: BehaviorSubject<TransportEvent<number>>
     = new BehaviorSubject<TransportEvent<number>>(null);
 
+  private startTime:number;
+
 
   constructor(
     private audioContext: AudioContext, settings: TransportSettings) {
@@ -56,13 +58,13 @@ export class Transport {
 
   start(): void {
     if (this.isRunning()) this.stop();
-    let start = this.audioContext.currentTime;
+    this.startTime = this.audioContext.currentTime;
     this.beforeStart.emit(new TransportEvent<void>(this.channels));
     this.run = true;
     this.timeReset.emit(new TransportEvent<void>(this.channels));
 
     this.intervalHandle = setInterval(() => {
-      let currentTime = this.audioContext.currentTime - start;
+      let currentTime = this.audioContext.currentTime - this.startTime;
       this.timeSubject.next( new TransportEvent<number>(this.channels,currentTime));
 
 
@@ -83,6 +85,10 @@ export class Transport {
     }, 5)
 
   }
+
+ /* resetStartTime():void{
+    this.startTime = this.audioContext.currentTime;
+  }*/
 
   destroy(): void {
     this.stop();

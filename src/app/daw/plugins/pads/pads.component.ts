@@ -10,10 +10,6 @@ import {
   QueryList,
   ViewChildren
 } from '@angular/core';
-import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
-import {Pattern} from "../../model/daw/Pattern";
-import {TriggerInfo} from "../../model/daw/pad/TriggerInfo";
 import {Pad} from "../../model/daw/pad/Pad";
 
 @Component({
@@ -25,10 +21,9 @@ export class PadsComponent implements OnInit, AfterViewInit {
 
   @Input() rows: number;
   @Input() columns: number;
-  @Input() pattern: Pattern;
   @Input() pad: Pad;
 
-  @Output() noteStart: EventEmitter<{ note: string, pattern: Pattern }> = new EventEmitter();
+  @Output() noteStart: EventEmitter<{ note: string }> = new EventEmitter();
   @Output() noteEnd: EventEmitter<void> = new EventEmitter();
 
   @ViewChildren('trigger') triggers: QueryList<ElementRef>;
@@ -72,7 +67,7 @@ export class PadsComponent implements OnInit, AfterViewInit {
     this.triggers.forEach(element => {
       this.zone.runOutsideAngular(() => {
         $(element.nativeElement).on("mousedown", () => {
-          this.noteStart.emit({note: $(element.nativeElement).attr("data-note"), pattern: this.pattern});
+          this.noteStart.emit({note: $(element.nativeElement).attr("data-note")});
         });
         $(element.nativeElement).on("mouseup", () => {
           this.noteEnd.emit();

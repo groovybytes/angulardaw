@@ -22,6 +22,8 @@ import {AudioNodesService} from "./audionodes.service";
 import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
 import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
+import {DesktopManager} from "../../model/daw/visual/desktop/DesktopManager";
+import {DesktopDto} from "../../model/daw/dto/DesktopDto";
 
 
 @Injectable()
@@ -118,7 +120,7 @@ export class ProjectsService {
     let metronomeEvents = this.patternsService.createMetronomeEvents(project.transportSettings.global.beatUnit);
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = project.transportSettings.global.beatUnit;
-    let pattern = new Pattern(
+    let pattern = project.metronomePattern= new Pattern(
       "_metronome",
       [],
       transportContext,
@@ -132,48 +134,21 @@ export class ProjectsService {
 
   }
 
- /* createMetronomeTrack(project: Project): Promise<Track> {
-
+  createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
       let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
       metronome.load().then(metronome => {
-
-
-        metronome.inputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, null);
-        metronome.outputNode = this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, null);
-
-        project.nodes.push(metronome.inputNode);
-        project.nodes.push(metronome.outputNode);
         let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
-
-        track.inputNode.connect(metronome.inputNode);
-        metronome.inputNode.connect(metronome.outputNode);
-        metronome.outputNode.connect(track.outputNode);
+        project.plugins.push(metronome);
+        this.pluginsService.setupInstrumentRoutes(project, track, metronome);
 
         resolve(track);
       })
         .catch(error => reject(error));
     })
 
-
-  }*/
-  createMetronomeTrack(project: Project): Promise<Track> {
-
-      return new Promise((resolve, reject) => {
-        let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
-        metronome.load().then(metronome => {
-          let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
-          track.plugins = [metronome];
-          this.pluginsService.setupInstrumentRoutes(project,track,metronome);
-
-          resolve(track);
-        })
-          .catch(error => reject(error));
-      })
-
-
-    }
+  }
 
   private serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
@@ -188,7 +163,8 @@ export class ProjectsService {
     projectDto.patterns = [];
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
-    projectDto.desktop = project.desktop;
+    projectDto.desktop = new DesktopDto();
+    projectDto.desktop.windows = project.desktop.windows;
 
     project.tracks.forEach(track => {
       let trackDto = this.trackService.convertTrackToJson(track);
@@ -243,7 +219,8 @@ export class ProjectsService {
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.openedWindows = dto.openedWindows;
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
-      project.desktop = dto.desktop;
+      project.desktop = new DesktopManager();
+      project.desktop.windows = dto.desktop.windows;
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {
@@ -258,12 +235,13 @@ export class ProjectsService {
             t.plugins.forEach(pluginDto => {
               let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
               if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
-              let promise = this.pluginsService.loadPluginWithInfo(pluginInfo);
+              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id,pluginInfo);
               pluginPromises.push(promise);
               promise.then(_plugin => {
                 _plugin.inputNode = project.nodes.find(n => n.id === pluginDto.inputNode);
                 _plugin.outputNode = project.nodes.find(n => n.id === pluginDto.outputNode);
                 track.plugins.push(_plugin);
+                project.plugins.push(_plugin);
               });
             })
           });
@@ -317,7 +295,7 @@ export class ProjectsService {
               this.createMetronomeTrack(project)
                 .then(track => {
                   this.createMetronomePattern(project, track);
-                  //project.patterns.push(this.createMetronomePattern(project, track));
+
                   resolve(project);
                 })
                 .catch(error => reject(error));

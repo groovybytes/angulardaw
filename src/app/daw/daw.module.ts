@@ -25,6 +25,7 @@ import {DrumsComponent} from "./plugins/drums/drums.component";
 import { PushComponent } from './push/push.component';
 import { PadsComponent } from './plugins/pads/pads.component';
 import { PluginPanelComponent } from './plugin-panel/plugin-panel.component';
+import { RecorderComponent } from './recorder/recorder.component';
 
 let audioContext = new AudioContext();
 
@@ -47,7 +48,8 @@ let audioContext = new AudioContext();
     DrumsComponent,
     PushComponent,
     PadsComponent,
-    PluginPanelComponent
+    PluginPanelComponent,
+    RecorderComponent
   ],
   imports: [
     BrowserModule,

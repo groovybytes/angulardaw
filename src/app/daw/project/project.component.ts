@@ -97,18 +97,6 @@ export class ProjectComponent implements OnInit {
 
   }
 
-  onNoteOutStart(event:{note:string,pattern:Pattern}):void{
-    console.log(event);
-    //this.plugin.feed(new NoteTrigger(null,note),0);
-  }
-  onNoteOutEnd():void{
-    console.log("end");
-  }
-
-  getOpenPlugins():Array<WstPlugin>{
-    return [];
-  }
-
 }
 
 

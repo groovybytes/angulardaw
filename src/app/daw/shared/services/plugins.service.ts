@@ -59,12 +59,12 @@ export class PluginsService {
     plugin.inputNode.connect(plugin.outputNode);
     plugin.outputNode.connect(track.outputNode);
   }
-  loadPluginWithInfo(info:PluginInfo): Promise<WstPlugin> {
+  loadPluginWithInfo(id:string,info:PluginInfo): Promise<WstPlugin> {
 
     let plugin: WstPlugin;
 
-    if (info.id==="drumkit1") plugin = new Drums(_.uniqueId("instrument-"),this.fileService, this.config,info, this.samplesV2Service);
-    else plugin = new GenericInstrumentSampler(_.uniqueId("instrument-"),info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
+    if (info.id==="drumkit1") plugin = new Drums(id,this.fileService, this.config,info, this.samplesV2Service);
+    else plugin = new GenericInstrumentSampler(id,info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
 
     return plugin.load();
 

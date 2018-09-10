@@ -69,6 +69,7 @@ export class TracksService {
     trackDto.outputNode = track.outputNode.id;
     track.plugins.forEach(p => {
       let dto = new PluginDto();
+      dto.id=p.getId();
       dto.pluginTypeId = p.getInfo().id;
       dto.inputNode = p.inputNode.id;
       dto.outputNode = p.outputNode.id;

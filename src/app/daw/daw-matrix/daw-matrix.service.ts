@@ -17,8 +17,6 @@ import {MatrixService} from "../shared/services/matrix.service";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 import {TrackCategory} from "../model/daw/TrackCategory";
 import {AudioNodesService} from "../shared/services/audionodes.service";
-import {AudioNodeTypes} from "../model/daw/AudioNodeTypes";
-import {VirtualAudioNode} from "../model/daw/VirtualAudioNode";
 
 @Injectable()
 export class DawMatrixService {
@@ -115,11 +113,13 @@ export class DawMatrixService {
       });
 
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
-      let meta = "plugin_"+pluginInfo.name;
-      this.pluginService.loadPluginWithInfo(pluginInfo)
+      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"),pluginInfo)
         .then(plugin => {
           track.plugins = [plugin];
           this.pluginService.setupInstrumentRoutes(project,track,plugin);
+
+          project.desktop.addWindow(plugin.getId());
+          project.plugins.push(plugin);
           track.name = pluginInfo.name;
           resolve(track);
         })

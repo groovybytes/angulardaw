@@ -158,6 +158,10 @@ export class Sequencer2Component implements OnInit, OnChanges {
 
           if (nextValue) this.updateCells();
         }));
+        this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
+          this.sequencerService.addCellWithNote(nextValue,this.cells,this.specs,this.pattern);
+          this.updateCells();
+        }));
         /*  this.subscriptions.push(this.pattern.quantizationEnabled.subscribe(nextValue => {
               this.dragHandler= new SequencerDragHandler();//  nextValue?new SequencerDragHandler():new RawDragHandler(this.cells);
           }));*/
@@ -167,7 +171,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   toggleRecord():void{
-
+    this.project.record.emit(this.pattern);
   }
 
   private updateCells(): void {
