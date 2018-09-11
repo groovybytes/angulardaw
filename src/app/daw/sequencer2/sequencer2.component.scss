@@ -50,40 +50,37 @@
   }*/
   .cell {
     position: absolute;
-    border: 1px solid black;
+    border-width: 1px;
+    border-style: dashed;
+  /*  border-radius: 5px;*/
     text-align: center;
     vertical-align: middle;
+
+    background-color: $tertiary;
+
+    &:hover{
+      filter:brightness(110%);
+    }
+    &.tick-active {
+      filter:brightness(90%);
+    }
   }
 
   .header-cell {
-
-    &.tick-active {
+    filter:brightness(120%);
+    /*&.tick-active {
       background-color: lighten(yellow, 5%);
-    }
+    }*/
   }
   .row-header-cell {
-
+    filter:brightness(120%);
   }
-  .note-cell {
 
-    &.tick-active {
-      background-color: lighten($primary, 5%);
-    }
-    &.drag-active {
-      background-color: darken($primary, 10%);
-    }
-    &.drag-target {
-      background-color: $alt-color;
-    }
-
-  }
   .event-cell {
-    background-color: $red;
+    background-color: $yellow;
     /*resize: horizontal;
     overflow: auto;*/
-    &.tick-active {
-      background-color: lighten($red, 5%);
-    }
+
 
   }
   .fill-rect {
@@ -102,8 +99,8 @@
 
   .note-cell {
 
-    .fill-rect {
-      fill: $primary;
+    /*.fill-rect {
+
     }
 
     &.active {
@@ -116,21 +113,32 @@
       .fill-rect {
         fill: lighten(orange, 5%);
       }
-    }
+    }*/
 
-    &.drag-over {
+    /*&.drag-over {
       .fill-rect {
         fill: orange;
       }
+    }*/
+
+  /*  &.tick-active {
+      background-color: lighten($primary, 5%);
+    }*/
+    &.drag-active {
+      background-color: darken($primary, 10%);
     }
+    &.drag-target {
+      background-color: darken(yellow, 10%);
+    }
+
 
   }
 
-  .tick-active {
+ /* .tick-active {
     .fill-rect {
       fill: lighten(green, 5%);
     }
-  }
+  }*/
 }
 
 

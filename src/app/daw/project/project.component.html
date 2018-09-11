@@ -50,6 +50,7 @@
 
   <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
                 [project]="project"
+                [window]="window"
                 [pluginId]="window.pluginId"
                 [initialX]="window.x"
                 [initialY]="window.y"

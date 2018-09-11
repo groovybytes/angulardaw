@@ -25,6 +25,7 @@ $theme-colors: (
 
 $theme-colors: map-remove($theme-colors, "success", "info", "danger");
 
+$enable-caret:false;
 $input-color:red;
 $enable-gradients:false;
 $enable-shadows:false;

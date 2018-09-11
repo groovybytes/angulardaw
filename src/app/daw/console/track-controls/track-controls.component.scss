@@ -4,16 +4,16 @@
   padding-top:5px;
 }
 .mute-btn {
-  background-color: yellow;
+  background-color: $red;
   &.active {
-    background-color: darken(yellow, 10%);
+    background-color: darken($red, 10%);
   }
 }
 
 .solo-btn {
-  background-color: yellow;
+  background-color: royalblue;
   &.active {
-    background-color: darken(yellow, 10%);
+    background-color: darken(royalblue, 10%);
   }
 }
 

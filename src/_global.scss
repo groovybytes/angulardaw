@@ -24,10 +24,9 @@ $default-btn-color: $black;
   box-shadow: none !important;
 }
 
-
-.record-btn{
+.record-btn {
   background-color: $red;
-  border-color: darken($red,10%);
+  border-color: darken($red, 10%);
 
   &.active {
     background-color: $red !important;
@@ -42,14 +41,10 @@ $default-btn-color: $black;
   width: 30px;
   height: 30px;
 }
+
 :host /deep/ {
-  .ng5-slider {
 
-    .ng5-slider-pointer {
-      background-color: yellow;
-    }
 
-  }
 }
 
 

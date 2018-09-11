@@ -1,15 +1,24 @@
 @import "variables";
 
 .ng5-slider{
-  .ng5-slider-span{
+ /* .ng5-slider-span{
     color: $primary-color !important;
+    border-radius: 0 !important;
+
   }
 
   .ng5-slider-pointer{
-    background-color: white !important;
+    background-color: $secondary !important;
     outline-style: none !important;
+    height:40px !important;
   }
   .ng5-slider-selection{
     background-color: $primary-color !important;
-  }
+  }*/
+}
+
+
+.ng5-slider-span {
+  //background-color: yellow;
+
 }
