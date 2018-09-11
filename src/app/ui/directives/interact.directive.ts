@@ -8,8 +8,12 @@ export class InteractDirective implements OnInit {
 
   @Input() parent:string="parent";
   @Input() enabled:boolean=true;
+  @Input() initialX:number;
+  @Input() initialY:number;
   @Output() resizeStart:EventEmitter<void>=new EventEmitter();
   @Output() resizeEnd:EventEmitter<EventTarget>=new EventEmitter();
+  @Output() positionXChanged:EventEmitter<number>=new EventEmitter();
+  @Output() positionYChanged:EventEmitter<number>=new EventEmitter();
 
   constructor(private element: ElementRef,
               private renderer: Renderer2) {
@@ -17,6 +21,15 @@ export class InteractDirective implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.element.nativeElement.style.webkitTransform =
+      this.element.nativeElement.style.transform =
+        'translate(' + this.initialX + 'px, ' + this.initialY + 'px)';
+
+    // update the posiion attributes
+    this.element.nativeElement.setAttribute('data-x', this.initialX);
+    this.element.nativeElement.setAttribute('data-y', this.initialY);
+
     interact(this.element.nativeElement)
       .draggable({
         // enable inertial throwing
@@ -89,6 +102,7 @@ export class InteractDirective implements OnInit {
         this.resizeStart.emit();
       })
 
+    let self = this;
     function dragMoveListener (event) {
       var target = event.target,
         // keep the dragged position in the data-x/data-y attributes
@@ -103,6 +117,9 @@ export class InteractDirective implements OnInit {
       // update the posiion attributes
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
+      self.positionXChanged.emit(x);
+      self.positionYChanged.emit(y);
+
     }
 
     // this is used later in the resizing and gesture demos

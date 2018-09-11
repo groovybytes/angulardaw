@@ -28,7 +28,7 @@ export class PadsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('trigger') triggers: QueryList<ElementRef>;
 
-  public size: number = 1;
+  public size: number = 0;
 
   constructor(private element: ElementRef, private zone: NgZone) {
   }

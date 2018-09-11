@@ -11,7 +11,7 @@
         *ngFor="let triggerInfo of row;let j=index"
         [attr.data-note]="triggerInfo.note"
         [className]="'size-'+size">
-      {{triggerInfo.title}}
+      <span>{{triggerInfo.title}}</span>
     </td>
   </tr>
   </tbody>

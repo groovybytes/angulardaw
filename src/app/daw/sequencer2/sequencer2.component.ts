@@ -159,6 +159,8 @@ export class Sequencer2Component implements OnInit, OnChanges {
           if (nextValue) this.updateCells();
         }));
         this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
+          console.log("got another value");
+          console.log(JSON.stringify(nextValue));
           this.sequencerService.addCellWithNote(nextValue,this.cells,this.specs,this.pattern);
           this.updateCells();
         }));

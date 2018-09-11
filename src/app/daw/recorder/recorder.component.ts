@@ -31,6 +31,7 @@ export class RecorderComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     this.metronomeTransport = this.project.metronomePattern.transportContext;
     this.project.recordNoteStart.subscribe((trigger: NoteTrigger) => {
+
       if (this.recordActive){
         trigger.time = this.recordTime*1000;
         trigger.length = 200;
@@ -66,8 +67,9 @@ export class RecorderComponent implements OnInit, OnDestroy, OnChanges {
               metronomeSubscription.unsubscribe();
               this.pattern.stream.setTimeOffset(event.value);
               this.project.addChannel(this.pattern.id);
+              let patternTime = MusicMath.getEndTime(this.pattern.transportContext.settings.loopEnd,this.pattern.transportContext.settings.global.bpm)/1000;
               this.patternSubscription = this.pattern.transportContext.time.subscribe(event => {
-                this.recordTime = event.value-this.pattern.stream.transportTimeOffset;
+                this.recordTime = (event.value-this.pattern.stream.transportTimeOffset) % patternTime;
               });
               // this.patternsService.stopAndClear(this.project);
               //this.patternsService.togglePattern(this.pattern.id, this.project);

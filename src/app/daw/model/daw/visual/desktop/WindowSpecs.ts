@@ -6,10 +6,10 @@ export class WindowSpecs{
     this.pluginId=pluginId;
   }
   pluginId:string;
-  x:number=200;
+  x:number=600;
   y:number=200;
-  width:number=400;
-  height:number=400;
+  width:number=600;
+  height:number=600;
   state:WindowState=WindowState.CLOSED;
 
 }
