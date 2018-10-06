@@ -79,13 +79,8 @@ export class ProjectsCreateComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.selectedPlugins.length === 0) this.msg = "Musik machen ohne Instrument? Ist das dein Ernst?";
     else {
-      let dto = new ProjectDto();
-      dto.id = this.projectService.guid();
-      dto.plu
-      this.projectsApi.create()
       let id = this.projectService.guid();
       localStorage.setItem("new_project", JSON.stringify({
-        id: id,
         plugins: this.selectedPlugins.map(plugin => plugin.id)
       }));
 

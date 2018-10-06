@@ -13,7 +13,6 @@ export class LocalStorageArray<T> {
   }
   find(finder:(o:T)=>boolean):Array<T>{
     return _.cloneDeep(this.data.filter(d=>{
-      debugger;
       return finder(d)
     }));
   }

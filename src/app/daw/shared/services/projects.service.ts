@@ -185,7 +185,7 @@ export class ProjectsService {
 
   }
 
-  get(projectId: string): Promise<Project> {
+ /* get(projectId: string): Promise<Project> {
     return new Promise((resolve, reject) => {
 
       this.projectsApi.getById(projectId).then(json => {
@@ -205,12 +205,15 @@ export class ProjectsService {
     return new Promise((resolve, reject) => {
       this.projectsApi.getById(project.id).then(_project => {
         let json = this.serializeProject(project);
-        if (!_project) this.projectsApi.create(json).then(project => resolve(), error => reject(error));
+        if (!_project) {
+          json.id=this.guid();
+          this.projectsApi.create(json).then(project => resolve(), error => reject(error));
+        }
         else this.projectsApi.update(json).then(project => resolve(), error => reject(error));
       });
     })
 
-  }
+  }*/
 
   changeQuantization(project: Project, loopLength: number, quantization: NoteLength): void {
     /* project.quantization=quantization;
@@ -255,7 +258,7 @@ export class ProjectsService {
 
   }
 
-  private serializeProject(project: Project): ProjectDto {
+  serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
     projectDto.name = project.name;
@@ -315,7 +318,7 @@ export class ProjectsService {
     return projectDto;
   }
 
-  private deSerializeProject(dto: ProjectDto): Promise<Project> {
+  deSerializeProject(dto: ProjectDto): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(this.audioContext, dto.transportSettings);

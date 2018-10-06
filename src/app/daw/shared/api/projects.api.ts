@@ -11,19 +11,18 @@ export class ProjectsApi {
   private db: LocalStorageArray<ProjectDto>;
 
   constructor(private http: HttpClient, private configuration: AppConfiguration) {
-    this.db = new LocalStorageArray<any>("_projects");
+    this.db = new LocalStorageArray<ProjectDto>("_projects");
   }
 
   getById(id: string): Promise<ProjectDto> {
     return new Promise((resolve, reject) => {
-      let x = this.db.find(project => project.id === id);
-      debugger;
       resolve(this.db.find(o => o["id"] === id)[0]);
     })
   }
 
   getAll(): Promise<Array<ProjectDto>> {
     return new Promise((resolve, reject) => {
+      let all = this.db.all();
       resolve(this.db.all());
     })
   }

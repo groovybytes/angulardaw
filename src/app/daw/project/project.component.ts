@@ -9,6 +9,7 @@ import {WstPlugin} from "../model/daw/plugins/WstPlugin";
 import {WindowState} from "../model/daw/visual/desktop/WindowState";
 import {NoteTrigger} from "../model/daw/NoteTrigger";
 import {Pattern} from "../model/daw/Pattern";
+import {ProjectsApi} from "../shared/api/projects.api";
 
 @Component({
   selector: 'project',
@@ -35,6 +36,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
+    private projectsApi:ProjectsApi,
     private system: System) {
 
   }
@@ -53,40 +55,36 @@ export class ProjectComponent implements OnInit, OnDestroy {
       let newProject = JSON.parse(localStorage.getItem("new_project"));
       if (newProject) {
         localStorage.setItem("new_project", null);
+
         this.projectsService.createProject(newProject.name, newProject.plugins)
-          .then(project=>{
-            this.projectsService.save(project).then(() => {
-              this.project = project;
-              project.ready = true;
-            })
+          .then(project=> {
+            let dto = this.projectsService.serializeProject(project);
+            dto.id=params.projectId;
+            dto.name=dto.id;
+            this.projectsApi.create(dto)
+              .then(() => {
+                this.project = project;
+                project.ready = true;
+              })
               .catch(error => this.system.error(error));
           })
           .catch(error => this.system.error(error));
-
       }
       else {
 
-        this.projectsService.get(params.projectId)
-          .then(project => {
-            this.project = project;
-            this.project.ready = true;
-          })
+        this.projectsApi.getById(params.projectId).then(dto => {
+
+          this.projectsService.deSerializeProject(dto)
+            .then(project => {
+              this.project=project;
+              this.project.ready = true;
+            })
+            .catch(error => this.system.error(error));
+        })
           .catch(error => this.system.error(error));
       }
 
     });
-  }
-
-  private createNewProject(): void {
-    /* let project = this.projectService.createProject2(this.newProjectName, this.selectedPlugins);
-     this.projectsApi.post(project).subscribe(() => {
-       this.open(project.id);
-     }, error => this.system.error(error));
-     /!*  this.projectService.(project).then(() => {
-         this.projects.push(project);
-         project.destroy()
-       })
-         .catch(error => this.system.error(error));*!/*/
   }
 
   switchMetronome(): void {
@@ -98,7 +96,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    this.projectsService.save(this.project);
+    let dto = this.projectsService.serializeProject(this.project);
+    this.projectsApi.update(dto)
+      .catch(error => this.system.error(error));
+
   }
 
   toggleSequencer(): void {
