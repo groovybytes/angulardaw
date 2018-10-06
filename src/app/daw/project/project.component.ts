@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Project} from "../model/daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
@@ -15,7 +15,7 @@ import {Pattern} from "../model/daw/Pattern";
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent implements OnInit, OnDestroy {
 
   project: Project;
   sideBarOpen: boolean = true;
@@ -50,13 +50,43 @@ export class ProjectComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
 
-      this.projectsService.get(params.projectId)
-        .then(project => {
-          this.project = project;
-          this.project.ready = true;
-        })
-        .catch(error => this.system.error(error));
+      let newProject = JSON.parse(localStorage.getItem("new_project"));
+      if (newProject) {
+        localStorage.setItem("new_project", null);
+        this.projectsService.createProject(newProject.name, newProject.plugins)
+          .then(project=>{
+            this.projectsService.save(project).then(() => {
+              this.project = project;
+              project.ready = true;
+            })
+              .catch(error => this.system.error(error));
+          })
+          .catch(error => this.system.error(error));
+
+      }
+      else {
+
+        this.projectsService.get(params.projectId)
+          .then(project => {
+            this.project = project;
+            this.project.ready = true;
+          })
+          .catch(error => this.system.error(error));
+      }
+
     });
+  }
+
+  private createNewProject(): void {
+    /* let project = this.projectService.createProject2(this.newProjectName, this.selectedPlugins);
+     this.projectsApi.post(project).subscribe(() => {
+       this.open(project.id);
+     }, error => this.system.error(error));
+     /!*  this.projectService.(project).then(() => {
+         this.projects.push(project);
+         project.destroy()
+       })
+         .catch(error => this.system.error(error));*!/*/
   }
 
   switchMetronome(): void {
@@ -95,6 +125,17 @@ export class ProjectComponent implements OnInit {
     }
     else this.project.openedWindows = ["plugin"];
 
+  }
+
+  ngOnDestroy(): void {
+    this.project.destroy();
+    /* .then(() => {
+       console.log("context destroyed");
+     })
+     .catch(error => {
+       debugger;
+       this.system.error(error)
+     });*/
   }
 
 }

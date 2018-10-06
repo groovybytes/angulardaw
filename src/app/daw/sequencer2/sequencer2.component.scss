@@ -78,6 +78,10 @@
 
   .event-cell {
     background-color: $yellow;
+
+      resize: horizontal;
+      overflow: auto;
+
     /*resize: horizontal;
     overflow: auto;*/
 

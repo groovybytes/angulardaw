@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef, Inject,
+  ElementRef,
   Input,
   OnChanges,
   OnInit,
@@ -17,9 +17,10 @@ import {Pattern} from "../model/daw/Pattern";
 import {PatternsService} from "../shared/services/patterns.service";
 import {DragHandler} from "../model/daw/visual/DragHandler";
 import {MatrixDragHandler} from "./DragHandler";
-import {KeyboardState} from "../shared/model/KeyboardState";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 import {MatrixService} from "../shared/services/matrix.service";
+import {TracksService} from "../shared/services/tracks.service";
+import {System} from "../../system/System";
 
 
 @Component({
@@ -38,6 +39,8 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
               private matrixService:MatrixService,
+              private tracksService:TracksService,
+              private system:System,
               private dawMatrixService: DawMatrixService) {
   }
 
@@ -68,7 +71,8 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   pluginSelected(plugin:PluginInfo):void{
-    this.dawMatrixService.addTrackWithPlugin(plugin,this.project);
+    this.matrixService.addMatrixColumnWithPlugin(plugin,this.project)
+      .catch(error=>this.system.error(error));
   }
 
   addRow():void{
@@ -83,6 +87,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   bodyCellMenuBtnClicked(cell:Cell<Pattern>):void{
     this.dawMatrixService.bodyCellMenuBtnClicked(cell,this.project);
   }
+
   bodyCellDblClicked(cell: Cell<Pattern>): void {
     this.dawMatrixService.bodyCellDblClicked(cell, this.project);
   }
@@ -93,6 +98,24 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   onHeaderClicked(cell:Cell<Track>):void{
     this.project.selectedTrack.next(cell.data);
+  }
+
+  changeGain(track:Track,gain:any):void{
+
+    track.controlParameters.gain.next(gain.value);
+  }
+
+  mute(track:Track):void{
+    track.controlParameters.mute.next(!track.controlParameters.mute.getValue());
+  }
+
+  solo(track:Track):void{
+    this.tracksService.toggleSolo(this.project,track);
+
+  }
+  arm(track:Track):void{
+
+
   }
 
   getTrack(trackId: string): Track {

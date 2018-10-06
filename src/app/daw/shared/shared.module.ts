@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-import {InMemoryApiEndpoint} from "./api/InMemoryApiEndpoint";
 import {PluginsService} from "./services/plugins.service";
 import {ProjectsService} from "./services/projects.service";
 import {SamplesApi} from "./api/samples.api";
@@ -10,12 +9,15 @@ import {MatrixService} from "./services/matrix.service";
 import {PatternsService} from "./services/patterns.service";
 import {KeyboardState} from "./model/KeyboardState";
 import {AudioNodesService} from "./services/audionodes.service";
+import {AudioContextService} from "./services/audiocontext.service";
+import {ProjectsApi} from "./api/projects.api";
 
-let projectsApi=new InMemoryApiEndpoint("__projects");
-let tracksApi=new InMemoryApiEndpoint("__tracks");
+
+//let projectsApi;
+/*let tracksApi=new InMemoryApiEndpoint("__tracks");
 let eventsApi=new InMemoryApiEndpoint("__events");
 let gridApi=new InMemoryApiEndpoint("__grid");
-let patternApi=new InMemoryApiEndpoint("__patterns");
+let patternApi=new InMemoryApiEndpoint("__patterns");*/
 
 @NgModule({
   declarations: [
@@ -34,11 +36,8 @@ let patternApi=new InMemoryApiEndpoint("__patterns");
     MatrixService,
     PatternsService,
     AudioNodesService,
-    { provide: "ProjectsApi", useValue: projectsApi },
-    { provide: "TracksApi", useValue: tracksApi },
-    { provide: "EventsApi", useValue: eventsApi },
-    { provide: "GridApi", useValue: gridApi },
-    { provide: "PatternApi", useValue: patternApi },
+    AudioContextService,
+    ProjectsApi,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

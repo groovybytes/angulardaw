@@ -7,13 +7,14 @@ import {AbstractInstrumentSampler} from "../../model/daw/plugins/AbstractInstrum
 import {TheoryService} from "../services/theory.service";
 import {System} from "../../../system/System";
 import {AppConfiguration} from "../../../app.configuration";
+import {AudioContextService} from "../services/audiocontext.service";
 
 
 @Injectable()
 export class SamplesApi {
 
 
-  constructor(@Inject("AudioContext") private audioContext: AudioContext,
+  constructor(private audioContext: AudioContextService,
               private http: HttpClient,
               private system: System,
               private config: AppConfiguration,
@@ -74,12 +75,12 @@ export class SamplesApi {
     return new Promise((resolve, reject) => {
       this.fileService.getFiles(urls).then(files => {
         let samples = [];
-        Promise.all(files.map(file => Buffers.getAudioBuffer(file, this.audioContext)))
+        Promise.all(files.map(file => Buffers.getAudioBuffer(file, this.audioContext.getAudioContext())))
           .then(buffers => {
             let i = 0;
 
             buffers.forEach((buffer: AudioBuffer) => {
-              samples.push(new Sample(urls[i], buffer, this.audioContext));
+              samples.push(new Sample(urls[i], buffer, this.audioContext.getAudioContext()));
               i++;
             });
             resolve(samples);

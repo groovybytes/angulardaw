@@ -22,7 +22,7 @@ export class PluginsService {
     private system: System,
     private config: AppConfiguration,
     private theoryService: TheoryService,
-    private nodesService:AudioNodesService,
+    private nodesService: AudioNodesService,
     private samplesV2Service: SamplesApi,
   ) {
 
@@ -48,23 +48,27 @@ export class PluginsService {
 
   }*/
 
-  setupInstrumentRoutes(project:Project,track:Track,plugin:WstPlugin):void{
-    let meta = "plugin_"+plugin.getInfo().name;
-    plugin.inputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.PANNER,meta);
-    plugin.outputNode=this.nodesService.createVirtualNode(_.uniqueId("node-"),AudioNodeTypes.GAIN,meta);
+  setupInstrumentRoutes(project: Project, track: Track, plugin: WstPlugin): void {
+    let meta = "plugin_" + plugin.getInfo().name;
 
-    project.nodes.push(plugin.inputNode);
-    project.nodes.push(plugin.outputNode);
-    track.inputNode.connect(plugin.inputNode);
-    plugin.inputNode.connect(plugin.outputNode);
-    plugin.outputNode.connect(track.outputNode);
+    let inputNode = this.nodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, meta);
+    let outputNode = this.nodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, meta);
+    plugin.setInputNode(inputNode);
+    plugin.setOutputNode(outputNode);
+
+    project.nodes.push(inputNode);
+    project.nodes.push(outputNode);
+    track.inputNode.connect(inputNode);
+    inputNode.connect(outputNode);
+    outputNode.connect(track.outputNode);
   }
-  loadPluginWithInfo(id:string,info:PluginInfo): Promise<WstPlugin> {
+
+  loadPluginWithInfo(id: string, info: PluginInfo): Promise<WstPlugin> {
 
     let plugin: WstPlugin;
 
-    if (info.id==="drumkit1") plugin = new Drums(id,this.fileService, this.config,info, this.samplesV2Service);
-    else plugin = new GenericInstrumentSampler(id,info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
+    if (info.id === "drumkit1") plugin = new Drums(id, this.fileService, this.config, info, this.samplesV2Service);
+    else plugin = new GenericInstrumentSampler(id, info, this.theoryService, this.fileService, this.config, this.samplesV2Service);
 
     return plugin.load();
 

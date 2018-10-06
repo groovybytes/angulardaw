@@ -37,7 +37,7 @@ export class SequencerService2 {
     return result;
   }*/
 
-  createCells(pattern: Pattern, specs: SequencerD3Specs): Array<NoteCell> {
+  createTableCells(pattern: Pattern, specs: SequencerD3Specs): Array<NoteCell> {
     let model: Array<NoteCell> = [];
     let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
 
@@ -81,11 +81,19 @@ export class SequencerService2 {
       model.push(cell);
     }
 
+
+    return model;
+
+  }
+
+  createEventCells(pattern: Pattern, specs: SequencerD3Specs): Array<NoteCell> {
+    let model: Array<NoteCell> = [];
+    let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
+
     //create event cells
     pattern.events.forEach(event => {
       let cell = this.createEventCell(event, pattern, specs, nColumns);
       if (cell) model.push(cell);
-
     });
 
     return model;
@@ -123,11 +131,7 @@ export class SequencerService2 {
 
   addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, 120, pattern.quantization.getValue());
-    let ticksPerBeat = MusicMath.getBeatTicks(pattern.quantization.getValue());
-    let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
-    let percentage = cell.x / fullWidth;
-    let noteTime = fullTime * percentage;
+    let noteTime = this.getTimeForXPosition(x,specs,pattern);//fullTime * percentage;
     let rowIndex = cell.y / specs.cellHeight;
     let notes = pattern.notes;
     let note = notes[rowIndex - 1];
@@ -145,19 +149,14 @@ export class SequencerService2 {
     if (cell) cells.push(cell);
   }
 
-  updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
-
-    let fullTime = MusicMath.getTimeAtBeat(pattern.length, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
-    let ticksPerBeat = MusicMath.getBeatTicks(pattern.quantization.getValue());
-    let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
-    let percentage = entry.x / fullWidth;
-    let noteTime = fullTime * percentage;
+ /* updateEvent(entry: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
+    let noteTime = this.getTimeForXPosition(entry.x,specs,pattern);
     let notes = pattern.notes;
     let rowIndex = entry.y / specs.cellHeight - 1;
-
+    console.log("update event time is now "+noteTime);
     entry.data.note = notes[rowIndex];
     entry.data.time = noteTime;
-  }
+  }*/
 
   removeEvent(cells: Array<NoteCell>, entry: NoteCell, pattern: Pattern): void {
     pattern.removeNote(entry.data.id);
@@ -214,12 +213,13 @@ export class SequencerService2 {
     }
   }
 
-  onResized(element: EventTarget, cells: Array<NoteCell>, pattern: Pattern, specs: SequencerD3Specs): void {
-    let cellId = $(element).attr("data-id");
-    let width = $(element).width();
-    let cell = cells.find(cell => cell.id === cellId);
+  onResized(cell:NoteCell, pattern: Pattern, specs: SequencerD3Specs): void {
 
-    cell.data.length = this.getNoteLength(width, pattern, specs);
+
+    let time = this.getTimeForXPosition(cell.x,specs,pattern);
+    cell.data.length = this.getNoteLength(cell.width, pattern, specs);
+    cell.time=time;
+    cell.data.time=time;
 
 
   }
@@ -238,6 +238,18 @@ export class SequencerService2 {
     let percentage = time / fullTime;
     let fullWidth = specs.cellWidth * specs.columns;
     return fullWidth * percentage;
+
+  }
+
+  private getTimeForXPosition(x: number, specs: SequencerD3Specs, pattern: Pattern): number {
+    let fullTime = MusicMath.getTimeAtBeat(pattern.length, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
+    let ticksPerBeat = MusicMath.getBeatTicks(pattern.quantization.getValue());
+    let fullWidth = specs.cellWidth * pattern.length * ticksPerBeat;
+    let percentage = x / fullWidth;
+
+    let noteTime = fullTime * percentage;
+
+    return noteTime;
 
   }
 

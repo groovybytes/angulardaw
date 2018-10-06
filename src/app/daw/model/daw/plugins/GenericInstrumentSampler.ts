@@ -21,6 +21,7 @@ export class GenericInstrumentSampler extends AbstractInstrumentSampler {
   }
 
   destroy(): void {
+    this.samples.forEach(sample=>sample.destroy());
   }
 
   load(): Promise<AbstractInstrumentSampler> {

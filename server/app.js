@@ -12,6 +12,6 @@ app.use(cors())
 express.static('assets')
 app.use('/assets', express.static('assets'), serveIndex('assets', {'icons': true}))
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+app.listen(9000, function () {
+  console.log('Example app listening on port 9000!');
 });

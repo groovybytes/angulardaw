@@ -14,6 +14,7 @@ import {VirtualAudioNode} from "./VirtualAudioNode";
 import {TrackCategory} from "./TrackCategory";
 import {Plugin} from "./plugins/Plugin";
 import {NoteTrigger} from "./NoteTrigger";
+import {AudioContextService} from "../../shared/services/audiocontext.service";
 
 
 export class Project {
@@ -39,17 +40,17 @@ export class Project {
   plugins: Array<Plugin> = [];
   colors = ["lightblue", "yellow", "red"];
   record: EventEmitter<Pattern> = new EventEmitter<Pattern>();
-  recordNoteStart:EventEmitter<NoteTrigger>=new EventEmitter<NoteTrigger>();
-  recordNoteEnd:EventEmitter<void>=new EventEmitter<void>();
-  metronomePattern:Pattern;
+  recordNoteStart: EventEmitter<NoteTrigger> = new EventEmitter<NoteTrigger>();
+  recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();
+  metronomePattern: Pattern;
 
   private subscriptions: Array<Subscription> = [];
 
   constructor(
-    private audioContext: AudioContext, transportSettings: TransportSettings) {
+    private audioContext: AudioContextService, transportSettings: TransportSettings) {
 
     this.transportSettings = transportSettings;
-    this.transport = new Transport(this.audioContext, transportSettings);
+    this.transport = new Transport(this.audioContext.getAudioContext(), transportSettings);
     this.metronomeEnabled.subscribe(isEnabled => {
       if (isEnabled) this.addChannel("_metronome");
       else this.removeChannel("_metronome");
@@ -113,8 +114,14 @@ export class Project {
   }
 
   destroy(): void {
+    this.transport.stop();
+    this.nodes.forEach(node => node.destroy());
+    this.nodes.length=0;
+    this.plugins.forEach(plugin => plugin.destroy());
     this.tracks.forEach(track => track.destroy());
     this.tracks.length = 0;
+    this.audioContext.getAudioContext().destination.disconnect();
+    //return this.audioContext.destroy();
   }
 
   getMasterBus(): Track {

@@ -8,6 +8,7 @@ import {NoteTrigger} from "../model/daw/NoteTrigger";
 import {MusicMath} from "../model/utils/MusicMath";
 import {TransportContext} from "../model/daw/transport/TransportContext";
 import {TimeSignature} from "../model/mip/TimeSignature";
+import {AudioContextService} from "../shared/services/audiocontext.service";
 
 @Component({
   selector: 'recorder',
@@ -23,7 +24,7 @@ export class RecorderComponent implements OnInit, OnDestroy, OnChanges {
   private patternSubscription: Subscription;
   private recordTime: number;
 
-  constructor(@Inject("AudioContext") private audioContext: AudioContext, private patternsService: PatternsService) {
+  constructor(private audioContext: AudioContextService, private patternsService: PatternsService) {
     /* this.subscriptions.push(project.inputDevice.noteStart.subscribe(event => this.recordNoteStart(event)));
      this.subscriptions.push(project.inputDevice.noteEnd.subscribe(() => this.recordNoteEnd()));*/
   }

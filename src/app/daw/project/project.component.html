@@ -19,7 +19,6 @@
                   (userChange)="changeTempo($event)">
       </ng5-slider>
       <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
-      <transport class="float-right"></transport>
 
     </div>
     <div class="w-25 ">
@@ -34,8 +33,9 @@
 </nav>
 
 <div class="drag-container" *ngIf="project && project.ready">
-  <div class="row no-gutters main-container">
-    <div class="col-12">
+  <div class="row main-container">
+    <div class="col-1"></div>
+    <div class="col-11">
       <daw-matrix [project]="project"></daw-matrix>
     </div>
     <div

@@ -5,13 +5,12 @@ import {MusicMath} from "../../model/utils/MusicMath";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import * as _ from "lodash";
+import {AudioContextService} from "./audiocontext.service";
 
 @Injectable()
 export class PatternsService {
 
-  constructor(
-    @Inject("AudioContext") private audioContext: AudioContext
-  ) {
+  constructor(private audioContext: AudioContextService) {
 
   }
 

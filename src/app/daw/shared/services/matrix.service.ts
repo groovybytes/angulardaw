@@ -4,12 +4,17 @@ import {Pattern} from "../../model/daw/Pattern";
 import {Cell} from "../../model/daw/matrix/Cell";
 import {Track} from "../../model/daw/Track";
 import * as _ from "lodash";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
+import {Project} from "../../model/daw/Project";
+import {TracksService} from "./tracks.service";
 
 
 @Injectable()
 export class MatrixService {
 
-  constructor() {
+  constructor(
+    private trackService:TracksService
+  ) {
 
   }
 
@@ -84,6 +89,27 @@ export class MatrixService {
     },500)
 
 
+  }
+
+  addMatrixColumnWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
+
+    return new Promise((resolve, reject) => {
+      let matrix = project.matrix;
+      let newColumnIndex = this.addColumn(matrix, 4);
+
+      this.trackService.addTrackWithPlugin(plugin,project)
+        .then(track=>{
+          let header = matrix.header.find(cell => cell.column === newColumnIndex);
+          header.data = track;
+          header.trackId = track.id;
+          _.flatten(matrix.body).filter(cell => cell.column === newColumnIndex).forEach(cell => {
+            cell.trackId = track.id;
+          });
+          resolve(track);
+        })
+        .catch(error=>reject(error));
+
+    })
   }
 
 

@@ -13,13 +13,12 @@ import {Instrument} from "./Instrument";
 
 export class MetronomePlugin extends Instrument implements WstPlugin {
 
-  inputNode: VirtualAudioNode<AudioNode>;
-  outputNode: VirtualAudioNode<AudioNode>;
+  private inputNode: VirtualAudioNode<AudioNode>;
+  private outputNode: VirtualAudioNode<AudioNode>;
 
   private lastBeat: number = -1;
   private accentSample: Sample;
   private otherSample: Sample;
-  private transportSubscription: Subscription;
 
   checked: boolean = true;
 
@@ -53,7 +52,8 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
 
 
   destroy(): void {
-    this.transportSubscription.unsubscribe();
+   this.accentSample.destroy();
+   this.otherSample.destroy();
   }
 
 
@@ -84,8 +84,8 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
 
   feed(event: NoteTrigger, offset: number): any {
     if (this.project.metronomeEnabled) {
-      if (event.note === "A0") this.accentSample.trigger(offset, this.outputNode.node);//trigger(offset);
-      else this.otherSample.trigger(offset, this.outputNode.node);
+      if (event.note === "A0") this.accentSample.trigger(offset);//trigger(offset);
+      else this.otherSample.trigger(offset);
     }
 
   }
@@ -100,5 +100,23 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
 
   getInfo(): PluginInfo {
     return new PluginInfo();
+  }
+
+  getInputNode(): VirtualAudioNode<AudioNode> {
+    return this.inputNode;
+  }
+
+  getOutputNode(): VirtualAudioNode<AudioNode> {
+    return this.outputNode;
+  }
+
+  setInputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.inputNode=node;
+  }
+
+  setOutputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.outputNode=node;
+    this.accentSample.setDestination(node.node);
+    this.otherSample.setDestination(node.node);
   }
 }

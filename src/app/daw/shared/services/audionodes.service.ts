@@ -2,12 +2,13 @@ import {Inject, Injectable} from "@angular/core";
 import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
 import {AudioNodeDto} from "../../model/daw/dto/AudioNodeDto";
 import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
+import {AudioContextService} from "./audiocontext.service";
 
 
 @Injectable()
 export class AudioNodesService {
 
-  constructor(@Inject("AudioContext") private audioContext: AudioContext) {
+  constructor(private audioContext: AudioContextService) {
 
   }
 
@@ -59,9 +60,9 @@ export class AudioNodesService {
   }
 
   private createNode(type: AudioNodeTypes): AudioNode {
-    if (type === AudioNodeTypes.PANNER) return this.audioContext.createPanner();
-    else if (type === AudioNodeTypes.GAIN) return this.audioContext.createGain();
-    else if (type === AudioNodeTypes.DESTINATION) return this.audioContext.destination;
+    if (type === AudioNodeTypes.PANNER) return this.audioContext.getAudioContext().createPanner();
+    else if (type === AudioNodeTypes.GAIN) return this.audioContext.getAudioContext().createGain();
+    else if (type === AudioNodeTypes.DESTINATION) return this.audioContext.getAudioContext().destination;
 
     throw "unknown node type";
   }

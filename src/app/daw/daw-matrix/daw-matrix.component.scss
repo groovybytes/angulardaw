@@ -2,23 +2,22 @@
 @import "add-row-btn";
 @import "matrix-table";
 
-.btn {
-  border: none !important;
-}
-
-.header-table{
-
-}
-.matrix-table{
-
-}
 .menu-btn, .body-menu-btn {
   width: 30px;
 
+  height:$header-height;
   &.menu-open {
     filter: brightness(50%);
-    //background-color: $secondary !important;
   }
+}
+
+.content-cell {
+  &:hover {
+
+    filter: brightness(95%);
+  }
+
+  background-color: $color-1;
 }
 
 .cell-container {
@@ -26,84 +25,13 @@
   height: 100%;
 
   &.marked {
-    //filter: brightness(50%);
     border: 1px solid black;
   }
   &.editing {
 
-    filter: brightness(80%);
   }
 
 }
-
-/*.matrix-container {
-  !* position: relative;
-   overflow: auto;
-
-   //height: $matrix-height;
-   background-color: $primary;*!
-}
-
-.table {
-
-  td:hover, th:hover {
-    filter: brightness(95%);
-  }
-}
-
-
-
-.matrix-table {
-
-  table-layout: fixed;
-  !*  border: 2px solid black;
-    td{border: 2px solid black;}*!
-
-  !* margin-bottom: $console-height;
-   margin-top: $header-height;*!
-
-  .add-track-header {
-    border: none;
-  }
-
-  th, td {
-    width: 200px;
-  }
-
-  .add-row-cell {
-    border: 0;
-  }
-  th {
-    //background-color: $secondary;
-    height: 50px;
-    padding: 0;
-    !*  border-bottom: 1px solid $primary-color;
-      border-right: 1px solid $primary-color;*!
-  }
-  tbody td {
-    height: 50px;
-    padding: 0;
-    !*   border-right: 1px solid $primary-color;
-       border-bottom: 1px solid $primary-color;*!
-    &.drag-active {
-      //background-color: yellow;
-    }
-    &.drag-target {
-      background-color: darken(red, 10%);
-    }
-  }
-
-  tfoot {
-    margin: auto;
-    background-color: $secondary;
-  }
-  tfoot td {
-    padding: 0;
-    height: $console-height;
-
-    //height: 300px;
-  }
-}*/
 
 .toggle-button {
 
@@ -117,11 +45,11 @@
 }
 
 :host /deep/ {
-  .cell-btn {
+/*  .cell-btn {
     filter: brightness(90%);
     &:hover {
       filter: brightness(80%);
     }
-  }
+  }*/
 }
 

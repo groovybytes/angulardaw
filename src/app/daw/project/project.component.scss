@@ -7,6 +7,7 @@
 }
 .top-navbar {
   height: $header-height;
+  min-height: $header-height;
   background-color: $white;
   z-index: $z-index-navbar;
   .btn {

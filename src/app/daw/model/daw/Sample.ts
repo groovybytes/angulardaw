@@ -7,21 +7,31 @@ export class Sample {
   id: string;
   baseNote: NoteInfo;
 
-
+  private destination:AudioNode;
+  private gainNode:GainNode;
 
   constructor(id: string, private buffer: AudioBuffer, private context: AudioContext) {
     this.id = id;
     this.buffer = buffer;
+
   }
 
-  public triggerWith(offset:number,detune:number,destination:AudioNode,adsr?: ADSREnvelope,duration?:number): void {
+  setDestination(node:AudioNode):void{
+    this.destination=node;
+    this.gainNode=this.context.createGain();
+    this.gainNode.connect(this.destination);
+  }
+
+  public triggerWith(offset: number, detune: number,adsr?: ADSREnvelope, duration?: number): void {
 
     let sourceNode = this.context.createBufferSource();
+    sourceNode.connect(this.gainNode);
     sourceNode.buffer = this.buffer;
-    if (detune) sourceNode.detune.value=detune;
-    let gainNode = this.context.createGain();
-    sourceNode.connect(gainNode);
-    gainNode.connect(destination);
+    if (detune) sourceNode.detune.value = detune;
+
+    sourceNode.addEventListener("ended", (event) =>{
+      sourceNode.disconnect();
+    });
     //if (adsr) adsr.apply(gainNode, this.context.currentTime+offset);
     //gainNode.gain.linearRampToValueAtTime(0, this.context.currentTime+offset+duration?duration:0.7);
 
@@ -33,16 +43,23 @@ export class Sample {
 
     gainNode.gain.setValueCurveAtTime(waveArray, this.context.currentTime+offset+duration-0.5,0.5);
 */
-    sourceNode.start(this.context.currentTime+offset, 0, duration?duration:0.7);
+    sourceNode.start(this.context.currentTime + offset, 0, duration ? duration : 0.7);
   }
 
-  public trigger(offset:number,destination:AudioNode,duration?:number,):void{
-    let sourceNode = this.context.createBufferSource();
+  public trigger(offset: number, duration?: number,): void {
+    this.triggerWith(offset,0,null,duration)
+   /* let sourceNode = this.context.createBufferSource();
+    sourceNode.connect(this.gainNode);
     sourceNode.buffer = this.buffer;
-    let gainNode = this.context.createGain();
-    sourceNode.connect(gainNode);
-    gainNode.connect(destination);
-    sourceNode.start(this.context.currentTime+offset, 0, duration?duration:0.7);
+    sourceNode.start(this.context.currentTime + offset, 0, duration ? duration : 0.7);
+    sourceNode.addEventListener("ended", (event) =>{
+      sourceNode.disconnect();
+    });*/
+  }
+
+  destroy(): void {
+      this.gainNode.disconnect();
+      this.gainNode=null;
   }
 
 }

@@ -1,13 +1,14 @@
 import {Injectable} from "@angular/core";
+import {environment} from "../environments/environment";
 
 @Injectable()
 export class AppConfiguration{
 
 
   getAssetsUrl(appendix:string):string{
-    return "http://localhost:3000/assets/"+appendix;
+    return environment.assetsUrl+appendix;
   }
   getUrl(appendix:string):string{
-    return "http://localhost:3000/api/"+appendix;
+    return environment.apiUrl+appendix;
   }
 }

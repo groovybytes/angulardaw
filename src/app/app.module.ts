@@ -9,27 +9,31 @@ import {NotificationComponent} from './system/notification/notification.componen
 import {System} from "./system/System";
 import {MessagingService} from "./system/messaging.service";
 import {DawModule} from "./daw/daw.module";
-
+import {LandingPageComponent} from "./landing-page.component";
+import {AuthenticationModule} from "./authentication/authentication.module";
+import {AuthenticationService} from "./shared/authentication.service";
 
 @NgModule({
   declarations: [
     AppComponent,
-    NotificationComponent
-
+    NotificationComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    DawModule
+    DawModule,
+    AuthenticationModule
     //ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
 
   ],
   providers: [
     System,
     AppConfiguration,
-    MessagingService
+    MessagingService,
+    AuthenticationService
    /* {
       provide: HTTP_INTERCEPTORS,
       useClass: SystemMonitorService,

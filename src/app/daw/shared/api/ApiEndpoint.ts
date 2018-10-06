@@ -1,3 +1,4 @@
+/*
 import {Observable} from "rxjs";
 
 
@@ -14,3 +15,4 @@ export interface ApiEndpoint<T> {
   find(params?:any): Observable<Array<T>>;
 
 }
+*/

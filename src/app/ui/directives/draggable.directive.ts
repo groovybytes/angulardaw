@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
+import {Directive, ElementRef, Input, NgZone, OnInit, Renderer2} from '@angular/core';
 declare var interact;
 
 @Directive({
@@ -11,31 +11,34 @@ export class DraggableDirective implements OnInit {
  /* @Input("x") x:number;
   @Input("y") y:number;*/
 
-  constructor(private element: ElementRef) {
+  constructor(private element: ElementRef,private zone:NgZone) {
 
   }
 
   ngOnInit(): void {
-    interact(this.element.nativeElement)
-      .draggable({
-        // enable inertial throwing
-        inertia: true,
-      /*  allowFrom: '.drag-handle',*/
-        // keep the element within the area of it's parent
-        restrict: {
-          restriction: this.parent,
-          endOnly: false,
-          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-        },
-        // enable autoScroll
-        autoScroll: false,
+    this.zone.runOutsideAngular(()=>{
+      interact(this.element.nativeElement)
+        .draggable({
+          // enable inertial throwing
+          inertia: true,
+          /*  allowFrom: '.drag-handle',*/
+          // keep the element within the area of it's parent
+          restrict: {
+            restriction: this.parent,
+            endOnly: false,
+            elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+          },
+          // enable autoScroll
+          autoScroll: false,
 
-        // call this function on every dragmove event
-        onmove: dragMoveListener,
-        // call this function on every dragend event
-        onend: function (event) {
-        }
-      })
+          // call this function on every dragmove event
+          onmove: dragMoveListener,
+          // call this function on every dragend event
+          onend: function (event) {
+          }
+        })
+    })
+
 
     function dragMoveListener (event) {
       var target = event.target,

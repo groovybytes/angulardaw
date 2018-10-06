@@ -1,3 +1,4 @@
+/*
 import {ApiEndpoint} from "./ApiEndpoint";
 import {Observable} from "rxjs";
 import {Identifier} from "./Identifier";
@@ -23,3 +24,4 @@ export class HttpEndpoint<T extends Identifier> implements ApiEndpoint<T> {
     return undefined;
   }
 }
+*/

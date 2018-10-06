@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -26,6 +27,7 @@ import {SimpleSliderModel} from "../model/daw/visual/SimpleSliderModel";
 import {PatternsService} from "../shared/services/patterns.service";
 import {DragHandler} from "../model/daw/visual/DragHandler";
 import {SequencerDragHandler} from "./SequencerDragHandler";
+import {Cell} from "../model/daw/matrix/Cell";
 
 
 @Component({
@@ -42,12 +44,11 @@ export class Sequencer2Component implements OnInit, OnChanges {
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
 /*  @ViewChild("card") card: ElementRef;*/
-  readonly cells: Array<NoteCell> = [];
+  readonly tableCells: Array<NoteCell> = [];
+  readonly eventCells: Array<NoteCell> = [];
   allNotes: Array<string>;
   tick: number;
-  dragHandler: DragHandler = new SequencerDragHandler(
-    this.cells,
-    this.sequencerService);
+  dragHandler: DragHandler;
 
   lengthSlider: SimpleSliderModel = {
     value: 8,
@@ -64,6 +65,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
   private subscriptions: Array<Subscription> = [];
 
   constructor(private element: ElementRef,
+              private cd: ChangeDetectorRef,
               private theoryService: TheoryService,
               private tracksService: TracksService,
               private projectsService: ProjectsService,
@@ -71,6 +73,11 @@ export class Sequencer2Component implements OnInit, OnChanges {
               private sequencerService: SequencerService2) {
 
 
+    this.dragHandler = new SequencerDragHandler(
+      this.tableCells,
+      this.eventCells,
+      cd,
+      this.sequencerService);
     this.allNotes = theoryService.getAllIds();
   }
 
@@ -107,8 +114,8 @@ export class Sequencer2Component implements OnInit, OnChanges {
   onCellClicked(cell: NoteCell): void {
     if (!this.isResizing && !this.isDragging) {
       if (cell.column >= 0 && cell.row >= 0) {
-        if (cell.data) this.sequencerService.removeEvent(this.cells,cell, this.pattern);
-        else this.sequencerService.addNote(cell.x, cell.y, this.cells, this.specs, this.pattern);
+        if (cell.data) this.sequencerService.removeEvent(this.eventCells,cell, this.pattern);
+        else this.sequencerService.addNote(cell.x, cell.y, this.eventCells, this.specs, this.pattern);
       }
     }
   }
@@ -117,35 +124,37 @@ export class Sequencer2Component implements OnInit, OnChanges {
     this.pattern.quantization.next(value);
   }
 
-  getHeaderCells(): Array<NoteCell> {
-    return this.cells.filter(cell => cell.row === -1);
-  }
 
   resizeStart(): void {
     this.isResizing = true;
 
   }
+  dragStart(event: DragEvent, cell: Cell<any>): void {
+    setTimeout(()=>{
+      if (!this.isResizing)  this.dragHandler.onDragStart(event,cell);
+    })
+  }
 
-  resizeEnd(elementTarget: EventTarget): void {
+  resizeEnd(cell:NoteCell): void {
 
     setTimeout(() => {
       this.isResizing = false;
-      this.sequencerService.onResized(elementTarget, this.cells, this.pattern, this.specs);
+      this.sequencerService.onResized(cell, this.pattern, this.specs);
     }, 10);
   }
 
-  dragStart(): void {
+ /* dragStart(): void {
     this.isDragging = true;
 
-  }
+  }*/
 
-  dragEnd(cell:NoteCell): void {
+ /* dragEnd(cell:NoteCell): void {
 
     setTimeout(() => {
       this.isDragging = false;
       this.sequencerService.updateEvent(cell,this.specs,this.pattern);
     })
-  }
+  }*/
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
@@ -159,9 +168,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
           if (nextValue) this.updateCells();
         }));
         this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
-          console.log("got another value");
-          console.log(JSON.stringify(nextValue));
-          this.sequencerService.addCellWithNote(nextValue,this.cells,this.specs,this.pattern);
+          this.sequencerService.addCellWithNote(nextValue,this.eventCells,this.specs,this.pattern);
           this.updateCells();
         }));
         /*  this.subscriptions.push(this.pattern.quantizationEnabled.subscribe(nextValue => {
@@ -177,9 +184,13 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   private updateCells(): void {
-    this.cells.length = 0;
-    let newCells = this.sequencerService.createCells(this.pattern, this.specs);
-    newCells.forEach(cell=>this.cells.push(cell));
+    this.tableCells.length = 0;
+    this.eventCells.length = 0;
+    let newCells = this.sequencerService.createTableCells(this.pattern, this.specs);
+    newCells.forEach(cell=>this.tableCells.push(cell));
+
+    newCells = this.sequencerService.createEventCells(this.pattern, this.specs);
+    newCells.forEach(cell=>this.eventCells.push(cell));
   }
 
 

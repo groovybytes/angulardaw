@@ -3,7 +3,18 @@
 :host{
 
 }
+.record-btn {
+  background-color: $red;
+  border-color: darken($red, 10%);
 
+  &.active {
+    background-color: $red !important;
+    //filter: brightness(80%);
+  }
+  &:hover {
+    filter: brightness(97%);
+  }
+}
 button{
-  width:100px;
+ // width:100px;
 }

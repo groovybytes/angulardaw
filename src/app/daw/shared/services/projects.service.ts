@@ -1,5 +1,4 @@
 import {Inject, Injectable} from "@angular/core";
-import {ApiEndpoint} from "../api/ApiEndpoint";
 import {FilesApi} from "../api/files.api";
 import {AppConfiguration} from "../../../app.configuration";
 import {SamplesApi} from "../api/samples.api";
@@ -24,15 +23,24 @@ import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
 import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
 import {DesktopManager} from "../../model/daw/visual/desktop/DesktopManager";
 import {DesktopDto} from "../../model/daw/dto/DesktopDto";
+import {AudioContextService} from "./audiocontext.service";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
+import {TrackDto} from "../../model/daw/dto/TrackDto";
+import {AudioNodeDto} from "../../model/daw/dto/AudioNodeDto";
+import {TrackControlParametersDto} from "../../model/daw/dto/TrackControlParametersDto";
+import {PluginDto} from "../../model/daw/dto/PluginDto";
+import {MatrixService} from "./matrix.service";
+import {ProjectsApi} from "../api/projects.api";
 
 
 @Injectable()
 export class ProjectsService {
 
   constructor(
-    @Inject("AudioContext") private audioContext: AudioContext,
-    @Inject("ProjectsApi") private projectsApi: ApiEndpoint<any>,
+    private audioContext: AudioContextService,
+     private projectsApi: ProjectsApi,
     private filesService: FilesApi,
+    private matrixService: MatrixService,
     private trackService: TracksService,
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
@@ -42,67 +50,164 @@ export class ProjectsService {
 
   }
 
-  createProject(name: string): Project {
+  createProject(name: string, addPlugins: Array<string>): Promise<Project> {
 
-    let transportSettings = new TransportSettings();
-    transportSettings.global = new GlobalTransportSettings();
-    transportSettings.global.beatUnit = 4;
-    transportSettings.global.barUnit = 4;
-    transportSettings.global.bpm = 120;
-    transportSettings.loop = false;
-    transportSettings.loopEnd = 0;
-    transportSettings.loopStart = 0;
+    return new Promise((resolve, reject) => {
+      let transportSettings = new TransportSettings();
+      transportSettings.global = new GlobalTransportSettings();
+      transportSettings.global.beatUnit = 4;
+      transportSettings.global.barUnit = 4;
+      transportSettings.global.bpm = 120;
+      transportSettings.loop = false;
+      transportSettings.loopEnd = 0;
+      transportSettings.loopStart = 0;
 
-    let project = new Project(this.audioContext, transportSettings);
-    project.patterns = [];
-    project.id = this.guid();
-    project.name = name;
-    project.openedWindows = [];
-    project.nodes = [];
-    let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
-    masterBus.category = TrackCategory.BUS;
-    project.tracks.push(masterBus);
+      let project = new Project(this.audioContext, transportSettings);
+      project.patterns = [];
+      project.id = this.guid();
+      project.name = name;
+      project.openedWindows = [];
+      project.nodes = [];
+      let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
+      masterBus.category = TrackCategory.BUS;
+      project.tracks.push(masterBus);
 
-    let nColumns = 0;
-    let nRows = 0;
+      let nColumns = 0;
+      let nRows = 0;
 
-    for (let i = 0; i < nColumns; i++) {
-      project.matrix.header.push(new Cell<Track>(-1, i));
-    }
-    for (let i = 0; i < nRows; i++) {
-      let cell = new Cell<string>(i, -1);
-      cell.data = this.guid();
-      project.matrix.rowHeader.push(cell);
-    }
-    for (let i = 0; i < nRows; i++) {
-      let row = [];
-      project.matrix.body.push(row);
-      for (let j = 0; j < nColumns; j++) {
-        let cell = new Cell<Pattern>(i, j);
-        row.push(cell);
+      for (let i = 0; i < nColumns; i++) {
+        project.matrix.header.push(new Cell<Track>(-1, i));
+      }
+      for (let i = 0; i < nRows; i++) {
+        let cell = new Cell<string>(i, -1);
+        cell.data = this.guid();
+        project.matrix.rowHeader.push(cell);
+      }
+      for (let i = 0; i < nRows; i++) {
+        let row = [];
+        project.matrix.body.push(row);
+        for (let j = 0; j < nColumns; j++) {
+          let cell = new Cell<Pattern>(i, j);
+          row.push(cell);
+        }
+      }
+
+
+      this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
+        .then(plugins => {
+          project.pluginTypes = plugins;
+          let promises = [];
+          addPlugins.forEach(plugin => {
+            promises.push(this.matrixService.addMatrixColumnWithPlugin(project.pluginTypes.find(_plugin => _plugin.id === plugin), project));
+          });
+          Promise.all(promises)
+            .then(() => {
+              this.createMetronomeTrack(project)
+                .then(track => {
+                  this.createMetronomePattern(project, track);
+                  resolve(project);
+                })
+                .catch(error => reject(error))
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error));
+    })
+
+  }
+
+  createProject2(name: string, instruments: Array<PluginInfo>): any {
+    let json = {
+      "tracks": [
+        {
+          "id": "track-1",
+          "name": "default-name",
+          "color": "red",
+          "category": 1,
+          "plugins": [],
+          "inputNode": "node-2",
+          "outputNode": "node-3",
+          "controlParameters": {
+            "gain": 100,
+            "mute": false,
+            "solo": false
+          }
+        }
+      ],
+      "id": this.guid(),
+      "name": name,
+      "transportSettings": {
+        "global": {
+          "beatUnit": 4,
+          "barUnit": 4,
+          "bpm": 120
+        },
+        "loop": false,
+        "loopEnd": 0,
+        "loopStart": 0
+      },
+      "metronomeEnabled": true,
+      "openedWindows": [],
+      "selectedPattern": null,
+      "selectedTrack": null,
+      "patterns": [],
+      "routes": [
+        {
+          "source": "node-2",
+          "target": "node-3"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "node-2",
+          "nodeType": 2,
+          "status": null,
+          "meta": "track: track-1"
+        },
+        {
+          "id": "node-3",
+          "nodeType": 1,
+          "status": null,
+          "meta": "track: track-1"
+        }
+      ],
+      "desktop": {
+        "windows": []
+      },
+      "matrix": {
+        "body": [],
+        "header": [],
+        "rowHeader": []
       }
     }
 
-    return project;
+    return json;
+
   }
 
   get(projectId: string): Promise<Project> {
     return new Promise((resolve, reject) => {
-      this.projectsApi.get(projectId).subscribe(json => {
+
+      this.projectsApi.getById(projectId).then(json => {
+
         this.deSerializeProject(json)
           .then(project => resolve(project))
           .catch(error => reject(error))
-      }, error => reject(error));
+      })
+        .catch(error => {
+
+          reject(error)
+        });
     })
   }
 
   save(project: Project): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.projectsApi.get(project.id).subscribe(_project => {
+      this.projectsApi.getById(project.id).then(_project => {
         let json = this.serializeProject(project);
-        if (!_project) this.projectsApi.post(json).subscribe(project => resolve(), error => reject(error));
-        else this.projectsApi.put(json).subscribe(project => resolve(), error => reject(error));
-      }, error => reject(error));
+        if (!_project) this.projectsApi.create(json).then(project => resolve(), error => reject(error));
+        else this.projectsApi.update(json).then(project => resolve(), error => reject(error));
+      });
     })
 
   }
@@ -120,7 +225,7 @@ export class ProjectsService {
     let metronomeEvents = this.patternsService.createMetronomeEvents(project.transportSettings.global.beatUnit);
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = project.transportSettings.global.beatUnit;
-    let pattern = project.metronomePattern= new Pattern(
+    let pattern = project.metronomePattern = new Pattern(
       "_metronome",
       [],
       transportContext,
@@ -136,7 +241,7 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext, this.filesService, project, this.config, this.samplesService);
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project, this.config, this.samplesService);
       metronome.load().then(metronome => {
         let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
@@ -228,25 +333,24 @@ export class ProjectsService {
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
-
             let track = this.trackService.convertTrackFromJson(t, project.nodes);
             project.tracks.push(track);
             track.plugins = [];
             t.plugins.forEach(pluginDto => {
               let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
               if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
-              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id,pluginInfo);
+              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo);
               pluginPromises.push(promise);
               promise.then(_plugin => {
-                _plugin.inputNode = project.nodes.find(n => n.id === pluginDto.inputNode);
-                _plugin.outputNode = project.nodes.find(n => n.id === pluginDto.outputNode);
+                _plugin.setInputNode(project.nodes.find(n => n.id === pluginDto.inputNode));
+                _plugin.setOutputNode(project.nodes.find(n => n.id === pluginDto.outputNode));
                 track.plugins.push(_plugin);
                 project.plugins.push(_plugin);
               });
             })
           });
 
-          project.getMasterBus().outputNode.connect(this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.DESTINATION, "end-node"));
+          project.getMasterBus().outputNode.node.connect(this.audioContext.getAudioContext().destination);
           let cells = _.flatten(dto.matrix.body);
           Promise.all(pluginPromises)
             .then(() => {
@@ -295,7 +399,6 @@ export class ProjectsService {
               this.createMetronomeTrack(project)
                 .then(track => {
                   this.createMetronomePattern(project, track);
-
                   resolve(project);
                 })
                 .catch(error => reject(error));

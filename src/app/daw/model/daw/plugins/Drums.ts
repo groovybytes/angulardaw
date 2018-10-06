@@ -12,9 +12,10 @@ import {VirtualAudioNode} from "../VirtualAudioNode";
 
 export class Drums extends Instrument implements WstPlugin {
 
-  inputNode: VirtualAudioNode<AudioNode>;
-  outputNode: VirtualAudioNode<AudioNode>;
+  protected inputNode: VirtualAudioNode<AudioNode>;
+  protected outputNode: VirtualAudioNode<AudioNode>;
   private readonly id: string;
+  private samples:Array<Sample>=[];
 
   constructor(
     id:string,
@@ -43,12 +44,13 @@ export class Drums extends Instrument implements WstPlugin {
 
 
   destroy(): void {
+    this.samples.forEach(sample=>sample.destroy());
   }
 
   feed(event: NoteTrigger, offset: number): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
     if (!trigger) console.warn("no trigger found for " + event.note);
-    else trigger.sample.trigger(offset, this.outputNode.node);
+    else trigger.sample.trigger(offset);
   }
 
 
@@ -62,6 +64,7 @@ export class Drums extends Instrument implements WstPlugin {
           let promise = this.samplesV2Service.getSamples(urls);
           promises.push(promise);
           promise.then((samples: Array<Sample>) => {
+            this.samples=samples;
             samples.forEach((sample, i) => {
               let spec = config.mappings[i];
               this.addTrigger(spec.note, sample);
@@ -79,11 +82,21 @@ export class Drums extends Instrument implements WstPlugin {
     return this.id;
   }
 
-  /* static getInfo(): PluginInfo {
-     let info = new PluginInfo();
-     info.id=PluginId.DRUMKIT1;
-     info.name="drums";
-     return info;
-   }*/
+  getInputNode(): VirtualAudioNode<AudioNode> {
+    return this.inputNode;
+  }
+
+  getOutputNode(): VirtualAudioNode<AudioNode> {
+    return this.outputNode;
+  }
+
+  setInputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.inputNode=node;
+  }
+
+  setOutputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.outputNode=node;
+    this.samples.forEach(sample=>sample.setDestination(node.node));
+  }
 
 }

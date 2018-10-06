@@ -98,35 +98,6 @@ export class DawMatrixService {
     })
   }
 
-  addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
-
-    return new Promise((resolve, reject) => {
-      let matrix = project.matrix;
-      let newColumnIndex = this.matrixService.addColumn(matrix, 4);
-      let track: Track = this.trackService.createTrack(project.nodes, TrackCategory.DEFAULT, project.getMasterBus().inputNode);
-      project.tracks.push(track);
-      let header = matrix.header.find(cell => cell.column === newColumnIndex);
-      header.data = track;
-      header.trackId = track.id;
-      _.flatten(matrix.body).filter(cell => cell.column === newColumnIndex).forEach(cell => {
-        cell.trackId = track.id;
-      });
-
-      let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
-      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"),pluginInfo)
-        .then(plugin => {
-          track.plugins = [plugin];
-          this.pluginService.setupInstrumentRoutes(project,track,plugin);
-
-          project.desktop.addWindow(plugin.getId());
-          project.plugins.push(plugin);
-          track.name = pluginInfo.name;
-          resolve(track);
-        })
-        .catch(error => reject(error));
-    })
-  }
-
 
   private findBodyCell(id: string, cells: Array<Array<Cell<any>>>): Cell<any> {
     return _.flatten(cells).find(cell => cell.id === id);

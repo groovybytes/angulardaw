@@ -9,10 +9,12 @@ import {Instrument} from "./Instrument";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 
 export abstract class AbstractInstrumentSampler extends Instrument implements WstPlugin {
-  inputNode: VirtualAudioNode<AudioNode>;
-  outputNode: VirtualAudioNode<AudioNode>;
+
   protected samples:Array<Sample>=[];
   protected baseSampleNotes:Array<number>=[];
+
+  protected inputNode: VirtualAudioNode<AudioNode>;
+  protected outputNode: VirtualAudioNode<AudioNode>;
 
   constructor(protected id:string,protected theoryService: TheoryService,private info:PluginInfo) {
     super();
@@ -36,7 +38,7 @@ export abstract class AbstractInstrumentSampler extends Instrument implements Ws
 
     let detune = this.theoryService.getInterval(sample.baseNote,eventNote)*100;
 
-    sample.triggerWith(offset,detune,this.outputNode.node,ADSREnvelope.fromNote(event),event.length/1000);
+    sample.triggerWith(offset,detune,ADSREnvelope.fromNote(event),event.length/1000);
 
   }
 
@@ -63,6 +65,23 @@ export abstract class AbstractInstrumentSampler extends Instrument implements Ws
       i++;
     })
     return ans;
+  }
+
+  getInputNode(): VirtualAudioNode<AudioNode> {
+    return this.inputNode;
+  }
+
+  getOutputNode(): VirtualAudioNode<AudioNode> {
+    return this.outputNode;
+  }
+
+  setInputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.inputNode=node;
+  }
+
+  setOutputNode(node: VirtualAudioNode<AudioNode>): void {
+    this.outputNode=node;
+    this.samples.forEach(sample=>sample.setDestination(node.node));
   }
 
 

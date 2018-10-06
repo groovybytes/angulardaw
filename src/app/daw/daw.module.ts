@@ -2,7 +2,6 @@ import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
 import {ProjectsCreateComponent} from "./projects-create/projects-create.component";
-import {ConsoleComponent} from "./console/console.component";
 import {SharedModule} from "./shared/shared.module";
 import {UiModule} from "../ui/ui.module";
 import {ProjectComponent} from "./project/project.component";
@@ -20,24 +19,23 @@ import { PluginDropdownComponent } from './plugin-dropdown/plugin-dropdown.compo
 import {AppRoutingModule} from "../app-routing.module";
 import { BodyCellMenuComponent } from './daw-matrix/body-cell-menu/body-cell-menu.component';
 import { HeaderCellMenuComponent } from './daw-matrix/header-cell-menu/header-cell-menu.component';
-import {TrackControlsComponent} from "./console/track-controls/track-controls.component";
 import {DrumsComponent} from "./plugins/drums/drums.component";
 import { PushComponent } from './push/push.component';
 import { PadsComponent } from './plugins/pads/pads.component';
 import { PluginPanelComponent } from './plugin-panel/plugin-panel.component';
 import { RecorderComponent } from './recorder/recorder.component';
 
-let audioContext = new AudioContext();
+
+
+
 
 @NgModule({
   declarations: [
     ProjectsCreateComponent,
     ProjectComponent,
-    ConsoleComponent,
     PluginListComponent,
     EffectsPanelComponent,
     TransportComponent,
-    TrackControlsComponent,
     DawMatrixComponent,
     ProjectObserverComponent,
     QuantizationComponent,
@@ -62,7 +60,6 @@ let audioContext = new AudioContext();
   ],
   providers: [
     {provide: "lodash", useValue: window["_"]},
-    {provide: "AudioContext", useValue: audioContext},
     SequencerService2
 
   ],

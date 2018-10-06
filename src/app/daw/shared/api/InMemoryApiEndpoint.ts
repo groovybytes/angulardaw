@@ -1,3 +1,4 @@
+/*
 import {ApiEndpoint} from "./ApiEndpoint";
 import {Observable, of} from "rxjs";
 
@@ -57,3 +58,4 @@ export class InMemoryApiEndpoint<T> implements ApiEndpoint<T> {
   }
 
 }
+*/

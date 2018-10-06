@@ -15,6 +15,12 @@ export class VirtualAudioNode<T extends AudioNode> {
     this.target = node;
     node.sources.push(this);
     this.node.connect(node.node);
+
+  }
+
+  destroy():void{
+    this.node.disconnect();
+    this.node=null;
   }
 
 

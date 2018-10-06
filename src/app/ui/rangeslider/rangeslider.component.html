@@ -1,13 +1,13 @@
-<div class="slidecontainer text-center">
-  <input
-    type="range"
-    [min]="min"
-    [max]="max"
-    [value]="value"
-    [disabled]="disabled"
-    [ngClass]="{'vertical':orientation==='vertical'}"
-    class="slider"
-    [(ngModel)]="value"
-    [attr.orient]="orientation"
-    (ngModelChange)="onChange($event)">
+<div class="wrapper">
+  <div class="map-slider">
+    <div class="buttons">
+      <span class="fa fa-plus"></span>
+      <div class="drag-line">
+        <div class="line"></div>
+        <div class="draggable-button"></div>
+      </div>
+      <div class="draggable-buton"></div>
+      <span class="fa fa-minus"></span>
+    </div>
+  </div>
 </div>
