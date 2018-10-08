@@ -11,7 +11,8 @@ import {
 } from '@angular/core';
 import "jqueryui";
 import DraggableEventUIParams = JQueryUI.DraggableEventUIParams;
-import {NoteCell} from "../../daw/sequencer2/model/NoteCell";
+import {NoteCell} from "../../sequencer2/model/NoteCell";
+
 
 @Directive({
   selector: '[jquery-draggable]'

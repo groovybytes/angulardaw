@@ -1,8 +1,8 @@
+
 import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from "../../shared/authentication.service";
-import {System} from "../../system/System";
-import {Router} from "@angular/router";
-import {map} from "rxjs/operators";
+import { Router } from "@angular/router";
+import { System } from "../../system/System";
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-login',

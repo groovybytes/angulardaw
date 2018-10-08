@@ -1,0 +1,67 @@
+<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
+  <form class="form-inline w-100 h-100">
+    <div class="w-25 h-100">
+
+      <button class="btn default-btn h-100" type="button"
+              [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
+              (click)="toggleSequencer()">Sequencer
+      </button>
+      <button class="btn default-btn h-100" type="button"
+              [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
+              (click)="togglePlugin()">Plugin
+      </button>
+    </div>
+    <div class="w-50 h-100">
+      <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
+              (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
+
+      <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
+                  (userChange)="changeTempo($event)">
+      </ng5-slider>
+      <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
+
+    </div>
+    <div class="w-25 ">
+      <div class="btn-group float-right">
+        <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
+        <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+
+
+  </form>
+</nav>
+
+<div class="drag-container" *ngIf="project && project.ready">
+  <div class="row main-container">
+    <div class="col-1"></div>
+    <div class="col-11">
+      <daw-matrix [project]="project"></daw-matrix>
+    </div>
+    <div
+      class="col-12 sequencer-container animated"
+      *ngIf="project.openedWindows.indexOf('sequencer')>=0"
+      [ngClass]="{'slideOutUp': slideOut,'slideInDown': project.openedWindows.indexOf('sequencer')>=0}">
+
+      <sequencer2 [project]="project" [pattern]="project.selectedPattern | async"
+                  (close)="toggleSequencer()"></sequencer2>
+    </div>
+  </div>
+
+  <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
+                [project]="project"
+                [window]="window"
+                [pluginId]="window.pluginId"
+
+                (positionXChanged)="window.x=$event"
+                (positionYChanged)="window.y=$event"
+                [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
+                class="" interact>
+  </plugin-panel>
+  <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
+  <recorder [project]="project" ></recorder>
+
+  <div class=" footer fixed-bottom">
+    <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
+  </div>
+</div>

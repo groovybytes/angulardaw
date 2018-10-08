@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthenticationService} from "../../shared/authentication.service";
+
 import {catchError} from "rxjs/operators";
 import {System} from "../../system/System";
+import {AuthenticationService} from "../authentication.service";
 
 @Component({
   selector: 'app-register',

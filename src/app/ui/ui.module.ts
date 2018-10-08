@@ -7,7 +7,6 @@ import {PressButtonComponent} from "./press-button/press-button.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {TestsComponent} from "./tests/tests.component";
 import {BootstrapModalDirective} from "./bootstrap-modal.directive";
-import {DawMatrixService} from "../daw/daw-matrix/daw-matrix.service";
 import {InteractDirective} from "./directives/interact.directive";
 import {ResizableDirective} from "./directives/resizable.directive";
 import {DraggableDirective} from "./directives/draggable.directive";
@@ -35,7 +34,7 @@ import { ColorpickerComponent } from './colorpicker/colorpicker.component';
     FormsModule
   ],
   providers: [
-    DawMatrixService
+
 
   ],
   exports:[

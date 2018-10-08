@@ -2,7 +2,7 @@ import {Directive, ElementRef, Input, NgZone, OnInit, Renderer2} from '@angular/
 declare var interact;
 
 @Directive({
-  selector: '[interact-draggable]'
+  selector: '[interact-drgaggable]'
 })
 export class DraggableDirective implements OnInit {
 

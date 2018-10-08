@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {System} from "./system/System";
 import {MessagingService} from "./system/messaging.service";
-import {KeyboardState} from "./daw/shared/model/KeyboardState";
+import {KeyboardState} from "./shared/model/KeyboardState";
 
 @Component({
   selector: 'app-root',

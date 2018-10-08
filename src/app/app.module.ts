@@ -8,10 +8,9 @@ import {HttpClientModule} from "@angular/common/http";
 import {NotificationComponent} from './system/notification/notification.component';
 import {System} from "./system/System";
 import {MessagingService} from "./system/messaging.service";
-import {DawModule} from "./daw/daw.module";
 import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
-import {AuthenticationService} from "./shared/authentication.service";
+import {ProjectModule} from "./project/project.module";
 
 @NgModule({
   declarations: [
@@ -24,16 +23,14 @@ import {AuthenticationService} from "./shared/authentication.service";
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    DawModule,
-    AuthenticationModule
-    //ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+    AuthenticationModule,
+    ProjectModule
 
   ],
   providers: [
     System,
     AppConfiguration,
-    MessagingService,
-    AuthenticationService
+    MessagingService
    /* {
       provide: HTTP_INTERCEPTORS,
       useClass: SystemMonitorService,
