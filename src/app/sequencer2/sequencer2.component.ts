@@ -2,9 +2,9 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter, Inject,
+  EventEmitter, HostListener, Inject,
   Input,
-  OnChanges,
+  OnChanges, OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -28,6 +28,7 @@ import {DragHandler} from "../shared/model//daw/visual/DragHandler";
 import {SequencerDragHandler} from "./SequencerDragHandler";
 import {Cell} from "../shared/model//daw/matrix/Cell";
 import {Notes} from "../shared/model/daw/Notes";
+import {InterActionService} from "./interaction.service";
 
 
 @Component({
@@ -35,7 +36,7 @@ import {Notes} from "../shared/model/daw/Notes";
   templateUrl: './sequencer2.component.html',
   styleUrls: ['./sequencer2.component.scss']
 })
-export class Sequencer2Component implements OnInit, OnChanges {
+export class Sequencer2Component implements OnInit, OnChanges, OnDestroy {
 
   @Input() project: Project;
   @Input() pattern: Pattern;
@@ -43,7 +44,16 @@ export class Sequencer2Component implements OnInit, OnChanges {
   @Input() cellHeight: number = 50;
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
-/*  @ViewChild("card") card: ElementRef;*/
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e) {
+    this.interactionService.mouseMove(this.element,e);
+  }
+  @HostListener('document:mouseup', ['$event'])
+  onMouseUp(e) {
+    this.interactionService.mouseUp();
+  }
+
+  /*  @ViewChild("card") card: ElementRef;*/
   readonly tableCells: Array<NoteCell> = [];
   readonly eventCells: Array<NoteCell> = [];
   allNotes: Array<string>;
@@ -59,19 +69,17 @@ export class Sequencer2Component implements OnInit, OnChanges {
       showSelectionBar: true
     }
   };
-  isResizing: boolean = false;
-  private isDragging: boolean = false;
-  private specs: SequencerD3Specs = new SequencerD3Specs();
+  specs: SequencerD3Specs = new SequencerD3Specs();
   private subscriptions: Array<Subscription> = [];
 
   constructor(private element: ElementRef,
               private cd: ChangeDetectorRef,
               @Inject("Notes") private notes: Notes,
+              private interactionService: InterActionService,
               private tracksService: TracksService,
               private projectsService: ProjectsService,
               private patternsService: PatternsService,
               private sequencerService: SequencerService2) {
-
 
     this.dragHandler = new SequencerDragHandler(
       this.tableCells,
@@ -87,8 +95,8 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-   /* this.sequencerService.initializeWindow(this.card.nativeElement, this.window);
-    this.sequencerService.updateWindow(this.card.nativeElement, this.window);*/
+    /* this.sequencerService.initializeWindow(this.card.nativeElement, this.window);
+     this.sequencerService.updateWindow(this.card.nativeElement, this.window);*/
 
   }
 
@@ -96,7 +104,6 @@ export class Sequencer2Component implements OnInit, OnChanges {
     this.patternsService.togglePattern(this.pattern.id, this.project);
 
   }
-
 
   /*changePatternLength(value: SimpleSliderModel): void {
     this.pattern.setLengthInBars(value.value);
@@ -111,16 +118,8 @@ export class Sequencer2Component implements OnInit, OnChanges {
     return this.pattern && this.project.isRunningWithChannel(this.pattern.id);
   }
 
-  onCellClicked(cell: NoteCell): void {
-    if (!this.isResizing && !this.isDragging) {
-      if (cell.column >= 0 && cell.row >= 0) {
-        if (cell.data) this.sequencerService.removeEvent(this.eventCells,cell, this.pattern);
-        else this.sequencerService.addNote(cell.x, cell.y, this.eventCells, this.specs, this.pattern);
-      }
-    }
-  }
-  mouseUp(cell: NoteCell): void {
-    console.log(cell);
+  mouseDown(cell: NoteCell): void {
+    this.interactionService.mouseDown(cell, this.eventCells, this.pattern, this.specs);
   }
 
   changeQuantization(value: NoteLength): void {
@@ -128,36 +127,17 @@ export class Sequencer2Component implements OnInit, OnChanges {
   }
 
   resizeStart(): void {
-    this.isResizing = true;
+    this.interactionService.resizeStart();
 
   }
 
   dragStart(event: DragEvent, cell: Cell<any>): void {
-    setTimeout(()=>{
-      if (!this.isResizing)  this.dragHandler.onDragStart(event,cell);
-    })
+    this.interactionService.dragStart(event, cell);
   }
 
-  resizeEnd(cell:NoteCell): void {
-
-    setTimeout(() => {
-      this.isResizing = false;
-      this.sequencerService.onResized(cell, this.pattern, this.specs);
-    }, 10);
+  resizeEnd(cell: NoteCell): void {
+    this.interactionService.resizeEnd(cell);
   }
-
- /* dragStart(): void {
-    this.isDragging = true;
-
-  }*/
-
- /* dragEnd(cell:NoteCell): void {
-
-    setTimeout(() => {
-      this.isDragging = false;
-      this.sequencerService.updateEvent(cell,this.specs,this.pattern);
-    })
-  }*/
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
@@ -171,7 +151,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
           if (nextValue) this.updateCells();
         }));
         this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
-          this.sequencerService.addCellWithNote(nextValue,this.eventCells,this.specs,this.pattern);
+          this.sequencerService.addCellWithNote(nextValue, this.eventCells, this.specs, this.pattern);
           this.updateCells();
         }));
         /*  this.subscriptions.push(this.pattern.quantizationEnabled.subscribe(nextValue => {
@@ -182,7 +162,7 @@ export class Sequencer2Component implements OnInit, OnChanges {
     }
   }
 
-  toggleRecord():void{
+  toggleRecord(): void {
     this.project.record.emit(this.pattern);
   }
 
@@ -190,10 +170,14 @@ export class Sequencer2Component implements OnInit, OnChanges {
     this.tableCells.length = 0;
     this.eventCells.length = 0;
     let newCells = this.sequencerService.createTableCells(this.pattern, this.specs);
-    newCells.forEach(cell=>this.tableCells.push(cell));
+    newCells.forEach(cell => this.tableCells.push(cell));
 
     newCells = this.sequencerService.createEventCells(this.pattern, this.specs);
-    newCells.forEach(cell=>this.eventCells.push(cell));
+    newCells.forEach(cell => this.eventCells.push(cell));
+  }
+
+  ngOnDestroy(): void {
+
   }
 
 
