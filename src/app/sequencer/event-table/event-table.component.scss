@@ -1,4 +1,4 @@
-@import "../../variables";
+@import "../../../variables";
 
 .card {
   width: 100%;
@@ -12,9 +12,10 @@
 
 .card-body {
   position: relative;
+  padding:0;
   div {
-    margin-left: $cell-width;
-    margin-top: 10px;
+    //margin-left: $cell-width;
+    //margin-top: 10px;
   }
   overflow: auto;
 }

@@ -13,7 +13,7 @@ import {TimeSignature} from "../shared/model//mip/TimeSignature";
 import {Notes} from "../shared/model/daw/Notes";
 
 @Injectable()
-export class SequencerService2 {
+export class SequencerService {
 
   constructor( @Inject("Notes") private notes: Notes, private trackService: TracksService) {
 
@@ -48,12 +48,12 @@ export class SequencerService2 {
 
     // create header cells
     for (let j = 0; j < nColumns; j++) {
-      let cell = new NoteCell(j * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
+      let cell = new NoteCell((j+1) * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
       cell.header = true;
       cell.beat = MusicMath.getBeatNumber(j, pattern.quantization.getValue(),
         new TimeSignature(pattern.transportContext.settings.global.beatUnit, pattern.transportContext.settings.global.barUnit));
       cell.tick = j;
-      cell.row = -1;
+      cell.row = 0;
       cell.time = tickTime * j;
       model.push(cell);
     }
@@ -62,10 +62,10 @@ export class SequencerService2 {
     for (let i = 0; i < pattern.notes.length; i++) {
       specs.rows++;
       for (let j = 0; j < nColumns; j++) {
-        let cell = new NoteCell(j * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
+        let cell = new NoteCell((j+1) * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
         cell.tick = j;
-        cell.row = i;
-        cell.column = j;
+        cell.row = i+1;
+        cell.column = j+1;
         cell.note = pattern.notes[i];
         cell.time = tickTime * j;
         model.push(cell);
@@ -74,10 +74,10 @@ export class SequencerService2 {
 
     // create row header cells
     for (let i = 0; i < pattern.notes.length; i++) {
-      let cell = new NoteCell(-specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
+      let cell = new NoteCell(0, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
       cell.tick = -1;
       cell.row = i;
-      cell.column = -1;
+      cell.column = 0;
       cell.note = pattern.notes[i];
       model.push(cell);
     }
@@ -131,6 +131,7 @@ export class SequencerService2 {
 
 
   addNote(x: number, y: number, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
+
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
     let noteTime = this.getTimeForXPosition(x,specs,pattern);//fullTime * percentage;
     let rowIndex = cell.y / specs.cellHeight;

@@ -12,7 +12,7 @@ import {FormsModule} from "@angular/forms";
 import {PluginsModule} from "../plugins/plugins.module";
 import {Ng5SliderModule} from "ng5-slider";
 import {DawMatrixModule} from "../daw-matrix/daw-matrix.module";
-import {SequencerModule} from "../sequencer2/sequencer.module";
+import {SequencerModule} from "../sequencer/sequencer.module";
 import {ApiModule} from "../api/api.module";
 
 @NgModule({

@@ -1,3 +1,4 @@
+/*
 import * as $ from "jquery";
 import {Cell} from "../shared/model//daw/matrix/Cell";
 import {NoteCell} from "./model/NoteCell";
@@ -64,3 +65,4 @@ export class SequencerDragHandler implements DragHandler {
 
 
 }
+*/

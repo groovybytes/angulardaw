@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import "jqueryui";
 import DraggableEventUIParams = JQueryUI.DraggableEventUIParams;
-import {NoteCell} from "../../sequencer2/model/NoteCell";
+import {NoteCell} from "../../sequencer/model/NoteCell";
 
 
 @Directive({

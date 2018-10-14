@@ -1,0 +1,46 @@
+<div    #tablecell class="cell"
+     *ngFor="let cell of tableCells"
+     [attr.data-id]="cell.id"
+     (mouseover)="mouseOver(cell)"
+     (mouseleave)="mouseLeave(cell)"
+     (dblclick)="emptyCellDblClick(cell)"
+     [ngClass]="{
+           'header-cell':cell.row===0,
+           'row-header-cell':cell.column===0,
+           'drag-target':cell.isDragTarget,
+           'tick-active':cell.tick === tick &&clipIsRunning(),
+           'note-cell':cell.row>=1 && cell.column>=1}"
+     [ngStyle]="{
+           'left':cell.x+'px',
+           'top':cell.y+'px',
+           'width':cell.width+'px',
+           'height':cell.height+'px',
+           'line-height':cell.height+'px'}">
+
+
+  <!--  (click)="mouseDown(cell)"-->
+
+  <!--   (dragover)="dragHandler.onDragOver($event)"
+     (dragleave)="dragHandler.onDragLeave($event)"
+     (drop)="dragHandler.onDrop($event)"-->
+
+
+  <span *ngIf="cell.row===0"
+        class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
+  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>
+</div>
+<div #eventcell class="cell event-cell note-cell"
+     *ngFor="let cell of eventCells"
+     [attr.data-id]="cell.id"
+     [ngClass]="{'tick-active':cell.tick === tick &&clipIsRunning()}"
+     [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
+           'height':cell.height+'px','line-height':cell.height+'px', 'pointer-events':cell.isDragging?'none':''}">
+</div>
+
+
+
+
+
+
+
+

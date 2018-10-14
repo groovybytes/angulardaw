@@ -1,20 +1,25 @@
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {FormsModule} from "@angular/forms";
-import {Sequencer2Component} from "./sequencer2.component";
 import {SharedModule} from "../shared/shared.module";
 import {Ng5SliderModule} from "ng5-slider";
-import {SequencerService2} from "./sequencer2.service";
-import {InterActionService} from "./interaction.service";
 import {QuantizationComponent} from "./quantization/quantization.component";
 import {UiModule} from "../ui/ui.module";
+import {EventCellDirective} from "./eventcell.directive";
+import {DragContainerComponent} from "./drag-container/drag-container.component";
+import {SequencerComponent} from "./sequencer.component";
+import {EventTableComponent} from "./event-table/event-table.component";
+import {SequencerService} from "./sequencer.service";
 
 
 @NgModule({
   declarations: [
 
-    Sequencer2Component,
-    QuantizationComponent
+    SequencerComponent,
+    QuantizationComponent,
+    DragContainerComponent,
+    EventTableComponent,
+    EventCellDirective
   ],
   imports: [
     BrowserModule,
@@ -24,10 +29,9 @@ import {UiModule} from "../ui/ui.module";
     Ng5SliderModule
   ],
   providers: [
-    SequencerService2,
-    InterActionService
+    SequencerService
   ],
-  exports: [Sequencer2Component]
+  exports: [SequencerComponent]
 })
 export class SequencerModule {
 }

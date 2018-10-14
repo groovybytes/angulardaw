@@ -39,12 +39,12 @@
       <daw-matrix [project]="project"></daw-matrix>
     </div>
     <div
-      class="col-12 sequencer-container animated"
+      class="col-xs-offset-3 col-6 sequencer-container animated"
       *ngIf="project.openedWindows.indexOf('sequencer')>=0"
       [ngClass]="{'slideOutUp': slideOut,'slideInDown': project.openedWindows.indexOf('sequencer')>=0}">
 
-      <sequencer2 [project]="project" [pattern]="project.selectedPattern | async"
-                  (close)="toggleSequencer()"></sequencer2>
+      <sequencer [project]="project" [pattern]="project.selectedPattern | async"
+                  (close)="toggleSequencer()" ></sequencer>
     </div>
   </div>
 

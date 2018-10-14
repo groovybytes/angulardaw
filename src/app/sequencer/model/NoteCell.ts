@@ -25,6 +25,8 @@ export class NoteCell{
   column:number;
   note:string;
   time:number;
+  isDragTarget:boolean=false;
+  isDragging:boolean=false;
 
   applyAttributesFrom(cell:NoteCell):void{
     this.beat=cell.beat;

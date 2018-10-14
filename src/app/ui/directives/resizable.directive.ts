@@ -1,5 +1,5 @@
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {NoteCell} from "../../sequencer2/model/NoteCell";
+import {NoteCell} from "../../sequencer/model/NoteCell";
 
 
 declare var interact; //import makes problems; typings are wrong
