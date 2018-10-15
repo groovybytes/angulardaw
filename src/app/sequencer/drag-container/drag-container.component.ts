@@ -1,51 +1,59 @@
-import {AfterContentChecked, AfterContentInit, AfterViewInit, Component, ContentChild, OnInit} from "@angular/core";
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  ContentChild, ElementRef,
+  HostListener,
+  OnInit
+} from "@angular/core";
 import {EventTableComponent} from "../event-table/event-table.component";
+import {NoteCell} from "../model/NoteCell";
+import {DragContainerService} from "./drag-container.service";
 
 @Component({
   selector: 'drag-container',
   templateUrl: './drag-container.component.html',
   styleUrls: ['./drag-container.component.scss']
 })
-export class DragContainerComponent implements OnInit,AfterViewInit{
+export class DragContainerComponent implements OnInit{
   @ContentChild("et") eventTable:EventTableComponent;
 
-  private btnWasUp:boolean=false;
-  private isDragging:boolean=false;
-  private jqCells:JQuery;
+  @HostListener('click', ['$event']) onClick(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onClick(cell);
+  }
+  @HostListener('dblclick', ['$event']) onDblClick(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onDblClick(cell,this.eventTable);
+  }
+  @HostListener('mousedown', ['$event']) onMouseDown(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    return this.dragContainerService.onMouseDown(cell,event);
+  }
+  @HostListener('mouseup', ['$event']) onMouseUp(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onMouseUp(cell);
+  }
+  @HostListener('mouseover', ['$event']) onMouseOver(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onMouseOver(cell,this.eventTable.specs,this.eventTable.pattern);
+  }
+  @HostListener('mouseout', ['$event']) onMouseLeave(event:MouseEvent) {
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onMouseLeave(cell);
+  }
 
-  ngOnInit(): void {
-    $(document).on("mousemove",()=>{
-      if (this.isDragging){
-        console.log("its dragging");
-      }
-    });
+  @HostListener('document:mousemove', ['$event']) onMouseMove(event:MouseEvent) {
+    this.dragContainerService.onMouseMove(event,this.element,this.eventTable.pattern,this.eventTable.specs);
+  }
 
-    $(document).on("mouseup",()=>{
-      this.btnWasUp=true;
-      this.isDragging=false;
-    });
+  constructor(private element:ElementRef,private dragContainerService:DragContainerService) {
 
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
 
-    this.jqCells=$(this.eventTable.cellChildren.map(cell=>cell.nativeElement));
-    this.jqCells.on("click",()=>console.log("click"));
-    this.jqCells.on("dblclick",()=>{
-      console.log("dbl click")
-    });
-    this.jqCells.on("mousedown",()=>{
-      this.btnWasUp=false;
-      setTimeout(()=>{
-        this.isDragging=(this.btnWasUp===false);
-      },200);
-      event.stopPropagation();
-
-      return false; //return false to avoid browser dragging
-
-    });
-    this.jqCells.on("click",()=>{
-    })
   }
 
 }

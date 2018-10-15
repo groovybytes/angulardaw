@@ -10,6 +10,7 @@ import {DragContainerComponent} from "./drag-container/drag-container.component"
 import {SequencerComponent} from "./sequencer.component";
 import {EventTableComponent} from "./event-table/event-table.component";
 import {SequencerService} from "./sequencer.service";
+import {DragContainerService} from "./drag-container/drag-container.service";
 
 
 @NgModule({
@@ -29,7 +30,7 @@ import {SequencerService} from "./sequencer.service";
     Ng5SliderModule
   ],
   providers: [
-    SequencerService
+    SequencerService,DragContainerService
   ],
   exports: [SequencerComponent]
 })

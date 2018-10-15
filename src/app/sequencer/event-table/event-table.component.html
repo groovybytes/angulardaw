@@ -1,9 +1,7 @@
 <div    #tablecell class="cell"
      *ngFor="let cell of tableCells"
      [attr.data-id]="cell.id"
-     (mouseover)="mouseOver(cell)"
-     (mouseleave)="mouseLeave(cell)"
-     (dblclick)="emptyCellDblClick(cell)"
+
      [ngClass]="{
            'header-cell':cell.row===0,
            'row-header-cell':cell.column===0,
@@ -17,6 +15,9 @@
            'height':cell.height+'px',
            'line-height':cell.height+'px'}">
 
+<!--  (mouseover)="mouseOver(cell)"
+  (mouseleave)="mouseLeave(cell)"
+  (dblclick)="emptyCellDblClick(cell)"-->
 
   <!--  (click)="mouseDown(cell)"-->
 
@@ -25,9 +26,10 @@
      (drop)="dragHandler.onDrop($event)"-->
 
 
-  <span *ngIf="cell.row===0"
+  {{cell.column}}{{cell.row}}
+  <!--<span *ngIf="cell.row===0"
         class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
-  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>
+  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>-->
 </div>
 <div #eventcell class="cell event-cell note-cell"
      *ngFor="let cell of eventCells"
