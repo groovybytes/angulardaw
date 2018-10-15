@@ -55,7 +55,7 @@ export class DawMatrixService {
         cell.data = pattern;
       }
       project.selectedPattern.next(cell.data);
-      project.openedWindows = ["sequencer"];
+      project.desktop.openWindow("sequencer");
     }
   }
 
@@ -80,6 +80,8 @@ export class DawMatrixService {
 
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
+
+    project.desktop.toggleWindow("sequencer");
     /*  let track = project.getTrack(cell.trackId);
       track.focusedPattern = cell.data;
       project.selectedTrack = track;

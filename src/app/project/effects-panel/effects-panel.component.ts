@@ -24,7 +24,7 @@ export class EffectsPanelComponent implements OnInit {
   }
 
   openPlugin():void{
-    this.project.desktop.openPluginWindow(this.track.getInstrumentPlugin().getId());
+    this.project.desktop.openWindow(this.track.getInstrumentPlugin().getId());
   }
 
 }

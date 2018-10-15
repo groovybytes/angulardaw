@@ -1,4 +1,7 @@
-<div class="card">
+<div class="card" >
+  <div class="card-header drag-handle">
+    <button type="button" class="btn default-btn float-right" (click)="close.emit()"><i class="fas fa-times"></i></button>
+  </div>
   <div class="card-body">
 
     <drag-container *ngIf="pattern">

@@ -37,7 +37,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/welcome']);
   }
 
   toggleSidebar() {
@@ -51,7 +51,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       if (newProject) {
         localStorage.setItem("new_project", null);
 
-        this.projectsService.createProject(newProject.name, newProject.plugins)
+        this.projectsService.createProject(params.projectId,newProject.name, newProject.plugins)
           .then(project=> {
             let dto = this.projectsService.serializeProject(project);
             dto.id=params.projectId;
@@ -97,21 +97,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   }
 
-  toggleSequencer(): void {
-    if (this.project.openedWindows.indexOf("sequencer") >= 0) {
-      this.slideOut = true;
-      setTimeout(() => {
-        this.slideOut = false;
-        this.project.openedWindows = [];
-      }, 700);
 
-    }
-    else this.project.openedWindows = ["sequencer"];
-
-  }
 
   togglePlugin(): void {
-    if (this.project.openedWindows.indexOf("plugin") >= 0) {
+   /* if (this.project.openedWindows.indexOf("plugin") >= 0) {
       this.slideOut = true;
       setTimeout(() => {
         this.slideOut = false;
@@ -119,7 +108,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       }, 700);
 
     }
-    else this.project.openedWindows = ["plugin"];
+    else this.project.openedWindows = ["plugin"];*/
 
   }
 

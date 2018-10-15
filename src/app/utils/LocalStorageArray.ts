@@ -24,7 +24,7 @@ export class LocalStorageArray<T> {
 
   update(o:T,finder:(o:T)=>boolean):void{
     let index = this.data.findIndex(finder);
-    if (index>=0) this.data.splice(index,1,_.cloneDeep(o));
+    if (index>=0) this.data.splice(index,1,o);
     this.save();
   }
 

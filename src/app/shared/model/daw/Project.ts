@@ -27,7 +27,7 @@ export class Project {
   patterns: Array<Pattern> = [];
   activeSceneRow: number;
   matrix: Matrix = new Matrix();
-  openedWindows: Array<string>;
+/*  openedWindows: Array<string>;*/
   nodes: Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
   ready: boolean = false;
@@ -100,6 +100,7 @@ export class Project {
 
     return transportContext;
   }
+
 
   start(): void {
     if (this.transport.isRunning()) this.transport.stop();

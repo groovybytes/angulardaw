@@ -4,10 +4,10 @@ import {DawMatrixService} from "./daw-matrix.service";
 import {HeaderCellMenuComponent} from "./header-cell-menu/header-cell-menu.component";
 import {BodyCellMenuComponent} from "./body-cell-menu/body-cell-menu.component";
 import {PluginDropdownComponent} from "./plugin-dropdown/plugin-dropdown.component";
-import {FormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {UiModule} from "../ui/ui.module";
 import {AppRoutingModule} from "../app-routing.module";
+import {ConsoleModule} from "../console/console.module";
 
 
 @NgModule({
@@ -20,8 +20,8 @@ import {AppRoutingModule} from "../app-routing.module";
   imports: [
     AppRoutingModule,
     BrowserModule,
-    UiModule
-
+    UiModule,
+    ConsoleModule
   ],
   providers: [
    DawMatrixService

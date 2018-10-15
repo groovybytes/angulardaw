@@ -2,10 +2,10 @@ import {WindowState} from "./WindowState";
 
 export class WindowSpecs{
 
-  constructor(pluginId:string){
-    this.pluginId=pluginId;
+  constructor(id:string){
+    this.id=id;
   }
-  pluginId:string;
+  id:string;
   x:number=600;
   y:number=200;
   width:number=600;

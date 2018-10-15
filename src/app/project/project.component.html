@@ -2,14 +2,14 @@
   <form class="form-inline w-100 h-100">
     <div class="w-25 h-100">
 
-      <button class="btn default-btn h-100" type="button"
+   <!--   <button class="btn default-btn h-100" type="button"
               [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
               (click)="toggleSequencer()">Sequencer
       </button>
       <button class="btn default-btn h-100" type="button"
               [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
               (click)="togglePlugin()">Plugin
-      </button>
+      </button>-->
     </div>
     <div class="w-50 h-100">
       <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
@@ -22,6 +22,7 @@
 
     </div>
     <div class="w-25 ">
+      <span *ngFor="let window of project.desktop.windows">{{window.id}}:{{project.desktop.getWindow(window.id).state===1}}&nbsp;</span>
       <div class="btn-group float-right">
         <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
         <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
@@ -38,26 +39,20 @@
     <div class="col-11">
       <daw-matrix [project]="project"></daw-matrix>
     </div>
-    <div
-      class="col-xs-offset-3 col-6 sequencer-container animated"
-      *ngIf="project.openedWindows.indexOf('sequencer')>=0"
-      [ngClass]="{'slideOutUp': slideOut,'slideInDown': project.openedWindows.indexOf('sequencer')>=0}">
-
-      <sequencer [project]="project" [pattern]="project.selectedPattern | async"
-                  (close)="toggleSequencer()" ></sequencer>
-    </div>
   </div>
 
+  <sequencer *ngIf="project.desktop.isOpen('sequencer')" [project]="project" [pattern]="project.selectedPattern | async"
+             (close)="project.desktop.closeWindow('sequencer')" interact></sequencer>
+  <!--
   <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
                 [project]="project"
                 [window]="window"
                 [pluginId]="window.pluginId"
-
                 (positionXChanged)="window.x=$event"
                 (positionYChanged)="window.y=$event"
                 [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
                 class="" interact>
-  </plugin-panel>
+  </plugin-panel>-->
   <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
   <recorder [project]="project" ></recorder>
 

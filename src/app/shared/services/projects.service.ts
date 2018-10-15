@@ -26,6 +26,7 @@ import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
+import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
 
 
 @Injectable()
@@ -33,7 +34,7 @@ export class ProjectsService {
 
   constructor(
     private audioContext: AudioContextService,
-     private projectsApi: ProjectsApi,
+    private projectsApi: ProjectsApi,
     private filesService: FilesApi,
     private matrixService: MatrixService,
     private trackService: TracksService,
@@ -45,7 +46,7 @@ export class ProjectsService {
 
   }
 
-  createProject(name: string, addPlugins: Array<string>): Promise<Project> {
+  createProject(id:string,name: string, addPlugins: Array<string>): Promise<Project> {
 
     return new Promise((resolve, reject) => {
       let transportSettings = new TransportSettings();
@@ -59,9 +60,10 @@ export class ProjectsService {
 
       let project = new Project(this.audioContext, transportSettings);
       project.patterns = [];
-      project.id = this.guid();
+      project.id = id;
       project.name = name;
-      project.openedWindows = [];
+      project.desktop=new DesktopManager();
+      project.desktop.windows.push(new WindowSpecs("sequencer"));
       project.nodes = [];
       let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
@@ -180,35 +182,35 @@ export class ProjectsService {
 
   }
 
- /* get(projectId: string): Promise<Project> {
-    return new Promise((resolve, reject) => {
+  /* get(projectId: string): Promise<Project> {
+     return new Promise((resolve, reject) => {
 
-      this.projectsApi.getById(projectId).then(json => {
+       this.projectsApi.getById(projectId).then(json => {
 
-        this.deSerializeProject(json)
-          .then(project => resolve(project))
-          .catch(error => reject(error))
-      })
-        .catch(error => {
+         this.deSerializeProject(json)
+           .then(project => resolve(project))
+           .catch(error => reject(error))
+       })
+         .catch(error => {
 
-          reject(error)
-        });
-    })
-  }
+           reject(error)
+         });
+     })
+   }
 
-  save(project: Project): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.projectsApi.getById(project.id).then(_project => {
-        let json = this.serializeProject(project);
-        if (!_project) {
-          json.id=this.guid();
-          this.projectsApi.create(json).then(project => resolve(), error => reject(error));
-        }
-        else this.projectsApi.update(json).then(project => resolve(), error => reject(error));
-      });
-    })
+   save(project: Project): Promise<void> {
+     return new Promise((resolve, reject) => {
+       this.projectsApi.getById(project.id).then(_project => {
+         let json = this.serializeProject(project);
+         if (!_project) {
+           json.id=this.guid();
+           this.projectsApi.create(json).then(project => resolve(), error => reject(error));
+         }
+         else this.projectsApi.update(json).then(project => resolve(), error => reject(error));
+       });
+     })
 
-  }*/
+   }*/
 
   changeQuantization(project: Project, loopLength: number, quantization: NoteLength): void {
     /* project.quantization=quantization;
@@ -259,7 +261,6 @@ export class ProjectsService {
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
-    projectDto.openedWindows = project.openedWindows;
     projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
     projectDto.selectedTrack = project.selectedTrack.getValue() ? project.selectedTrack.getValue().id : null;
     projectDto.tracks = [];
@@ -320,7 +321,6 @@ export class ProjectsService {
       project.id = dto.id;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
-      project.openedWindows = dto.openedWindows;
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
       project.desktop = new DesktopManager();
       project.desktop.windows = dto.desktop.windows;

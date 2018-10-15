@@ -14,6 +14,8 @@ import {Ng5SliderModule} from "ng5-slider";
 import {DawMatrixModule} from "../daw-matrix/daw-matrix.module";
 import {SequencerModule} from "../sequencer/sequencer.module";
 import {ApiModule} from "../api/api.module";
+import {UiModule} from "../ui/ui.module";
+import { DesktopComponent } from './desktop/desktop.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import {ApiModule} from "../api/api.module";
     ProjectObserverComponent,
     ProjectsCreateComponent,
     RecorderComponent,
-    TransportComponent
+    TransportComponent,
+    DesktopComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,8 @@ import {ApiModule} from "../api/api.module";
     Ng5SliderModule,
     DawMatrixModule,
     SequencerModule,
-    ApiModule
+    ApiModule,
+    UiModule
 
 
   ],

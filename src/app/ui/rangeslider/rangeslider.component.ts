@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'rangeslider',
@@ -7,7 +8,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class RangesliderComponent implements OnInit {
 
-  @Input() value:number=0;
+  @Input() value:BehaviorSubject<number>;
   @Input() min:number=0;
   @Input() max:number=100;
   @Input() disabled:boolean=false;
@@ -17,61 +18,7 @@ export class RangesliderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    var lineHeight = ($('.drag-line').height())-15;
 
-    $('.draggable-button').draggable({
-      axis: 'y',
-      containment: 'parent'
-    });
-
-    $('.draggable-button').on('drag', function(){
-      var position = $('.draggable-button').position();
-      var marginTop = position.top;
-      $('.line').css({
-        'clip': 'rect('+ marginTop +'px,8px, 183px,0px)'
-      });
-
-    });
-
-
-    $('.fa-minus').on('click', function(){
-      var position = $('.draggable-button').position();
-      var marginTop = position.top;
-
-      $('.line').css({
-        'clip': 'rect('+ (marginTop+14) +'px,8px, 183px,0px)'
-      });
-
-      if( marginTop < lineHeight){
-        $('.draggable-button').css({
-          'top': marginTop + 14
-        });
-
-      }
-    });
-
-    $('.fa-plus').on('click', function(){
-      var position = $('.draggable-button').position();
-      var marginTop = position.top;
-
-      $('.line').css({
-        'clip': 'rect('+ (marginTop-14) +'px,8px, 183px,0px)'
-      });
-
-      if( marginTop > 0){
-
-        $('.draggable-button').css({
-          'top': marginTop - 14
-        });
-      }
-    });
-
-
-
-  }
-
-  onChange(value:number):void{
-    this.valueChanged.emit(value);
   }
 
 }

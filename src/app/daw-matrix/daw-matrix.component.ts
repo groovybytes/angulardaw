@@ -66,8 +66,8 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.dawMatrixService.onCellContainerClicked(cell, this.project);
   }
 
-  onRowHeaderClicked(cell: Cell<string>): void {
-    this.patternsService.toggleScene(cell.row, this.project);
+  onRowHeaderClicked(row:number): void {
+    this.patternsService.toggleScene(row, this.project);
   }
 
   pluginSelected(plugin:PluginInfo):void{
@@ -98,24 +98,6 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   onHeaderClicked(cell:Cell<Track>):void{
     this.project.selectedTrack.next(cell.data);
-  }
-
-  changeGain(track:Track,gain:any):void{
-
-    track.controlParameters.gain.next(gain.value);
-  }
-
-  mute(track:Track):void{
-    track.controlParameters.mute.next(!track.controlParameters.mute.getValue());
-  }
-
-  solo(track:Track):void{
-    this.tracksService.toggleSolo(this.project,track);
-
-  }
-  arm(track:Track):void{
-
-
   }
 
   getTrack(trackId: string): Track {

@@ -1,13 +1,2 @@
-<div class="wrapper">
-  <div class="map-slider">
-    <div class="buttons">
-      <span class="fa fa-plus"></span>
-      <div class="drag-line">
-        <div class="line"></div>
-        <div class="draggable-button"></div>
-      </div>
-      <div class="draggable-buton"></div>
-      <span class="fa fa-minus"></span>
-    </div>
-  </div>
-</div>
+<input orient="vertical" name="range" type="range" [min]="min" [max]="max" [ngModel]="value | async" (ngModelChange)="value.next($event)">
+

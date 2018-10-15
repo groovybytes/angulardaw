@@ -1,79 +1,8 @@
-@import "../../../variables";
-
-$background:$white;
-$sliderBg:$color-4;
-$pointerBg:$white;
-$pointer-size:25px;
-$line:red;
-$icon-height:30px;
-
-$height:200px;
-$drag-line-height:130px;
-*, *:after, *:before {
-  box-sizing:border-box;
-}
-
-
-.wrapper{
-  width:52px;
-  margin:0;
-  user-select: none;
-}
-
-
-.map-slider {
-  width:52px;
-  height:$height;
-  background:$sliderBg;
-  border-radius:3px;
-  text-align:center;
-  box-shadow: 0 0 3px 1px rgba(0,0,0,0.2);
-  position:relative;
-  color:$white;
-
-  .fa-plus {
-    display:block;
-    padding-top:5px;
-    height:$icon-height;
-    cursor:pointer;
-  }
-  .fa-minus {
-    display:block;
-    height:$icon-height;
-    padding-top:5px;
-    cursor:pointer;
-  }
-  .drag-line {
-    width:8px;
-    height:$drag-line-height;
-    background:$background;
-    border-radius:8px;
-    margin:5px auto;
-    position:relative;
-
-  }
-  .line {
-    width:8px;
-    height:$drag-line-height;
-    background:$black;
-    border-radius:8px;
-    margin:5px auto;
-    position:absolute;
-    margin-top:0px;
-    margin-bottom:0px;
-    padding-top:10px;
-    clip: rect(0px, 8px, 183px, 0px);
-
-  }
-
-  .draggable-button {
-    width:$pointer-size;
-    height:$pointer-size;
-    background: $pointerBg;
-    border-radius:50%;
-    position:absolute;
-    box-shadow: 0px 4px 10px 1px rgba(0,0,0,0.2);
-    margin-left:-8px;
-    cursor:pointer;
-  }
+input[type=range][orient=vertical]
+{
+  writing-mode: bt-lr; /* IE */
+  -webkit-appearance: slider-vertical; /* WebKit */
+  width: 8px;
+  height: 175px;
+  padding: 0 5px;
 }

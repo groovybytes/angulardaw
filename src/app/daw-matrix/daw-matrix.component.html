@@ -34,7 +34,12 @@
           <span class="">{{i+1}}</span>
         </div>
         <div class="col-6">
-          <button type="button" class="btn naked-btn"><i class="fas fa-play"></i></button>
+          <button type="button"
+                  (click)="onRowHeaderClicked(i)"
+                  class="btn naked-btn scene-toggle-btn rounded-0">
+            <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
+            <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
+          </button>
         </div>
       </div>
 
@@ -47,12 +52,7 @@
        </div>-->
 
 
-      <!--<button type="button"
-              (click)="onRowHeaderClicked(project.matrix.rowHeader[i])"
-              class="btn btn-primary scene-toggle-btn rounded-0">
-        <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
-        <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
-      </button>-->
+
 
     </td>
     <td
@@ -74,7 +74,7 @@
       (drag)="dragHandler.onDrag($event)"
       (dragend)="dragHandler.onDragEnd($event)"
       (drop)="dragHandler.onDrop($event)">
-      <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (click)="onCellContainerClicked(cell)">
+      <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (dblclick)="onCellContainerClicked(cell)">
         <button type="button"
                 (click)="onCellBtnClicked(cell,$event)"
                 class="btn naked-btn toggle-button shadow-sm float-left rounded-0 cell-btn">
@@ -112,26 +112,7 @@
       </button>
     </td>
     <td class="console-cell " *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
-      <div class="row">
-        <div class="col-6">
-          <div class="btn-group-vertical justify-content-start" role="group">
-            <button type="button" class="btn default-btn"
-                    [ngClass]="{'active':getTrack(cell.trackId)?.controlParameters.mute.getValue()===false}"
-                    (click)="mute(getTrack(cell.trackId))">
-              <span>1</span>
-            </button>
-            <button type="button" class="btn default-btn"
-                    [ngClass]="{'active':getTrack(cell.trackId)?.controlParameters.solo.getValue()}"
-                    (click)="solo(getTrack(cell.trackId))">S
-            </button>
-            <button type="button" class="btn default-btn" (click)="arm(getTrack(cell.trackId))"><i
-              class="fas fa-circle"></i></button>
-          </div>
-        </div>
-        <div class="col-6">
-          <rangeslider class=""></rangeslider>
-        </div>
-      </div>
+      <daw-console *ngIf="cell.data" [project]="project" [track]="cell.data"></daw-console>
     </td>
   </tr>
   </tfoot>

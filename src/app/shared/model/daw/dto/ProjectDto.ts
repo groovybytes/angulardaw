@@ -13,7 +13,6 @@ export class ProjectDto{
   selectedTrack:string;
   matrix: MatrixDto;
   patterns:Array<PatternDto>;
-  openedWindows: Array<string>;
   tracks: Array<TrackDto> = [];
   routes:Array<{source:string,target:string}>;
   nodes:Array<AudioNodeDto>;
