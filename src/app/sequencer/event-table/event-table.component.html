@@ -1,4 +1,4 @@
-<div    #tablecell class="cell"
+<div class="cell"
      *ngFor="let cell of tableCells"
      [attr.data-id]="cell.id"
 
@@ -15,25 +15,20 @@
            'height':cell.height+'px',
            'line-height':cell.height+'px'}">
 
-<!--  (mouseover)="mouseOver(cell)"
-  (mouseleave)="mouseLeave(cell)"
-  (dblclick)="emptyCellDblClick(cell)"-->
-
-  <!--  (click)="mouseDown(cell)"-->
-
-  <!--   (dragover)="dragHandler.onDragOver($event)"
-     (dragleave)="dragHandler.onDragLeave($event)"
-     (drop)="dragHandler.onDrop($event)"-->
-
-
-  {{cell.column}}{{cell.row}}
-  <!--<span *ngIf="cell.row===0"
+  <span *ngIf="cell.row===0"
         class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
-  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>-->
+  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>
 </div>
-<div #eventcell class="cell event-cell note-cell"
+<div class="cell event-cell note-cell"
      *ngFor="let cell of eventCells"
      [attr.data-id]="cell.id"
+     interact-resizable
+     [cell]="cell"
+     (resizeStart)="resizeStart()"
+     (resizeEnd)="resizeEnd(cell)"
+     [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+     parent=".sequencer-container"
+
      [ngClass]="{'tick-active':cell.tick === tick &&clipIsRunning()}"
      [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
            'height':cell.height+'px','line-height':cell.height+'px', 'pointer-events':cell.isDragging?'none':''}">

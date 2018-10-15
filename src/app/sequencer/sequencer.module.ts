@@ -5,7 +5,6 @@ import {SharedModule} from "../shared/shared.module";
 import {Ng5SliderModule} from "ng5-slider";
 import {QuantizationComponent} from "./quantization/quantization.component";
 import {UiModule} from "../ui/ui.module";
-import {EventCellDirective} from "./eventcell.directive";
 import {DragContainerComponent} from "./drag-container/drag-container.component";
 import {SequencerComponent} from "./sequencer.component";
 import {EventTableComponent} from "./event-table/event-table.component";
@@ -19,8 +18,7 @@ import {DragContainerService} from "./drag-container/drag-container.service";
     SequencerComponent,
     QuantizationComponent,
     DragContainerComponent,
-    EventTableComponent,
-    EventCellDirective
+    EventTableComponent
   ],
   imports: [
     BrowserModule,

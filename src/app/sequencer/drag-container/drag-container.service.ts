@@ -10,6 +10,7 @@ export class DragContainerService {
 
   private btnWasUp: boolean = false;
   private isDragging: boolean = false;
+  private disable: boolean = false;
   private moveAbsolute: boolean = false;
   private dragTarget: NoteCell;
   private dragSource: NoteCell;
@@ -17,15 +18,25 @@ export class DragContainerService {
 
   constructor(private sequencerService: SequencerService) {
 
+    sequencerService.resizeStart.subscribe(()=>{
+      this.disable=true;
+    });
+
+    sequencerService.resizeEnd.subscribe(()=>{
+      this.disable=false;
+    })
   }
 
   onMouseMove(event: MouseEvent, container: ElementRef, pattern: Pattern, specs: SequencerD3Specs) {
-    if (this.isDragging && this.moveAbsolute) {
-      let offsetLeft = this.getOffsetLeft(container.nativeElement);
-      let x = event.x - offsetLeft - this.dragSource.width / 2;
-      this.sequencerService.setCellXPosition(this.dragSource, x, specs, pattern);
+    if (!this.disable){
+      if (this.isDragging && (this.moveAbsolute||pattern.quantizationEnabled.getValue()===false)) {
+        let offsetLeft = this.getOffsetLeft(container.nativeElement);
+        let x = event.x - offsetLeft - this.dragSource.width / 2;
+        this.sequencerService.setCellXPosition(this.dragSource, x, specs, pattern);
 
+      }
     }
+
   }
 
   onClick(cell: NoteCell): void {
@@ -39,12 +50,15 @@ export class DragContainerService {
 
   onMouseDown(cell: NoteCell, event: MouseEvent): boolean {
     this.btnWasUp = false;
-    setTimeout(() => {
-      this.isDragging = (this.btnWasUp === false);
-      this.moveAbsolute = event.ctrlKey;
-      this.dragSource = cell;
+    if (cell.data){
+      setTimeout(() => {
+        this.isDragging = (this.btnWasUp === false);
+        this.moveAbsolute = event.ctrlKey;
+        this.dragSource = cell;
 
-    }, 100);
+      }, 100);
+    }
+
     event.stopPropagation();
 
     return false; //return false to avoid browser dragging
@@ -61,24 +75,28 @@ export class DragContainerService {
   }
 
   onMouseOver(cell: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
-    if (cell && this.isDragging) {
-      if (this.moveAbsolute) {
-        if (cell.row !== this.dragSource.row) {
-          this.sequencerService.setCellYPosition(this.dragSource, cell.row, specs, pattern);
+    if (!this.disable) {
+      if (cell && this.isDragging) {
+        if (this.moveAbsolute || pattern.quantizationEnabled.getValue() === false) {
+          if (cell.row !== this.dragSource.row) {
+            this.sequencerService.setCellYPosition(this.dragSource, cell.row, specs, pattern);
+          }
         }
-      }
-      else {
-        cell.isDragTarget = this.isDragging;
-        this.dragTarget = cell;
-      }
+        else {
+          cell.isDragTarget = this.isDragging;
+          this.dragTarget = cell;
+        }
 
+      }
     }
   }
 
   onMouseLeave(cell: NoteCell): void {
-    if (cell) {
-      cell.isDragTarget = false;
-      this.dragTarget = null;
+    if (!this.disable) {
+      if (cell) {
+        cell.isDragTarget = false;
+        this.dragTarget = null;
+      }
     }
   }
 

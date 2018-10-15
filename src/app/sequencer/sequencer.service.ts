@@ -1,4 +1,4 @@
-import {ElementRef, Inject, Injectable} from "@angular/core";
+import {ElementRef, EventEmitter, Inject, Injectable} from "@angular/core";
 import {MusicMath} from "../shared/model//utils/MusicMath";
 import {Loudness} from "../shared/model//mip/Loudness";
 
@@ -14,6 +14,10 @@ import {Notes} from "../shared/model/daw/Notes";
 
 @Injectable()
 export class SequencerService {
+
+  resizeStart:EventEmitter<void>=new EventEmitter<void>();
+  resizeEnd:EventEmitter<void>=new EventEmitter<void>();
+
 
   constructor(@Inject("Notes") private notes: Notes, private trackService: TracksService) {
 

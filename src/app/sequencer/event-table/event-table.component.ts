@@ -34,19 +34,6 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 50;
 
-  @ViewChildren("tablecell") cellChildren:QueryList<ElementRef>;
-  @ViewChildren("eventcell") eventCellChildren:QueryList<ElementRef>;
-
-  /*@HostListener('document:mousemove', ['$event'])
-  onMouseMove(e) {
-    this.interactionService.mouseMove(this.element,e);
-  }
-  @HostListener('document:mouseup', ['$event'])
-  onMouseUp(e) {
-    this.interactionService.mouseUp();
-  }*/
-
-  /*  @ViewChild("card") card: ElementRef;*/
   readonly tableCells: Array<NoteCell> = [];
   readonly eventCells: Array<NoteCell> = [];
   allNotes: Array<string>;
@@ -61,10 +48,6 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
     this.allNotes = notes.getAllIds();
   }
 
-  /* getTime(column: number): number {
-     return MusicMath.getTickTime(this.pattern.transportContext.settings.global.bpm,
-       this.pattern.quantization.getValue()) * column;
-   }*/
 
   ngOnInit() {
 
@@ -72,21 +55,20 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
-  mouseDown(cell: NoteCell,event:MouseEvent): void {
-    // this.interactionService.mouseDown(event,cell, this.eventCells, this.pattern, this.specs);
+  resizeStart(): void {
+    this.sequencerService.resizeStart.emit();
+
   }
-  mouseOver(cell: NoteCell): void {
-    //this.interactionService.mouseOver(cell);
+
+  resizeEnd(cell: NoteCell): void {
+    this.sequencerService.onResized(cell,this.pattern, this.specs);
+    this.sequencerService.resizeEnd.emit();
+    /*setTimeout(() => {
+      this.isResizing = false;
+      this.sequencerService.onResized(elementTarget, this.cells, this.pattern, this.specs);
+    }, 10);*/
   }
-  mouseLeave(cell: NoteCell): void {
-    // this.interactionService.mouseLeave(cell);
-  }
-  dblClick(cell: NoteCell): void {
-    //this.interactionService.dblClick(cell);
-  }
-  emptyCellDblClick(cell: NoteCell): void {
-    this.sequencerService.addNote(cell.x, cell.y, this.eventCells, this.specs, this.pattern);
-  }
+
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -112,6 +94,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   clipIsRunning(): boolean {
     return this.pattern && this.project.isRunningWithChannel(this.pattern.id);
   }
+
   private updateCells(): void {
     this.tableCells.length = 0;
     this.eventCells.length = 0;
