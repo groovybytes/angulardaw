@@ -61,7 +61,7 @@
       <div class="card-body">
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let project of projects">
-            {{project.name}}
+            {{project.id}}
             <button type="button" class="btn btn-primary" (click)="open(project.id)">Open</button>
           </li>
         </ul>

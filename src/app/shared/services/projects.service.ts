@@ -101,6 +101,7 @@ export class ProjectsService {
             .then(() => {
               this.createMetronomeTrack(project)
                 .then(track => {
+                  project.tracks.push(track);
                   this.createMetronomePattern(project, track);
                   resolve(project);
                 })
@@ -266,7 +267,9 @@ export class ProjectsService {
     projectDto.tracks = [];
     projectDto.patterns = [];
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
+    console.log(project.nodes.length);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
+
     projectDto.desktop = new DesktopDto();
     projectDto.desktop.windows = project.desktop.windows;
 
@@ -322,6 +325,7 @@ export class ProjectsService {
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
+
       project.desktop = new DesktopManager();
       project.desktop.windows = dto.desktop.windows;
 
@@ -394,12 +398,15 @@ export class ProjectsService {
                   .selectedTrack
                   .next(project.tracks.find(t => t.id === dto.selectedTrack));
 
-              this.createMetronomeTrack(project)
+              resolve(project);
+
+              /*this.createMetronomeTrack(project)
                 .then(track => {
                   this.createMetronomePattern(project, track);
+                  console.log("deserialize:"+project.nodes.length);
                   resolve(project);
                 })
-                .catch(error => reject(error));
+                .catch(error => reject(error));*/
             })
             .catch(error => reject(error))
         })

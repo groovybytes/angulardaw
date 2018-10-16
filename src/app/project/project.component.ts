@@ -5,6 +5,7 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../shared/model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
+import {WindowSpecs} from "../shared/model/daw/visual/desktop/WindowSpecs";
 
 @Component({
   selector: 'project',
@@ -26,6 +27,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       hideLimitLabels: true
     }
   };
+  sequencerWindow:WindowSpecs;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,6 +61,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.projectsApi.create(dto)
               .then(() => {
                 this.project = project;
+                this.sequencerWindow=this.project.desktop.getWindow("sequencer");
                 project.ready = true;
               })
               .catch(error => this.system.error(error));
@@ -67,11 +70,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
       }
       else {
 
-        this.projectsApi.getById(params.projectId).then(dto => {
+        this.projectsApi.getById(params.projectId).then(result => {
 
-          this.projectsService.deSerializeProject(dto)
+          this.projectsService.deSerializeProject(result.data)
             .then(project => {
               this.project=project;
+              this.sequencerWindow=this.project.desktop.getWindow("sequencer");
               this.project.ready = true;
             })
             .catch(error => this.system.error(error));
@@ -80,6 +84,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
       }
 
     });
+
+
   }
 
   switchMetronome(): void {
@@ -92,8 +98,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   save(): void {
     let dto = this.projectsService.serializeProject(this.project);
+    console.log("saving");
     this.projectsApi.update(dto)
-      .catch(error => this.system.error(error));
+      .then((result)=>{
+        console.log("project saved")
+      })
+      .catch(error => {
+        debugger;
+        this.system.error(error)
+      });
 
   }
 

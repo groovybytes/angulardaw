@@ -36,6 +36,7 @@ export class LocalStorageArray<T> {
   }
 
   save(): void {
+
     localStorage.setItem(this.id,JSON.stringify(this.data));
   }
 

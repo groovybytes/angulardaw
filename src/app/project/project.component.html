@@ -41,8 +41,18 @@
     </div>
   </div>
 
-  <sequencer *ngIf="project.desktop.isOpen('sequencer')" [project]="project" [pattern]="project.selectedPattern | async"
-             (close)="project.desktop.closeWindow('sequencer')" interact></sequencer>
+  <sequencer *ngIf="project.desktop.isOpen(sequencerWindow.id)"
+             [project]="project"
+             [pattern]="project.selectedPattern | async"
+             (close)="project.desktop.closeWindow(sequencerWindow.id)"
+             interact
+             [window]="sequencerWindow"></sequencer>
+
+<!--  [ngStyle]="
+  {'left':sequencerWindow.x+'px',
+  'width':sequencerWindow.width+'px',
+  'height':sequencerWindow.height+'px',
+  'top':sequencerWindow.y+'px'}"-->
   <!--
   <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
                 [project]="project"

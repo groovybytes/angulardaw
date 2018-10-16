@@ -16,7 +16,7 @@ import {ProjectsApi} from "../../api/projects.api";
 export class ProjectsCreateComponent implements OnInit, OnDestroy {
 
   newProjectName: string;
-  projects: Array<any> = [];
+  projects: Array<{id:string,name:string}> = [];
   drums: any;
   pluginTypes: Array<PluginInfo> = [];
   selectedPlugins: Array<PluginInfo> = [];
@@ -33,8 +33,8 @@ export class ProjectsCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.projectsApi.getAll().then(projects => {
-      this.projects = projects;
+    this.projectsApi.getAll().then(result => {
+      this.projects = result.data;
     })
       .catch(error => console.log(error));
 

@@ -1,5 +1,6 @@
 
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
+import {WindowSpecs} from "../../shared/model/daw/visual/desktop/WindowSpecs";
 declare var interact;
 
 @Directive({
@@ -9,12 +10,10 @@ export class InteractDirective implements OnInit {
 
   @Input() parent:string="parent";
   @Input() enabled:boolean=true;
-  @Input() initialX:number;
-  @Input() initialY:number;
-  @Output() resizeStart:EventEmitter<void>=new EventEmitter();
-  @Output() resizeEnd:EventEmitter<EventTarget>=new EventEmitter();
-  @Output() positionXChanged:EventEmitter<number>=new EventEmitter();
-  @Output() positionYChanged:EventEmitter<number>=new EventEmitter();
+  @Input() window:WindowSpecs;
+  /*@Output() positionXChanged:EventEmitter<number>=new EventEmitter();
+  @Output() positionYChanged:EventEmitter<number>=new EventEmitter();*/
+
 
   constructor(private element: ElementRef,
               private renderer: Renderer2) {
@@ -25,11 +24,14 @@ export class InteractDirective implements OnInit {
 
     this.element.nativeElement.style.webkitTransform =
       this.element.nativeElement.style.transform =
-        'translate(' + this.initialX + 'px, ' + this.initialY + 'px)';
+        'translate(' + this.window.x + 'px, ' + this.window.y + 'px)';
 
     // update the posiion attributes
-    this.element.nativeElement.setAttribute('data-x', this.initialX);
-    this.element.nativeElement.setAttribute('data-y', this.initialY);
+    this.element.nativeElement.setAttribute('data-x', this.window.x);
+    this.element.nativeElement.setAttribute('data-y', this.window.y);
+
+    this.element.nativeElement.style.width  = this.window.width + 'px';
+    this.element.nativeElement.style.height  = this.window.height + 'px';
 
     interact(this.element.nativeElement)
       .draggable({
@@ -83,6 +85,8 @@ export class InteractDirective implements OnInit {
         // update the element's style
         target.style.width  = event.rect.width + 'px';
         target.style.height = event.rect.height + 'px';
+        this.window.width=event.rect.width;
+        this.window.height=event.rect.height;
 
         // translate when resizing from top or left edges
         x += event.deltaRect.left;
@@ -96,11 +100,11 @@ export class InteractDirective implements OnInit {
       })
       .on('resizeend',(event)=>{
         $(event.target).css("z-index","1");
-        this.resizeEnd.emit(event.target);
+       // this.resizeEnd.emit(event.target);
       })
       .on('resizestart',(event)=>{
         $(event.target).css("z-index","10")
-        this.resizeStart.emit();
+        //this.resizeStart.emit();
       })
 
     let self = this;
@@ -118,8 +122,11 @@ export class InteractDirective implements OnInit {
       // update the posiion attributes
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
-      self.positionXChanged.emit(x);
-      self.positionYChanged.emit(y);
+
+      self.window.x=x;
+      self.window.y=y;
+    /*  self.positionXChanged.emit(x);
+      self.positionYChanged.emit(y);*/
 
     }
 
