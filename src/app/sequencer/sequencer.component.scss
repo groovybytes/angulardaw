@@ -41,10 +41,7 @@
 }
 
 :host{
-position: absolute;
-  /*top:200px;
-  left:200px;*/
-  z-index:$z-index-plugin-window;
+
 }
 :host /deep/ {
 
@@ -80,17 +77,7 @@ position: absolute;
     filter:brightness(120%);
   }
 
-  .event-cell {
-    background-color: $yellow;
 
-      resize: horizontal;
-      overflow: auto;
-
-    /*resize: horizontal;
-    overflow: auto;*/
-
-
-  }
   .fill-rect {
     // stroke: $color2;
   }

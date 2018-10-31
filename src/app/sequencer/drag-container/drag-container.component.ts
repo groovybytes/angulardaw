@@ -28,6 +28,7 @@ export class DragContainerComponent implements OnInit{
     this.dragContainerService.onDblClick(cell,this.eventTable);
   }
   @HostListener('mousedown', ['$event']) onMouseDown(event:MouseEvent) {
+
     let cell = this.dragContainerService.getEventCell(event,this.eventTable);
     return this.dragContainerService.onMouseDown(cell,event);
   }
@@ -45,7 +46,8 @@ export class DragContainerComponent implements OnInit{
   }
 
   @HostListener('document:mousemove', ['$event']) onMouseMove(event:MouseEvent) {
-    this.dragContainerService.onMouseMove(event,this.element,this.eventTable.pattern,this.eventTable.specs);
+    let cell = this.dragContainerService.getEventCell(event,this.eventTable);
+    this.dragContainerService.onMouseMove(event,cell,this.element,this.eventTable.pattern,this.eventTable.specs);
   }
 
   constructor(private element:ElementRef,private dragContainerService:DragContainerService) {

@@ -3,8 +3,6 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Pattern} from "../shared/model//daw/Pattern";
 import {Project} from "../shared/model//daw/Project";
 import {Subscription} from "rxjs/internal/Subscription";
-import {NoteLength} from "../shared/model//mip/NoteLength";
-import {PatternsService} from "../shared/services/patterns.service";
 
 
 @Component({
@@ -21,7 +19,7 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   private subscriptions: Array<Subscription> = [];
 
-  constructor(private patternsService: PatternsService) {
+  constructor() {
 
   }
 
@@ -31,17 +29,6 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  toggleClip(): void {
-    this.patternsService.togglePattern(this.pattern.id, this.project);
-  }
-
-  clipIsRunning(): boolean {
-    return this.pattern && this.project.isRunningWithChannel(this.pattern.id);
-  }
-
-  changeQuantization(value: NoteLength): void {
-    this.pattern.quantization.next(value);
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
@@ -51,9 +38,7 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  toggleRecord(): void {
-    this.project.record.emit(this.pattern);
-  }
+
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscr => subscr.unsubscribe());

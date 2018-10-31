@@ -1,0 +1,19 @@
+{
+  "name": "angular2-desktop",
+  "version": "0.0.1",
+  "description": "a framework for windows-style layout in the browser",
+  "author": "Huber Christian",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groovybytes/angular2-desktop.git"
+  },
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
+  },
+  "scripts": {
+    "build": "ng build angular2-desktop",
+    "release": "ng build angular2-desktop --prod",
+    "test": "ng test angular2-desktop"
+  }
+}

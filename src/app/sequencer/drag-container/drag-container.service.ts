@@ -10,29 +10,36 @@ export class DragContainerService {
 
   private btnWasUp: boolean = false;
   private isDragging: boolean = false;
+  private isResizing: boolean = false;
   private disable: boolean = false;
   private moveAbsolute: boolean = false;
-  private dragTarget: NoteCell;
-  private dragSource: NoteCell;
+  private target: NoteCell;
+  private source: NoteCell;
+  private readonly resizeHandlerClass: string = "event-cell-resize-handle";
 
 
   constructor(private sequencerService: SequencerService) {
 
-    sequencerService.resizeStart.subscribe(()=>{
-      this.disable=true;
+    sequencerService.resizeStart.subscribe(() => {
+      this.disable = true;
     });
 
-    sequencerService.resizeEnd.subscribe(()=>{
-      this.disable=false;
+    sequencerService.resizeEnd.subscribe(() => {
+      this.disable = false;
     })
   }
 
-  onMouseMove(event: MouseEvent, container: ElementRef, pattern: Pattern, specs: SequencerD3Specs) {
-    if (!this.disable){
-      if (this.isDragging && (this.moveAbsolute||pattern.quantizationEnabled.getValue()===false)) {
+  onMouseMove(event: MouseEvent, cell: NoteCell, container: ElementRef, pattern: Pattern, specs: SequencerD3Specs) {
+    if (!this.disable) {
+      if (this.isDragging && (this.moveAbsolute || pattern.quantizationEnabled.getValue() === false)) {
         let offsetLeft = this.getOffsetLeft(container.nativeElement);
-        let x = event.x - offsetLeft - this.dragSource.width / 2;
-        this.sequencerService.setCellXPosition(this.dragSource, x, specs, pattern);
+        let x = event.x - offsetLeft - this.source.width / 2;
+        this.sequencerService.setCellXPosition(this.source, x, specs, pattern);
+      }
+      else if (this.isResizing) {
+        console.log(event.movementX);
+        this.source.width += -event.movementX;
+        this.source.x+= event.movementX;
 
       }
     }
@@ -50,11 +57,17 @@ export class DragContainerService {
 
   onMouseDown(cell: NoteCell, event: MouseEvent): boolean {
     this.btnWasUp = false;
-    if (cell.data){
+    if (cell.data) {
       setTimeout(() => {
-        this.isDragging = (this.btnWasUp === false);
-        this.moveAbsolute = event.ctrlKey;
-        this.dragSource = cell;
+        if (this.isResizeHandle(event.target)) {
+          this.isResizing = true;
+        }
+        else {
+          this.isDragging = (this.btnWasUp === false);
+          this.moveAbsolute = event.ctrlKey;
+        }
+
+        this.source = cell;
 
       }, 100);
     }
@@ -65,26 +78,27 @@ export class DragContainerService {
   }
 
   onMouseUp(cell: NoteCell): void {
-    if (this.isDragging && this.dragTarget) {
-      this.sequencerService.moveCell(this.dragSource, this.dragTarget);
+    if (this.isDragging && this.target) {
+      this.sequencerService.moveCell(this.source, this.target);
 
     }
     this.btnWasUp = true;
     this.isDragging = false;
     this.moveAbsolute = false;
+    this.isResizing = false;
   }
 
   onMouseOver(cell: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
     if (!this.disable) {
       if (cell && this.isDragging) {
         if (this.moveAbsolute || pattern.quantizationEnabled.getValue() === false) {
-          if (cell.row !== this.dragSource.row) {
-            this.sequencerService.setCellYPosition(this.dragSource, cell.row, specs, pattern);
+          if (cell.row !== this.source.row) {
+            this.sequencerService.setCellYPosition(this.source, cell.row, specs, pattern);
           }
         }
         else {
           cell.isDragTarget = this.isDragging;
-          this.dragTarget = cell;
+          this.target = cell;
         }
 
       }
@@ -95,23 +109,32 @@ export class DragContainerService {
     if (!this.disable) {
       if (cell) {
         cell.isDragTarget = false;
-        this.dragTarget = null;
+        this.target = null;
       }
     }
   }
 
   getEventCell(event: MouseEvent, eventTable: EventTableComponent): NoteCell {
-    let isCell = (<HTMLElement>event.target).classList.contains("note-cell");
-    let isEventCell = (<HTMLElement>event.target).classList.contains("event-cell");
+    let htmlElement = (<HTMLElement>event.target);
+    if (this.isResizeHandle(event.target)) {
+      htmlElement = htmlElement.parentElement;
+    }
+
+    let isCell = htmlElement.classList.contains("note-cell");
+    let isEventCell = htmlElement.classList.contains("event-cell");
 
     let cell: NoteCell;
     if (isCell || isEventCell) {
-      let id = $(event.target).attr("data-id");
+      let id = $(htmlElement).attr("data-id");
       if (isEventCell) cell = eventTable.eventCells.find(cell => cell.id === id);
       else cell = eventTable.tableCells.find(cell => cell.id === id);
     }
 
     return cell;
+  }
+
+  private isResizeHandle(element): boolean {
+    return $(element).hasClass(this.resizeHandlerClass);
   }
 
   private getOffsetLeft(elem) {

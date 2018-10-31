@@ -1,5 +1,10 @@
 @import "../../../variables";
 
+/*.sequencer-drag-container {
+  position: absolute;
+  pointer-events:none;
+}*/
+
 .card {
   width: 100%;
   height: $sequencer-height;
@@ -12,7 +17,7 @@
 
 .card-body {
   position: relative;
-  padding:0;
+  padding: 0;
   div {
     //margin-left: $cell-width;
     //margin-top: 10px;
@@ -20,8 +25,8 @@
   overflow: auto;
 }
 
-.card-footer{
-  .btn{
+.card-footer {
+  .btn {
     margin-right: 5px;
     margin-left: 5px;
   }
@@ -40,9 +45,10 @@
   height: 100%;
 }
 
-:host{
+:host {
 
 }
+
 :host /deep/ {
 
   /*.sequencer-container {
@@ -53,41 +59,49 @@
     position: absolute;
     border-width: 1px;
     border-style: dashed;
-  /*  border-radius: 5px;*/
+    /*  border-radius: 5px;*/
     text-align: center;
     vertical-align: middle;
 
     background-color: $tertiary;
 
-    &:hover{
-      filter:brightness(110%);
+    &:hover {
+      filter: brightness(110%);
     }
     &.tick-active {
-      filter:brightness(90%);
+      filter: brightness(90%);
     }
   }
 
   .header-cell {
-    filter:brightness(120%);
+    filter: brightness(120%);
     /*&.tick-active {
       background-color: lighten(yellow, 5%);
     }*/
   }
   .row-header-cell {
-    filter:brightness(120%);
+    filter: brightness(120%);
   }
 
+  .event-cell-resize-handle{
+    position: absolute;
+    width:15px;
+    height:100%;
+    background-color: darken($yellow,15%);
+    &:hover{
+      cursor:col-resize;
+      //background-color: darken($yellow,10%);
+    }
+  }
   .event-cell {
     background-color: $yellow;
-
-      resize: horizontal;
-      overflow: auto;
-
+    //overflow: auto;
+    //pointer-events:all;
     /*resize: horizontal;
     overflow: auto;*/
 
-
   }
+
   .fill-rect {
     // stroke: $color2;
   }
@@ -126,9 +140,9 @@
       }
     }*/
 
-  /*  &.tick-active {
-      background-color: lighten($primary, 5%);
-    }*/
+    /*  &.tick-active {
+        background-color: lighten($primary, 5%);
+      }*/
     &.drag-active {
       background-color: darken($primary, 10%);
     }
@@ -136,14 +150,13 @@
       background-color: darken(yellow, 10%);
     }
 
-
   }
 
- /* .tick-active {
-    .fill-rect {
-      fill: lighten(green, 5%);
-    }
-  }*/
+  /* .tick-active {
+     .fill-rect {
+       fill: lighten(green, 5%);
+     }
+   }*/
 }
 
 

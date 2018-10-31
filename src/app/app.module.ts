@@ -11,6 +11,7 @@ import {MessagingService} from "./system/messaging.service";
 import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
+import {Angular2DesktopModule} from "./angular2-desktop/angular2-desktop.module";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {ProjectModule} from "./project/project.module";
     FormsModule,
     HttpClientModule,
     AuthenticationModule,
-    ProjectModule
+    ProjectModule,
+    Angular2DesktopModule
 
   ],
   providers: [

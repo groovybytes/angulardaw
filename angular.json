@@ -178,6 +178,46 @@
           }
         }
       }
+    },
+    "angular-desktop": {
+      "root": "projects/angular-desktop",
+      "sourceRoot": "projects/angular-desktop/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/angular-desktop/tsconfig.lib.json",
+            "project": "projects/angular-desktop/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/angular-desktop/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/angular-desktop/src/test.ts",
+            "tsConfig": "projects/angular-desktop/tsconfig.spec.json",
+            "karmaConfig": "projects/angular-desktop/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/angular-desktop/tsconfig.lib.json",
+              "projects/angular-desktop/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "audtiotools"

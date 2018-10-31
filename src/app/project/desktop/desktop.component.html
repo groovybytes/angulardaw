@@ -1,7 +1,0 @@
-<plugin-panel *ngFor="let window of windows"
-              [window]="window"
-              [pluginId]="window.id"
-              (positionXChanged)="window.x=$event"
-              (positionYChanged)="window.y=$event"
-              [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
-              class="" interact>

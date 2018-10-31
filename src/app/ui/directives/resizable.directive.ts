@@ -9,8 +9,9 @@ declare var interact; //import makes problems; typings are wrong
 })
 export class ResizableDirective implements OnInit {
 
-  @Input() cell:NoteCell;
-  @Input() initialY:number;
+  @Input() cell: NoteCell;
+  @Input() minX: number = 0;
+  @Input() maxX: number = 1000;
   @Input() parent: string;
   @Input() enabled: boolean = true;
   @Output() resizeStart: EventEmitter<void> = new EventEmitter();
@@ -29,7 +30,14 @@ export class ResizableDirective implements OnInit {
         restrictEdges: {
           outer: this.parent,
           endOnly: false,
+          restriction: {
+            left: 1800,
+            right: 0,
+            top: 0,
+            bottom: 0
+          }
         },
+
         enabled: true,//this.enabled,
         inertia: false,
         restrictSize: {
@@ -45,16 +53,23 @@ export class ResizableDirective implements OnInit {
         }
       })
       .on('resizemove', (event) => {
-
-        let target = event.target;
-
-        // update the element's style
-        this.cell.width=event.rect.width;
-        this.cell.height=event.rect.height;
-
-        // translate when resizing from top or left edges
+        console.log(event.rect.width);
+        console.log(event);
         this.cell.x += event.deltaRect.left;
         this.cell.y += event.deltaRect.top;
+        this.cell.width = event.rect.width;
+        this.cell.height = event.rect.height;
+
+       /* if (this.cell.x >= this.minX && this.cell.x <= this.maxX){
+          this.cell.width = event.rect.width;
+          this.cell.height = event.rect.height;
+        }
+        if (this.cell.x < this.minX) this.cell.x = this.minX;
+        if (this.cell.x > this.maxX) this.cell.x = this.maxX;*/
+
+
+
+
       })
       .on('resizeend', (event) => {
         $(event.target).css("z-index", "1");

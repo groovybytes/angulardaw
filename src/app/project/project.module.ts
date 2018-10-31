@@ -15,7 +15,7 @@ import {DawMatrixModule} from "../daw-matrix/daw-matrix.module";
 import {SequencerModule} from "../sequencer/sequencer.module";
 import {ApiModule} from "../api/api.module";
 import {UiModule} from "../ui/ui.module";
-import { DesktopComponent } from './desktop/desktop.component';
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -26,8 +26,7 @@ import { DesktopComponent } from './desktop/desktop.component';
     ProjectObserverComponent,
     ProjectsCreateComponent,
     RecorderComponent,
-    TransportComponent,
-    DesktopComponent
+    TransportComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +36,8 @@ import { DesktopComponent } from './desktop/desktop.component';
     DawMatrixModule,
     SequencerModule,
     ApiModule,
-    UiModule
+    UiModule,
+    SharedModule
 
 
   ],

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DesktopComponent } from './desktop.component';
+import { AngularDesktopComponent } from './angular-desktop.component';
 
-describe('DesktopComponent', () => {
-  let component: DesktopComponent;
-  let fixture: ComponentFixture<DesktopComponent>;
+describe('AngularDesktopComponent', () => {
+  let component: AngularDesktopComponent;
+  let fixture: ComponentFixture<AngularDesktopComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DesktopComponent ]
+      declarations: [ AngularDesktopComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DesktopComponent);
+    fixture = TestBed.createComponent(AngularDesktopComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

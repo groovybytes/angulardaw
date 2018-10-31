@@ -10,6 +10,7 @@ import {SequencerComponent} from "./sequencer.component";
 import {EventTableComponent} from "./event-table/event-table.component";
 import {SequencerService} from "./sequencer.service";
 import {DragContainerService} from "./drag-container/drag-container.service";
+import { SequencerFooterComponent } from './sequencer-footer/sequencer-footer.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {DragContainerService} from "./drag-container/drag-container.service";
     SequencerComponent,
     QuantizationComponent,
     DragContainerComponent,
-    EventTableComponent
+    EventTableComponent,
+    SequencerFooterComponent
   ],
   imports: [
     BrowserModule,

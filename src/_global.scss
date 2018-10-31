@@ -1,6 +1,9 @@
 @import "_variables.scss";
 @import '~bootstrap/scss/mixins';
 
+.container-fluid{
+ // position: absolute;
+}
 $default-btn-color: $black;
 .default-btn {
  // @include button-variant($color-2, $black, darken($color-2, 10%));*/

@@ -19,22 +19,33 @@
         class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
   <span *ngIf="cell.column===0" class="">{{cell.note}}</span>
 </div>
+<!--<div  class="sequencer-drag-container"
+      [ngStyle]="{
+
+      'width':specs.cellWidth*specs.columns+'px',
+      'height':specs.cellHeight*specs.rows+'px'}">-->
 <div class="cell event-cell note-cell"
      *ngFor="let cell of eventCells"
      [attr.data-id]="cell.id"
-     interact-resizable
-     [cell]="cell"
-     (resizeStart)="resizeStart()"
-     (resizeEnd)="resizeEnd(cell)"
-     [enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
-     parent=".sequencer-container"
-
      [ngClass]="{'tick-active':cell.tick === tick &&clipIsRunning()}"
      [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
            'height':cell.height+'px','line-height':cell.height+'px', 'pointer-events':cell.isDragging?'none':''}">
+  <div class="event-cell-resize-handle"></div>
+  <div class="event-cell-resize-handle float-right"></div>
 </div>
+<!--</div>-->
 
 
+<!--'left':specs.cellWidth+'px',
+'top':specs.cellHeight+'px',-->
+
+<!--interact-resizable
+[minX]="specs.cellWidth"
+[cell]="cell"
+(resizeStart)="resizeStart()"
+(resizeEnd)="resizeEnd(cell)"
+[enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+parent=".sequencer-drag-container"-->
 
 
 

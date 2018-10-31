@@ -44,12 +44,7 @@
   height: 100%;
 }
 
-:host /deep/ {
-/*  .cell-btn {
-    filter: brightness(90%);
-    &:hover {
-      filter: brightness(80%);
-    }
-  }*/
+:host {
+position: absolute;
 }
 

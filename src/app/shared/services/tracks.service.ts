@@ -55,7 +55,7 @@ export class TracksService {
       let track: Track = this.createTrack(project.nodes, TrackCategory.DEFAULT, project.getMasterBus().inputNode);
       project.tracks.push(track);
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
-      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"),pluginInfo)
+      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"),pluginInfo,project)
         .then(plugin => {
           track.plugins = [plugin];
           this.pluginService.setupInstrumentRoutes(project,track,plugin);

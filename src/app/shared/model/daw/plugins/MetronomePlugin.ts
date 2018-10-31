@@ -99,7 +99,9 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
   }
 
   getInfo(): PluginInfo {
-    return new PluginInfo();
+    let info= new PluginInfo();
+    info.id="metronome";
+    return info;
   }
 
   getInputNode(): VirtualAudioNode<AudioNode> {

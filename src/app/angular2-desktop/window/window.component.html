@@ -1,0 +1,31 @@
+<div class="card"
+     *ngIf="window.position===positionValues.FLOATING"
+     interact
+     [parent]="'.drag-container'"
+     [window]="window"
+     [ngStyle]="{'width':width+'px','position':'absolute'}">
+  <div class="card-header drag-handle">
+    <button type="button" class="btn default-btn float-right" (click)="close()"><i class="fas fa-times"></i></button>
+    <ng-content select="div[role=header]"></ng-content>
+  </div>
+  <div class="card-body">
+    <ng-content select="[role=body]"></ng-content>
+  </div>
+  <div class="card-footer">
+    <ng-content select="[role=footer]"></ng-content>
+  </div>
+
+</div>
+<div *ngIf="window.position!==positionValues.FLOATING" class="card w-100 h-100">
+  <div class="card-header drag-handle">
+    <button type="button" class="btn default-btn float-right" (click)="close()"><i class="fas fa-times"></i></button>
+    <ng-content select="div[role=header]"></ng-content>
+  </div>
+  <div class="card-body">
+    <ng-content select="[role=body]"></ng-content>
+  </div>
+  <div class="card-footer">
+    <ng-content select="[role=footer]"></ng-content>
+  </div>
+
+</div>

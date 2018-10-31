@@ -46,7 +46,7 @@ export class ProjectsService {
 
   }
 
-  createProject(id:string,name: string, addPlugins: Array<string>): Promise<Project> {
+  createProject(id: string, name: string, addPlugins: Array<string>): Promise<Project> {
 
     return new Promise((resolve, reject) => {
       let transportSettings = new TransportSettings();
@@ -62,7 +62,7 @@ export class ProjectsService {
       project.patterns = [];
       project.id = id;
       project.name = name;
-      project.desktop=new DesktopManager();
+      project.desktop = new DesktopManager();
       project.desktop.windows.push(new WindowSpecs("sequencer"));
       project.nodes = [];
       let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
@@ -278,6 +278,7 @@ export class ProjectsService {
       projectDto.tracks.push(trackDto);
     });
 
+
     project.patterns.forEach(pattern => {
       let patternDto = new PatternDto();
       patternDto.id = pattern.id;
@@ -329,6 +330,7 @@ export class ProjectsService {
       project.desktop = new DesktopManager();
       project.desktop.windows = dto.desktop.windows;
 
+
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {
           project.pluginTypes = plugins;
@@ -341,7 +343,7 @@ export class ProjectsService {
             t.plugins.forEach(pluginDto => {
               let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
               if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
-              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo);
+              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo, project);
               pluginPromises.push(promise);
               promise.then(_plugin => {
                 _plugin.setInputNode(project.nodes.find(n => n.id === pluginDto.inputNode));
@@ -356,6 +358,10 @@ export class ProjectsService {
           let cells = _.flatten(dto.matrix.body);
           Promise.all(pluginPromises)
             .then(() => {
+
+              let metronomeTrack=project.tracks.find(track=>track.id.startsWith("track-metronome"));
+              project.metronomePattern=this.createMetronomePattern(project,metronomeTrack);
+
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);
                 if (matrixCell) {

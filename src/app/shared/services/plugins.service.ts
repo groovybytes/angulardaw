@@ -13,6 +13,9 @@ import {Project} from "../model/daw/Project";
 import {FilesApi} from "../../api/files.api";
 import {SamplesApi} from "../../api/samples.api";
 import {Notes} from "../model/daw/Notes";
+import {MetronomePlugin} from "../model/daw/plugins/MetronomePlugin";
+import {TrackCategory} from "../model/daw/TrackCategory";
+import {AudioContextService} from "./audiocontext.service";
 
 @Injectable()
 export class PluginsService {
@@ -21,8 +24,9 @@ export class PluginsService {
     private fileService: FilesApi,
     private system: System,
     private config: AppConfiguration,
-    @Inject("Notes") private notes:Notes,
+    @Inject("Notes") private notes: Notes,
     private nodesService: AudioNodesService,
+    private audioContext: AudioContextService,
     private samplesV2Service: SamplesApi,
   ) {
 
@@ -63,16 +67,17 @@ export class PluginsService {
     outputNode.connect(track.outputNode);
   }
 
-  loadPluginWithInfo(id: string, info: PluginInfo): Promise<WstPlugin> {
+  loadPluginWithInfo(id: string, info: PluginInfo, project: Project): Promise<WstPlugin> {
 
     let plugin: WstPlugin;
 
     if (info.id === "drumkit1") plugin = new Drums(id, this.fileService, this.config, info, this.samplesV2Service);
+    else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService, project, this.config, this.samplesV2Service);
     else plugin = new GenericInstrumentSampler(
-      id,
-      info,
-      (name)=>this.samplesV2Service.loadAllInstrumentSamples(name),
-      this.notes);
+        id,
+        info,
+        (name) => this.samplesV2Service.loadAllInstrumentSamples(name),
+        this.notes);
 
     return plugin.load();
 

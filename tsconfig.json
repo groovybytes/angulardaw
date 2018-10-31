@@ -12,13 +12,24 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types":["jquery","jqueryui"],
+    "types": [
+      "jquery",
+      "jqueryui"
+    ],
     "lib": [
       "es2017",
       "dom"
     ],
     "paths": {
-      "typeorm": ["src/assets/js/typeorm-model-shim.js"]
+      "typeorm": [
+        "src/assets/js/typeorm-model-shim.js"
+      ],
+      "angular-desktop": [
+        "dist/angular-desktop"
+      ],
+      "angular-desktop/*": [
+        "dist/angular-desktop/*"
+      ]
     }
   }
 }

@@ -8,14 +8,13 @@ import {KeyboardState} from "./model/KeyboardState";
 import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {Notes} from "./model/daw/Notes";
+import {UiModule} from "../ui/ui.module";
 
 
 @NgModule({
-  declarations: [
-
-  ],
+  declarations: [],
   imports: [
-
+UiModule
   ],
   providers: [
     PluginsService,
