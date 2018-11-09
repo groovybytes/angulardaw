@@ -83,6 +83,9 @@
     filter: brightness(120%);
   }
 
+  .right-handle{
+    right:0;
+  }
   .event-cell-resize-handle{
     position: absolute;
     width:15px;

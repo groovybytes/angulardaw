@@ -1,11 +1,9 @@
-/*
 import {ElementRef, Injectable} from "@angular/core";
 import {NoteCell} from "../model/NoteCell";
 import {EventTableComponent} from "../event-table/event-table.component";
 import {SequencerService} from "../sequencer.service";
 import {SequencerD3Specs} from "../model/sequencer.d3.specs";
 import {Pattern} from "../../shared/model/daw/Pattern";
-import {MouseGesturesService} from "./MouseGesture";
 
 @Injectable()
 export class DragContainerService {
@@ -19,15 +17,19 @@ export class DragContainerService {
   private source: NoteCell;
   private readonly minWidth:number=50;
   private readonly resizeHandlerClass: string = "event-cell-resize-handle";
-  private readonly doubleClickThreshold:number=300;
-  private btnDownCount:number=0;
-  private btnUpCount:number=0;
+  private doubleClickThreshold:100;
   private doubleClicked:boolean=false;
 
 
-  constructor(private sequencerService: SequencerService,private mouseGestures:MouseGesturesService) {
+  constructor(private sequencerService: SequencerService) {
 
+    sequencerService.resizeStart.subscribe(() => {
+      this.disable = true;
+    });
 
+    sequencerService.resizeEnd.subscribe(() => {
+      this.disable = false;
+    })
   }
 
   onMouseMove(event: MouseEvent, cell: NoteCell, container: ElementRef, pattern: Pattern, specs: SequencerD3Specs) {
@@ -39,10 +41,10 @@ export class DragContainerService {
       }
       else if (this.isResizing) {
 
-       /!* let newWidth = this.source.width-event.movementX;
+       /* let newWidth = this.source.width-event.movementX;
         let newX = this.source.x+event.movementX;
 
-        if (newWidth>=this.minWidth&& newX>=0 )*!/
+        if (newWidth>=this.minWidth&& newX>=0 )*/
         if (this.source.width-event.movementX>=this.minWidth && this.source.x+event.movementX >= specs.cellWidth){
           this.source.width += -event.movementX;
           this.source.x+= event.movementX;
@@ -55,38 +57,46 @@ export class DragContainerService {
 
   }
 
-  onMouseDown(cell: NoteCell, event: MouseEvent): boolean {
-    this.btnWasUp=false;
-    this.btnDownCount+=1;
+  onClick(cell: NoteCell): void {
 
-    setTimeout(()=> {
-      if (this.btnWasUp===false){
-        this.isDragging=true;
-        console.log("drag");
-      }
-    },this.doubleClickThreshold*2);
+  }
+
+  onDblClick(cell: NoteCell, eventTable: EventTableComponent): void {
+
+    if (cell.data) this.sequencerService.removeEvent(eventTable.eventCells, cell, eventTable.pattern);
+    else this.sequencerService.addNote(cell.row, cell.column, eventTable.eventCells, eventTable.specs, eventTable.pattern);
+  }
+
+  onMouseDown(cell: NoteCell, event: MouseEvent): boolean {
+    this.btnWasUp = false;
+    if (cell.data) {
+      setTimeout(() => {
+        if (this.isResizeHandle(event.target)) {
+          this.isResizing = true;
+        }
+        else {
+          this.isDragging = (this.btnWasUp === false);
+          this.moveAbsolute = event.ctrlKey;
+        }
+
+        this.source = cell;
+
+      }, 100);
+    }
 
     event.stopPropagation();
-
 
     return false; //return false to avoid browser dragging
   }
 
   onMouseUp(cell: NoteCell): void {
-    if (!this.isDragging){
-      this.btnUpCount+=1;
-      this.btnWasUp=true;
-
-      setTimeout(()=> {
-
-        if (this.btnUpCount===1){
-          console.log("single click");
-        }
-        else if (this.btnUpCount===2) console.log("double click");
-        this.clear();
-      },this.doubleClickThreshold);
+    if (this.isDragging && this.target) {
+      this.sequencerService.moveCell(this.source, this.target);
     }
-    else this.clear();
+    this.btnWasUp = true;
+    this.isDragging = false;
+    this.moveAbsolute = false;
+    this.isResizing = false;
   }
 
   onMouseOver(cell: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
@@ -134,14 +144,6 @@ export class DragContainerService {
     return cell;
   }
 
-  private clear():void{
-    this.btnUpCount=0;
-    this.btnWasUp = false;
-    this.isDragging = false;
-    this.moveAbsolute = false;
-    this.isResizing = false;
-  }
-
   private isResizeHandle(element): boolean {
     return $(element).hasClass(this.resizeHandlerClass);
   }
@@ -156,4 +158,3 @@ export class DragContainerService {
     return offsetLeft;
   }
 }
-*/

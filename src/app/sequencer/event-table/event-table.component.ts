@@ -20,6 +20,10 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {ProjectsService} from "../../shared/services/projects.service";
 import {Notes} from "../../shared/model/daw/Notes";
 import {SequencerService} from "../sequencer.service";
+import {NoteTrigger} from "../../shared/model/daw/NoteTrigger";
+import {SequencerInteractionService} from "../sequencer.interaction.service";
+import {EventTableModel} from "./event-table.model";
+import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";
 
 
 @Component({
@@ -34,42 +38,35 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 50;
 
-  readonly tableCells: Array<NoteCell> = [];
-  readonly eventCells: Array<NoteCell> = [];
+  model:EventTableModel=new EventTableModel();
   allNotes: Array<string>;
   tick: number;
-  specs: SequencerD3Specs = new SequencerD3Specs();
   private subscriptions: Array<Subscription> = [];
 
+
   constructor(@Inject("Notes") private notes: Notes,
+              @Inject("MouseEvents") private mouseEvents:MouseTrapEvents,
+              private interaction:SequencerInteractionService,
               private projectsService: ProjectsService,
               private sequencerService: SequencerService) {
 
     this.allNotes = notes.getAllIds();
+
   }
 
 
   ngOnInit() {
 
-
+    this.subscriptions.push(this.mouseEvents.click.subscribe(event=>this.interaction.onClick(event,this.model)));
+    this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event=>this.interaction.onDblClick(event,this.pattern,this.model)));
+    this.subscriptions.push(this.mouseEvents.drag.subscribe(event=>
+      this.interaction.onDrag(event,this.model,this.pattern)));
   }
 
 
-  resizeStart(): void {
-    this.sequencerService.resizeStart.emit();
+  eventCellClicked(cell:NoteCell):void{
 
   }
-
-  resizeEnd(cell: NoteCell): void {
-    this.sequencerService.onResized(cell,this.pattern, this.specs);
-    this.sequencerService.resizeEnd.emit();
-    /*setTimeout(() => {
-      this.isResizing = false;
-      this.sequencerService.onResized(elementTarget, this.cells, this.pattern, this.specs);
-    }, 10);*/
-  }
-
-
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
@@ -82,7 +79,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
           if (nextValue) this.updateCells();
         }));
         this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
-          this.sequencerService.addCellWithNote(nextValue, this.eventCells, this.specs, this.pattern);
+          this.sequencerService.addCellWithNote(nextValue, this.model.eventCells, this.model.specs, this.pattern);
           this.updateCells();
         }));
         this.updateCells();
@@ -96,17 +93,17 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private updateCells(): void {
-    this.tableCells.length = 0;
-    this.eventCells.length = 0;
-    let newCells = this.sequencerService.createTableCells(this.pattern, this.specs);
-    newCells.forEach(cell => this.tableCells.push(cell));
+    this.model.tableCells.length = 0;
+    this.model.eventCells.length = 0;
+    let newCells = this.sequencerService.createTableCells(this.pattern, this.model.specs);
+    newCells.forEach(cell => this.model.tableCells.push(cell));
 
-    newCells = this.sequencerService.createEventCells(this.pattern, this.specs);
-    newCells.forEach(cell => this.eventCells.push(cell));
+    newCells = this.sequencerService.createEventCells(this.pattern, this.model.specs);
+    newCells.forEach(cell => this.model.eventCells.push(cell));
   }
 
   ngOnDestroy(): void {
-
+    this.subscriptions.forEach(subscr=>subscr.unsubscribe());
   }
 
 

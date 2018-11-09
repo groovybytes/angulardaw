@@ -14,7 +14,8 @@ export class SequencerFooterComponent implements OnInit {
   @Input() pattern: Pattern;
   @Input() project: Project;
 
-  constructor(private patternsService: PatternsService) { }
+  constructor(private patternsService: PatternsService) {
+  }
 
   ngOnInit() {
   }
@@ -30,6 +31,10 @@ export class SequencerFooterComponent implements OnInit {
 
   changeQuantization(value: NoteLength): void {
     this.pattern.quantization.next(value);
+  }
+
+  noteLengthSelected(value: NoteLength): void {
+    console.log(value);
   }
 
   toggleRecord(): void {

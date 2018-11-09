@@ -9,8 +9,11 @@ import {DragContainerComponent} from "./drag-container/drag-container.component"
 import {SequencerComponent} from "./sequencer.component";
 import {EventTableComponent} from "./event-table/event-table.component";
 import {SequencerService} from "./sequencer.service";
-import {DragContainerService} from "./drag-container/drag-container.service";
 import { SequencerFooterComponent } from './sequencer-footer/sequencer-footer.component';
+import { NotelengthComponent } from './notelength/notelength.component';
+import {SequencerInteractionService} from "./sequencer.interaction.service";
+import {MouseTrapEvents} from "./mousetrap/MouseTrapEvents";
+import {MouseGesturesService} from "./mousetrap/mouse-gestures.service";
 
 
 @NgModule({
@@ -20,7 +23,8 @@ import { SequencerFooterComponent } from './sequencer-footer/sequencer-footer.co
     QuantizationComponent,
     DragContainerComponent,
     EventTableComponent,
-    SequencerFooterComponent
+    SequencerFooterComponent,
+    NotelengthComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +34,14 @@ import { SequencerFooterComponent } from './sequencer-footer/sequencer-footer.co
     Ng5SliderModule
   ],
   providers: [
-    SequencerService,DragContainerService
+    SequencerService,
+    MouseGesturesService,
+    SequencerInteractionService,
+    {
+      provide: "MouseEvents",
+      useValue: new MouseTrapEvents(),
+      multi: false
+    }
   ],
   exports: [SequencerComponent]
 })
