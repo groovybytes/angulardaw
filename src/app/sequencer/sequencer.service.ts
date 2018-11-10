@@ -92,7 +92,7 @@ export class SequencerService {
     let note = notes[rowIndex - 1];
     let noteLength = this.getNoteLength(specs.cellWidth, pattern, specs);
     let trigger = new NoteTrigger(null, note, noteTime, noteLength, Loudness.fff, 0);
-    this.initializeNoteCell(cell, trigger, pattern);
+    this.initializeNoteCell(rowIndex,cell, trigger, pattern);
     cells.push(cell);
     pattern.insertNote(trigger);
   }
@@ -128,6 +128,10 @@ export class SequencerService {
 
   }
 
+  setCellNoteLength(cell: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
+    cell.data.length=this.getNoteLength(cell.width,pattern,specs);
+  }
+
   moveCell(sourceCell: NoteCell, targetCell: NoteCell): void {
     if (targetCell && targetCell.row >= 0 && targetCell.column >= 0) {
       sourceCell.applyAttributesFrom(targetCell);
@@ -145,12 +149,12 @@ export class SequencerService {
     if (eventTick < nColumns) {
       let left = this.getXPositionForTime(event.time, specs, pattern);
       let notes = pattern.notes;
-      let rowIndex = notes.indexOf(event.note);
-      let top = (rowIndex + 1) * specs.cellHeight;
+      let rowIndex = notes.indexOf(event.note)+1;
+      let top = (rowIndex) * specs.cellHeight;
 
       let width = this.getEventWidth(event.length, pattern, specs);
       let cell = new NoteCell(left, top, width, specs.cellHeight);
-      this.initializeNoteCell(cell, event, pattern);
+      this.initializeNoteCell(rowIndex,cell, event, pattern);
 
       return cell;
     }
@@ -158,9 +162,9 @@ export class SequencerService {
     return null;
   }
 
-  private initializeNoteCell(cell: NoteCell, event: NoteTrigger, pattern: Pattern): void {
+  private initializeNoteCell(rowIndex:number,cell: NoteCell, event: NoteTrigger, pattern: Pattern): void {
     cell.tick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
-    let rowIndex = pattern.notes.indexOf(event.note);
+    //let rowIndex = pattern.notes.indexOf(event.note);
     cell.row = rowIndex;
     cell.data = event;
     cell.column = cell.tick;

@@ -5,6 +5,9 @@
 
   height:95vh;
 }
+.main-container{
+  height: $main-container-height;
+}
 .top-navbar {
   height: $header-height;
   min-height: $header-height;
@@ -19,10 +22,6 @@
   height: $footer-height;
 }
 
-.main-container{
-
-  //margin-bottom: $footer-height;
-}
 
 .footer {
   background-color: $secondary;

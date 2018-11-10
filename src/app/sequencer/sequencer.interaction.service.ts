@@ -14,6 +14,9 @@ export class SequencerInteractionService {
 
   private readonly resizeHandlerClass: string = "event-cell-resize-handle";
   private readonly minWidth: number = 50;
+  private draggedCell: NoteCell;
+  private isResizing: boolean = false;
+  private mouseOverCell: NoteCell;
 
   constructor(private sequencerService: SequencerService) {
 
@@ -31,58 +34,127 @@ export class SequencerInteractionService {
     else this.sequencerService.addNote(cell.row, cell.column, model.eventCells, model.specs, pattern);
   }
 
+  onMouseOver(event: MouseTrapEvent, model: EventTableModel, pattern: Pattern): void {
+
+    let cell = this.getCellFromElement(event.element, model.eventCells, model.tableCells);
+    this.mouseOverCell = cell;
+    if (cell && !this.isResizing) {
+      if (this.draggedCell && cell.row !== this.draggedCell.row) {
+        this.sequencerService.setCellYPosition(this.draggedCell, cell.row, model.specs, pattern);
+      }
+    }
+  }
+
+  onMouseOut(event: MouseTrapEvent, model: EventTableModel): void {
+
+  }
+
   onDrag(event: MouseTrapDragEvent, model: EventTableModel, pattern: Pattern): void {
-    let cell = this.getCellFromElement(event.draggedElement, model.eventCells, model.tableCells);
 
-    if (this.isResizeHandle(event.draggedElement)) {
-      let leftBorder = model.specs.cellWidth;
-      let rightBorder = model.specs.cellWidth * (model.specs.columns + 1);
-
-      let isRight = $(event.draggedElement).hasClass("right-handle");
-      let elementLeft = $(event.draggedElement.parentElement).offset().left;
-      let mouseLeft = event.event.pageX;
-      let dif = mouseLeft - elementLeft;
-
-      if (isRight) {
-        let newWidth=dif;
-        if (newWidth<this.minWidth) newWidth=this.minWidth;
-        else if (cell.x+newWidth>rightBorder) newWidth=rightBorder-cell.x;
-
-        cell.width=newWidth;
-      }
-      else {
-        let newCellX:number;
-        let newX1=cell.x + dif;
-        let currentX2=cell.x+cell.width;
-
-        if (newX1 >= leftBorder) {
-          if (currentX2-newX1>=this.minWidth) newCellX = newX1;
-          else newCellX=currentX2-this.minWidth;
-        }
-        else newCellX=leftBorder;
-
-        let newWidth = currentX2-newCellX;
-        if (newWidth >= this.minWidth) {
-          cell.width = newWidth;
-        }
-        else cell.width=this.minWidth;
-
-
-        this.sequencerService.setCellXPosition(cell,newCellX,model.specs,pattern);
-      }
-
+    this.isResizing = this.isResizeHandle(event.draggedElement);
+    if (!this.draggedCell) this.draggedCell = this.getCellFromElement(event.draggedElement, model.eventCells, model.tableCells);
+    if (this.isResizing) {
+      if (event.event.ctrlKey || pattern.quantizationEnabled.getValue() === false) this.resizeAbsolute(event, model, this.draggedCell, pattern);
+      else this.resizeGrid(event, model, this.draggedCell, pattern);
     }
     else {
-      let offsetLeft = this.getOffsetLeft(event.container.nativeElement);
-      let newCellX = event.positionX - offsetLeft - cell.width / 2;
-      this.sequencerService.setCellXPosition(cell, newCellX, model.specs, pattern);
+      if (event.event.ctrlKey || pattern.quantizationEnabled.getValue() === false) this.moveAbsolute(event, model, this.draggedCell, pattern);
+      else this.moveGrid(event, model, this.draggedCell, pattern);
+
     }
 
   }
 
-  /* onResize(): void {
-     console.log("resize");
-   }*/
+  onDragEnd(): void {
+    this.draggedCell = null;
+    this.isResizing = false;
+  }
+
+  private resizeAbsolute(event: MouseTrapDragEvent, model: EventTableModel, cell: NoteCell, pattern: Pattern): void {
+
+    let minWidth = this.minWidth;
+    let leftBorder = model.specs.cellWidth;
+    let rightBorder = model.specs.cellWidth * (model.specs.columns + 1);
+
+    let isRight = $(event.draggedElement).hasClass("right-handle");
+    let elementLeft = $(event.draggedElement.parentElement).offset().left;
+    let mouseLeft = event.event.pageX;
+    let dif = mouseLeft - elementLeft;
+
+    if (isRight) {
+      let newWidth = dif;
+      if (newWidth < minWidth) newWidth = minWidth;
+      else if (cell.x + newWidth > rightBorder) newWidth = rightBorder - cell.x;
+
+      cell.width = newWidth;
+      this.sequencerService.setCellNoteLength(cell,model.specs,pattern);
+    }
+    else {
+      let newCellX: number;
+      let newX1 = cell.x + dif;
+      let currentX2 = cell.x + cell.width;
+
+      if (newX1 >= leftBorder) {
+        if (currentX2 - newX1 >= minWidth) newCellX = newX1;
+        else newCellX = currentX2 - minWidth;
+      }
+      else newCellX = leftBorder;
+
+      let newWidth = currentX2 - newCellX;
+      if (newWidth >= minWidth) {
+        cell.width = newWidth;
+      }
+      else cell.width = minWidth;
+
+
+      this.sequencerService.setCellXPosition(cell, newCellX, model.specs, pattern);
+      this.sequencerService.setCellNoteLength(cell,model.specs,pattern);
+    }
+  }
+
+  private resizeGrid(event: MouseTrapDragEvent, model: EventTableModel, cell: NoteCell, pattern: Pattern): void {
+
+    let leftBorder = model.specs.cellWidth;
+    let rightBorder = model.specs.cellWidth * (model.specs.columns + 1);
+    let containerLeft = $(event.draggedElement.parentElement.parentElement).offset().left;
+    let containerPosition = event.event.pageX - containerLeft;
+    let isRight = $(event.draggedElement).hasClass("right-handle");
+
+    let nextGridPosition =
+      Math.trunc(containerPosition / model.specs.cellWidth) * model.specs.cellWidth + model.specs.cellWidth * (isRight ? 1 : 0);
+
+    if (nextGridPosition >= leftBorder && nextGridPosition <= rightBorder) {
+      if (isRight) {
+        if (nextGridPosition - cell.x > 0) {
+          cell.width = nextGridPosition - cell.x;
+          this.sequencerService.setCellNoteLength(cell,model.specs,pattern);
+        }
+      }
+      else {
+        let x2 = cell.x + cell.width;
+        let newCellX = nextGridPosition;
+        if (newCellX < x2) {
+          cell.width = x2 - newCellX;
+          this.sequencerService.setCellXPosition(cell, newCellX, model.specs, pattern);
+          this.sequencerService.setCellNoteLength(cell,model.specs,pattern);
+        }
+      }
+    }
+
+  }
+
+  private moveAbsolute(event: MouseTrapDragEvent, model: EventTableModel, cell: NoteCell, pattern: Pattern): void {
+    let offsetLeft = this.getOffsetLeft(event.container.nativeElement);
+    let newCellX = event.positionX - offsetLeft - this.draggedCell.width / 2;
+    this.sequencerService.setCellXPosition(this.draggedCell, newCellX, model.specs, pattern);
+  }
+
+  private moveGrid(event: MouseTrapDragEvent, model: EventTableModel, cell: NoteCell, pattern: Pattern): void {
+    if (this.mouseOverCell) {
+      this.sequencerService.setCellXPosition(this.draggedCell, this.mouseOverCell.x, model.specs, pattern);
+    }
+
+  }
 
   private getCellFromElement(htmlElement: Element, eventCells: Array<NoteCell>, tableCells: Array<NoteCell>): NoteCell {
     if (this.isResizeHandle(htmlElement)) {

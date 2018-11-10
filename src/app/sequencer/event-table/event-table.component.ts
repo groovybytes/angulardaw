@@ -38,15 +38,15 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 50;
 
-  model:EventTableModel=new EventTableModel();
+  model: EventTableModel = new EventTableModel();
   allNotes: Array<string>;
   tick: number;
   private subscriptions: Array<Subscription> = [];
 
 
   constructor(@Inject("Notes") private notes: Notes,
-              @Inject("MouseEvents") private mouseEvents:MouseTrapEvents,
-              private interaction:SequencerInteractionService,
+              @Inject("MouseEvents") private mouseEvents: MouseTrapEvents,
+              private interaction: SequencerInteractionService,
               private projectsService: ProjectsService,
               private sequencerService: SequencerService) {
 
@@ -57,14 +57,19 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    this.subscriptions.push(this.mouseEvents.click.subscribe(event=>this.interaction.onClick(event,this.model)));
-    this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event=>this.interaction.onDblClick(event,this.pattern,this.model)));
-    this.subscriptions.push(this.mouseEvents.drag.subscribe(event=>
-      this.interaction.onDrag(event,this.model,this.pattern)));
+    this.subscriptions.push(this.mouseEvents.click.subscribe(event => this.interaction.onClick(event, this.model)));
+    this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event => this.interaction.onDblClick(event, this.pattern, this.model)));
+    this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
+      this.interaction.onDrag(event, this.model, this.pattern)));
+
+    this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event,this.model,this.pattern)));
+    this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event,this.model)));
+    this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
+
   }
 
 
-  eventCellClicked(cell:NoteCell):void{
+  eventCellClicked(cell: NoteCell): void {
 
   }
 
@@ -103,7 +108,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscr=>subscr.unsubscribe());
+    this.subscriptions.forEach(subscr => subscr.unsubscribe());
   }
 
 
