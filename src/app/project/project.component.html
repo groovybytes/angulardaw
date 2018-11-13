@@ -1,7 +1,12 @@
 <nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
   <form class="form-inline w-100 h-100">
     <div class="w-25 h-100">
-
+      <button class="btn default-btn h-100" type="button"
+              (click)="project.layout=0">Matrix+Sequencer
+      </button>
+      <button class="btn default-btn h-100" type="button"
+              (click)="project.layout=1">Orientation
+      </button>
       <!--   <button class="btn default-btn h-100" type="button"
                  [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
                  (click)="toggleSequencer()">Sequencer
@@ -33,39 +38,16 @@
 </nav>
 
 <div class="drag-container" *ngIf="project && project.ready">
-  <div class="row main-container">
-    <div class="col-6">
-      <daw-matrix [project]="project"></daw-matrix>
-    </div>
-    <div class="col-6">
-      <sequencer
-                 [project]="project"
-                 [pattern]="project.selectedPattern | async"></sequencer>
 
-    </div>
-  </div>
- <!-- *ngIf="project.desktop.isOpen(sequencerWindow.id)"-->
+  <daw-matrix [project]="project" class="window" [ngClass]="project.desktop.getWindowClass('matrix')"></daw-matrix>
+  <sequencer  class="window" [ngClass]="project.desktop.getWindowClass('sequencer')"
+             [project]="project"
+             [pattern]="project.selectedPattern | async"></sequencer>
 
-
-  <!--  [ngStyle]="
-    {'left':sequencerWindow.x+'px',
-    'width':sequencerWindow.width+'px',
-    'height':sequencerWindow.height+'px',
-    'top':sequencerWindow.y+'px'}"-->
-  <!--
-  <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
-                [project]="project"
-                [window]="window"
-                [pluginId]="window.pluginId"
-                (positionXChanged)="window.x=$event"
-                (positionYChanged)="window.y=$event"
-                [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
-                class="" interact>
-  </plugin-panel>-->
   <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
   <recorder [project]="project" ></recorder>
 
-  <div class=" footer fixed-bottom">
+ <!-- <div class=" footer fixed-bottom">
     <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
-  </div>
+  </div>-->
 </div>

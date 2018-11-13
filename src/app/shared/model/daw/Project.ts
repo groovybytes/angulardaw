@@ -44,6 +44,7 @@ export class Project {
   recordNoteStart: EventEmitter<NoteTrigger> = new EventEmitter<NoteTrigger>();
   recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();
   metronomePattern: Pattern;
+  layout:number;
 
   private subscriptions: Array<Subscription> = [];
 

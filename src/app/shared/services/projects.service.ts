@@ -18,15 +18,14 @@ import {PatternsService} from "./patterns.service";
 import {MetronomePlugin} from "../model/daw/plugins/MetronomePlugin";
 import {AudioNodesService} from "./audionodes.service";
 import {TrackCategory} from "../model/daw/TrackCategory";
-import {DesktopManager} from "../model/daw/visual/desktop/DesktopManager";
 import {DesktopDto} from "../model/daw/dto/DesktopDto";
 import {AudioContextService} from "./audiocontext.service";
-import {PluginInfo} from "../model/daw/plugins/PluginInfo";
 import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
 import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
+import {DesktopManager} from "../model/daw/visual/desktop/DesktopManager";
 
 
 @Injectable()
@@ -59,11 +58,13 @@ export class ProjectsService {
       transportSettings.loopStart = 0;
 
       let project = new Project(this.audioContext, transportSettings);
+      project.layout=0;
       project.patterns = [];
       project.id = id;
       project.name = name;
       project.desktop = new DesktopManager();
       project.desktop.windows.push(new WindowSpecs("sequencer"));
+      project.desktop.windows.push(new WindowSpecs("matrix"));
       project.nodes = [];
       let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
@@ -114,105 +115,6 @@ export class ProjectsService {
 
   }
 
-  createProject2(name: string, instruments: Array<PluginInfo>): any {
-    let json = {
-      "tracks": [
-        {
-          "id": "track-1",
-          "name": "default-name",
-          "color": "red",
-          "category": 1,
-          "plugins": [],
-          "inputNode": "node-2",
-          "outputNode": "node-3",
-          "controlParameters": {
-            "gain": 100,
-            "mute": false,
-            "solo": false
-          }
-        }
-      ],
-      "id": this.guid(),
-      "name": name,
-      "transportSettings": {
-        "global": {
-          "beatUnit": 4,
-          "barUnit": 4,
-          "bpm": 120
-        },
-        "loop": false,
-        "loopEnd": 0,
-        "loopStart": 0
-      },
-      "metronomeEnabled": true,
-      "openedWindows": [],
-      "selectedPattern": null,
-      "selectedTrack": null,
-      "patterns": [],
-      "routes": [
-        {
-          "source": "node-2",
-          "target": "node-3"
-        }
-      ],
-      "nodes": [
-        {
-          "id": "node-2",
-          "nodeType": 2,
-          "status": null,
-          "meta": "track: track-1"
-        },
-        {
-          "id": "node-3",
-          "nodeType": 1,
-          "status": null,
-          "meta": "track: track-1"
-        }
-      ],
-      "desktop": {
-        "windows": []
-      },
-      "matrix": {
-        "body": [],
-        "header": [],
-        "rowHeader": []
-      }
-    }
-
-    return json;
-
-  }
-
-  /* get(projectId: string): Promise<Project> {
-     return new Promise((resolve, reject) => {
-
-       this.projectsApi.getById(projectId).then(json => {
-
-         this.deSerializeProject(json)
-           .then(project => resolve(project))
-           .catch(error => reject(error))
-       })
-         .catch(error => {
-
-           reject(error)
-         });
-     })
-   }
-
-   save(project: Project): Promise<void> {
-     return new Promise((resolve, reject) => {
-       this.projectsApi.getById(project.id).then(_project => {
-         let json = this.serializeProject(project);
-         if (!_project) {
-           json.id=this.guid();
-           this.projectsApi.create(json).then(project => resolve(), error => reject(error));
-         }
-         else this.projectsApi.update(json).then(project => resolve(), error => reject(error));
-       });
-     })
-
-   }*/
-
   changeQuantization(project: Project, loopLength: number, quantization: NoteLength): void {
     /* project.quantization=quantization;
 
@@ -259,6 +161,7 @@ export class ProjectsService {
   serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
+    projectDto.layout= project.layout;
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
@@ -323,6 +226,7 @@ export class ProjectsService {
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(this.audioContext, dto.transportSettings);
       project.id = dto.id;
+      project.layout = dto.layout?dto.layout:0;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);

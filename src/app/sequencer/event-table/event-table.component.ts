@@ -57,14 +57,6 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    this.subscriptions.push(this.mouseEvents.click.subscribe(event => this.interaction.onClick(event, this.model)));
-    this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event => this.interaction.onDblClick(event, this.pattern, this.model)));
-    this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
-      this.interaction.onDrag(event, this.model, this.pattern)));
-
-    this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event,this.model,this.pattern)));
-    this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event,this.model)));
-    this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
 
   }
 
@@ -77,6 +69,15 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.pattern) {
       if (this.pattern) {
         this.subscriptions.forEach(subscr => subscr.unsubscribe());
+        this.subscriptions.push(this.mouseEvents.click.subscribe(event => this.interaction.onClick(event, this.model)));
+        this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event => this.interaction.onDblClick(event, this.pattern, this.model)));
+        this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
+          this.interaction.onDrag(event, this.model, this.pattern)));
+
+        this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event,this.model,this.pattern)));
+        this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event,this.model)));
+        this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
+
         this.subscriptions.push(this.pattern.time.subscribe(time => {
           this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
         }));
@@ -108,6 +109,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+
     this.subscriptions.forEach(subscr => subscr.unsubscribe());
   }
 

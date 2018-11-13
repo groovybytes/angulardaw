@@ -9,10 +9,11 @@ import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {Notes} from "./model/daw/Notes";
 import {UiModule} from "../ui/ui.module";
+import { CardHeaderComponent } from './components/card-header/card-header.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [ CardHeaderComponent],
   imports: [
 UiModule
   ],
@@ -34,7 +35,7 @@ UiModule
     }
   ],
   exports:[
-
+    CardHeaderComponent
   ]
 })
 export class SharedModule {

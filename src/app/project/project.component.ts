@@ -6,6 +6,7 @@ import {SimpleSliderModel} from "../shared/model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
 import {WindowSpecs} from "../shared/model/daw/visual/desktop/WindowSpecs";
+import {WindowState} from "../shared/model/daw/visual/desktop/WindowState";
 
 @Component({
   selector: 'project',
@@ -27,13 +28,14 @@ export class ProjectComponent implements OnInit, OnDestroy {
       hideLimitLabels: true
     }
   };
-  sequencerWindow:WindowSpecs;
+  sequencerWindow: WindowSpecs;
+  WindowState = WindowState;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
-    private projectsApi:ProjectsApi,
+    private projectsApi: ProjectsApi,
     private system: System) {
 
   }
@@ -53,15 +55,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
       if (newProject) {
         localStorage.setItem("new_project", null);
 
-        this.projectsService.createProject(params.projectId,newProject.name, newProject.plugins)
-          .then(project=> {
+        this.projectsService.createProject(params.projectId, newProject.name, newProject.plugins)
+          .then(project => {
             let dto = this.projectsService.serializeProject(project);
-            dto.id=params.projectId;
-            dto.name=dto.id;
+            dto.id = params.projectId;
+            dto.name = dto.id;
             this.projectsApi.create(dto)
               .then(() => {
                 this.project = project;
-                this.sequencerWindow=this.project.desktop.getWindow("sequencer");
+                this.sequencerWindow = this.project.desktop.getWindow("sequencer");
                 project.ready = true;
               })
               .catch(error => this.system.error(error));
@@ -74,8 +76,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
           this.projectsService.deSerializeProject(result.data)
             .then(project => {
-              this.project=project;
-              this.sequencerWindow=this.project.desktop.getWindow("sequencer");
+              this.project = project;
+              this.sequencerWindow = this.project.desktop.getWindow("sequencer");
               this.project.ready = true;
             })
             .catch(error => this.system.error(error));
@@ -86,6 +88,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
     });
 
 
+  }
+
+  nextLayout(): void {
+    this.project.layout = (this.project.layout + 1) % 3;
   }
 
   switchMetronome(): void {
@@ -100,7 +106,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     let dto = this.projectsService.serializeProject(this.project);
     console.log("saving");
     this.projectsApi.update(dto)
-      .then((result)=>{
+      .then((result) => {
         console.log("project saved")
       })
       .catch(error => {
@@ -111,17 +117,16 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
 
-
   togglePlugin(): void {
-   /* if (this.project.openedWindows.indexOf("plugin") >= 0) {
-      this.slideOut = true;
-      setTimeout(() => {
-        this.slideOut = false;
-        this.project.openedWindows = [];
-      }, 700);
+    /* if (this.project.openedWindows.indexOf("plugin") >= 0) {
+       this.slideOut = true;
+       setTimeout(() => {
+         this.slideOut = false;
+         this.project.openedWindows = [];
+       }, 700);
 
-    }
-    else this.project.openedWindows = ["plugin"];*/
+     }
+     else this.project.openedWindows = ["plugin"];*/
 
   }
 

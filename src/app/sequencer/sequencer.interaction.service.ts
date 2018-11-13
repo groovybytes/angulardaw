@@ -30,8 +30,11 @@ export class SequencerInteractionService {
 
   onDblClick(event: MouseTrapEvent, pattern: Pattern, model: EventTableModel): void {
     let cell = this.getCellFromElement(event.element, model.eventCells, model.tableCells);
-    if (cell.data) this.sequencerService.removeEvent(model.eventCells, cell, pattern);
-    else this.sequencerService.addNote(cell.row, cell.column, model.eventCells, model.specs, pattern);
+    if (cell){
+      if (cell.data) this.sequencerService.removeEvent(model.eventCells, cell, pattern);
+      else this.sequencerService.addNote(cell.row, cell.column, model.eventCells, model.specs, pattern);
+    }
+
   }
 
   onMouseOver(event: MouseTrapEvent, model: EventTableModel, pattern: Pattern): void {

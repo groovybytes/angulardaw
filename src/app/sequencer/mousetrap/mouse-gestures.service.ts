@@ -40,6 +40,7 @@ export class MouseGesturesService {
   }
 
   mouseUp(event: MouseEvent): void {
+
     if (this.isDragging===false){
       if (this.mouseDownTimeout) {
         clearTimeout(this.mouseDownTimeout);
@@ -49,10 +50,13 @@ export class MouseGesturesService {
       this.btnWasUp = true;
 
       setTimeout(() => {
+
         if (this.btnUpCount === 1) {
           this.mouseEvents.click.emit(new MouseTrapEvent(event));
         }
-        else if (this.btnUpCount === 2) this.mouseEvents.dblClick.emit(new MouseTrapEvent(event));
+        else if (this.btnUpCount === 2) {
+          this.mouseEvents.dblClick.emit(new MouseTrapEvent(event));
+        }
         this.clear();
       }, this.doubleClickThreshold);
     }

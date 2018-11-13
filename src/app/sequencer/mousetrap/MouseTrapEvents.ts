@@ -9,4 +9,5 @@ export class MouseTrapEvents {
   dragEnd: EventEmitter<void> = new EventEmitter();
   mouseOver: EventEmitter<MouseTrapEvent> = new EventEmitter();
   mouseOut: EventEmitter<MouseTrapEvent> = new EventEmitter();
+
 }

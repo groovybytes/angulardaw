@@ -1,13 +1,27 @@
 @import "../../variables";
 
-
-.drag-container{
-
-  height:95vh;
+.window-row-1 {
+  height: 40vh;
+  overflow: auto;
 }
-.main-container{
-  height: $main-container-height;
+
+.window-row-2 {
+  height: 40vh;
+  overflow: auto;
 }
+
+.window{
+  position: absolute;
+}
+.drag-container {
+
+  //height:95vh;
+}
+
+.main-container {
+  //height: $main-container-height;
+}
+
 .top-navbar {
   height: $header-height;
   min-height: $header-height;
@@ -21,7 +35,6 @@
 .tab-pane {
   height: $footer-height;
 }
-
 
 .footer {
   background-color: $secondary;
@@ -38,7 +51,7 @@ nav {
   padding: 0;
 }
 
-.sequencer-container,.plugin-container {
+.sequencer-container, .plugin-container {
   position: absolute;
   z-index: $z-index-sequencer;
 }
