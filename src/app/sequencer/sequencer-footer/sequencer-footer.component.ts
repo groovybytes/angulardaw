@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Pattern} from "../../shared/model/daw/Pattern";
-import {NoteLength} from "../../shared/model/mip/NoteLength";
-import {Project} from "../../shared/model/daw/Project";
+import {Pattern} from "../../model/daw/Pattern";
+import {NoteLength} from "../../model/mip/NoteLength";
+import {Project} from "../../model/daw/Project";
 import {PatternsService} from "../../shared/services/patterns.service";
 
 @Component({

@@ -1,17 +1,18 @@
 import {Inject, Injectable} from "@angular/core";
-import {Project} from "../model/daw/Project";
-import {Track} from "../model/daw/Track";
-import {VirtualAudioNode} from "../model/daw/VirtualAudioNode";
-import {TrackDto} from "../model/daw/dto/TrackDto";
-import {PluginDto} from "../model/daw/dto/PluginDto";
-import {TrackControlParametersDto} from "../model/daw/dto/TrackControlParametersDto";
+import {Project} from "../../model/daw/Project";
+import {Track} from "../../model/daw/Track";
+import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
+import {TrackDto} from "../../model/daw/dto/TrackDto";
+import {PluginDto} from "../../model/daw/dto/PluginDto";
+import {TrackControlParametersDto} from "../../model/daw/dto/TrackControlParametersDto";
 import * as _ from "lodash";
 import {AudioNodesService} from "./audionodes.service";
-import {AudioNodeTypes} from "../model/daw/AudioNodeTypes";
-import {TrackCategory} from "../model/daw/TrackCategory";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
+import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioContextService} from "./audiocontext.service";
-import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {PluginsService} from "./plugins.service";
+import {LayoutManagerService} from "./layout-manager.service";
 
 @Injectable()
 export class TracksService {
@@ -19,6 +20,7 @@ export class TracksService {
   constructor(
     private audioContext: AudioContextService,
     private audioNodesService: AudioNodesService,
+    private layout:LayoutManagerService,
     private pluginService:PluginsService
   ) {
 
@@ -60,7 +62,7 @@ export class TracksService {
           track.plugins = [plugin];
           this.pluginService.setupInstrumentRoutes(project,track,plugin);
 
-          project.desktop.addWindow(plugin.getId());
+          this.layout.addWindow(plugin.getId());
           project.plugins.push(plugin);
           track.name = pluginInfo.name;
           resolve(track);

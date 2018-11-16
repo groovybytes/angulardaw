@@ -1,0 +1,13 @@
+@import "../../../../variables";
+.footer {
+  background-color: $secondary;
+  height: $footer-height;
+  z-index: $z-index-footer;
+  /* background-color: $primary;*/
+}
+
+.window-ref{
+  width:200px;
+  height:200px;
+  background-color: yellow;
+}

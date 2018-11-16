@@ -1,7 +1,7 @@
 import {ElementRef, Injectable} from "@angular/core";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerService} from "./sequencer.service";
-import {Pattern} from "../shared/model/daw/Pattern";
+import {Pattern} from "../model/daw/Pattern";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import * as $ from "jquery";
 import {EventTableModel} from "./event-table/event-table.model";

@@ -1,13 +1,13 @@
 import {Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {Project} from "../../shared/model/daw/Project";
-import {TransportContext} from "../../shared/model/daw/transport/TransportContext";
-import {Pattern} from "../../shared/model/daw/Pattern";
+import {Project} from "../../model/daw/Project";
+import {TransportContext} from "../../model/daw/transport/TransportContext";
+import {Pattern} from "../../model/daw/Pattern";
 import {Subscription} from "rxjs/internal/Subscription";
 import {AudioContextService} from "../../shared/services/audiocontext.service";
 import {PatternsService} from "../../shared/services/patterns.service";
-import {NoteTrigger} from "../../shared/model/daw/NoteTrigger";
-import {MusicMath} from "../../shared/model/utils/MusicMath";
-import {TimeSignature} from "../../shared/model/mip/TimeSignature";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import {MusicMath} from "../../model/utils/MusicMath";
+import {TimeSignature} from "../../model/mip/TimeSignature";
 
 
 @Component({

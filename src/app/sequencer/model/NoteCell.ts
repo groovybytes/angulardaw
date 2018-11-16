@@ -1,6 +1,6 @@
 
 import * as _ from "lodash";
-import {NoteTrigger} from "../../shared/model/daw/NoteTrigger";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
 
 export class NoteCell{
 

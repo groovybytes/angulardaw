@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../shared/model/daw/Project";
-import {Track} from "../shared/model/daw/Track";
+import {Project} from "../model/daw/Project";
+import {Track} from "../model/daw/Track";
 import {TracksService} from "../shared/services/tracks.service";
 
 @Component({

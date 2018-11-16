@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {LocalStorageArray} from "../utils/LocalStorageArray";
-import {ProjectDto} from "../shared/model/daw/dto/ProjectDto";
+import {ProjectDto} from "../model/daw/dto/ProjectDto";
 import {AppConfiguration} from "../app.configuration";
 import {ApiResponse} from "./ApiResponse";
 import {Observable} from "rxjs";

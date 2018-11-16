@@ -2,8 +2,8 @@ import {Component, DoCheck, Input, KeyValueDiffers, OnChanges, OnInit, SimpleCha
 
 import {DefaultKeyValueDiffer} from "@angular/core/src/change_detection/differs/default_keyvalue_differ";
 import {Subscription} from "rxjs/internal/Subscription";
-import {Project} from "../../shared/model/daw/Project";
-import {Track} from "../../shared/model/daw/Track";
+import {Project} from "../../model/daw/Project";
+import {Track} from "../../model/daw/Track";
 import {TracksService} from "../../shared/services/tracks.service";
 
 @Component({

@@ -8,6 +8,8 @@ import {BrowserModule} from "@angular/platform-browser";
 import {UiModule} from "../ui/ui.module";
 import {AppRoutingModule} from "../app-routing.module";
 import {ConsoleModule} from "../console/console.module";
+import {CoreModule} from "../core/core.module";
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import {ConsoleModule} from "../console/console.module";
     AppRoutingModule,
     BrowserModule,
     UiModule,
-    ConsoleModule
+    ConsoleModule,
+    CoreModule,
+    SharedModule
   ],
   providers: [
    DawMatrixService

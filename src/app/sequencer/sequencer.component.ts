@@ -1,7 +1,9 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Subscription} from "rxjs/internal/Subscription";
-import {Project} from "../shared/model/daw/Project";
-import {Pattern} from "../shared/model/daw/Pattern";
+import {Project} from "../model/daw/Project";
+import {Pattern} from "../model/daw/Pattern";
+import {LayoutManagerService} from "../shared/services/layout-manager.service";
+import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
 
 
 @Component({
@@ -19,6 +21,9 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
+  constructor(private layout:LayoutManagerService){
+
+  }
 
   ngOnInit() {
 
@@ -33,7 +38,9 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-
+  getWindow():WindowSpecs{
+    return this.layout.getWindow("sequencer");
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscr => subscr.unsubscribe());

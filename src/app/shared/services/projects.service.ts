@@ -3,29 +3,29 @@ import {Injectable} from "@angular/core";
 import {AppConfiguration} from "../../app.configuration";
 import {PluginsService} from "./plugins.service";
 import {TracksService} from "./tracks.service";
-import {Project} from "../model/daw/Project";
-import {Track} from "../model/daw/Track";
-import {NoteLength} from "../model/mip/NoteLength";
-import {Cell} from "../model/daw/matrix/Cell";
-import {Pattern} from "../model/daw/Pattern";
+import {Project} from "../../model/daw/Project";
+import {Track} from "../../model/daw/Track";
+import {NoteLength} from "../../model/mip/NoteLength";
+import {Cell} from "../../model/daw/matrix/Cell";
+import {Pattern} from "../../model/daw/Pattern";
 import * as _ from "lodash";
-import {ProjectDto} from "../model/daw/dto/ProjectDto";
-import {PatternDto} from "../model/daw/dto/PatternDto";
-import {MatrixDto} from "../model/daw/dto/MatrixDto";
-import {TransportSettings} from "../model/daw/transport/TransportSettings";
-import {GlobalTransportSettings} from "../model/daw/transport/GlobalTransportSettings";
+import {ProjectDto} from "../../model/daw/dto/ProjectDto";
+import {PatternDto} from "../../model/daw/dto/PatternDto";
+import {MatrixDto} from "../../model/daw/dto/MatrixDto";
+import {TransportSettings} from "../../model/daw/transport/TransportSettings";
+import {GlobalTransportSettings} from "../../model/daw/transport/GlobalTransportSettings";
 import {PatternsService} from "./patterns.service";
-import {MetronomePlugin} from "../model/daw/plugins/MetronomePlugin";
+import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
 import {AudioNodesService} from "./audionodes.service";
-import {TrackCategory} from "../model/daw/TrackCategory";
-import {DesktopDto} from "../model/daw/dto/DesktopDto";
+import {TrackCategory} from "../../model/daw/TrackCategory";
+import {DesktopDto} from "../../model/daw/dto/DesktopDto";
 import {AudioContextService} from "./audiocontext.service";
 import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
-import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
-import {DesktopManager} from "../model/daw/visual/desktop/DesktopManager";
+import {WindowPosition} from "../../model/daw/visual/desktop/WindowPosition";
+import {LayoutManagerService} from "./layout-manager.service";
 
 
 @Injectable()
@@ -37,6 +37,7 @@ export class ProjectsService {
     private filesService: FilesApi,
     private matrixService: MatrixService,
     private trackService: TracksService,
+    private layout:LayoutManagerService,
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
     private samplesService: SamplesApi,
@@ -58,14 +59,13 @@ export class ProjectsService {
       transportSettings.loopStart = 0;
 
       let project = new Project(this.audioContext, transportSettings);
-      project.layout=0;
       project.patterns = [];
       project.id = id;
       project.name = name;
-      project.desktop = new DesktopManager();
-      project.desktop.windows.push(new WindowSpecs("sequencer"));
-      project.desktop.windows.push(new WindowSpecs("matrix"));
       project.nodes = [];
+
+      this.layout.createDefaultLayout();
+
       let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
       project.tracks.push(masterBus);
@@ -161,7 +161,6 @@ export class ProjectsService {
   serializeProject(project: Project): ProjectDto {
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
-    projectDto.layout= project.layout;
     projectDto.name = project.name;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
@@ -170,11 +169,9 @@ export class ProjectsService {
     projectDto.tracks = [];
     projectDto.patterns = [];
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
-    console.log(project.nodes.length);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
 
-    projectDto.desktop = new DesktopDto();
-    projectDto.desktop.windows = project.desktop.windows;
+    projectDto.desktop = this.layout.serialize();
 
     project.tracks.forEach(track => {
       let trackDto = this.trackService.convertTrackToJson(track);
@@ -226,14 +223,11 @@ export class ProjectsService {
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(this.audioContext, dto.transportSettings);
       project.id = dto.id;
-      project.layout = dto.layout?dto.layout:0;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
 
-      project.desktop = new DesktopManager();
-      project.desktop.windows = dto.desktop.windows;
-
+      this.layout.deSerialize(dto.desktop);
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {

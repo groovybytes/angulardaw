@@ -1,8 +1,7 @@
 <div class="card">
- <!-- <div class="card-header">
-    <card-header [window]="project.desktop.getWindow('sequencer')"></card-header>
+  <div class="card-header">
+    <card-header [window]="getWindow()"></card-header>
   </div>
--->
   <div class="card-body">
 
     <drag-container>
@@ -12,7 +11,7 @@
 
   </div>
   <div class="card-footer">
-    <sequencer-footer [project]="project" [pattern]="pattern"></sequencer-footer>
+    <sequencer-footer *ngIf="pattern" [project]="project" [pattern]="pattern"></sequencer-footer>
   </div>
 </div>
 

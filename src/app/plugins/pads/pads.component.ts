@@ -10,7 +10,7 @@ import {
   QueryList,
   ViewChildren
 } from '@angular/core';
-import {Pad} from "../../shared/model/daw/pad/Pad";
+import {Pad} from "../../model/daw/pad/Pad";
 
 
 @Component({

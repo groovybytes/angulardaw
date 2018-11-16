@@ -1,19 +1,20 @@
 import {Inject, Injectable} from "@angular/core";
-import {Matrix} from "../shared/model/daw/matrix/Matrix";
+import {Matrix} from "../model/daw/matrix/Matrix";
 import * as $ from "jquery";
 import * as _ from "lodash";
-import {Cell} from "../shared/model//daw/matrix/Cell";
+import {Cell} from "../model//daw/matrix/Cell";
 import {TracksService} from "../shared/services/tracks.service";
-import {Project} from "../shared/model//daw/Project";
+import {Project} from "../model//daw/Project";
 import {PluginsService} from "../shared/services/plugins.service";
-import {Pattern} from "../shared/model//daw/Pattern";
+import {Pattern} from "../model//daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
 import {PatternsService} from "../shared/services/patterns.service";
-import {NoteLength} from "../shared/model//mip/NoteLength";
-import {KeyboardState} from "../shared/model/KeyboardState";
+import {NoteLength} from "../model//mip/NoteLength";
+import {KeyboardState} from "../model/KeyboardState";
 import {MatrixService} from "../shared/services/matrix.service";
 import {AudioNodesService} from "../shared/services/audionodes.service";
 import {System} from "../system/System";
+import {LayoutManagerService} from "../shared/services/layout-manager.service";
 
 @Injectable()
 export class DawMatrixService {
@@ -22,6 +23,7 @@ export class DawMatrixService {
               private patternService: PatternsService,
               private projectsService: ProjectsService,
               @Inject("KeyboardState") private keyboardState: KeyboardState,
+              private layout:LayoutManagerService,
               private matrixService: MatrixService,
               private nodesService:AudioNodesService,
               private pluginService: PluginsService, private system: System) {
@@ -55,7 +57,7 @@ export class DawMatrixService {
         cell.data = pattern;
       }
       project.selectedPattern.next(cell.data);
-      project.desktop.openWindow("sequencer");
+      this.layout.openWindow("sequencer");
     }
   }
 
@@ -81,7 +83,7 @@ export class DawMatrixService {
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
 
-    project.desktop.toggleWindow("sequencer");
+    //project.desktop.toggleWindow("sequencer");
     /*  let track = project.getTrack(cell.trackId);
       track.focusedPattern = cell.data;
       project.selectedTrack = track;

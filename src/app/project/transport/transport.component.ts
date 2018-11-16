@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../../shared/model/daw/Project";
+import {Project} from "../../model/daw/Project";
 
 
 

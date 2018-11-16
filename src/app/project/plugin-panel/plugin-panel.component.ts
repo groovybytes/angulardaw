@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Project} from "../../shared/model//daw/Project";
-import {Plugin} from "../../shared/model//daw/plugins/Plugin";
-import {WstPlugin} from "../../shared/model//daw/plugins/WstPlugin";
-import {NoteTrigger} from "../../shared/model//daw/NoteTrigger";
-import {WindowSpecs} from "../../shared/model//daw/visual/desktop/WindowSpecs";
-import {WindowState} from "../../shared/model//daw/visual/desktop/WindowState";
+import {Project} from "../../model//daw/Project";
+import {Plugin} from "../../model//daw/plugins/Plugin";
+import {WstPlugin} from "../../model//daw/plugins/WstPlugin";
+import {NoteTrigger} from "../../model//daw/NoteTrigger";
+import {WindowSpecs} from "../../model//daw/visual/desktop/WindowSpecs";
+import {WindowState} from "../../model//daw/visual/desktop/WindowState";
 
 @Component({
   selector: 'plugin-panel',
@@ -25,7 +25,7 @@ export class PluginPanelComponent implements OnInit,OnChanges {
   }
 
   close():void{
-    this.window.state=WindowState.CLOSED;
+    this.window.state.next(WindowState.CLOSED);
   }
 
   onNoteOutStart(event:{note:string}):void{

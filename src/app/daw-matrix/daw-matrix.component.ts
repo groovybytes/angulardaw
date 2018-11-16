@@ -14,13 +14,15 @@ import {PatternsService} from "../shared/services/patterns.service";
 import {MatrixDragHandler} from "./DragHandler";
 import {MatrixService} from "../shared/services/matrix.service";
 import {TracksService} from "../shared/services/tracks.service";
-import {Project} from "../shared/model/daw/Project";
-import {DragHandler} from "../shared/model/daw/visual/DragHandler";
+import {Project} from "../model/daw/Project";
+import {DragHandler} from "../model/daw/visual/DragHandler";
 import {System} from "../system/System";
-import {Pattern} from "../shared/model/daw/Pattern";
-import {Cell} from "../shared/model/daw/matrix/Cell";
-import {Track} from "../shared/model/daw/Track";
-import {PluginInfo} from "../shared/model/daw/plugins/PluginInfo";
+import {Pattern} from "../model/daw/Pattern";
+import {Cell} from "../model/daw/matrix/Cell";
+import {Track} from "../model/daw/Track";
+import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
+import {LayoutManagerService} from "../shared/services/layout-manager.service";
 
 
 @Component({
@@ -38,6 +40,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
+              private layout:LayoutManagerService,
               private matrixService:MatrixService,
               private tracksService:TracksService,
               private system:System,
@@ -106,6 +109,10 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   colorChanged(color: string, trackId: string): void {
     this.project.tracks.find(track => track.id === trackId).color = color;
+  }
+
+  getWindow():WindowSpecs{
+    return this.layout.getWindow("matrix");
   }
 
   ngAfterViewInit() {

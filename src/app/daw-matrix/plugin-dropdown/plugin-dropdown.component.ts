@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {PluginInfo} from "../../shared/model/daw/plugins/PluginInfo";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 
 
 @Component({

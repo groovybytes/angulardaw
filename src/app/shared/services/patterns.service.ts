@@ -1,9 +1,9 @@
 import {Inject, Injectable} from "@angular/core";
-import {Project} from "../model/daw/Project";
-import {Pattern} from "../model/daw/Pattern";
-import {MusicMath} from "../model/utils/MusicMath";
-import {NoteLength} from "../model/mip/NoteLength";
-import {NoteTrigger} from "../model/daw/NoteTrigger";
+import {Project} from "../../model/daw/Project";
+import {Pattern} from "../../model/daw/Pattern";
+import {MusicMath} from "../../model/utils/MusicMath";
+import {NoteLength} from "../../model/mip/NoteLength";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import * as _ from "lodash";
 import {AudioContextService} from "./audiocontext.service";
 

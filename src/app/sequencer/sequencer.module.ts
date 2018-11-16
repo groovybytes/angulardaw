@@ -14,6 +14,7 @@ import { NotelengthComponent } from './notelength/notelength.component';
 import {SequencerInteractionService} from "./sequencer.interaction.service";
 import {MouseTrapEvents} from "./mousetrap/MouseTrapEvents";
 import {MouseGesturesService} from "./mousetrap/mouse-gestures.service";
+import {CoreModule} from "../core/core.module";
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {MouseGesturesService} from "./mousetrap/mouse-gestures.service";
     FormsModule,
     SharedModule,
     UiModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    CoreModule
   ],
   providers: [
     SequencerService,

@@ -16,6 +16,7 @@ import {SequencerModule} from "../sequencer/sequencer.module";
 import {ApiModule} from "../api/api.module";
 import {UiModule} from "../ui/ui.module";
 import {SharedModule} from "../shared/shared.module";
+import {CoreModule} from "../core/core.module";
 
 @NgModule({
   declarations: [
@@ -37,9 +38,8 @@ import {SharedModule} from "../shared/shared.module";
     SequencerModule,
     ApiModule,
     UiModule,
-    SharedModule
-
-
+    SharedModule,
+    CoreModule
   ],
   providers: [
 

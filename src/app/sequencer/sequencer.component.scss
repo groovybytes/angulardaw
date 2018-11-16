@@ -11,13 +11,14 @@
 }
 
 .card-body {
-  position: relative;
+
+  /*position: relative;
   padding:0;
   div {
     //margin-left: $cell-width;
     //margin-top: 10px;
   }
-  overflow: auto;
+  overflow: auto;*/
 }
 
 .card-footer{
@@ -41,7 +42,6 @@
 }
 
 :host{
-  height: 100%;
 }
 
 :host /deep/ {
@@ -135,5 +135,19 @@
       fill: lighten(green, 5%);
     }
   }*/
+
+
+  .card-body {
+    padding: 0;
+    position: relative;
+    overflow: auto;
+  }
+
+  .card-footer {
+    .btn {
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+  }
 }
 

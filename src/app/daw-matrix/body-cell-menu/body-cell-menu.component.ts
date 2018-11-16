@@ -1,6 +1,6 @@
 import {Component, HostBinding, Input, OnInit} from '@angular/core';
-import {Project} from "../../shared/model/daw/Project";
-import {Pattern} from "../../shared/model/daw/Pattern";
+import {Project} from "../../model/daw/Project";
+import {Pattern} from "../../model/daw/Pattern";
 import {PatternsService} from "../../shared/services/patterns.service";
 
 

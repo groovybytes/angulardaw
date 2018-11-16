@@ -2,10 +2,10 @@
   <form class="form-inline w-100 h-100">
     <div class="w-25 h-100">
       <button class="btn default-btn h-100" type="button"
-              (click)="project.layout=0">Matrix+Sequencer
+              (click)="setLayout(0)" [disabled]="getLayout()===0"><i class="fas fa-arrow-circle-down"></i>
       </button>
       <button class="btn default-btn h-100" type="button"
-              (click)="project.layout=1">Orientation
+              (click)="setLayout(1)" [disabled]="getLayout()===1"><i class="fas fa-arrow-circle-right"></i>
       </button>
       <!--   <button class="btn default-btn h-100" type="button"
                  [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
@@ -38,16 +38,20 @@
 </nav>
 
 <div class="drag-container" *ngIf="project && project.ready">
+  <daw-matrix [project]="project"
+              [ngClass]="getWindow('matrix').clazz"></daw-matrix>
 
-  <daw-matrix [project]="project" class="window" [ngClass]="project.desktop.getWindowClass('matrix')"></daw-matrix>
-  <sequencer  class="window" [ngClass]="project.desktop.getWindowClass('sequencer')"
+  <sequencer [ngClass]="getWindow('sequencer').clazz"
+             [ngStyle]="{'z-index':getWindow('sequencer').zIndex}"
              [project]="project"
              [pattern]="project.selectedPattern | async"></sequencer>
 
-  <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
-  <recorder [project]="project" ></recorder>
 
- <!-- <div class=" footer fixed-bottom">
-    <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
-  </div>-->
+  <!--  <div class="vertical-line"></div>-->
+
+
+  <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
+  <recorder [project]="project"></recorder>
+
+  <app-footer></app-footer>
 </div>

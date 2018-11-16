@@ -1,20 +1,20 @@
 import {Inject, Injectable} from "@angular/core";
-import {WstPlugin} from "../model/daw/plugins/WstPlugin";
+import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {System} from "../../system/System";
 import {AppConfiguration} from "../../app.configuration";
-import {PluginInfo} from "../model/daw/plugins/PluginInfo";
-import {GenericInstrumentSampler} from "../model/daw/plugins/GenericInstrumentSampler";
-import {Drums} from "../model/daw/plugins/Drums";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
+import {GenericInstrumentSampler} from "../../model/daw/plugins/GenericInstrumentSampler";
+import {Drums} from "../../model/daw/plugins/Drums";
 import * as _ from "lodash";
-import {Track} from "../model/daw/Track";
-import {AudioNodeTypes} from "../model/daw/AudioNodeTypes";
+import {Track} from "../../model/daw/Track";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
 import {AudioNodesService} from "./audionodes.service";
-import {Project} from "../model/daw/Project";
+import {Project} from "../../model/daw/Project";
 import {FilesApi} from "../../api/files.api";
 import {SamplesApi} from "../../api/samples.api";
-import {Notes} from "../model/daw/Notes";
-import {MetronomePlugin} from "../model/daw/plugins/MetronomePlugin";
-import {TrackCategory} from "../model/daw/TrackCategory";
+import {Notes} from "../../model/daw/Notes";
+import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
+import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioContextService} from "./audiocontext.service";
 
 @Injectable()

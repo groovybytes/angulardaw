@@ -1,12 +1,14 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Project} from "../shared/model//daw/Project";
+import {Project} from "../model//daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
-import {SimpleSliderModel} from "../shared/model//daw/visual/SimpleSliderModel";
+import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {WindowSpecs} from "../shared/model/daw/visual/desktop/WindowSpecs";
-import {WindowState} from "../shared/model/daw/visual/desktop/WindowState";
+import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
+import {WindowState} from "../model/daw/visual/desktop/WindowState";
+import {WindowPosition} from "../model/daw/visual/desktop/WindowPosition";
+import {LayoutManagerService} from "../shared/services/layout-manager.service";
 
 @Component({
   selector: 'project',
@@ -28,12 +30,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
       hideLimitLabels: true
     }
   };
-  sequencerWindow: WindowSpecs;
   WindowState = WindowState;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private layout: LayoutManagerService,
     private projectsService: ProjectsService,
     private projectsApi: ProjectsApi,
     private system: System) {
@@ -63,7 +65,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.projectsApi.create(dto)
               .then(() => {
                 this.project = project;
-                this.sequencerWindow = this.project.desktop.getWindow("sequencer");
                 project.ready = true;
               })
               .catch(error => this.system.error(error));
@@ -73,11 +74,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
       else {
 
         this.projectsApi.getById(params.projectId).then(result => {
-
+          this.layout.reset();
           this.projectsService.deSerializeProject(result.data)
             .then(project => {
               this.project = project;
-              this.sequencerWindow = this.project.desktop.getWindow("sequencer");
               this.project.ready = true;
             })
             .catch(error => this.system.error(error));
@@ -90,8 +90,19 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   }
 
-  nextLayout(): void {
-    this.project.layout = (this.project.layout + 1) % 3;
+  getWindow(id:string):WindowSpecs{
+    return this.layout.getWindow(id);
+  }
+
+
+  setLayout(layout: number): void {
+
+    this.layout.setLayout(layout);
+  }
+
+  getLayout(): number {
+
+    return this.layout.getLayout();
   }
 
   switchMetronome(): void {

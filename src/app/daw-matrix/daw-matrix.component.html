@@ -1,136 +1,129 @@
-<table class="matrix-table size-1">
-  <thead class="">
-  <tr class="">
-    <th class="text-center add-track-header">
-      <plugin-dropdown [plugins]="project.pluginTypes" (pluginSelected)="pluginSelected($event)"></plugin-dropdown>
-    </th>
-    <th class="text-center column-header"
-        (click)="onHeaderClicked(project.matrix.header[i])"
-        [ngStyle]="{'background-color':getTrack(cell.trackId)?.color}"
-        [title]="cell.data?.name"
-        *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
-      <div class="header-text text-center">{{cell.data?.name}}</div>
-      <header-cell-menu class="menu-btn float-right"
-                        (colorChanged)="colorChanged($event,cell.trackId)"
-                        [colors]="project?.colors"
-                        [color]="getTrack(cell.trackId)?.color">
+<div class="card">
+  <div class="card-header">
+    <card-header [window]="getWindow()"></card-header>
+  </div>
+  <div class="card-body">
+    <table class="matrix-table size-1">
+      <thead class="">
+      <tr class="">
+        <th class="text-center add-track-header">
+          <plugin-dropdown [plugins]="project.pluginTypes" (pluginSelected)="pluginSelected($event)"></plugin-dropdown>
+        </th>
+        <th class="text-center column-header"
+            (click)="onHeaderClicked(project.matrix.header[i])"
+            [ngStyle]="{'background-color':getTrack(cell.trackId)?.color}"
+            [title]="cell.data?.name"
+            *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
+          <div class="header-text text-center">{{cell.data?.name}}</div>
+          <header-cell-menu class="menu-btn float-right"
+                            (colorChanged)="colorChanged($event,cell.trackId)"
+                            [colors]="project?.colors"
+                            [color]="getTrack(cell.trackId)?.color">
 
-      </header-cell-menu>
-    </th>
+          </header-cell-menu>
+        </th>
 
-  </tr>
-  </thead>
-  <tbody>
-  <tr class="  animated"
-      [ngClass]="{
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="  animated"
+          [ngClass]="{
         'fadeInLeft':project.matrix.rowHeader[i].animation==='1',
         'fadeOut':project.matrix.rowHeader[i].animation==='2'
         }"
-      [ngStyle]="{'z-index':project.matrix.rowHeader.length-i}"
-      *ngFor="let row of project.matrix.body;let i = index">
-    <td class="row-header">
-      <div class="row">
-        <div class="col-6">
-          <span class="">{{i+1}}</span>
-        </div>
-        <div class="col-6">
-          <button type="button"
-                  (click)="onRowHeaderClicked(i)"
-                  class="btn naked-btn scene-toggle-btn rounded-0">
-            <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
-            <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
-          </button>
-        </div>
-      </div>
+          [ngStyle]="{'z-index':project.matrix.rowHeader.length-i}"
+          *ngFor="let row of project.matrix.body;let i = index">
+        <td class="row-header">
+          <div class="row">
+            <div class="col-6">
+              <span class="">{{i+1}}</span>
+            </div>
+            <div class="col-6">
+              <button type="button"
+                      (click)="onRowHeaderClicked(i)"
+                      class="btn naked-btn scene-toggle-btn rounded-0">
+                <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
+                <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
+              </button>
+            </div>
+          </div>
 
-      <!-- <div class="btn-group w-100" role="group" aria-label="First group">
-      &lt;!&ndash;   <button type="button" class="btn default-btn w-25" (click)="removeRow(i)"><i class="far fa-trash-alt"></i>
-         </button>&ndash;&gt;
-         <button type="button" class="btn default-btn w-25 "><i class="fas fa-stop"></i></button>
-         <button type="button" class="btn default-btn w-25"><i class="fas fa-play"></i></button>
+          <!-- <div class="btn-group w-100" role="group" aria-label="First group">
+          &lt;!&ndash;   <button type="button" class="btn default-btn w-25" (click)="removeRow(i)"><i class="far fa-trash-alt"></i>
+             </button>&ndash;&gt;
+             <button type="button" class="btn default-btn w-25 "><i class="fas fa-stop"></i></button>
+             <button type="button" class="btn default-btn w-25"><i class="fas fa-play"></i></button>
 
-       </div>-->
-
-
+           </div>-->
 
 
-    </td>
-    <td
 
-      draggable="true"
-      *ngFor="let cell of row"
-      [ngStyle]="{'z-index':project.matrix.rowHeader.length-i,
+
+        </td>
+        <td
+
+          draggable="true"
+          *ngFor="let cell of row"
+          [ngStyle]="{'z-index':project.matrix.rowHeader.length-i,
       'background-color':cell.data?getTrack(cell.trackId).color:''}"
-      [ngClass]="{
+          [ngClass]="{
              'marked':cell.data?.marked,
              'editing': project.selectedPattern.getValue()?.id===cell.data?.id}"
-      class="draggable content-cell"
-      (dblclick)="bodyCellDblClicked(cell)"
-      (click)="bodyCellClicked(cell)"
-      [attr.id]="cell.id"
-      (dragstart)="dragHandler.onDragStart($event,cell)"
-      (dragover)="dragHandler.onDragOver($event)"
-      (dragleave)="dragHandler.onDragLeave($event)"
-      (drag)="dragHandler.onDrag($event)"
-      (dragend)="dragHandler.onDragEnd($event)"
-      (drop)="dragHandler.onDrop($event)">
-      <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (dblclick)="onCellContainerClicked(cell)">
-        <button type="button"
-                (click)="onCellBtnClicked(cell,$event)"
-                class="btn naked-btn toggle-button shadow-sm float-left rounded-0 cell-btn">
-          <i class="fas fa-play fa-2x" *ngIf="!project.isRunningWithChannel(cell.data.id)"></i>
-          <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunningWithChannel(cell.data.id)"></i>
-        </button>
-        <button type="button"
-                class="btn btn-sm default-btn border-0  rounded-0 float-right cell-btn menu-btn h-100"
-                (click)="bodyCellMenuBtnClicked(cell)"
-                [ngClass]="{'menu-open':cell.menuOpen}"
-                [ngStyle]="{'background-color':getTrack(cell.trackId).color}">
-          <i class="fas fa-chevron-down" *ngIf="cell.menuOpen===false"></i>
-          <i class="fas fa-chevron-up" *ngIf="cell.menuOpen===true"></i>
-        </button>
-      </div>
-      <div *ngIf="cell.patternMenu" class="cell-container animated fadeInDown faster">
-        <body-cell-menu class=""
-                        [color]="getTrack(cell.trackId).color"
-                        [project]="project"
-                        [pattern]="cell.patternMenu"></body-cell-menu>
-      </div>
+          class="draggable content-cell"
+          (dblclick)="bodyCellDblClicked(cell)"
+          (click)="bodyCellClicked(cell)"
+          [attr.id]="cell.id"
+          (dragstart)="dragHandler.onDragStart($event,cell)"
+          (dragover)="dragHandler.onDragOver($event)"
+          (dragleave)="dragHandler.onDragLeave($event)"
+          (drag)="dragHandler.onDrag($event)"
+          (dragend)="dragHandler.onDragEnd($event)"
+          (drop)="dragHandler.onDrop($event)">
+          <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (dblclick)="onCellContainerClicked(cell)">
+            <button type="button"
+                    (click)="onCellBtnClicked(cell,$event)"
+                    class="btn naked-btn toggle-button shadow-sm float-left rounded-0 cell-btn">
+              <i class="fas fa-play fa-2x" *ngIf="!project.isRunningWithChannel(cell.data.id)"></i>
+              <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunningWithChannel(cell.data.id)"></i>
+            </button>
+            <button type="button"
+                    class="btn btn-sm default-btn border-0  rounded-0 float-right cell-btn menu-btn h-100"
+                    (click)="bodyCellMenuBtnClicked(cell)"
+                    [ngClass]="{'menu-open':cell.menuOpen}"
+                    [ngStyle]="{'background-color':getTrack(cell.trackId).color}">
+              <i class="fas fa-chevron-down" *ngIf="cell.menuOpen===false"></i>
+              <i class="fas fa-chevron-up" *ngIf="cell.menuOpen===true"></i>
+            </button>
+          </div>
+          <div *ngIf="cell.patternMenu" class="cell-container animated fadeInDown faster">
+            <body-cell-menu class=""
+                            [color]="getTrack(cell.trackId).color"
+                            [project]="project"
+                            [pattern]="cell.patternMenu"></body-cell-menu>
+          </div>
 
-    </td>
+        </td>
 
-  </tr>
-  </tbody>
-  <tfoot class="">
-  <tr class="">
-    <td class="">
-      <button
-        *ngIf="project?.matrix.rowHeader.length>0"
-        (click)="addRow()"
-        class="btn btn-primary add-row-btn">
-        <span>Add Row </span>
-      </button>
-    </td>
-    <td class="console-cell " *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
-      <daw-console *ngIf="cell.data" [project]="project" [track]="cell.data"></daw-console>
-    </td>
-  </tr>
-  </tfoot>
-</table>
-
-<!--<div class="table-responsive console-container">
-  <table class="table table-bordered table-dark table-sm console-table">
-    <tbody>
-    <tr>
-      <td></td>
-      <td *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
-        <track-controls [project]="project" [track]="project.tracks[i]"></track-controls>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>-->
-
+      </tr>
+      </tbody>
+      <tfoot class="">
+      <tr class="">
+        <td class="">
+          <button
+            *ngIf="project?.matrix.rowHeader.length>0"
+            (click)="addRow()"
+            class="btn btn-primary add-row-btn">
+            <span>Add Row </span>
+          </button>
+        </td>
+        <td class="console-cell " *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
+          <daw-console *ngIf="cell.data" [project]="project" [track]="cell.data"></daw-console>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
 
 
 

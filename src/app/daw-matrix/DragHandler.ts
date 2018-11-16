@@ -1,8 +1,8 @@
 import * as $ from "jquery";
 import {DawMatrixService} from "./daw-matrix.service";
-import {DragHandler} from "../shared/model/daw/visual/DragHandler";
-import {Project} from "../shared/model/daw/Project";
-import {Cell} from "../shared/model/daw/matrix/Cell";
+import {DragHandler} from "../model/daw/visual/DragHandler";
+import {Project} from "../model/daw/Project";
+import {Cell} from "../model/daw/matrix/Cell";
 
 
 export class MatrixDragHandler implements DragHandler {

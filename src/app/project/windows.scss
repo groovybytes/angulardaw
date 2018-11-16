@@ -1,0 +1,57 @@
+@import "../../variables";
+
+$top-window-height:50vh;
+$bottom-window-height:40vh;
+$left-window-height:90vh;
+$right-window-height:90vh;
+
+$window-header-height:5vh;
+
+.window-top{
+  top: $header-height;
+  overflow: auto;
+  height: $top-window-height;
+  width:100%;
+}
+.window-bottom{
+  top:$header-height+$top-window-height+1vh;
+  overflow: auto;
+  height: $bottom-window-height;
+  width:100%;
+}
+.window-right{
+  top: $header-height;
+  overflow: auto;
+  right:0;
+  height: $right-window-height;
+  width:50%;
+}
+.window-left{
+  top: $header-height;
+  overflow: auto;
+  left:0;
+  height: $left-window-height;
+  width:50%;
+}
+.window-maximized{
+  top: $header-height;
+  overflow: auto;
+  left:0;
+  height: $top-window-height+$bottom-window-height;
+  width:100%;
+}
+.window-minimized{
+  display: none;
+  top:inherit;
+  overflow: hidden;
+  left:0;
+  height: $window-header-height;
+  bottom:20px;
+}
+.window-closed{
+  display: none;
+  height:0 !important;
+}
+.window{
+  position: absolute;
+}

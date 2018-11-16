@@ -1,18 +1,13 @@
 @import "../../variables";
+@import "./windows";
 
-.window-row-1 {
-  height: 40vh;
-  overflow: auto;
+.vertical-line{
+  width:100%;
+  margin:3px;
+  height:10px;
+  background-color: $secondary;
 }
 
-.window-row-2 {
-  height: 40vh;
-  overflow: auto;
-}
-
-.window{
-  position: absolute;
-}
 .drag-container {
 
   //height:95vh;
@@ -36,12 +31,6 @@
   height: $footer-height;
 }
 
-.footer {
-  background-color: $secondary;
-  height: $footer-height;
-  z-index: $z-index-footer;
-  /* background-color: $primary;*/
-}
 
 .dropdown-toggle::after {
   display: none;

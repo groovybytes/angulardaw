@@ -1,7 +1,7 @@
 import {Inject, Injectable} from "@angular/core";
-import {VirtualAudioNode} from "../model/daw/VirtualAudioNode";
-import {AudioNodeDto} from "../model/daw/dto/AudioNodeDto";
-import {AudioNodeTypes} from "../model/daw/AudioNodeTypes";
+import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
+import {AudioNodeDto} from "../../model/daw/dto/AudioNodeDto";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
 import {AudioContextService} from "./audiocontext.service";
 
 

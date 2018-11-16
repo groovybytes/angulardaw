@@ -4,18 +4,22 @@ import {ProjectsService} from "./services/projects.service";
 import {TracksService} from "./services/tracks.service";
 import {MatrixService} from "./services/matrix.service";
 import {PatternsService} from "./services/patterns.service";
-import {KeyboardState} from "./model/KeyboardState";
+import {KeyboardState} from "../model/KeyboardState";
 import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
-import {Notes} from "./model/daw/Notes";
+import {Notes} from "../model/daw/Notes";
 import {UiModule} from "../ui/ui.module";
-import { CardHeaderComponent } from './components/card-header/card-header.component';
+import {LayoutManagerService} from "./services/layout-manager.service";
+import {FooterComponent} from "./components/footer/footer.component";
+import {CommonModule} from "@angular/common";
+import {CardHeaderComponent} from "./components/card-header/card-header.component";
 
 
 @NgModule({
-  declarations: [ CardHeaderComponent],
+  declarations: [FooterComponent,CardHeaderComponent],
   imports: [
-UiModule
+    CommonModule,
+    UiModule
   ],
   providers: [
     PluginsService,
@@ -25,6 +29,7 @@ UiModule
     PatternsService,
     AudioNodesService,
     AudioContextService,
+    LayoutManagerService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState
@@ -34,9 +39,7 @@ UiModule
       useValue: new Notes()
     }
   ],
-  exports:[
-    CardHeaderComponent
-  ]
+  exports: [FooterComponent,CardHeaderComponent]
 })
 export class SharedModule {
 }

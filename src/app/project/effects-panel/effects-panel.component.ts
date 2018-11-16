@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Project} from "../../shared/model/daw/Project";
-import {Track} from "../../shared/model/daw/Track";
-import {PluginInfo} from "../../shared/model/daw/plugins/PluginInfo";
+import {Project} from "../../model/daw/Project";
+import {Track} from "../../model/daw/Track";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
+import {LayoutManagerService} from "../../shared/services/layout-manager.service";
 
 
 @Component({
@@ -14,7 +15,7 @@ export class EffectsPanelComponent implements OnInit {
   @Input() project:Project;
   @Input() track:Track;
 
-  constructor() { }
+  constructor(private layout:LayoutManagerService) { }
 
   ngOnInit() {
   }
@@ -24,7 +25,7 @@ export class EffectsPanelComponent implements OnInit {
   }
 
   openPlugin():void{
-    this.project.desktop.openWindow(this.track.getInstrumentPlugin().getId());
+    this.layout.openWindow(this.track.getInstrumentPlugin().getId());
   }
 
 }

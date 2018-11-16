@@ -1,6 +1,6 @@
 
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
-import {WindowSpecs} from "../../shared/model/daw/visual/desktop/WindowSpecs";
+import {WindowSpecs} from "../../model/daw/visual/desktop/WindowSpecs";
 declare var interact;
 
 @Directive({

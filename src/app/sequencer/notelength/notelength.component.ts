@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {NoteLength} from "../../shared/model/mip/NoteLength";
+import {NoteLength} from "../../model/mip/NoteLength";
 
 @Component({
   selector: 'notelength',

@@ -4,9 +4,9 @@ import {FilesApi} from "./files.api";
 import {AudioContextService} from "../shared/services/audiocontext.service";
 import {System} from "../system/System";
 import {AppConfiguration} from "../app.configuration";
-import {Sample} from "../shared/model/daw/Sample";
-import {Notes} from "../shared/model/daw/Notes";
-import {Buffers} from "../shared/model/utils/Buffers";
+import {Sample} from "../model/daw/Sample";
+import {Notes} from "../model/daw/Notes";
+import {Buffers} from "../model/utils/Buffers";
 
 
 @Injectable()

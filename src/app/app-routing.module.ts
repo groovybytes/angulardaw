@@ -6,8 +6,6 @@ import {RegisterComponent} from "./authentication/register/register.component";
 import {LoginComponent} from "./authentication/login/login.component";
 import {ProjectsCreateComponent} from "./project/projects-create/projects-create.component";
 import {ProjectComponent} from "./project/project.component";
-import {DesktopComponent} from "./angular2-desktop/desktop/desktop.component";
-import {ExampleComponent} from "./angular2-desktop/example/example.component";
 
 const routes: Routes = [
   {
@@ -25,9 +23,6 @@ const routes: Routes = [
   , {
     path: 'welcome',
     component: ProjectsCreateComponent
-  }, {
-    path: 'desktop',
-    component: ExampleComponent
   },
   {
     path: 'project/:projectId',

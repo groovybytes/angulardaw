@@ -1,12 +1,12 @@
 import {Inject, Injectable} from "@angular/core";
-import {MusicMath} from "../shared/model//utils/MusicMath";
-import {Loudness} from "../shared/model//mip/Loudness";
-import {Pattern} from "../shared/model//daw/Pattern";
-import {NoteTrigger} from "../shared/model//daw/NoteTrigger";
+import {MusicMath} from "../model//utils/MusicMath";
+import {Loudness} from "../model//mip/Loudness";
+import {Pattern} from "../model//daw/Pattern";
+import {NoteTrigger} from "../model//daw/NoteTrigger";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
-import {TimeSignature} from "../shared/model//mip/TimeSignature";
-import {Notes} from "../shared/model/daw/Notes";
+import {TimeSignature} from "../model//mip/TimeSignature";
+import {Notes} from "../model/daw/Notes";
 
 @Injectable()
 export class SequencerService {

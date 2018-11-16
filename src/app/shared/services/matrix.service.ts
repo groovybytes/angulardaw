@@ -1,12 +1,12 @@
 import {Inject, Injectable} from "@angular/core";
 import * as _ from "lodash";
 import {TracksService} from "./tracks.service";
-import {Matrix} from "../model/daw/matrix/Matrix";
-import {Pattern} from "../model/daw/Pattern";
-import {Cell} from "../model/daw/matrix/Cell";
-import {Track} from "../model/daw/Track";
-import {PluginInfo} from "../model/daw/plugins/PluginInfo";
-import {Project} from "../model/daw/Project";
+import {Matrix} from "../../model/daw/matrix/Matrix";
+import {Pattern} from "../../model/daw/Pattern";
+import {Cell} from "../../model/daw/matrix/Cell";
+import {Track} from "../../model/daw/Track";
+import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
+import {Project} from "../../model/daw/Project";
 
 
 @Injectable()

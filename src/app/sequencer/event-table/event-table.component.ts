@@ -11,16 +11,16 @@ import {
   ViewChildren
 } from '@angular/core';
 
-import {MusicMath} from "../../shared/model//utils/MusicMath";
-import {Pattern} from "../../shared/model//daw/Pattern";
+import {MusicMath} from "../../model//utils/MusicMath";
+import {Pattern} from "../../model//daw/Pattern";
 import {NoteCell} from "../model/NoteCell";
 import {SequencerD3Specs} from "../model/sequencer.d3.specs";
-import {Project} from "../../shared/model//daw/Project";
+import {Project} from "../../model//daw/Project";
 import {Subscription} from "rxjs/internal/Subscription";
 import {ProjectsService} from "../../shared/services/projects.service";
-import {Notes} from "../../shared/model/daw/Notes";
+import {Notes} from "../../model/daw/Notes";
 import {SequencerService} from "../sequencer.service";
-import {NoteTrigger} from "../../shared/model/daw/NoteTrigger";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import {SequencerInteractionService} from "../sequencer.interaction.service";
 import {EventTableModel} from "./event-table.model";
 import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";
