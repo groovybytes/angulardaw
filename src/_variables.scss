@@ -32,9 +32,9 @@ $black:black;
 $primary-color:black;
 $alt-color:rgba(239, 131, 84, 1);
 
-$header-height: 5vh;
+$header-height: 50px;
 //main-height:55vh;
-$footer-height: 180px;
+$footer-height: 50px;
 $console-height:200px;
 $cell-width:150px;
 
@@ -42,7 +42,7 @@ $cell-width:150px;
 
 $z-index-sequencer:150;
 $z-index-plugin-window:200;
-$z-index-footer:100;
+$z-index-footer:1000;
 $z-index-navbar:100;
 
 

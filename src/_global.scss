@@ -32,7 +32,7 @@ $default-btn-color: $black;
 .naked-btn {
  // @include button-variant($color-2, $black, darken($color-2, 10%));*/
   /*@include button-outline-variant($color-4,red,yellow,blue);*/
-  color: $color-3;
+  //color: $color-3;
   //border-color: darken($color-2,5%);
 
   background-color: transparent;
@@ -80,6 +80,12 @@ $default-btn-color: $black;
   width: 30px;
   height: 30px;
 }
+
+body{
+  background-color: white;
+}
+
+html, body {margin: 0; height: 100%; overflow: hidden}
 
 :host /deep/ {
 

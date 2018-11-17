@@ -1,8 +1,12 @@
-<div class="btn-group" role="group" class="float-right">
-  <button type="button" class="btn default-btn" (click)="maximize()">
+<span>{{window.id}}</span>
+<div  role="group" class="btn-group float-right">
+  <button type="button" class="btn naked-btn" *ngIf="window.state.getValue() != state.MAXIMIZED" (click)="maximize()">
     <i class="far fa-window-maximize"></i>
   </button>
-  <button type="button" class="btn default-btn" (click)="minimize()">
+  <button type="button" class="btn naked-btn" *ngIf="window.state.getValue() != state.NORMAL" (click)="restore()">
+    <i class="far fa-window-restore"></i>
+  </button>
+  <button type="button" class="btn naked-btn"  *ngIf="window.state.getValue() != state.MINIMIZED" (click)="minimize()">
     <i class="far fa-window-minimize"></i>
   </button>
 </div>

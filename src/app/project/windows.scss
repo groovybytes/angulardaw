@@ -1,11 +1,11 @@
 @import "../../variables";
 
-$top-window-height:50vh;
-$bottom-window-height:40vh;
-$left-window-height:90vh;
-$right-window-height:90vh;
+$top-window-height:600px;
+$bottom-window-height:320px;
+$left-window-height:300px;
+$right-window-height:300px;
 
-$window-header-height:5vh;
+$window-header-height:50px;
 
 .window-top{
   top: $header-height;
@@ -14,7 +14,7 @@ $window-header-height:5vh;
   width:100%;
 }
 .window-bottom{
-  top:$header-height+$top-window-height+1vh;
+  top:$header-height+$top-window-height;
   overflow: auto;
   height: $bottom-window-height;
   width:100%;
@@ -54,4 +54,24 @@ $window-header-height:5vh;
 }
 .window{
   position: absolute;
+  transition:top 0.3s linear,height 0.3s linear;
+}
+
+
+
+:host /deep/ {
+  .card-header{
+    padding:0;
+    color:$secondary;
+    background-color: $primary;
+    span{
+      margin-left:4px;
+    }
+  }
+
+  .card-body{
+    background-color: $color-2;
+  }
+
+
 }

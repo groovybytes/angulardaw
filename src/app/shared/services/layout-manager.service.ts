@@ -12,45 +12,44 @@ export class LayoutManagerService {
   private layout: number = 0;
 
   readonly windows: Array<WindowSpecs> = [];
-  private subscriptions:Array<Subscription>=[];
+  private subscriptions: Array<Subscription> = [];
 
-  serialize():DesktopDto{
+  serialize(): DesktopDto {
     let dto = new DesktopDto();
-    dto.layout=this.layout;
-    let windows = dto.windows=[];
-    this.windows.forEach(window=>{
+    dto.layout = this.layout;
+    dto.windows = [];
+    this.windows.forEach(window => {
       let windowDto = new WindowDto();
-      windowDto.height=window.height;
-      windowDto.width=window.width;
-      windowDto.id=window.id;
-      windowDto.position=window.position.getValue();
-      windowDto.state=window.state.getValue();
-      windowDto.x=window.x;
-      windowDto.y=window.y;
-      windowDto.clazz=window.clazz;
-      windowDto.zIndex=window.zIndex;
-
+      windowDto.height = window.height;
+      windowDto.width = window.width;
+      windowDto.id = window.id;
+      windowDto.position = window.position.getValue();
+      windowDto.state = window.state.getValue();
+      windowDto.x = window.x;
+      windowDto.y = window.y;
+      windowDto.clazz = window.clazz;
+      windowDto.zIndex = window.zIndex;
+      dto.windows.push(windowDto);
     });
 
     return dto;
   }
 
-  deSerialize(dto:DesktopDto):void{
+  deSerialize(dto: DesktopDto): void {
     this.reset();
 
-    dto.windows.forEach(windowDto=>{
+    dto.windows.forEach(windowDto => {
       let window = this.addWindow(windowDto.id);
-      this.windows.push(window);
-      window.x=windowDto.x;
-      window.y=windowDto.y;
-      window.width=windowDto.width;
-      window.height=windowDto.height;
-      window.clazz=windowDto.clazz;
+      window.x = windowDto.x;
+      window.y = windowDto.y;
+      window.width = windowDto.width;
+      window.height = windowDto.height;
+      window.clazz = windowDto.clazz;
       window.position.next(windowDto.position);
       window.state.next(windowDto.state);
-      this.subscriptions.push(window.position.subscribe(()=>this.windowPositionChanged(window)));
-      this.subscriptions.push(window.state.subscribe(()=>this.windowStateChanged(window)));
-      window.zIndex=windowDto.zIndex?windowDto.zIndex:1;
+      this.subscriptions.push(window.position.subscribe(() => this.windowPositionChanged(window)));
+      this.subscriptions.push(window.state.subscribe(() => this.windowStateChanged(window)));
+      window.zIndex = windowDto.zIndex ? windowDto.zIndex : 1;
     });
 
     this.setLayout(dto.layout);
@@ -67,8 +66,8 @@ export class LayoutManagerService {
 
   reset(): void {
     this.layout = 0;
-    this.windows.length=0;
-    this.subscriptions.forEach(sub=>sub.unsubscribe());
+    this.windows.length = 0;
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   setLayout(id: number): void {
@@ -94,25 +93,34 @@ export class LayoutManagerService {
 
   updateWindowClass(id: string): string {
     let window = this.getWindow(id);
-    window.clazz="window";
-    if (window.position.getValue() === WindowPosition.TOP) window.clazz+= " window-top";
-    else if (window.position.getValue() === WindowPosition.BOTTOM) window.clazz+= " window-bottom";
-    else if (window.position.getValue() === WindowPosition.LEFT) window.clazz+= " window-left";
-    else if (window.position.getValue() === WindowPosition.RIGHT) window.clazz+= " window-right";
+    window.clazz = "window";
+    if (window.position.getValue() === WindowPosition.TOP) window.clazz += " window-top";
+    else if (window.position.getValue() === WindowPosition.BOTTOM) window.clazz += " window-bottom";
+    else if (window.position.getValue() === WindowPosition.LEFT) window.clazz += " window-left";
+    else if (window.position.getValue() === WindowPosition.RIGHT) window.clazz += " window-right";
 
-    if (window.state.getValue()===WindowState.CLOSED) window.clazz+=" window-closed";
-    else if (window.state.getValue()===WindowState.MAXIMIZED) window.clazz+=" window-maximized";
-    else if (window.state.getValue()===WindowState.MINIMIZED) window.clazz+=" window-minimized";
+    if (window.state.getValue() === WindowState.CLOSED) window.clazz += " window-closed";
+    else if (window.state.getValue() === WindowState.MAXIMIZED) window.clazz += " window-maximized";
+    else if (window.state.getValue() === WindowState.MINIMIZED) window.clazz += " window-minimized";
 
-    console.log(window.clazz);
     return window.clazz;
   }
 
+  bringToFront(id: string): void {
+    let maximizedWindows = this.windows.filter(window => window.state.getValue() === WindowState.MAXIMIZED);
+    //window.zIndexTmp=window.zIndex;
+    this.getWindow(id).zIndex = 100 + maximizedWindows.length;
+  }
+
+  bringToBack(id: string): void {
+    this.getWindow(id).zIndex = 1;
+  }
+
   addWindow(id: string): WindowSpecs {
-    let specs = new WindowSpecs(id,WindowState.NORMAL,WindowPosition.LEFT);
+    let specs = new WindowSpecs(id, WindowState.NORMAL, WindowPosition.LEFT);
     this.windows.push(specs);
-    this.subscriptions.push(specs.position.subscribe(()=>this.windowPositionChanged(specs)));
-    this.subscriptions.push(specs.state.subscribe(()=>this.windowStateChanged(specs)));
+    this.subscriptions.push(specs.position.subscribe(() => this.windowPositionChanged(specs)));
+    this.subscriptions.push(specs.state.subscribe(() => this.windowStateChanged(specs)));
 
     return specs;
   }
@@ -145,16 +153,20 @@ export class LayoutManagerService {
 
   }
 
-  private windowPositionChanged(window:WindowSpecs):void{
+  private windowPositionChanged(window: WindowSpecs): void {
     this.updateWindowClass(window.id);
 
   }
-  private windowStateChanged(window:WindowSpecs):void{
+
+  private windowStateChanged(window: WindowSpecs): void {
     this.updateWindowClass(window.id);
 
-    if (window.state.getValue()===WindowState.MAXIMIZED){
-      window.zIndexTmp=window.zIndex;
-      window.zIndex=100;
+    if (window.state.getValue() === WindowState.MAXIMIZED) {
+      this.bringToFront(window.id);
+    }
+    else {
+      this.bringToBack(window.id);
+
     }
 
   }
