@@ -1,26 +1,13 @@
-import {
-  AfterViewInit,
-  Component, ElementRef,
-  Inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  QueryList,
-  SimpleChanges,
-  ViewChildren
-} from '@angular/core';
+import {Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 
 import {MusicMath} from "../../model//utils/MusicMath";
 import {Pattern} from "../../model//daw/Pattern";
 import {NoteCell} from "../model/NoteCell";
-import {SequencerD3Specs} from "../model/sequencer.d3.specs";
 import {Project} from "../../model//daw/Project";
 import {Subscription} from "rxjs/internal/Subscription";
 import {ProjectsService} from "../../shared/services/projects.service";
 import {Notes} from "../../model/daw/Notes";
 import {SequencerService} from "../sequencer.service";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import {SequencerInteractionService} from "../sequencer.interaction.service";
 import {EventTableModel} from "./event-table.model";
 import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";

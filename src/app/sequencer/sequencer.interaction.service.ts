@@ -29,6 +29,7 @@ export class SequencerInteractionService {
   }
 
   onDblClick(event: MouseTrapEvent, pattern: Pattern, model: EventTableModel): void {
+
     let cell = this.getCellFromElement(event.element, model.eventCells, model.tableCells);
     if (cell){
       if (cell.data) this.sequencerService.removeEvent(model.eventCells, cell, pattern);

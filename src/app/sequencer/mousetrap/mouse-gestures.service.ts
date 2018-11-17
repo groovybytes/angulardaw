@@ -13,6 +13,7 @@ export class MouseGesturesService {
   private btnDownCount: number = 0;
   private btnUpCount: number = 0;
   private mouseDownTimeout;
+  private dragTimeOut;
   private dragSource: EventTarget;
 
   constructor(@Inject("MouseEvents") private mouseEvents: MouseTrapEvents) {
@@ -20,18 +21,30 @@ export class MouseGesturesService {
 
   }
 
+  private cancelTimeouts(): void {
+    if (this.mouseDownTimeout) {
+      clearTimeout(this.mouseDownTimeout);
+      this.mouseDownTimeout = null;
+    }
+
+    if (this.dragTimeOut) {
+      clearTimeout(this.dragTimeOut);
+      this.dragTimeOut = null;
+    }
+  }
+
   mouseDown(event: MouseEvent): boolean {
     this.btnWasUp = false;
     this.btnDownCount += 1;
 
-    this.mouseDownTimeout = setTimeout(() => {
+    /*this.mouseDownTimeout = setTimeout(() => {
       if (this.btnWasUp === false) {
         this.isDragging = true;
         this.dragSource = event.target;
-        this.mouseDownTimeout=null;
+        this.mouseDownTimeout = null;
       }
 
-    }, this.doubleClickThreshold * 1.5);
+    }, this.doubleClickThreshold * 1.5);*/
 
     event.stopPropagation();
 
@@ -40,12 +53,10 @@ export class MouseGesturesService {
   }
 
   mouseUp(event: MouseEvent): void {
+    this.cancelTimeouts();
 
-    if (this.isDragging===false){
-      if (this.mouseDownTimeout) {
-        clearTimeout(this.mouseDownTimeout);
-        this.mouseDownTimeout = null;
-      }
+    if (this.isDragging === false) {
+
       this.btnUpCount += 1;
       this.btnWasUp = true;
 
@@ -67,7 +78,6 @@ export class MouseGesturesService {
   }
 
   mouseMove(event: MouseEvent, container: ElementRef) {
-
     if (this.isDragging) {
 
       let trapEvent = new MouseTrapDragEvent(event);
@@ -81,12 +91,18 @@ export class MouseGesturesService {
       this.mouseEvents.drag.emit(trapEvent);
     }
     else if (this.btnDownCount === 1 && this.btnWasUp === false) {
-      if (this.mouseDownTimeout) {
-        clearTimeout(this.mouseDownTimeout);
-        this.mouseDownTimeout = null;
-      }
-      this.isDragging = true;
-      this.dragSource = event.target;
+      this.dragTimeOut = setTimeout(() => {
+        if (this.btnDownCount === 1 && this.btnWasUp === false) {
+          if (this.mouseDownTimeout) {
+            clearTimeout(this.mouseDownTimeout);
+            this.mouseDownTimeout = null;
+          }
+          this.btnDownCount = 0;
+          this.isDragging = true;
+          this.dragSource = event.target
+        }
+      }, this.doubleClickThreshold + 50);
+
     }
   }
 

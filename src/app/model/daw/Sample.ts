@@ -43,6 +43,8 @@ export class Sample {
 
     gainNode.gain.setValueCurveAtTime(waveArray, this.context.currentTime+offset+duration-0.5,0.5);
 */
+
+    if (adsr) adsr.apply(this.gainNode, this.context.currentTime+offset);
     sourceNode.start(this.context.currentTime + offset, 0, duration ? duration : 0.7);
   }
 
