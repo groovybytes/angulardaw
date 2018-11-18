@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {ProjectComponent} from "./project.component";
-import {EffectsPanelComponent} from "./effects-panel/effects-panel.component";
 import {PluginListComponent} from "./plugin-list/plugin-list.component";
 import {PluginPanelComponent} from "./plugin-panel/plugin-panel.component";
 import {ProjectObserverComponent} from "./project-observer/project-observer.component";
@@ -21,7 +20,6 @@ import {CoreModule} from "../core/core.module";
 @NgModule({
   declarations: [
     ProjectComponent,
-    EffectsPanelComponent,
     PluginListComponent,
     PluginPanelComponent,
     ProjectObserverComponent,

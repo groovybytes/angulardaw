@@ -1,5 +1,5 @@
 <div class=" footer fixed-bottom">
-  <!--<effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>-->
+  <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project" [track]="project?.selectedTrack | async"></effects-panel>
   <div class="row">
     <div class="col" *ngFor="let window of getMinimizedWindows()">
       <div class="card h-100">

@@ -47,8 +47,6 @@ export class LayoutManagerService {
       window.clazz = windowDto.clazz;
       window.position.next(windowDto.position);
       window.state.next(windowDto.state);
-      this.subscriptions.push(window.position.subscribe(() => this.windowPositionChanged(window)));
-      this.subscriptions.push(window.state.subscribe(() => this.windowStateChanged(window)));
       window.zIndex = windowDto.zIndex ? windowDto.zIndex : 1;
     });
 

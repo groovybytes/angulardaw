@@ -47,12 +47,28 @@
              [project]="project"
              [pattern]="project.selectedPattern | async"></sequencer>
 
+<!--  <plugin-panel *ngFor="let track of project.tracks"
+                [project]="project"
+                [window]="window"
+                [pluginId]="track.getInstrumentPlugin().getId()"
+                [ngStyle]="{'z-index':getWindow(track.getInstrumentPlugin().getId()).zIndex}"
+                [ngClass]="getWindow(track.getInstrumentPlugin().getId()).clazz">
+  </plugin-panel>-->
 
+ <!-- <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
+                [project]="project"
+                [window]="window"
+                [pluginId]="window.pluginId"
+                (positionXChanged)="window.x=$event"
+                (positionYChanged)="window.y=$event"
+                [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
+                class="" interact>
+  </plugin-panel>-->
   <!--  <div class="vertical-line"></div>-->
 
 
   <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
   <recorder [project]="project"></recorder>
 
-  <app-footer></app-footer>
+  <app-footer [project]="project"></app-footer>
 </div>

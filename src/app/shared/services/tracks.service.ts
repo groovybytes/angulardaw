@@ -62,7 +62,7 @@ export class TracksService {
           track.plugins = [plugin];
           this.pluginService.setupInstrumentRoutes(project,track,plugin);
 
-          this.layout.addWindow(plugin.getId());
+          //this.layout.addWindow(plugin.getId());
           project.plugins.push(plugin);
           track.name = pluginInfo.name;
           resolve(track);

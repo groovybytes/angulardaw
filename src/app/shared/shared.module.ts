@@ -13,10 +13,11 @@ import {LayoutManagerService} from "./services/layout-manager.service";
 import {FooterComponent} from "./components/footer/footer.component";
 import {CommonModule} from "@angular/common";
 import {CardHeaderComponent} from "./components/card-header/card-header.component";
+import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-panel.component";
 
 
 @NgModule({
-  declarations: [FooterComponent,CardHeaderComponent],
+  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent],
   imports: [
     CommonModule,
     UiModule

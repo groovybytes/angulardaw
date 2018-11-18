@@ -51,6 +51,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.layout.reset();
     this.route.params.subscribe(params => {
 
       let newProject = JSON.parse(localStorage.getItem("new_project"));
@@ -59,6 +60,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
         this.projectsService.createProject(params.projectId, newProject.name, newProject.plugins)
           .then(project => {
+
             let dto = this.projectsService.serializeProject(project);
             dto.id = params.projectId;
             dto.name = dto.id;
@@ -79,6 +81,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
             .then(project => {
               this.project = project;
               this.project.ready = true;
+              console.log("ready");
+              this.layout.windows.forEach(window=>console.log(window.id))
             })
             .catch(error => this.system.error(error));
         })

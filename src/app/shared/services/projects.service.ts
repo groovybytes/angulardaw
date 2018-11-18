@@ -159,6 +159,7 @@ export class ProjectsService {
   }
 
   serializeProject(project: Project): ProjectDto {
+
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
     projectDto.name = project.name;
