@@ -1,16 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChildren
-} from '@angular/core';
-import {Pad} from "../../model/daw/pad/Pad";
+import {Pad} from "../model/daw/pad/Pad";
+import {WstPlugin} from "../model/daw/plugins/WstPlugin";
+import {Project} from "../model/daw/Project";
+import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChildren} from "@angular/core";
+import {NoteTrigger} from "../model/daw/NoteTrigger";
 
 
 @Component({
@@ -23,10 +15,8 @@ export class PadsComponent implements OnInit, AfterViewInit {
   @Input() rows: number;
   @Input() columns: number;
   @Input() pad: Pad;
-
-  @Output() noteStart: EventEmitter<{ note: string }> = new EventEmitter();
-  @Output() noteEnd: EventEmitter<void> = new EventEmitter();
-
+  @Input() plugin: WstPlugin;
+  @Input() project: Project;
   @ViewChildren('trigger') triggers: QueryList<ElementRef>;
 
   public size: number = 0;
@@ -68,15 +58,23 @@ export class PadsComponent implements OnInit, AfterViewInit {
     this.triggers.forEach(element => {
       this.zone.runOutsideAngular(() => {
         $(element.nativeElement).on("mousedown", () => {
-          this.noteStart.emit({note: $(element.nativeElement).attr("data-note")});
+          this.onNoteOutStart({note: $(element.nativeElement).attr("data-note")});
         });
         $(element.nativeElement).on("mouseup", () => {
-          this.noteEnd.emit();
+          this.onNoteOutEnd();
         })
       });
     });
+  }
 
-
+  private onNoteOutStart(event:{note:string}):void{
+    let wstPlugin = this.plugin as WstPlugin;
+    let trigger = new NoteTrigger(null,event.note);
+    wstPlugin.feed(trigger,0);
+    this.project.recordNoteStart.emit(trigger);
+  }
+  private onNoteOutEnd():void{
+    this.project.recordNoteEnd.emit();
   }
 
 }

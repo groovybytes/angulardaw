@@ -1,9 +1,8 @@
 import {AbstractInstrumentSampler} from "./AbstractInstrumentSampler";
 import {PluginInfo} from "./PluginInfo";
-import {NoteTrigger} from "../NoteTrigger";
-import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {Sample} from "../Sample";
 import {Notes} from "../Notes";
+import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 
 export class GenericInstrumentSampler extends AbstractInstrumentSampler {
 
@@ -39,6 +38,10 @@ export class GenericInstrumentSampler extends AbstractInstrumentSampler {
   getNotes(): Array<string> {
     if (this.pluginInfo.noteRange) return this.notes.getNoteRange(this.pluginInfo.noteRange.start, this.pluginInfo.noteRange.end);
     else this.notes.getNoteRange("C0", "B10");
+  }
+
+  getInstrumentCategory(): InstrumentCategory {
+    return InstrumentCategory.KEYS;
   }
 
   /* static getInfo(): PluginInfo {

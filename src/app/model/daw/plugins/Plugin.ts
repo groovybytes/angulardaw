@@ -1,6 +1,7 @@
 import {PluginInfo} from "./PluginInfo";
 import {WstPlugin} from "./WstPlugin";
 import {VirtualAudioNode} from "../VirtualAudioNode";
+import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 
 export interface Plugin {
 
@@ -16,4 +17,6 @@ export interface Plugin {
   destroy(): void;
 
   load(): Promise<WstPlugin>;
+
+  getInstrumentCategory():InstrumentCategory;
 }

@@ -21,8 +21,8 @@ import {Pattern} from "../model/daw/Pattern";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Track} from "../model/daw/Track";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
-import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
 import {LayoutManagerService} from "../shared/services/layout-manager.service";
+import {WindowInfo} from "../model/daw/visual/desktop/WindowInfo";
 
 
 @Component({
@@ -40,10 +40,10 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
-              private layout:LayoutManagerService,
-              private matrixService:MatrixService,
-              private tracksService:TracksService,
-              private system:System,
+              private layout: LayoutManagerService,
+              private matrixService: MatrixService,
+              private tracksService: TracksService,
+              private system: System,
               private dawMatrixService: DawMatrixService) {
   }
 
@@ -69,26 +69,26 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.dawMatrixService.onCellContainerClicked(cell, this.project);
   }
 
-  onRowHeaderClicked(row:number): void {
+  onRowHeaderClicked(row: number): void {
     this.patternsService.toggleScene(row, this.project);
   }
 
-  pluginSelected(plugin:PluginInfo):void{
-    this.matrixService.addMatrixColumnWithPlugin(plugin,this.project)
-      .catch(error=>this.system.error(error));
+  pluginSelected(plugin: PluginInfo): void {
+    this.matrixService.addMatrixColumnWithPlugin(plugin, this.project)
+      .catch(error => this.system.error(error));
   }
 
-  addRow():void{
+  addRow(): void {
     this.matrixService.addRow(this.project.matrix);
   }
 
-  removeRow(row:number):void{
-    this.dawMatrixService.removePatternsFromRow(this.project,row);
-    this.matrixService.removeRow(this.project.matrix,row);
+  removeRow(row: number): void {
+    this.dawMatrixService.removePatternsFromRow(this.project, row);
+    this.matrixService.removeRow(this.project.matrix, row);
   }
 
-  bodyCellMenuBtnClicked(cell:Cell<Pattern>):void{
-    this.dawMatrixService.bodyCellMenuBtnClicked(cell,this.project);
+  bodyCellMenuBtnClicked(cell: Cell<Pattern>): void {
+    this.dawMatrixService.bodyCellMenuBtnClicked(cell, this.project);
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>): void {
@@ -99,7 +99,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.dawMatrixService.bodyCellClicked(cell, this.project);
   }
 
-  onHeaderClicked(cell:Cell<Track>):void{
+  onHeaderClicked(cell: Cell<Track>): void {
     this.project.selectedTrack.next(cell.data);
   }
 
@@ -111,7 +111,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.project.tracks.find(track => track.id === trackId).color = color;
   }
 
-  getWindow():WindowSpecs{
+  getWindow(): WindowInfo {
     return this.layout.getWindow("matrix");
   }
 

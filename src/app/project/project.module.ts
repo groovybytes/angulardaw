@@ -8,7 +8,6 @@ import {ProjectsCreateComponent} from "./projects-create/projects-create.compone
 import {RecorderComponent} from "./recorder/recorder.component";
 import {TransportComponent} from "./transport/transport.component";
 import {FormsModule} from "@angular/forms";
-import {PluginsModule} from "../plugins/plugins.module";
 import {Ng5SliderModule} from "ng5-slider";
 import {DawMatrixModule} from "../daw-matrix/daw-matrix.module";
 import {SequencerModule} from "../sequencer/sequencer.module";
@@ -16,6 +15,7 @@ import {ApiModule} from "../api/api.module";
 import {UiModule} from "../ui/ui.module";
 import {SharedModule} from "../shared/shared.module";
 import {CoreModule} from "../core/core.module";
+import {PadsModule} from "../pads/pads.module";
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import {CoreModule} from "../core/core.module";
   imports: [
     BrowserModule,
     FormsModule,
-    PluginsModule,
+    PadsModule,
     Ng5SliderModule,
     DawMatrixModule,
     SequencerModule,

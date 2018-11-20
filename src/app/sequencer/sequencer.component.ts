@@ -3,7 +3,6 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {Project} from "../model/daw/Project";
 import {Pattern} from "../model/daw/Pattern";
 import {LayoutManagerService} from "../shared/services/layout-manager.service";
-import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
 
 
 @Component({
@@ -38,7 +37,7 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getWindow():WindowSpecs{
+  getWindow():DesktopWindow{
     return this.layout.getWindow("sequencer");
   }
 

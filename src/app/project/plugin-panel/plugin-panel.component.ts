@@ -3,8 +3,8 @@ import {Project} from "../../model//daw/Project";
 import {Plugin} from "../../model//daw/plugins/Plugin";
 import {WstPlugin} from "../../model//daw/plugins/WstPlugin";
 import {NoteTrigger} from "../../model//daw/NoteTrigger";
-import {WindowSpecs} from "../../model//daw/visual/desktop/WindowSpecs";
 import {WindowState} from "../../model//daw/visual/desktop/WindowState";
+import {DesktopWindow} from "../../model/daw/visual/desktop/DesktopWindow";
 
 @Component({
   selector: 'plugin-panel',
@@ -15,7 +15,7 @@ export class PluginPanelComponent implements OnInit,OnChanges {
 
   @Input() project:Project;
   @Input() pluginId:string;
-  @Input() window:WindowSpecs;
+  @Input() window:DesktopWindow;
 
   private plugin:Plugin;
 

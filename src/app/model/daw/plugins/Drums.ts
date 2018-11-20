@@ -9,6 +9,7 @@ import {Instrument} from "./Instrument";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
+import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 
 
 export class Drums extends Instrument implements WstPlugin {
@@ -98,6 +99,10 @@ export class Drums extends Instrument implements WstPlugin {
   setOutputNode(node: VirtualAudioNode<AudioNode>): void {
     this.outputNode=node;
     this.samples.forEach(sample=>sample.setDestination(node.node));
+  }
+
+  getInstrumentCategory(): InstrumentCategory {
+    return InstrumentCategory.PERCUSSION;
   }
 
 }

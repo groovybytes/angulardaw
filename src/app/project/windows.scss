@@ -33,6 +33,15 @@ $window-header-height:50px;
   height: $left-window-height;
   width:50%;
 }
+.sidebar-left{
+  top: $header-height;
+  overflow: auto;
+  left:0;
+  height: $top-window-height+$bottom-window-height;
+  width:400px;
+  background-color:red;
+}
+
 .window-maximized{
   top: $header-height;
   overflow: auto;

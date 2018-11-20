@@ -10,7 +10,7 @@ import {ProjectComponent} from "./project/project.component";
 const routes: Routes = [
   {
     path: '',
-    component: LandingPageComponent
+    component: ProjectsCreateComponent
   },
   {
     path: 'login',

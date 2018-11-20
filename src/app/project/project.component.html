@@ -37,7 +37,7 @@
   </form>
 </nav>
 
-<div class="drag-container" *ngIf="project && project.ready">
+<div class="drag-container"  *ngIf="project && project.ready">
   <daw-matrix [project]="project"
               [ngStyle]="{'z-index':getWindow('matrix').zIndex}"
               [ngClass]="getWindow('matrix').clazz"></daw-matrix>
@@ -46,6 +46,15 @@
              [ngStyle]="{'z-index':getWindow('sequencer').zIndex}"
              [project]="project"
              [pattern]="project.selectedPattern | async"></sequencer>
+
+  <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
+         project="project"
+         [ngStyle]="{'z-index':getWindow('plugin').zIndex}"
+         [ngClass]="getWindow('plugin').clazz"
+         [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
+
+  </pads>
+
 
 <!--  <plugin-panel *ngFor="let track of project.tracks"
                 [project]="project"

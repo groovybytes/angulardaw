@@ -1,6 +1,6 @@
 
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
-import {WindowSpecs} from "../../model/daw/visual/desktop/WindowSpecs";
+import {DesktopWindow} from "../../model/daw/visual/desktop/WindowSpecs";
 declare var interact;
 
 @Directive({
@@ -10,7 +10,7 @@ export class InteractDirective implements OnInit {
 
   @Input() parent:string="parent";
   @Input() enabled:boolean=true;
-  @Input() window:WindowSpecs;
+  @Input() window:DesktopWindow;
   /*@Output() positionXChanged:EventEmitter<number>=new EventEmitter();
   @Output() positionYChanged:EventEmitter<number>=new EventEmitter();*/
 

@@ -5,10 +5,10 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {WindowSpecs} from "../model/daw/visual/desktop/WindowSpecs";
 import {WindowState} from "../model/daw/visual/desktop/WindowState";
-import {WindowPosition} from "../model/daw/visual/desktop/WindowPosition";
 import {LayoutManagerService} from "../shared/services/layout-manager.service";
+import {WindowInfo} from "../model/daw/visual/desktop/WindowInfo";
+import {Layout} from "../model/daw/visual/desktop/Layout";
 
 @Component({
   selector: 'project',
@@ -51,7 +51,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.layout.reset();
+
     this.route.params.subscribe(params => {
 
       let newProject = JSON.parse(localStorage.getItem("new_project"));
@@ -76,13 +76,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
       else {
 
         this.projectsApi.getById(params.projectId).then(result => {
-          this.layout.reset();
           this.projectsService.deSerializeProject(result.data)
             .then(project => {
               this.project = project;
               this.project.ready = true;
               console.log("ready");
-              this.layout.windows.forEach(window=>console.log(window.id))
             })
             .catch(error => this.system.error(error));
         })
@@ -94,17 +92,17 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   }
 
-  getWindow(id:string):WindowSpecs{
+
+  getWindow(id:string):WindowInfo{
     return this.layout.getWindow(id);
   }
 
-
-  setLayout(layout: number): void {
+  setLayout(layout: Layout): void {
 
     this.layout.setLayout(layout);
   }
 
-  getLayout(): number {
+  getLayout(): Layout {
 
     return this.layout.getLayout();
   }

@@ -7,6 +7,7 @@ import {Instrument} from "./Instrument";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {Notes} from "../Notes";
+import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 
 export abstract class AbstractInstrumentSampler extends Instrument implements WstPlugin {
 
@@ -86,6 +87,8 @@ export abstract class AbstractInstrumentSampler extends Instrument implements Ws
     this.outputNode=node;
     this.samples.forEach(sample=>sample.setDestination(node.node));
   }
+
+  abstract getInstrumentCategory(): InstrumentCategory;
 
 
 

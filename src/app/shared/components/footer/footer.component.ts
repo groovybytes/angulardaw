@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LayoutManagerService} from "../../services/layout-manager.service";
-import {WindowSpecs} from "../../../model/daw/visual/desktop/WindowSpecs";
+import {DesktopWindow} from "../../../model/daw/visual/desktop/WindowSpecs";
 import {WindowState} from "../../../model/daw/visual/desktop/WindowState";
 import {Project} from "../../../model/daw/Project";
 
@@ -18,7 +18,11 @@ export class FooterComponent implements OnInit {
   ngOnInit() {
   }
 
-  getMinimizedWindows():Array<WindowSpecs>{
+  getWindowCount():number{
+    return this.layout.getOpenWindows().length;
+  }
+
+  getMinimizedWindows():Array<DesktopWindow>{
     return this.layout.windows.filter(window=>window.state.getValue()===WindowState.MINIMIZED);
   }
 

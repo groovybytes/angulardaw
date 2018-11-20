@@ -1,32 +1,26 @@
 import {Injectable} from "@angular/core";
-import {WindowPosition} from "../../model/daw/visual/desktop/WindowPosition";
-import {WindowSpecs} from "../../model/daw/visual/desktop/WindowSpecs";
-import {WindowState} from "../../model/daw/visual/desktop/WindowState";
 import {DesktopDto} from "../../model/daw/dto/DesktopDto";
 import {WindowDto} from "../../model/daw/dto/WindowDto";
-import {Subscription} from "rxjs";
+import {Layout} from "../../model/daw/visual/desktop/Layout";
+import {LayoutFactory} from "../../model/daw/visual/desktop/LayoutFactory";
+import {AbstractLayout} from "../../model/daw/visual/desktop/AbstractLayout";
+import {WindowInfo} from "../../model/daw/visual/desktop/WindowInfo";
 
 @Injectable()
 export class LayoutManagerService {
 
-  private layout: number = 0;
-
-  readonly windows: Array<WindowSpecs> = [];
-  private subscriptions: Array<Subscription> = [];
+  private layout: AbstractLayout;
 
   serialize(): DesktopDto {
     let dto = new DesktopDto();
-    dto.layout = this.layout;
+    dto.layout = this.layout.getId();
     dto.windows = [];
-    this.windows.forEach(window => {
+    this.layout.getWindows().forEach(window => {
       let windowDto = new WindowDto();
-      windowDto.height = window.height;
-      windowDto.width = window.width;
       windowDto.id = window.id;
+      windowDto.order = window.order;
       windowDto.position = window.position.getValue();
       windowDto.state = window.state.getValue();
-      windowDto.x = window.x;
-      windowDto.y = window.y;
       windowDto.clazz = window.clazz;
       windowDto.zIndex = window.zIndex;
       dto.windows.push(windowDto);
@@ -35,137 +29,62 @@ export class LayoutManagerService {
     return dto;
   }
 
+  getLayout():Layout{
+    return this.layout.getId();
+  }
+
   deSerialize(dto: DesktopDto): void {
-    this.reset();
+
+    this.setLayout(dto.layout);
 
     dto.windows.forEach(windowDto => {
-      let window = this.addWindow(windowDto.id);
-      window.x = windowDto.x;
-      window.y = windowDto.y;
-      window.width = windowDto.width;
-      window.height = windowDto.height;
+
+      let window = this.layout.addWindow(windowDto.id, windowDto.order);
       window.clazz = windowDto.clazz;
       window.position.next(windowDto.position);
       window.state.next(windowDto.state);
       window.zIndex = windowDto.zIndex ? windowDto.zIndex : 1;
     });
 
-    this.setLayout(dto.layout);
+    this.layout.apply();
+
   }
 
   createDefaultLayout(): void {
-    let matrix = this.addWindow("matrix");
-    let sequencer = this.addWindow("sequencer");
-    sequencer.position.next(WindowPosition.BOTTOM);
-    sequencer.state.next(WindowState.NORMAL);
-    matrix.position.next(WindowPosition.TOP);
-    matrix.state.next(WindowState.NORMAL);
+    this.setLayout(Layout.VERTICAL);
+
+    this.addWindow("matrix", 0);
+    this.addWindow("sequencer", 1);
+    this.addWindow("plugin", 2);
+
+    this.layout.apply();
   }
 
-  reset(): void {
-    this.layout = 0;
-    this.windows.length = 0;
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+  setLayout(id: Layout): void {
+    if (this.layout) this.layout.destroy();
+    this.layout = LayoutFactory.create(id);
   }
 
-  setLayout(id: number): void {
-    if (id === 0) {
-      this.layout = 0;
-      this.getWindow("sequencer").position.next(WindowPosition.BOTTOM);
-      this.getWindow("matrix").position.next(WindowPosition.TOP);
-    }
-    else {
-      this.layout = 1;
-      this.getWindow("sequencer").position.next(WindowPosition.RIGHT);
-      this.getWindow("matrix").position.next(WindowPosition.LEFT);
-    }
+  getWindow(id: string): WindowInfo {
+    return this.layout.getWindow(id).getInfo();
   }
 
-  getLayout(): number {
-    return this.layout;
+  addWindow(id: string, order: number): WindowInfo {
+    this.layout.addWindow(id, order);
+    return this.getWindow(id);
   }
 
-  getWindow(id: string): WindowSpecs {
-    return this.windows.find(window => window.id === id);
-  }
-
-  updateWindowClass(id: string): string {
-    let window = this.getWindow(id);
-    window.clazz = "window";
-    if (window.position.getValue() === WindowPosition.TOP) window.clazz += " window-top";
-    else if (window.position.getValue() === WindowPosition.BOTTOM) window.clazz += " window-bottom";
-    else if (window.position.getValue() === WindowPosition.LEFT) window.clazz += " window-left";
-    else if (window.position.getValue() === WindowPosition.RIGHT) window.clazz += " window-right";
-
-    if (window.state.getValue() === WindowState.CLOSED) window.clazz += " window-closed";
-    else if (window.state.getValue() === WindowState.MAXIMIZED) window.clazz += " window-maximized";
-    else if (window.state.getValue() === WindowState.MINIMIZED) window.clazz += " window-minimized";
-
-    return window.clazz;
-  }
-
-  bringToFront(id: string): void {
-    let maximizedWindows = this.windows.filter(window => window.state.getValue() === WindowState.MAXIMIZED);
-    //window.zIndexTmp=window.zIndex;
-    this.getWindow(id).zIndex = 100 + maximizedWindows.length;
-  }
-
-  bringToBack(id: string): void {
-    this.getWindow(id).zIndex = 1;
-  }
-
-  addWindow(id: string): WindowSpecs {
-    let specs = new WindowSpecs(id, WindowState.NORMAL, WindowPosition.LEFT);
-    this.windows.push(specs);
-    this.subscriptions.push(specs.position.subscribe(() => this.windowPositionChanged(specs)));
-    this.subscriptions.push(specs.state.subscribe(() => this.windowStateChanged(specs)));
-
-    return specs;
-  }
-
-  isOpen(id: string): boolean {
-    let window = this.getWindow(id);
-    return window ? window.state.getValue() === WindowState.NORMAL : false;
-  }
-
-  getOpenWindows(): Array<WindowSpecs> {
-    return this.windows.filter(window => window.state.getValue() === WindowState.NORMAL);
-  }
-
-  openWindow(id: string): void {
-    let window = this.getWindow(id);
-    if (window) window.state.next(WindowState.NORMAL);
+  setOrder(id: string, order: number): void {
+    this.layout.setOrder(id, order);
   }
 
   closeWindow(id: string): void {
-    let window = this.getWindow(id);
-    if (window) window.state.next(WindowState.CLOSED);
+    this.layout.close(id);
   }
 
-  toggleWindow(id: string): void {
-    let window = this.getWindow(id);
-    if (window) {
-      if (window.state.getValue() != WindowState.NORMAL) window.state.next(WindowState.NORMAL);
-      else window.state.next(WindowState.CLOSED);
-    }
-
+  openWindow(id: string): void {
+    this.layout.open(id);
   }
 
-  private windowPositionChanged(window: WindowSpecs): void {
-    this.updateWindowClass(window.id);
 
-  }
-
-  private windowStateChanged(window: WindowSpecs): void {
-    this.updateWindowClass(window.id);
-
-    if (window.state.getValue() === WindowState.MAXIMIZED) {
-      this.bringToFront(window.id);
-    }
-    else {
-      this.bringToBack(window.id);
-
-    }
-
-  }
 }

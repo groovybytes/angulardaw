@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NoteLength} from "../../model/mip/NoteLength";
 
 @Component({
@@ -8,10 +8,11 @@ import {NoteLength} from "../../model/mip/NoteLength";
 })
 export class NotelengthComponent implements OnInit {
 
-
+  @Input() quantization: NoteLength;
   @Output() noteLengthSelected: EventEmitter<NoteLength> = new EventEmitter<NoteLength>();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

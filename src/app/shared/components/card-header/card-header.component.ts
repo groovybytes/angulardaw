@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {WindowSpecs} from "../../../model/daw/visual/desktop/WindowSpecs";
+import {DesktopWindow} from "../../../model/daw/visual/desktop/WindowSpecs";
 import {WindowState} from "../../../model/daw/visual/desktop/WindowState";
 import {LayoutManagerService} from "../../services/layout-manager.service";
 
@@ -10,7 +10,7 @@ import {LayoutManagerService} from "../../services/layout-manager.service";
 })
 export class CardHeaderComponent implements OnInit {
 
-  @Input() window: WindowSpecs;
+  @Input() window: DesktopWindow;
 
 
   state = WindowState;

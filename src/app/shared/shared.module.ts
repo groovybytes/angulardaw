@@ -14,10 +14,11 @@ import {FooterComponent} from "./components/footer/footer.component";
 import {CommonModule} from "@angular/common";
 import {CardHeaderComponent} from "./components/card-header/card-header.component";
 import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-panel.component";
+import { WindowComponent } from './components/window/window.component';
 
 
 @NgModule({
-  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent],
+  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent, WindowComponent],
   imports: [
     CommonModule,
     UiModule
@@ -40,7 +41,7 @@ import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-p
       useValue: new Notes()
     }
   ],
-  exports: [FooterComponent,CardHeaderComponent]
+  exports: [FooterComponent,CardHeaderComponent,WindowComponent]
 })
 export class SharedModule {
 }

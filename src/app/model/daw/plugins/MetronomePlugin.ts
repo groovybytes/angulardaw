@@ -9,6 +9,7 @@ import {VirtualAudioNode} from "../VirtualAudioNode";
 import {Instrument} from "./Instrument";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
+import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 
 
 export class MetronomePlugin extends Instrument implements WstPlugin {
@@ -120,5 +121,9 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
     this.outputNode=node;
     this.accentSample.setDestination(node.node);
     this.otherSample.setDestination(node.node);
+  }
+
+  getInstrumentCategory(): InstrumentCategory {
+    return InstrumentCategory.OTHER;
   }
 }
