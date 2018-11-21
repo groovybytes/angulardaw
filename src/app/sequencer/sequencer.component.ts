@@ -2,7 +2,8 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Subscription} from "rxjs/internal/Subscription";
 import {Project} from "../model/daw/Project";
 import {Pattern} from "../model/daw/Pattern";
-import {LayoutManagerService} from "../shared/services/layout-manager.service";
+import {LayoutManagerService} from "../desktop/layout-manager.service";
+import {WindowInfo} from "../desktop/model/WindowInfo";
 
 
 @Component({
@@ -37,8 +38,8 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getWindow():DesktopWindow{
-    return this.layout.getWindow("sequencer");
+  getWindow():WindowInfo{
+    return this.layout.getWindowInfo("sequencer");
   }
 
   ngOnDestroy(): void {

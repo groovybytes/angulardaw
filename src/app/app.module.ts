@@ -12,6 +12,7 @@ import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
+import {TestModule} from "./test/test.module";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {CoreModule} from "./core/core.module";
     FormsModule,
     HttpClientModule,
     AuthenticationModule,
-    ProjectModule
+    ProjectModule,
+    TestModule
 
 
   ],

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Project} from "../../../../model/daw/Project";
 import {Track} from "../../../../model/daw/Track";
-import {LayoutManagerService} from "../../../services/layout-manager.service";
+import {LayoutManagerService} from "../../../../desktop/layout-manager.service";
 import {PluginInfo} from "../../../../model/daw/plugins/PluginInfo";
 
 

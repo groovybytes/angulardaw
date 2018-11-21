@@ -9,16 +9,15 @@ import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {Notes} from "../model/daw/Notes";
 import {UiModule} from "../ui/ui.module";
-import {LayoutManagerService} from "./services/layout-manager.service";
+import {LayoutManagerService} from "../desktop/layout-manager.service";
 import {FooterComponent} from "./components/footer/footer.component";
 import {CommonModule} from "@angular/common";
 import {CardHeaderComponent} from "./components/card-header/card-header.component";
 import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-panel.component";
-import { WindowComponent } from './components/window/window.component';
 
 
 @NgModule({
-  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent, WindowComponent],
+  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent],
   imports: [
     CommonModule,
     UiModule
@@ -41,7 +40,7 @@ import { WindowComponent } from './components/window/window.component';
       useValue: new Notes()
     }
   ],
-  exports: [FooterComponent,CardHeaderComponent,WindowComponent]
+  exports: [FooterComponent,CardHeaderComponent]
 })
 export class SharedModule {
 }

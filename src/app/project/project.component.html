@@ -1,21 +1,5 @@
 <nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
   <form class="form-inline w-100 h-100">
-    <div class="w-25 h-100">
-      <button class="btn default-btn h-100" type="button"
-              (click)="setLayout(0)" [disabled]="getLayout()===0"><i class="fas fa-arrow-circle-down"></i>
-      </button>
-      <button class="btn default-btn h-100" type="button"
-              (click)="setLayout(1)" [disabled]="getLayout()===1"><i class="fas fa-arrow-circle-right"></i>
-      </button>
-      <!--   <button class="btn default-btn h-100" type="button"
-                 [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
-                 (click)="toggleSequencer()">Sequencer
-         </button>
-         <button class="btn default-btn h-100" type="button"
-                 [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
-                 (click)="togglePlugin()">Plugin
-         </button>-->
-    </div>
     <div class="w-50 h-100">
       <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
               (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
@@ -47,13 +31,13 @@
              [project]="project"
              [pattern]="project.selectedPattern | async"></sequencer>
 
-  <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
+ <!-- <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
          project="project"
          [ngStyle]="{'z-index':getWindow('plugin').zIndex}"
          [ngClass]="getWindow('plugin').clazz"
          [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
 
-  </pads>
+  </pads>-->
 
 
 <!--  <plugin-panel *ngFor="let track of project.tracks"

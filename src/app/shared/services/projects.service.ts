@@ -24,8 +24,8 @@ import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
-import {WindowPosition} from "../../model/daw/visual/desktop/WindowPosition";
-import {LayoutManagerService} from "./layout-manager.service";
+import {WindowPosition} from "../../desktop/model/WindowPosition";
+import {LayoutManagerService} from "../../desktop/layout-manager.service";
 
 
 @Injectable()

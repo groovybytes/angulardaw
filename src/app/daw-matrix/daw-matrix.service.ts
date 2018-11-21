@@ -14,7 +14,7 @@ import {KeyboardState} from "../model/KeyboardState";
 import {MatrixService} from "../shared/services/matrix.service";
 import {AudioNodesService} from "../shared/services/audionodes.service";
 import {System} from "../system/System";
-import {LayoutManagerService} from "../shared/services/layout-manager.service";
+import {LayoutManagerService} from "../desktop/layout-manager.service";
 
 @Injectable()
 export class DawMatrixService {

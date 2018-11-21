@@ -5,10 +5,9 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {WindowState} from "../model/daw/visual/desktop/WindowState";
-import {LayoutManagerService} from "../shared/services/layout-manager.service";
-import {WindowInfo} from "../model/daw/visual/desktop/WindowInfo";
-import {Layout} from "../model/daw/visual/desktop/Layout";
+import {WindowState} from "../desktop/model/WindowState";
+import {LayoutManagerService} from "../desktop/layout-manager.service";
+import {WindowInfo} from "../desktop/model/WindowInfo";
 
 @Component({
   selector: 'project',
@@ -67,6 +66,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.projectsApi.create(dto)
               .then(() => {
                 this.project = project;
+                this.layout.reset();
+                this.layout.applyLayout();
                 project.ready = true;
               })
               .catch(error => this.system.error(error));
@@ -80,6 +81,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
             .then(project => {
               this.project = project;
               this.project.ready = true;
+              this.layout.reset();
+              this.layout.applyLayout();
               console.log("ready");
             })
             .catch(error => this.system.error(error));
@@ -94,17 +97,16 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
 
   getWindow(id:string):WindowInfo{
-    return this.layout.getWindow(id);
+    return this.layout.getWindowInfo(id);
   }
 
-  setLayout(layout: Layout): void {
+  setLayout(layout): void {
 
-    this.layout.setLayout(layout);
   }
 
-  getLayout(): Layout {
+  getLayout(): string {
 
-    return this.layout.getLayout();
+    return "";
   }
 
   switchMetronome(): void {

@@ -6,5 +6,7 @@ export enum WindowPosition{
   TOP_LEFT=10,
   TOP_RIGHT=11,
   FLOATING=5,
-  SIDEBAR_LEFT=6
+  SIDEBAR_LEFT=6,
+  FIXED_TOP=12,
+  FIXED_BOTTOM=13
 }

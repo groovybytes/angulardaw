@@ -1,5 +1,4 @@
 import {WindowPosition} from "./WindowPosition";
-import {Layout} from "./Layout";
 import {WindowState} from "./WindowState";
 import {Subscription} from "rxjs";
 import {DesktopWindow} from "./DesktopWindow";
@@ -15,8 +14,6 @@ export abstract class AbstractLayout {
 
 
   abstract apply(): void;
-
-  abstract getId(): Layout;
 
   abstract reset(): void;
 
@@ -58,6 +55,25 @@ export abstract class AbstractLayout {
 
     return window1;
   }
+
+  addHeader(): DesktopWindow {
+    let window1 = new DesktopWindow("_header", WindowState.NORMAL, WindowPosition.FIXED_TOP);
+    this.windows.push(window1);
+    this.subscriptions.push(window1.position.subscribe(() => this.windowPositionChanged(window1)));
+    this.subscriptions.push(window1.state.subscribe(() => this.windowStateChanged(window1)));
+
+    return window1;
+  }
+
+  addFooter(): DesktopWindow {
+    let window1 = new DesktopWindow("_footer", WindowState.NORMAL, WindowPosition.FIXED_BOTTOM);
+    this.windows.push(window1);
+    this.subscriptions.push(window1.position.subscribe(() => this.windowPositionChanged(window1)));
+    this.subscriptions.push(window1.state.subscribe(() => this.windowStateChanged(window1)));
+
+    return window1;
+  }
+
 
   destroy(): void {
     if (this.subscriptions) this.subscriptions.forEach(sub => sub.unsubscribe());

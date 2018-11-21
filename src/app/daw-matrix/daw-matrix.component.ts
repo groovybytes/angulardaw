@@ -21,8 +21,8 @@ import {Pattern} from "../model/daw/Pattern";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Track} from "../model/daw/Track";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
-import {LayoutManagerService} from "../shared/services/layout-manager.service";
-import {WindowInfo} from "../model/daw/visual/desktop/WindowInfo";
+import {LayoutManagerService} from "../desktop/layout-manager.service";
+import {WindowInfo} from "../desktop/model/WindowInfo";
 
 
 @Component({
@@ -112,7 +112,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getWindow(): WindowInfo {
-    return this.layout.getWindow("matrix");
+    return this.layout.getWindowInfo("matrix");
   }
 
   ngAfterViewInit() {

@@ -3,8 +3,8 @@ import {Project} from "../../model//daw/Project";
 import {Plugin} from "../../model//daw/plugins/Plugin";
 import {WstPlugin} from "../../model//daw/plugins/WstPlugin";
 import {NoteTrigger} from "../../model//daw/NoteTrigger";
-import {WindowState} from "../../model//daw/visual/desktop/WindowState";
-import {DesktopWindow} from "../../model/daw/visual/desktop/DesktopWindow";
+import {DesktopWindow} from "../../desktop/model/DesktopWindow";
+import {WindowState} from "../../desktop/model/WindowState";
 
 @Component({
   selector: 'plugin-panel',

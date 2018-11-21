@@ -1,6 +1,6 @@
 
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
-import {DesktopWindow} from "../../model/daw/visual/desktop/WindowSpecs";
+import {WindowInfo} from "../../desktop/model/WindowInfo";
 declare var interact;
 
 @Directive({
@@ -10,17 +10,17 @@ export class InteractDirective implements OnInit {
 
   @Input() parent:string="parent";
   @Input() enabled:boolean=true;
-  @Input() window:DesktopWindow;
-  /*@Output() positionXChanged:EventEmitter<number>=new EventEmitter();
-  @Output() positionYChanged:EventEmitter<number>=new EventEmitter();*/
+  @Input() window:WindowInfo;
 
 
   constructor(private element: ElementRef,
               private renderer: Renderer2) {
 
   }
+  ngOnInit(): void{
 
-  ngOnInit(): void {
+  }
+  /*ngOnInit(): void {
 
     this.element.nativeElement.style.webkitTransform =
       this.element.nativeElement.style.transform =
@@ -125,13 +125,13 @@ export class InteractDirective implements OnInit {
 
       self.window.x=x;
       self.window.y=y;
-    /*  self.positionXChanged.emit(x);
-      self.positionYChanged.emit(y);*/
+    /!*  self.positionXChanged.emit(x);
+      self.positionYChanged.emit(y);*!/
 
     }
 
     // this is used later in the resizing and gesture demos
     window["dragMoveListener"] = dragMoveListener;
-  }
+  }*/
 
 }

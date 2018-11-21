@@ -6,6 +6,7 @@ import {RegisterComponent} from "./authentication/register/register.component";
 import {LoginComponent} from "./authentication/login/login.component";
 import {ProjectsCreateComponent} from "./project/projects-create/projects-create.component";
 import {ProjectComponent} from "./project/project.component";
+import {DesktopComponent} from "./test/desktop/desktop.component";
 
 const routes: Routes = [
   {
@@ -30,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'test',
-    component: TestsComponent
+    component: DesktopComponent
   }
 ];
 

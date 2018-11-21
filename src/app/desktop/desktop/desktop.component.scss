@@ -1,0 +1,82 @@
+
+$header-height:50px;
+$top-window-height:600px;
+$bottom-window-height:320px;
+$left-window-height:300px;
+$right-window-height:300px;
+
+$window-header-height:50px;
+
+
+:host /deep/ {
+  .card-header{
+    padding:0;
+    span{
+      margin-left:4px;
+    }
+  }
+
+  .card-body{
+  }
+
+
+  .window-top{
+    top: $header-height;
+    overflow: auto;
+    height: $top-window-height;
+    width:100%;
+  }
+  .window-bottom{
+    top:$header-height+$top-window-height;
+    overflow: auto;
+    height: $bottom-window-height;
+    width:100%;
+  }
+  .window-right{
+    top: $header-height;
+    overflow: auto;
+    right:0;
+    height: $right-window-height;
+    width:50%;
+  }
+  .window-left{
+    top: $header-height;
+    overflow: auto;
+    left:0;
+    height: $left-window-height;
+    width:50%;
+  }
+  .sidebar-left{
+    top: $header-height;
+    overflow: auto;
+    left:0;
+    height: $top-window-height+$bottom-window-height;
+    width:400px;
+    background-color:red;
+  }
+
+  .window-maximized{
+    top: $header-height;
+    overflow: auto;
+    left:0;
+    height: $top-window-height+$bottom-window-height;
+    width:100%;
+  }
+  .window-minimized{
+    display: none;
+    top:inherit;
+    overflow: hidden;
+    left:0;
+    height: $window-header-height;
+    bottom:20px;
+  }
+  .window-closed{
+    display: none;
+    height:0 !important;
+  }
+  .window{
+    position: absolute;
+    transition:top 0.3s linear,height 0.3s linear;
+  }
+
+}
