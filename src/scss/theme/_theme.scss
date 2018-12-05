@@ -1,0 +1,81 @@
+@import "variables";
+@import "utils";
+@import "bootstrap_conflicts";
+
+.angular2-desktop {
+  background: url("/assets/images/ubuntu-wallpaper.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.window-header {
+  background-color: theme-color('background');
+  @include text-color();
+
+}
+
+.window-body {
+  background-color: theme-color('primary');
+  border-left: 2px solid theme-color('background');
+  border-right: 2px solid theme-color('background');
+  border-bottom: 1px solid theme-color('background');
+}
+
+.window-btn {
+  background-image: linear-gradient(theme-color('background', 'light'), darken(theme-color('background', 'light'), 10%));
+  border: 1px solid theme-color('background', 'dark');
+  color: theme-color('background');
+  &.danger {
+    background-color: theme-color('accent');
+  }
+}
+
+.bar-container {
+  background-color: transparent ;
+  color: theme-color('foreground');
+}
+
+.bar-top-container {
+
+}
+
+.bar-left-container {
+
+}
+
+.taskbar-entry {
+  span {
+    color: theme-color("foreground");
+  }
+  &.active {
+    background-color: theme-color("accent");
+  }
+  &:hover {
+    background-color: theme-color("background");
+  }
+
+}
+
+.bar-dummy {
+  background-color: black;
+  opacity: 0.3;
+}
+
+.preview-rect {
+  background-color: theme-color('background');
+  opacity: 0.5;
+}
+
+.shortcut {
+  .circle {
+    background-color: theme-color('accent');
+  }
+
+  &:hover {
+    background-color: theme-color('background');
+    cursor: pointer;
+  }
+
+}

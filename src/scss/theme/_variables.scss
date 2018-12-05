@@ -1,0 +1,69 @@
+$lightDarkOffset:10%;
+$base-font-size: 1rem;
+$base-line-height: 1.25 * $base-font-size;
+
+$theme-colors: (
+  'primary': (
+    'base': #F2F1F0,
+    'light': lighten(#F2F1F0,$lightDarkOffset),
+    'dark': darken(#F2F1F0,$lightDarkOffset)
+  ),
+  'accent': (
+    'base': #E15423,
+    'light': #DA8A70,
+    'dark': #E05120
+  ),
+  'foreground': (
+    'base': #DFDBD2,
+    'light': lighten(#DFDBD2,$lightDarkOffset),
+    'dark': darken(#DFDBD2,$lightDarkOffset)
+  ),
+  'background': (
+    'base': #4F4D46,
+    'light': #83827C,
+    'dark': darken(#4F4D46,$lightDarkOffset)
+  )
+);
+
+//linear-gradient(#8B8A84, #5F5E59)  !default;
+$contrast-colors: (
+  'dark': (
+    'primary': #5E2750,
+    'secondary': rgba(255, 255, 255, .70),
+    'disabled': rgba(255, 255, 255, .5),
+    'hint': rgba(255, 255, 255, .12)
+  ),
+  'light': (
+    'primary': #77216F,
+    'secondary': rgba(0, 0, 0, .54),
+    'disabled': rgba(0, 0, 0, .38),
+    'hint': rgba(0, 0, 0, .12)
+  ),
+);
+
+$text-settings: (
+  'xs': (
+    font-size: .75rem, // 12px
+    line-height: $base-line-height
+  ),
+  'sm': (
+    font-size: .875rem, // 14px
+    line-height: $base-line-height
+  ),
+  'base': (
+    font-size: 1rem, // 16px
+    line-height: $base-line-height
+  ),
+  'md': (
+    font-size: 1.125rem, // 18px
+    line-height: $base-line-height * 2
+  ),
+  'lg': (
+    font-size: 1.25rem, // 20px
+    line-height: $base-line-height * 2
+  ),
+  'xl': (
+    font-size: 1.5rem, // 24px
+    line-height: $base-line-height * 2
+  )
+)

@@ -9,15 +9,11 @@ import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {Notes} from "../model/daw/Notes";
 import {UiModule} from "../ui/ui.module";
-import {LayoutManagerService} from "../desktop/layout-manager.service";
-import {FooterComponent} from "./components/footer/footer.component";
 import {CommonModule} from "@angular/common";
-import {CardHeaderComponent} from "./components/card-header/card-header.component";
-import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-panel.component";
 
 
 @NgModule({
-  declarations: [FooterComponent,CardHeaderComponent,EffectsPanelComponent],
+  declarations: [],
   imports: [
     CommonModule,
     UiModule
@@ -30,7 +26,6 @@ import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-p
     PatternsService,
     AudioNodesService,
     AudioContextService,
-    LayoutManagerService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState
@@ -40,7 +35,7 @@ import {EffectsPanelComponent} from "./components/footer/effects-panel/effects-p
       useValue: new Notes()
     }
   ],
-  exports: [FooterComponent,CardHeaderComponent]
+  exports: []
 })
 export class SharedModule {
 }

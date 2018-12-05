@@ -5,9 +5,6 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {WindowState} from "../desktop/model/WindowState";
-import {LayoutManagerService} from "../desktop/layout-manager.service";
-import {WindowInfo} from "../desktop/model/WindowInfo";
 
 @Component({
   selector: 'project',
@@ -15,6 +12,8 @@ import {WindowInfo} from "../desktop/model/WindowInfo";
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit, OnDestroy {
+
+
 
   project: Project;
   sideBarOpen: boolean = true;
@@ -29,12 +28,12 @@ export class ProjectComponent implements OnInit, OnDestroy {
       hideLimitLabels: true
     }
   };
-  WindowState = WindowState;
+
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private layout: LayoutManagerService,
     private projectsService: ProjectsService,
     private projectsApi: ProjectsApi,
     private system: System) {
@@ -66,8 +65,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.projectsApi.create(dto)
               .then(() => {
                 this.project = project;
-                this.layout.reset();
-                this.layout.applyLayout();
+                //!todo this.layout.reset();
+                //!todo this.layout.applyLayout();
                 project.ready = true;
               })
               .catch(error => this.system.error(error));
@@ -81,8 +80,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
             .then(project => {
               this.project = project;
               this.project.ready = true;
-              this.layout.reset();
-              this.layout.applyLayout();
+              //!todo this.layout.reset();
+              //!todo this.layout.applyLayout();
               console.log("ready");
             })
             .catch(error => this.system.error(error));
@@ -95,10 +94,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   }
 
-
-  getWindow(id:string):WindowInfo{
+//!todo t
+  /*getWindow(id:string):WindowInfo{
     return this.layout.getWindowInfo(id);
-  }
+  }*/
 
   setLayout(layout): void {
 

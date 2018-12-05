@@ -1,4 +1,112 @@
-<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
+<a2d-desktop *ngIf="project && project.ready" >
+  <div class="windows">
+    <a2d-window
+      [id]="'firefox'"
+      [title]="'firefox'"
+      [state]="4"
+      [dockPosition]="2"
+      [x]="400"
+      [y]="400"
+      [showHeader]="true"
+      [width]="400"
+      [height]="400">
+      <div class="header">
+        <form class="form-inline ">
+          <div class="w-50">
+            <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
+                    (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
+
+            <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
+                        (userChange)="changeTempo($event)">
+            </ng5-slider>
+            <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
+
+          </div>
+          <div class="w-25 ">
+            <div class="btn-group float-right">
+              <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
+              <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="body">
+
+        <daw-matrix [project]="project"></daw-matrix>
+
+      </div>
+    </a2d-window>
+    <a2d-window
+      [id]="'sequencer'"
+      [title]="'sequencer'"
+      [state]="4"
+      [dockPosition]="5"
+      [x]="400"
+      [y]="400"
+      [alwaysOnTop]="false"
+      [showCloseBtnOnly]="false"
+      [showDockingTools]="true"
+      [width]="400"
+      [height]="400">
+      <div class="header">
+        <sequencer-footer  [project]="project" [pattern]="project.selectedPattern | async"></sequencer-footer>
+      </div>
+      <div class="body">
+        <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
+
+      </div>
+    </a2d-window>
+  </div>
+
+</a2d-desktop>
+
+<!--
+<a2d-desktop >
+  <div class="windows">
+    <a2d-window
+      [id]="'firefox'"
+      [title]="'firefox'"
+      [state]="4"
+      [dockPosition]="2"
+      [x]="400"
+      [y]="400"
+      [alwaysOnTop]="false"
+      [showCloseBtnOnly]="true"
+      [showDockingTools]="false"
+      [width]="400"
+      [height]="400">
+      <div class="body">
+        <daw-matrix [project]="project"></daw-matrix>
+
+      </div>
+    </a2d-window>
+    <a2d-window
+      [id]="'sequencer'"
+      [title]="'sequencer'"
+      [state]="4"
+      [dockPosition]="5"
+      [x]="400"
+      [y]="400"
+      [alwaysOnTop]="false"
+      [showCloseBtnOnly]="true"
+      [showDockingTools]="false"
+      [width]="400"
+      [height]="400">
+      <div class="body">
+        <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
+
+      </div>
+    </a2d-window>
+  </div>
+
+</a2d-desktop>
+-->
+
+
+
+
+<!--<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
   <form class="form-inline w-100 h-100">
     <div class="w-50 h-100">
       <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
@@ -31,24 +139,24 @@
              [project]="project"
              [pattern]="project.selectedPattern | async"></sequencer>
 
- <!-- <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
+ &lt;!&ndash; <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
          project="project"
          [ngStyle]="{'z-index':getWindow('plugin').zIndex}"
          [ngClass]="getWindow('plugin').clazz"
          [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
 
-  </pads>-->
+  </pads>&ndash;&gt;
 
 
-<!--  <plugin-panel *ngFor="let track of project.tracks"
+&lt;!&ndash;  <plugin-panel *ngFor="let track of project.tracks"
                 [project]="project"
                 [window]="window"
                 [pluginId]="track.getInstrumentPlugin().getId()"
                 [ngStyle]="{'z-index':getWindow(track.getInstrumentPlugin().getId()).zIndex}"
                 [ngClass]="getWindow(track.getInstrumentPlugin().getId()).clazz">
-  </plugin-panel>-->
+  </plugin-panel>&ndash;&gt;
 
- <!-- <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
+ &lt;!&ndash; <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
                 [project]="project"
                 [window]="window"
                 [pluginId]="window.pluginId"
@@ -56,12 +164,12 @@
                 (positionYChanged)="window.y=$event"
                 [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
                 class="" interact>
-  </plugin-panel>-->
-  <!--  <div class="vertical-line"></div>-->
+  </plugin-panel>&ndash;&gt;
+  &lt;!&ndash;  <div class="vertical-line"></div>&ndash;&gt;
 
 
   <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
   <recorder [project]="project"></recorder>
 
   <app-footer [project]="project"></app-footer>
-</div>
+</div>-->

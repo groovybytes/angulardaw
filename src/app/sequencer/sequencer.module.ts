@@ -45,7 +45,7 @@ import {CoreModule} from "../core/core.module";
       multi: false
     }
   ],
-  exports: [SequencerComponent]
+  exports: [SequencerComponent,SequencerFooterComponent]
 })
 export class SequencerModule {
 }

@@ -1,4 +1,4 @@
-@import "../../../variables";
+@import "variables";
 
 /*.sequencer-drag-container {
   position: absolute;
@@ -20,7 +20,7 @@
 }
 
 :host {
-
+  position: relative;
 }
 
 :host /deep/ {

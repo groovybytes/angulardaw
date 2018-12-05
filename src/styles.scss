@@ -1,24 +1,34 @@
-@import "variables";
-@import "bootstrap.variables";
-@import "global";
-@import 'scrollbar';
-@import 'slider';
-@import 'app/scss/utils';
-@import '~hover.css/scss/hover';
+@import "scss/variables";
+/*@import "bootstrap.variables";*/
+/*@import "global";*/
+@import 'scss/scrollbar';
+@import 'scss/slider';
+@import 'scss/utils';
+@import 'scss/dropdowns';
+@import 'scss/buttons';
+@import "scss/theme/theme";
 
+:host /deep/{
 
-body{
-  padding-top: $header-height;
-  overflow: auto;
+}
+.icon-image {
+  width: 30px;
+  height: 30px;
 }
 
-/*.container-fluid{
-  margin:0;
-  padding:0;
-}*/
+body{
+  background-color: white;
+}
+
+html, body {margin: 0; height: 100%; overflow: hidden}
 
 .no-wrap{
   white-space: nowrap;
   display:inline-block !important;
+}
+
+.window-body,.body{
+  height:100%;
+  width:100%;
 }
 

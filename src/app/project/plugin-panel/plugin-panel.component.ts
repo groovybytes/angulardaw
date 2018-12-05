@@ -3,8 +3,7 @@ import {Project} from "../../model//daw/Project";
 import {Plugin} from "../../model//daw/plugins/Plugin";
 import {WstPlugin} from "../../model//daw/plugins/WstPlugin";
 import {NoteTrigger} from "../../model//daw/NoteTrigger";
-import {DesktopWindow} from "../../desktop/model/DesktopWindow";
-import {WindowState} from "../../desktop/model/WindowState";
+
 
 @Component({
   selector: 'plugin-panel',
@@ -15,7 +14,7 @@ export class PluginPanelComponent implements OnInit,OnChanges {
 
   @Input() project:Project;
   @Input() pluginId:string;
-  @Input() window:DesktopWindow;
+  //!todo @Input() window:DesktopWindow;
 
   private plugin:Plugin;
 
@@ -25,7 +24,7 @@ export class PluginPanelComponent implements OnInit,OnChanges {
   }
 
   close():void{
-    this.window.state.next(WindowState.CLOSED);
+    //!todo this.window.state.next(WindowState.CLOSED);
   }
 
   onNoteOutStart(event:{note:string}):void{

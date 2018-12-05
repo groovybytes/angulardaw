@@ -14,7 +14,6 @@ import {KeyboardState} from "../model/KeyboardState";
 import {MatrixService} from "../shared/services/matrix.service";
 import {AudioNodesService} from "../shared/services/audionodes.service";
 import {System} from "../system/System";
-import {LayoutManagerService} from "../desktop/layout-manager.service";
 
 @Injectable()
 export class DawMatrixService {
@@ -23,7 +22,6 @@ export class DawMatrixService {
               private patternService: PatternsService,
               private projectsService: ProjectsService,
               @Inject("KeyboardState") private keyboardState: KeyboardState,
-              private layout:LayoutManagerService,
               private matrixService: MatrixService,
               private nodesService:AudioNodesService,
               private pluginService: PluginsService, private system: System) {
@@ -57,7 +55,7 @@ export class DawMatrixService {
         cell.data = pattern;
       }
       project.selectedPattern.next(cell.data);
-      this.layout.openWindow("sequencer");
+      //!todo this.layout.openWindow("sequencer");
     }
   }
 

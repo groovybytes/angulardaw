@@ -21,8 +21,6 @@ import {Pattern} from "../model/daw/Pattern";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Track} from "../model/daw/Track";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
-import {LayoutManagerService} from "../desktop/layout-manager.service";
-import {WindowInfo} from "../desktop/model/WindowInfo";
 
 
 @Component({
@@ -40,7 +38,6 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
-              private layout: LayoutManagerService,
               private matrixService: MatrixService,
               private tracksService: TracksService,
               private system: System,
@@ -111,9 +108,10 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.project.tracks.find(track => track.id === trackId).color = color;
   }
 
-  getWindow(): WindowInfo {
+  //!todo
+  /*getWindow(): WindowInfo {
     return this.layout.getWindowInfo("matrix");
-  }
+  }*/
 
   ngAfterViewInit() {
 

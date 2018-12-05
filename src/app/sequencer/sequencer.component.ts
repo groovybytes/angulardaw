@@ -2,8 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Subscription} from "rxjs/internal/Subscription";
 import {Project} from "../model/daw/Project";
 import {Pattern} from "../model/daw/Pattern";
-import {LayoutManagerService} from "../desktop/layout-manager.service";
-import {WindowInfo} from "../desktop/model/WindowInfo";
+
 
 
 @Component({
@@ -21,7 +20,7 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
-  constructor(private layout:LayoutManagerService){
+  constructor(){
 
   }
 
@@ -38,9 +37,10 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getWindow():WindowInfo{
+  //!todo
+  /*getWindow():WindowInfo{
     return this.layout.getWindowInfo("sequencer");
-  }
+  }*/
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscr => subscr.unsubscribe());

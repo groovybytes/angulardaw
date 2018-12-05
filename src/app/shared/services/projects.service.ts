@@ -18,14 +18,11 @@ import {PatternsService} from "./patterns.service";
 import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
 import {AudioNodesService} from "./audionodes.service";
 import {TrackCategory} from "../../model/daw/TrackCategory";
-import {DesktopDto} from "../../model/daw/dto/DesktopDto";
 import {AudioContextService} from "./audiocontext.service";
 import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
-import {WindowPosition} from "../../desktop/model/WindowPosition";
-import {LayoutManagerService} from "../../desktop/layout-manager.service";
 
 
 @Injectable()
@@ -37,7 +34,6 @@ export class ProjectsService {
     private filesService: FilesApi,
     private matrixService: MatrixService,
     private trackService: TracksService,
-    private layout:LayoutManagerService,
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
     private samplesService: SamplesApi,
@@ -64,7 +60,7 @@ export class ProjectsService {
       project.name = name;
       project.nodes = [];
 
-      this.layout.createDefaultLayout();
+      //!todo t this.layout.createDefaultLayout();
 
       let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
@@ -172,7 +168,7 @@ export class ProjectsService {
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
 
-    projectDto.desktop = this.layout.serialize();
+    //!todo tprojectDto.desktop = this.layout.serialize();
 
     project.tracks.forEach(track => {
       let trackDto = this.trackService.convertTrackToJson(track);
@@ -228,7 +224,7 @@ export class ProjectsService {
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
 
-      this.layout.deSerialize(dto.desktop);
+      //!todo t this.layout.deSerialize(dto.desktop);
 
       this.filesService.getFile(this.config.getAssetsUrl("plugins.json"))
         .then(plugins => {

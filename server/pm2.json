@@ -1,14 +1,28 @@
 {
-  "apps" : [{
-    "name"        : "audiotools",
-"cwd":"audiotools",
-    "script"      : "./app.js",
-    "watch"       : true,
-    "env": {
-      "NODE_ENV": "development"
+  "apps": [
+    {
+      "name": "audiotools",
+      "cwd": "audiotools",
+      "script": "./app.js",
+      "watch": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
     },
-    "env_production" : {
-       "NODE_ENV": "production"
+    {
+      "name": "angular2-desktop",
+      "cwd": "angular2-desktop",
+      "script": "./app.js",
+      "watch": true,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
     }
-  }]
+  ]
 }

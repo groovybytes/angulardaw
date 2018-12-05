@@ -1,6 +1,7 @@
+<!--
 <div class="card h-100">
   <div class="card-header">
-    <card-header [window]="getWindow()"></card-header>
+    &lt;!&ndash;<card-header [window]="getWindow()"></card-header>&ndash;&gt;
   </div>
   <div class="card-body">
 
@@ -14,6 +15,14 @@
     <sequencer-footer *ngIf="pattern" [project]="project" [pattern]="pattern"></sequencer-footer>
   </div>
 </div>
+-->
+
+
+<drag-container>
+  <event-table [project]="project" [pattern]="pattern" [cellWidth]="cellWidth" [cellHeight]="cellHeight"
+               #et></event-table>
+</drag-container>
+
 
 
 

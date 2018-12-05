@@ -12,7 +12,7 @@ import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioContextService} from "./audiocontext.service";
 import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {PluginsService} from "./plugins.service";
-import {LayoutManagerService} from "../../desktop/layout-manager.service";
+
 
 @Injectable()
 export class TracksService {
@@ -20,7 +20,6 @@ export class TracksService {
   constructor(
     private audioContext: AudioContextService,
     private audioNodesService: AudioNodesService,
-    private layout:LayoutManagerService,
     private pluginService:PluginsService
   ) {
 

@@ -12,7 +12,8 @@ import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
-import {TestModule} from "./test/test.module";
+import {Angular2DesktopModule} from "angular2-desktop";
+
 
 @NgModule({
   declarations: [
@@ -29,8 +30,7 @@ import {TestModule} from "./test/test.module";
     HttpClientModule,
     AuthenticationModule,
     ProjectModule,
-    TestModule
-
+    Angular2DesktopModule
 
   ],
   providers: [

@@ -7,10 +7,6 @@ import {PressButtonComponent} from "./press-button/press-button.component";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
 import {TestsComponent} from "./tests/tests.component";
 import {BootstrapModalDirective} from "./bootstrap-modal.directive";
-import {InteractDirective} from "./directives/interact.directive";
-import {ResizableDirective} from "./directives/resizable.directive";
-import {DraggableDirective} from "./directives/draggable.directive";
-import {JqueryDraggableDirective} from "./directives/jquery.draggable.directive";
 import { ColorpickerComponent } from './colorpicker/colorpicker.component';
 
 
@@ -22,10 +18,6 @@ import { ColorpickerComponent } from './colorpicker/colorpicker.component';
     ToolbarComponent,
     TestsComponent,
     BootstrapModalDirective,
-    InteractDirective,
-    ResizableDirective,
-    DraggableDirective,
-    JqueryDraggableDirective,
     ColorpickerComponent
   ],
   imports: [
@@ -42,9 +34,6 @@ import { ColorpickerComponent } from './colorpicker/colorpicker.component';
     PressButtonComponent,
     ToolbarComponent,
     BootstrapModalDirective,
-    InteractDirective,
-    ResizableDirective,
-    JqueryDraggableDirective,
     ColorpickerComponent
 
   ]

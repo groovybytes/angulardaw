@@ -1,4 +1,4 @@
-@import "../../variables";
+@import "variables";
 
 .vertical-line{
   width:100%;
@@ -7,24 +7,8 @@
   background-color: $secondary;
 }
 
-.drag-container {
 
-  //height:95vh;
-}
 
-.main-container {
-  //height: $main-container-height;
-}
-
-.top-navbar {
-  height: $header-height;
-  min-height: $header-height;
-  background-color: $secondary;
-  z-index: $z-index-navbar;
-  .btn {
-    margin-right: 5px;
-  }
-}
 
 .tab-pane {
   height: $footer-height;
@@ -52,3 +36,8 @@ nav {
   }
 
 }
+:host{
+  width: 100%;
+  height: 100%;
+}
+

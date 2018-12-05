@@ -1,0 +1,18 @@
+@import "./theme/variables";
+@import "./theme/utils";
+
+
+.btn{
+
+  border: none;
+  color: white;
+  padding: 2px 4px;
+  text-align: center;
+  text-decoration: none;
+  //display: inline-block;
+  font-size: 16px;
+}
+
+.btn-primary{
+  background-color: theme-color("background");
+}
