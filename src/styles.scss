@@ -8,14 +8,20 @@
 @import 'scss/buttons';
 @import 'scss/navs';
 
-@import "scss/common";
 
+@import "scss/common";
 //a2d fixes
+
+.header{
+  height:40px !important; //$header height
+}
+
 .window-body{
   .body{
     padding:0 !important;
   }
 
-  //need window min width!
-}
 
+  //need window min width!
+  //btn-group conflict !
+}

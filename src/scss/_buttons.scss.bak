@@ -1,34 +1,9 @@
-@import "./theme/variables";
-@import "./theme/utils";
+@import "../../variables";
 
-
-.btn{
-
-  border: none;
-  color: theme-color("foreground");
-  padding: 2px 4px;
-  text-align: center;
-  text-decoration: none;
-  background-color:  theme-color("background","light");
-
-  @include text-setting("base");
-
-  &:hover {
-    transform: scale(1.1);
-    filter:brightness(90%);
-  }
-
-  &.active{
-    background-color: theme-color("accent");
-  }
-}
-
-
-
-/*$default-btn-color: $black;
+$default-btn-color: $black;
 .default-btn {
-  // @include button-variant($color-2, $black, darken($color-2, 10%));*!
-  !*@include button-outline-variant($color-4,red,yellow,blue);*!
+  // @include button-variant($color-2, $black, darken($color-2, 10%));*/
+  /*@include button-outline-variant($color-4,red,yellow,blue);*/
   color: $black;
   border-color: darken($color-2,5%);
 
@@ -51,8 +26,8 @@
 }
 
 .naked-btn {
-  // @include button-variant($color-2, $black, darken($color-2, 10%));*!
-  !*@include button-outline-variant($color-4,red,yellow,blue);*!
+  // @include button-variant($color-2, $black, darken($color-2, 10%));*/
+  /*@include button-outline-variant($color-4,red,yellow,blue);*/
   //color: $color-3;
   //border-color: darken($color-2,5%);
 
@@ -94,5 +69,4 @@
   &.active {
     background-color: darken(royalblue, 10%);
   }
-}*/
-
+}

@@ -1,3 +1,4 @@
+/*
 .btn{
   margin-right: 5px;
   margin-left: 5px;
@@ -9,4 +10,14 @@
 
 .toggle-button {
   padding: 0;
+}
+*/
+
+.button-group{
+
+}
+:host {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto;
 }

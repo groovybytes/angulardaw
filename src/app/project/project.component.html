@@ -56,10 +56,36 @@
 
       </div>
     </a2d-window>
+    <a2d-window
+      [id]="'pads'"
+      [title]="'pads'"
+      [state]="0"
+      [dockPosition]="5"
+      [x]="400"
+      [y]="400"
+      [alwaysOnTop]="true"
+      [showCloseBtnOnly]="false"
+      [showDockingTools]="true"
+      [width]="400"
+      [height]="400">
+      <div class="header">
+      </div>
+      <div class="body">
+        <pads  [rows]="3" [columns]="3"
+               project="project"
+               [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
+
+        </pads>
+
+      </div>
+    </a2d-window>
   </div>
 
+  <div class="bar-left">
+    <a2d-shortcut [windowId]="'pads'" [icon]="'/assets/images/icons/chrome.png'"></a2d-shortcut>
+  </div>
 </a2d-desktop>
-
+<recorder [project]="project"></recorder>
 <!--
 <a2d-desktop >
   <div class="windows">
@@ -168,7 +194,7 @@
 
 
   <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
-  <recorder [project]="project"></recorder>
+
 
   <app-footer [project]="project"></app-footer>
 </div>-->
