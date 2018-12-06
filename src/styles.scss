@@ -6,29 +6,16 @@
 @import 'scss/utils';
 @import 'scss/dropdowns';
 @import 'scss/buttons';
-@import "scss/theme/theme";
+@import 'scss/navs';
 
-:host /deep/{
+@import "scss/common";
 
-}
-.icon-image {
-  width: 30px;
-  height: 30px;
-}
+//a2d fixes
+.window-body{
+  .body{
+    padding:0 !important;
+  }
 
-body{
-  background-color: white;
-}
-
-html, body {margin: 0; height: 100%; overflow: hidden}
-
-.no-wrap{
-  white-space: nowrap;
-  display:inline-block !important;
-}
-
-.window-body,.body{
-  height:100%;
-  width:100%;
+  //need window min width!
 }
 

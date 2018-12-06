@@ -3,13 +3,13 @@
 <button type="button"
         (click)="pattern.quantizationEnabled.next(!pattern.quantizationEnabled.getValue())"
         [ngClass]="{'active':pattern.quantizationEnabled.getValue()}"
-        class="btn btn-secondary">
+        class="btn ">
   Q
 </button>
 <button type="button" class="btn record-btn" (click)="toggleRecord()">REC</button>
 <button type="button"
         (click)="toggleClip()"
-        class="btn btn-primary toggle-button rounded-0 h-100">
+        class="btn  toggle-button rounded-0 h-100">
   <i class="fas fa-play-circle fa-2x" *ngIf="!clipIsRunning()"></i>
   <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="clipIsRunning()"></i>
 </button>

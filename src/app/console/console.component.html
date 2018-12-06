@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-6">
     <div class="btn-group-vertical justify-content-start" role="group">
-      <button type="button" class="btn default-btn"
+      <button type="button" class="btn "
               [ngClass]="{'active':track.controlParameters.mute.getValue()===false}"
               (click)="mute()">
         <span>1</span>
       </button>
-      <button type="button" class="btn default-btn"
+      <button type="button" class="btn "
               [ngClass]="{'active':track.controlParameters.solo.getValue()}"
               (click)="solo()">S
       </button>
-      <button type="button" class="btn default-btn" (click)="arm()"><i
+      <button type="button" class="btn " (click)="arm()"><i
         class="fas fa-circle"></i></button>
     </div>
 

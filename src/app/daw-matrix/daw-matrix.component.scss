@@ -1,10 +1,8 @@
 @import "variables";
-@import "add-row-btn";
 @import "matrix-table";
 
-.menu-btn, .body-menu-btn {
+.menu-btn {
   width: 30px;
-
   height:$header-height;
   &.menu-open {
     filter: brightness(50%);
@@ -33,16 +31,6 @@
 
 }
 
-.toggle-button {
-
-  height: 100%;
-
-}
-
-.scene-toggle-btn {
-  width: 100%;
-  height: 100%;
-}
 
 :host {
   height:100%;

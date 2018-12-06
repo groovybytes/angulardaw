@@ -11,25 +11,24 @@
       [width]="400"
       [height]="400">
       <div class="header">
-        <form class="form-inline ">
-          <div class="w-50">
-            <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
-                    (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
-
-            <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
-                        (userChange)="changeTempo($event)">
-            </ng5-slider>
-            <span>&nbsp;{{project?.transportSettings.global.bpm}}</span>
-
-          </div>
-          <div class="w-25 ">
-            <div class="btn-group float-right">
-              <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
-              <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+        <ul class="nav">
+          <li>
+            <a [ngClass]="{'active':project?.metronomeEnabled | async}"
+               href [routerLink]=""  (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
+            </a>
+          </li>
+          <li>
+            <div>
+              <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
+                          (userChange)="changeTempo($event)">
+              </ng5-slider>
             </div>
-          </div>
 
-        </form>
+          </li>
+          <li><a href [routerLink]="">{{project?.transportSettings.global.bpm}}</a></li>
+          <li class="float-right"><a  href [routerLink]="" (click)="close()"><i class="fas fa-times"></i></a></li>
+          <li class="float-right"><a  href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
+        </ul>
       </div>
       <div class="body">
 
@@ -109,7 +108,7 @@
 <!--<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
   <form class="form-inline w-100 h-100">
     <div class="w-50 h-100">
-      <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
+      <button type="button" class="btn " [ngClass]="{'active':project?.metronomeEnabled | async}"
               (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
 
       <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
@@ -120,8 +119,8 @@
     </div>
     <div class="w-25 ">
       <div class="btn-group float-right">
-        <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
-        <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+        <button class="btn  " type="button" (click)="save()"><i class="far fa-save"></i></button>
+        <button class="btn  " type="button" (click)="close()"><i class="fas fa-times"></i></button>
       </div>
     </div>
 

@@ -2,17 +2,17 @@
   <form class="form-inline w-100 h-100">
     <div class="w-25 h-100">
 
-      <!--   <button class="btn default-btn h-100" type="button"
+      <!--   <button class="btn  h-100" type="button"
                  [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
                  (click)="toggleSequencer()">Sequencer
          </button>
-         <button class="btn default-btn h-100" type="button"
+         <button class="btn  h-100" type="button"
                  [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
                  (click)="togglePlugin()">Plugin
          </button>-->
     </div>
     <div class="w-50 h-100">
-      <button type="button" class="btn default-btn" [ngClass]="{'active':project?.metronomeEnabled | async}"
+      <button type="button" class="btn " [ngClass]="{'active':project?.metronomeEnabled | async}"
               (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
 
       <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
@@ -23,8 +23,8 @@
     </div>
     <div class="w-25 ">
       <div class="btn-group float-right">
-        <button class="btn default-btn " type="button" (click)="save()"><i class="far fa-save"></i></button>
-        <button class="btn default-btn " type="button" (click)="close()"><i class="fas fa-times"></i></button>
+        <button class="btn  " type="button" (click)="save()"><i class="far fa-save"></i></button>
+        <button class="btn  " type="button" (click)="close()"><i class="fas fa-times"></i></button>
       </div>
     </div>
 

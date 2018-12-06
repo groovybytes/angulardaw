@@ -17,6 +17,7 @@ import {SharedModule} from "../shared/shared.module";
 import {CoreModule} from "../core/core.module";
 import {PadsModule} from "../pads/pads.module";
 import {Angular2DesktopModule} from "angular2-desktop";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {Angular2DesktopModule} from "angular2-desktop";
     ApiModule,
     UiModule,
     SharedModule,
+    RouterModule,
     CoreModule,
     Angular2DesktopModule
   ],

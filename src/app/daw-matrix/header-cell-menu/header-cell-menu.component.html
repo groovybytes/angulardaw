@@ -1,20 +1,15 @@
-<div class="btn-group dropright h-100 float-right">
-  <button type="button" class="btn default-btn dropdown-toggle border-0 btn-block rounded-0 cell-btn"
-          [ngStyle]="{'background-color':color}"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="dropdown">
+  <button class="dropbtn transparent" type="button">
     <i class="fas fa-angle-right"></i>
   </button>
-  <div class="dropdown-menu">
-    <a class="dropdown-item" href="#">Delete</a>
-    <div class="dropdown-divider"></div>
 
-
-    <a class="btn dropdown-item hvr-grow"
-       href
-       [routerLink]=""
+  <div class="dropdown-content">
+    <a href>Delete</a>
+    <a href
        (click)="selectColor(color)"
+       [routerLink]=""
        [ngStyle]="{'background-color':color}"
        *ngFor="let color of colors">&nbsp;</a>
-
   </div>
 </div>
+

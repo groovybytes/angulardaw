@@ -11,7 +11,7 @@
         [title]="cell.data?.name"
         *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
       <div class="header-text text-center">{{cell.data?.name}}</div>
-      <header-cell-menu class="menu-btn float-right"
+      <header-cell-menu class="float-right"
                         (colorChanged)="colorChanged($event,cell.trackId)"
                         [colors]="project?.colors"
                         [color]="getTrack(cell.trackId)?.color">
@@ -32,12 +32,12 @@
     <td class="row-header">
       <div class="row">
         <div class="col-6">
-          <span class="">{{i+1}}</span>
+          <span class="">{{i+1}}&nbsp;</span>
         </div>
         <div class="col-6">
           <button type="button"
                   (click)="onRowHeaderClicked(i)"
-                  class="btn naked-btn scene-toggle-btn rounded-0">
+                  class="btn transparent w-100 h-100">
             <i class="fas fa-play fa-2x" *ngIf="project.activeSceneRow!=i"></i>
             <i class="fas fa-stop fa-2x" *ngIf="project.activeSceneRow===i"></i>
           </button>
@@ -45,10 +45,10 @@
       </div>
 
       <!-- <div class="btn-group w-100" role="group" aria-label="First group">
-      &lt;!&ndash;   <button type="button" class="btn default-btn w-25" (click)="removeRow(i)"><i class="far fa-trash-alt"></i>
+      &lt;!&ndash;   <button type="button" class="btn  w-25" (click)="removeRow(i)"><i class="far fa-trash-alt"></i>
          </button>&ndash;&gt;
-         <button type="button" class="btn default-btn w-25 "><i class="fas fa-stop"></i></button>
-         <button type="button" class="btn default-btn w-25"><i class="fas fa-play"></i></button>
+         <button type="button" class="btn  w-25 "><i class="fas fa-stop"></i></button>
+         <button type="button" class="btn  w-25"><i class="fas fa-play"></i></button>
 
        </div>-->
 
@@ -78,12 +78,12 @@
       <div class="cell-container" *ngIf="cell.data && !cell.patternMenu" (dblclick)="onCellContainerClicked(cell)">
         <button type="button"
                 (click)="onCellBtnClicked(cell,$event)"
-                class="btn naked-btn toggle-button shadow-sm float-left rounded-0 cell-btn">
+                class="btn h-100 float-left transparent">
           <i class="fas fa-play fa-2x" *ngIf="!project.isRunningWithChannel(cell.data.id)"></i>
           <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunningWithChannel(cell.data.id)"></i>
         </button>
         <button type="button"
-                class="btn btn-sm default-btn border-0  rounded-0 float-right cell-btn menu-btn h-100"
+                class="btn float-right menu-btn"
                 (click)="bodyCellMenuBtnClicked(cell)"
                 [ngClass]="{'menu-open':cell.menuOpen}"
                 [ngStyle]="{'background-color':getTrack(cell.trackId).color}">
@@ -108,7 +108,7 @@
       <button
         *ngIf="project?.matrix.rowHeader.length>0"
         (click)="addRow()"
-        class="btn btn-primary add-row-btn">
+        class="btn">
         <span>Add Row </span>
       </button>
     </td>

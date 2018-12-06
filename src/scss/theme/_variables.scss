@@ -4,37 +4,37 @@ $base-line-height: 1.25 * $base-font-size;
 
 $theme-colors: (
   'primary': (
-    'base': #F2F1F0,
-    'light': lighten(#F2F1F0,$lightDarkOffset),
-    'dark': darken(#F2F1F0,$lightDarkOffset)
+    'base': #555555,
+    'light': lighten(#555555,$lightDarkOffset),
+    'dark': darken(#555555,$lightDarkOffset)
   ),
   'accent': (
-    'base': #E15423,
-    'light': #DA8A70,
-    'dark': #E05120
+    'base': #E7650F,
+    'light': lighten(#E7650F,$lightDarkOffset),
+    'dark':  darken(#E7650F,$lightDarkOffset)
   ),
   'foreground': (
-    'base': #DFDBD2,
-    'light': lighten(#DFDBD2,$lightDarkOffset),
-    'dark': darken(#DFDBD2,$lightDarkOffset)
+    'base': #323232,
+    'light': lighten(#323232,$lightDarkOffset),
+    'dark': darken(#323232,$lightDarkOffset)
   ),
   'background': (
-    'base': #4F4D46,
-    'light': #83827C,
-    'dark': darken(#4F4D46,$lightDarkOffset)
+    'base': #8D8D8D,
+    'light': lighten(#8D8D8D,$lightDarkOffset),
+    'dark': #5A5A5A
   )
 );
 
 //linear-gradient(#8B8A84, #5F5E59)  !default;
 $contrast-colors: (
   'dark': (
-    'primary': #5E2750,
-    'secondary': rgba(255, 255, 255, .70),
+    'primary': #FFC907,
+    'secondary': #FF3223,
     'disabled': rgba(255, 255, 255, .5),
-    'hint': rgba(255, 255, 255, .12)
+    'hint': #19E9FF
   ),
   'light': (
-    'primary': #77216F,
+    'primary': rgba(255, 255, 255, .5),
     'secondary': rgba(0, 0, 0, .54),
     'disabled': rgba(0, 0, 0, .38),
     'hint': rgba(0, 0, 0, .12)

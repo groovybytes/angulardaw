@@ -5,14 +5,96 @@
 .btn{
 
   border: none;
-  color: white;
+  color: theme-color("foreground");
   padding: 2px 4px;
   text-align: center;
   text-decoration: none;
-  //display: inline-block;
-  font-size: 16px;
+  background-color:  theme-color("background","light");
+
+  @include text-setting("base");
+
+  &:hover {
+    transform: scale(1.1);
+    filter:brightness(90%);
+  }
+
+  &.active{
+    background-color: theme-color("accent");
+  }
 }
 
 .btn-primary{
   background-color: theme-color("background");
 }
+
+/*$default-btn-color: $black;
+.default-btn {
+  // @include button-variant($color-2, $black, darken($color-2, 10%));*!
+  !*@include button-outline-variant($color-4,red,yellow,blue);*!
+  color: $black;
+  border-color: darken($color-2,5%);
+
+  background-color: $color-2;
+
+  border-radius: 0;
+
+  &.active {
+    background-color: $yellow !important;
+    //filter: brightness(80%);
+  }
+  &:hover {
+    background-color: lighten($color-2,5%);
+  }
+
+  outline: none;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.naked-btn {
+  // @include button-variant($color-2, $black, darken($color-2, 10%));*!
+  !*@include button-outline-variant($color-4,red,yellow,blue);*!
+  //color: $color-3;
+  //border-color: darken($color-2,5%);
+
+  background-color: transparent;
+
+  border-radius: 0;
+
+  &:hover {
+    transform: scale(1.1);
+    filter:brightness(90%);
+  }
+
+  outline: none;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+
+.record-btn {
+  @extend .default-btn;
+  color:$black;
+  background-color: $red !important;
+
+  &:hover {
+    filter: brightness(97%);
+  }
+}
+
+.mute-btn {
+  background-color: $red;
+  &.active {
+    background-color: darken($red, 10%);
+  }
+}
+
+.solo-btn {
+  background-color: royalblue;
+  &.active {
+    background-color: darken(royalblue, 10%);
+  }
+}*/
+

@@ -3,30 +3,36 @@
 @import "bootstrap_conflicts";
 
 .angular2-desktop {
-  background: url("/assets/images/ubuntu-wallpaper.jpg") no-repeat center center fixed;
+  background: url("/assets/images/ableton.png") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 
+.window{
+  min-height: 300px !important;
+}
+
 .window-header {
-  background-color: theme-color('background');
+  background-color: theme-color('background',"dark") !important;
   @include text-color();
+
 
 }
 
 .window-body {
-  background-color: theme-color('primary');
-  border-left: 2px solid theme-color('background');
-  border-right: 2px solid theme-color('background');
-  border-bottom: 1px solid theme-color('background');
+  background-color: theme-color('background');
+  border-left: 2px solid theme-color('primary');
+  border-right: 2px solid theme-color('primary');
+  border-bottom: 1px solid theme-color('primary');
 }
 
 .window-btn {
-  background-image: linear-gradient(theme-color('background', 'light'), darken(theme-color('background', 'light'), 10%));
+  background-image: none;
+  background-color: theme-color('background');
   border: 1px solid theme-color('background', 'dark');
-  color: theme-color('background');
+  color: theme-color('foreground');
   &.danger {
     background-color: theme-color('accent');
   }
