@@ -12,7 +12,9 @@ import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
-import {Angular2DesktopModule} from "angular2-desktop";
+import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
+
+
 
 
 @NgModule({
@@ -45,6 +47,7 @@ import {Angular2DesktopModule} from "angular2-desktop";
    /* {provide: ErrorHandler, useClass: SystemMonitorService}*/
 
   ],
+  entryComponents:[WindowComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

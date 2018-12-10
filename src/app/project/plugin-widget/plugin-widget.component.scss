@@ -1,0 +1,17 @@
+@import "theme/variables";
+@import "theme/utils";
+
+:host{
+
+}
+
+.widget-header{
+  background-color: theme-color("accent");
+  height:30px;
+  line-height: 30px;
+  text-align: center;
+}
+.widget-body{
+  background-color: contrastColor("light");
+  height:100%;
+}

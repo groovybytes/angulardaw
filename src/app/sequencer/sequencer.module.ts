@@ -15,6 +15,7 @@ import {SequencerInteractionService} from "./sequencer.interaction.service";
 import {MouseTrapEvents} from "./mousetrap/MouseTrapEvents";
 import {MouseGesturesService} from "./mousetrap/mouse-gestures.service";
 import {CoreModule} from "../core/core.module";
+import {A2dClientService, Angular2DesktopModule} from "angular2-desktop";
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {CoreModule} from "../core/core.module";
     SharedModule,
     UiModule,
     Ng5SliderModule,
-    CoreModule
+    CoreModule,
+    Angular2DesktopModule
   ],
   providers: [
     SequencerService,

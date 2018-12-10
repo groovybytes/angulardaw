@@ -1,20 +1,19 @@
-<a2d-desktop *ngIf="project && project.ready" >
+<a2d-desktop *ngIf="project && project.ready">
   <div class="windows">
     <a2d-window
-      [id]="'firefox'"
-      [title]="'firefox'"
-      [state]="4"
-      [dockPosition]="2"
+      [id]="'matrix'"
+      [title]="''"
+      [state]="WindowState.DOCKED"
+      [dockPosition]="DockPosition.TOP"
       [x]="400"
       [y]="400"
-      [showHeader]="true"
       [width]="400"
       [height]="400">
       <div class="header">
         <ul class="nav">
           <li>
             <a [ngClass]="{'active':project?.metronomeEnabled | async}"
-               href [routerLink]=""  (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
+               href [routerLink]="" (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
             </a>
           </li>
           <li>
@@ -26,8 +25,8 @@
 
           </li>
           <li><a href [routerLink]="">{{project?.transportSettings.global.bpm}}</a></li>
-          <li class="float-right"><a  href [routerLink]="" (click)="close()"><i class="fas fa-times"></i></a></li>
-          <li class="float-right"><a  href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
+          <li class="float-right"><a href [routerLink]="" (click)="close()"><i class="fas fa-times"></i></a></li>
+          <li class="float-right"><a href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
         </ul>
       </div>
       <div class="body">
@@ -39,17 +38,14 @@
     <a2d-window
       [id]="'sequencer'"
       [title]="'sequencer'"
-      [state]="4"
-      [dockPosition]="5"
+      [state]="WindowState.DOCKED"
+      [dockPosition]="DockPosition.BOTTOM_LEFT"
       [x]="400"
       [y]="400"
-      [alwaysOnTop]="false"
-      [showCloseBtnOnly]="false"
-      [showDockingTools]="true"
       [width]="400"
       [height]="400">
       <div class="header">
-        <sequencer-footer  [project]="project" [pattern]="project.selectedPattern | async"></sequencer-footer>
+        <sequencer-footer [project]="project" [pattern]="project.selectedPattern | async"></sequencer-footer>
       </div>
       <div class="body">
         <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
@@ -57,35 +53,36 @@
       </div>
     </a2d-window>
     <a2d-window
-      [id]="'pads'"
-      [title]="'pads'"
-      [state]="0"
-      [dockPosition]="5"
+      [id]="'plugin-panel'"
+      [title]="'plugins'"
+      [state]="WindowState.DOCKED"
+      [dockPosition]="DockPosition.BOTTOM_RIGHT"
       [x]="400"
       [y]="400"
-      [alwaysOnTop]="true"
-      [showCloseBtnOnly]="false"
-      [showDockingTools]="true"
       [width]="400"
       [height]="400">
-      <div class="header">
-      </div>
       <div class="body">
-        <pads  [rows]="3" [columns]="3"
-               project="project"
-               [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
-
-        </pads>
+        <plugin-panel [project]="project" [track]="project.selectedTrack.getValue()"></plugin-panel>
 
       </div>
     </a2d-window>
+
   </div>
 
-  <div class="bar-left">
+  <!--<div class="bar-left">
     <a2d-shortcut [windowId]="'pads'" [icon]="'/assets/images/icons/chrome.png'"></a2d-shortcut>
-  </div>
+  </div>-->
 </a2d-desktop>
-<recorder [project]="project"></recorder>
+<ng-template #pads let-data="data">
+ <!-- <pads  [rows]="3" [columns]="3"
+         project="data.project"
+         [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
+
+  </pads>-->
+  {{data.project.id}}
+</ng-template>
+
+<recorder *ngIf="project" [project]="project"></recorder>
 <!--
 <a2d-desktop >
   <div class="windows">
@@ -127,8 +124,6 @@
 
 </a2d-desktop>
 -->
-
-
 
 
 <!--<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">

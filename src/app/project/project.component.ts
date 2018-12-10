@@ -1,20 +1,21 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
 import {Project} from "../model//daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
+import {DesktopApplication,A2dClientService,WindowState,DockPosition} from "angular2-desktop";
 
 @Component({
   selector: 'project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
-export class ProjectComponent implements OnInit, OnDestroy {
+export class ProjectComponent implements OnInit, OnDestroy,AfterViewInit {
 
 
-
+  @ViewChild('pads') pads: TemplateRef<any>;
   project: Project;
   sideBarOpen: boolean = true;
   slideOut: boolean = false;
@@ -30,11 +31,14 @@ export class ProjectComponent implements OnInit, OnDestroy {
   };
 
 
+  WindowState=WindowState;
+  DockPosition=DockPosition;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
+    private desktopService: A2dClientService,
     private projectsApi: ProjectsApi,
     private system: System) {
 
@@ -153,6 +157,17 @@ export class ProjectComponent implements OnInit, OnDestroy {
        debugger;
        this.system.error(error)
      });*/
+  }
+
+
+  ngAfterViewInit(): void {
+    let pads = new DesktopApplication();
+    pads.bodyTemplate = this.pads;
+    //myGreatApp.headerTemplate = this.myGreatAppHeader;
+    pads.id = 'pads';
+    pads.title = 'pads';
+
+    this.desktopService.addApplication(pads);
   }
 
 }

@@ -3,6 +3,7 @@ import {Pattern} from "../../model/daw/Pattern";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {Project} from "../../model/daw/Project";
 import {PatternsService} from "../../shared/services/patterns.service";
+import {A2dClientService,WindowParams} from "angular2-desktop";
 
 @Component({
   selector: 'sequencer-footer',
@@ -14,7 +15,7 @@ export class SequencerFooterComponent implements OnInit {
   @Input() pattern: Pattern;
   @Input() project: Project;
 
-  constructor(private patternsService: PatternsService) {
+  constructor(private patternsService: PatternsService,private desktop:A2dClientService) {
   }
 
   ngOnInit() {
@@ -35,6 +36,22 @@ export class SequencerFooterComponent implements OnInit {
 
   noteLengthSelected(value: NoteLength): void {
     console.log(value);
+  }
+
+  openPads():void{
+   /* let params = new WindowParams(
+      null,
+      100,
+      100,
+      200,
+      200,
+      {project:this.project},null
+    );
+
+    this.project.selectedTrack.getValue()?.plugins[0].getInfo().pad
+
+    let windowId = this.desktop.createWindow("pads",params);
+    this.desktop.openWindow(windowId);*/
   }
 
   toggleRecord(): void {

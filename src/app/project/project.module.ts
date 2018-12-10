@@ -18,6 +18,7 @@ import {CoreModule} from "../core/core.module";
 import {PadsModule} from "../pads/pads.module";
 import {Angular2DesktopModule} from "angular2-desktop";
 import {RouterModule} from "@angular/router";
+import { PluginWidgetComponent } from './plugin-widget/plugin-widget.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {RouterModule} from "@angular/router";
     ProjectObserverComponent,
     ProjectsCreateComponent,
     RecorderComponent,
-    TransportComponent
+    TransportComponent,
+    PluginWidgetComponent
   ],
   imports: [
     BrowserModule,

@@ -1,18 +1,3 @@
-<!--
-<div class="card h-100">
-  <div class="card-header drag-handle">
-  &lt;!&ndash;  <span>{{plugin.getInfo().name}}</span>&ndash;&gt;
-    <button type="button" class="btn  float-right" (click)="close()"><i class="fas fa-times"></i></button>
-    <ng-content select=".header"></ng-content>
-  </div>
-  <div class="card-body">
-    <pads  class="body"  [rows]="3" [columns]="3"
-           (noteStart)="onNoteOutStart($event)"
-           (noteEnd)="onNoteOutEnd()"
-           *ngIf="project.getPlugin(pluginId)"
-          [pad]="project.getPlugin(pluginId).getInfo().pad">
+<plugin-widget  *ngFor="let plugin of track?.plugins" [plugin]="plugin" [project]="project">
 
-    </pads>
-  </div>
-</div>
--->
+</plugin-widget>
