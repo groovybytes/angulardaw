@@ -20,23 +20,23 @@ export class TracksService {
   constructor(
     private audioContext: AudioContextService,
     private audioNodesService: AudioNodesService,
-    private pluginService:PluginsService
+    private pluginService: PluginsService
   ) {
 
   }
 
 
-  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>, category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>,hint?:string): Track {
-    let trackId=_.uniqueId("track-"+(hint?hint:""));
-    let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER,"track: "+trackId);
-    let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN,"track: "+trackId);
+  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>, category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>, hint?: string): Track {
+    let trackId = _.uniqueId("track-" + (hint ? hint : ""));
+    let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, "track: " + trackId);
+    let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, "track: " + trackId);
 
     let track = new Track(trackId, inputNode, outputNode, this.audioContext.getAudioContext());
 
     nodes.push(track.inputNode);
     nodes.push(track.outputNode);
 
-    if (category === TrackCategory.DEFAULT || category===TrackCategory.SYSTEM) track.outputNode.connect(masterIn);
+    if (category === TrackCategory.DEFAULT || category === TrackCategory.SYSTEM) track.outputNode.connect(masterIn);
     else {
       track.inputNode.connect(track.outputNode);
       track.outputNode.node.connect(this.audioContext.getAudioContext().destination);
@@ -56,10 +56,10 @@ export class TracksService {
       let track: Track = this.createTrack(project.nodes, TrackCategory.DEFAULT, project.getMasterBus().inputNode);
       project.tracks.push(track);
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
-      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"),pluginInfo,project)
+      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"), pluginInfo, project)
         .then(plugin => {
           track.plugins = [plugin];
-          this.pluginService.setupInstrumentRoutes(project,track,plugin);
+          this.pluginService.setupInstrumentRoutes(project, track, plugin);
 
           //this.layout.addWindow(plugin.getId());
           project.plugins.push(plugin);
@@ -95,10 +95,11 @@ export class TracksService {
     trackDto.outputNode = track.outputNode.id;
     track.plugins.forEach(p => {
       let dto = new PluginDto();
-      dto.id=p.getId();
+      dto.id = p.getId();
       dto.pluginTypeId = p.getInfo().id;
       dto.inputNode = p.getInputNode().id;
       dto.outputNode = p.getOutputNode().id;
+      dto.pad = p.getInfo().pad;
       trackDto.plugins.push(dto);
     });
     trackDto.controlParameters = new TrackControlParametersDto();

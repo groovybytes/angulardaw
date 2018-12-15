@@ -7,8 +7,9 @@
     type="button"
     a2dShortCut
     (initialize)="initializeComponent($event)"
-    [windowId]="attachedWindow"
-    [appId]="'pads'">multiple instance app but shortcut attached to one window</button>
+    [linkId]="plugin.getId()"
+    [windowTitle]="plugin.getInfo().name"
+    [appId]="'pads'">Open</button>
 
 </div>
 

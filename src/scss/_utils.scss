@@ -37,3 +37,9 @@
   //grid-template-columns: auto;
 }
 
+@mixin vertical-center{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}

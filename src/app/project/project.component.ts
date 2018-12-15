@@ -170,10 +170,10 @@ export class ProjectComponent implements OnInit, OnDestroy,AfterViewInit {
     pads.singleInstanceMode=false;
     pads.defaultWindowParams=new WindowParams(
       null,
-      100,
+      400,
       100,
       200,
-      200,
+      600,
       'pads',
       true,
       true

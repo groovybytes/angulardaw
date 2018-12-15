@@ -16,6 +16,7 @@
 
 .window-header {
   background-color: theme-color('background',"dark") !important;
+  color:white !important;
   @include text-color();
 
 

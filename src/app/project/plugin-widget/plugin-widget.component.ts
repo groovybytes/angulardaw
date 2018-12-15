@@ -14,8 +14,6 @@ export class PluginWidgetComponent implements OnInit {
   @Input() plugin: WstPlugin;
   @Input() appId: string;
 
-  attachedWindow:string;
-
   constructor() {
   }
 
@@ -28,8 +26,6 @@ export class PluginWidgetComponent implements OnInit {
     event.component.project = this.project;
     event.component.plugin = this.plugin;
     event.component.pad = this.plugin.getInfo().pad;
-
-    this.attachedWindow=event.windowId;
   }
 
 }

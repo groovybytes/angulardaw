@@ -45,9 +45,10 @@
       [width]="400"
       [height]="400">
       <div class="header">
-        <sequencer-footer [project]="project" [pattern]="project.selectedPattern | async"></sequencer-footer>
+
       </div>
       <div class="body">
+        <sequencer-footer [project]="project" [pattern]="project.selectedPattern | async"></sequencer-footer>
         <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
 
       </div>
@@ -66,64 +67,11 @@
 
       </div>
     </a2d-window>
-
   </div>
-
-  <!--<div class="bar-left">
-    <a2d-shortcut [windowId]="'pads'" [icon]="'/assets/images/icons/chrome.png'"></a2d-shortcut>
-  </div>-->
 </a2d-desktop>
-<ng-template #pads let-data="data">
- <!-- <pads  [rows]="3" [columns]="3"
-         project="data.project"
-         [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
-
-  </pads>-->
-  {{data.project.id}}
-</ng-template>
 
 <recorder *ngIf="project" [project]="project"></recorder>
-<!--
-<a2d-desktop >
-  <div class="windows">
-    <a2d-window
-      [id]="'firefox'"
-      [title]="'firefox'"
-      [state]="4"
-      [dockPosition]="2"
-      [x]="400"
-      [y]="400"
-      [alwaysOnTop]="false"
-      [showCloseBtnOnly]="true"
-      [showDockingTools]="false"
-      [width]="400"
-      [height]="400">
-      <div class="body">
-        <daw-matrix [project]="project"></daw-matrix>
 
-      </div>
-    </a2d-window>
-    <a2d-window
-      [id]="'sequencer'"
-      [title]="'sequencer'"
-      [state]="4"
-      [dockPosition]="5"
-      [x]="400"
-      [y]="400"
-      [alwaysOnTop]="false"
-      [showCloseBtnOnly]="true"
-      [showDockingTools]="false"
-      [width]="400"
-      [height]="400">
-      <div class="body">
-        <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
-
-      </div>
-    </a2d-window>
-  </div>
-
-</a2d-desktop>
--->
 
 
 <!--<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">

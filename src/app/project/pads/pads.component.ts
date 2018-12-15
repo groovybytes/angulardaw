@@ -1,10 +1,19 @@
-
-import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChildren} from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  NgZone,
+  OnInit,
+  QueryList,
+  ViewChildren
+} from "@angular/core";
 import {Pad} from "../../model/daw/pad/Pad";
 import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {Project} from "../../model/daw/Project";
 import {NoteTrigger} from "../../model/daw/NoteTrigger";
-
+import {TriggerInfo} from "../../model/daw/pad/TriggerInfo";
 
 
 @Component({
@@ -22,13 +31,41 @@ export class PadsComponent implements OnInit, AfterViewInit {
   @ViewChildren('trigger') triggers: QueryList<ElementRef>;
 
   public size: number = 0;
+  public listenToKeyboard: boolean = false;
+  public keyToLearnTarget: TriggerInfo;
+
+  private padTriggers: Array<TriggerInfo>;
+  private currentNote:string;
+
+
+  @HostListener('window:keyup', ['$event'])
+  keyUpEvent(event: KeyboardEvent) {
+    if (this.keyToLearnTarget){
+      this.keyToLearnTarget.key=event.keyCode;
+      this.keyToLearnTarget=null;
+    }
+    else if (this.listenToKeyboard) {
+      this.onNoteOutEnd();
+    }
+    this.currentNote=null;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  keyDownEvent(event: KeyboardEvent) {
+    if (this.listenToKeyboard && !this.keyToLearnTarget) {
+      let trigger = this.padTriggers.find(trigger => trigger.key === event.keyCode);
+      if (trigger) {
+        this.currentNote=trigger.note;
+        this.onNoteOutStart({note: trigger.note});
+      }
+    }
+  }
 
   constructor(private element: ElementRef, private zone: NgZone) {
   }
 
   ngOnInit() {
-
-
+    this.padTriggers = [].concat.apply([], this.pad.grid);
   }
 
   getRows(): Array<number> {
@@ -37,6 +74,10 @@ export class PadsComponent implements OnInit, AfterViewInit {
 
   getColumns(): Array<number> {
     return Array(this.columns).fill(0);
+  }
+
+  getKeyString(code): string {
+    return String.fromCharCode(code);
   }
 
   ngAfterViewInit(): void {
@@ -69,13 +110,27 @@ export class PadsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private onNoteOutStart(event:{note:string}):void{
+  learnKey(triggerInfo: TriggerInfo): void {
+    if (!this.keyToLearnTarget) {
+      this.keyToLearnTarget = triggerInfo;
+    } else if (this.keyToLearnTarget.note === triggerInfo.note) {
+      this.keyToLearnTarget = null;
+    } else {
+      this.keyToLearnTarget = triggerInfo;
+    }
+
+  }
+
+  private onNoteOutStart(event: { note: string }): void {
     let wstPlugin = this.plugin as WstPlugin;
-    let trigger = new NoteTrigger(null,event.note);
-    wstPlugin.feed(trigger,0);
+    let trigger = new NoteTrigger(null, event.note);
+    this.currentNote=event.note;
+    wstPlugin.feed(trigger, 0);
     this.project.recordNoteStart.emit(trigger);
   }
-  private onNoteOutEnd():void{
+
+  private onNoteOutEnd(): void {
+    this.currentNote=null;
     this.project.recordNoteEnd.emit();
   }
 

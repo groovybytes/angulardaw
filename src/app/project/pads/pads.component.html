@@ -1,20 +1,28 @@
-<!--<div class="card">
-  <div class="card-header">
-<button type="button" class="btn " (click)="increaseSize()">+</button>
-<button type="button" class="btn " (click)="decreaseSize()">-</button>
-  </div>-->
+<div class="pad-header">
+  <button
+    type="button"
+    class="btn"
+    [ngClass]="{'active':listenToKeyboard}"
+    (click)="listenToKeyboard=!listenToKeyboard">Activate Keyboard</button>
+</div>
 
-test {{rows}}
-<table class="table table-bordered" *ngIf="pad">
-  <tbody>
-  <tr *ngFor="let row of pad.grid;let i=index">
-    <td #trigger
-        *ngFor="let triggerInfo of row;let j=index"
-        [attr.data-note]="triggerInfo.note"
-        [className]="'size-'+size">
-      <span>{{triggerInfo.title}}</span>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div class="grid-container">
+  <div
+    class="grid-item"
+    [ngClass]="{'active':currentNote === triggerInfo.note}"
+    *ngFor="let triggerInfo of padTriggers;let i =index"
+    #trigger
+    [attr.data-note]="triggerInfo.note">
+    <span>{{triggerInfo.title}}</span>
+    <span *ngIf="triggerInfo.key">({{getKeyString(triggerInfo.key)}})</span>
+    <button
+      (click)="learnKey(triggerInfo)"
+      [ngClass]="{'active':keyToLearnTarget && keyToLearnTarget.note===triggerInfo.note}"
+      type="button"
+      class="btn assign-btn">
+      assign key
+    </button>
+  </div>
+</div>
+
 

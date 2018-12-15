@@ -238,6 +238,9 @@ export class ProjectsService {
             t.plugins.forEach(pluginDto => {
               let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
               if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
+              if (pluginDto.pad){
+                pluginInfo.pad=pluginDto.pad;//override default pads
+              }
               let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo, project);
               pluginPromises.push(promise);
               promise.then(_plugin => {
