@@ -15,10 +15,12 @@ import {ApiModule} from "../api/api.module";
 import {UiModule} from "../ui/ui.module";
 import {SharedModule} from "../shared/shared.module";
 import {CoreModule} from "../core/core.module";
-import {PadsModule} from "../pads/pads.module";
 import {Angular2DesktopModule} from "angular2-desktop";
 import {RouterModule} from "@angular/router";
-import { PluginWidgetComponent } from './plugin-widget/plugin-widget.component';
+import {PluginWidgetComponent} from './plugin-widget/plugin-widget.component';
+import {PadsComponent} from "./pads/pads.component";
+import {PadsModule} from "./pads/pads.module";
+
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { PluginWidgetComponent } from './plugin-widget/plugin-widget.component';
   providers: [
 
   ],
+  entryComponents:[PadsComponent],
   exports: []
 })
 export class ProjectModule {

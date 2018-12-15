@@ -4,7 +4,8 @@
 <button type="button" class="btn " (click)="decreaseSize()">-</button>
   </div>-->
 
-<table class="table table-bordered">
+test {{rows}}
+<table class="table table-bordered" *ngIf="pad">
   <tbody>
   <tr *ngFor="let row of pad.grid;let i=index">
     <td #trigger

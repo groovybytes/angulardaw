@@ -1,8 +1,10 @@
-import {Pad} from "../model/daw/pad/Pad";
-import {WstPlugin} from "../model/daw/plugins/WstPlugin";
-import {Project} from "../model/daw/Project";
+
 import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChildren} from "@angular/core";
-import {NoteTrigger} from "../model/daw/NoteTrigger";
+import {Pad} from "../../model/daw/pad/Pad";
+import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
+import {Project} from "../../model/daw/Project";
+import {NoteTrigger} from "../../model/daw/NoteTrigger";
+
 
 
 @Component({

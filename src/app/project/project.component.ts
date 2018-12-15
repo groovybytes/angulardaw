@@ -5,7 +5,9 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {DesktopApplication,A2dClientService,WindowState,DockPosition} from "angular2-desktop";
+import {DesktopApplication, A2dClientService, WindowState, DockPosition, WindowParams} from "angular2-desktop";
+import {PadsComponent} from "./pads/pads.component";
+
 
 @Component({
   selector: 'project',
@@ -162,12 +164,22 @@ export class ProjectComponent implements OnInit, OnDestroy,AfterViewInit {
 
   ngAfterViewInit(): void {
     let pads = new DesktopApplication();
-    pads.bodyTemplate = this.pads;
-    //myGreatApp.headerTemplate = this.myGreatAppHeader;
+    pads.component=PadsComponent;
     pads.id = 'pads';
     pads.title = 'pads';
-
+    pads.singleInstanceMode=false;
+    pads.defaultWindowParams=new WindowParams(
+      null,
+      100,
+      100,
+      200,
+      200,
+      'pads',
+      true,
+      true
+    );
     this.desktopService.addApplication(pads);
+
   }
 
 }

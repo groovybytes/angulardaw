@@ -241,6 +241,7 @@ export class ProjectsService {
               let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo, project);
               pluginPromises.push(promise);
               promise.then(_plugin => {
+
                 _plugin.setInputNode(project.nodes.find(n => n.id === pluginDto.inputNode));
                 _plugin.setOutputNode(project.nodes.find(n => n.id === pluginDto.outputNode));
                 track.plugins.push(_plugin);

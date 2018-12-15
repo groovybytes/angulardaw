@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
-import {A2dClientService, WindowParams} from "angular2-desktop";
 import {Project} from "../../model/daw/Project";
+import {PadsComponent} from "../pads/pads.component";
 
 @Component({
   selector: 'plugin-widget',
@@ -10,28 +10,26 @@ import {Project} from "../../model/daw/Project";
 })
 export class PluginWidgetComponent implements OnInit {
 
-  @Input() project:Project;
-  @Input() plugin:WstPlugin;
-  @Input() appId:string;
+  @Input() project: Project;
+  @Input() plugin: WstPlugin;
+  @Input() appId: string;
 
-  constructor(private desktop:A2dClientService) { }
+  attachedWindow:string;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
-  open():void{
-     let params = new WindowParams(
-       null,
-       100,
-       100,
-       200,
-       200,
-       {project:this.project},null
-     );
+  initializeComponent(event:{component:PadsComponent,windowId:string}):void{
+    event.component.columns = 3;
+    event.component.rows = 3;
+    event.component.project = this.project;
+    event.component.plugin = this.plugin;
+    event.component.pad = this.plugin.getInfo().pad;
 
-
-     let windowId = this.desktop.createWindow("pads",params);
-     this.desktop.openWindow(windowId);
+    this.attachedWindow=event.windowId;
   }
 
 }

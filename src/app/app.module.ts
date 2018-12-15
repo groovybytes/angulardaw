@@ -15,8 +15,6 @@ import {CoreModule} from "./core/core.module";
 import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
 
 
-
-
 @NgModule({
   declarations: [
     AppComponent,

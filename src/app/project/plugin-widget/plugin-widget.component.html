@@ -2,6 +2,13 @@
   {{plugin.getInfo().name}}
 </div>
 <div class="widget-body">
-  <button type="button" class="btn" (click)="open()">Open</button>
+
+  <button
+    type="button"
+    a2dShortCut
+    (initialize)="initializeComponent($event)"
+    [windowId]="attachedWindow"
+    [appId]="'pads'">multiple instance app but shortcut attached to one window</button>
+
 </div>
 
