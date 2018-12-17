@@ -10,6 +10,7 @@ import {PadsComponent} from "./pads/pads.component";
 import {DawInfo} from "../model/DawInfo";
 import {PushComponent} from "../push/push/push.component";
 import {Subscription} from "rxjs";
+import {PushConfig} from "../push/model/PushConfig";
 
 
 @Component({
@@ -38,7 +39,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   WindowState = WindowState;
   DockPosition = DockPosition;
-  private subscriptions:Array<Subscription>=[];
+  private subscriptions: Array<Subscription> = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -156,7 +157,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.project.destroy();
-    this.subscriptions.forEach(subscr=>subscr.unsubscribe());
+    this.subscriptions.forEach(subscr => subscr.unsubscribe());
     /* .then(() => {
        console.log("context destroyed");
      })
@@ -202,15 +203,17 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.desktopService.addApplication(push);
 
-    setTimeout(()=>{
+    setTimeout(() => {
       this.desktopService.createWindow<PushComponent>("push", (push) => {
-        push.deviceEvent.subscribe(event=>{
+        push.deviceEvent.subscribe(event => {
           this.project.deviceEvents.emit(event);
         });
+        push.config = new PushConfig();
+
       }).then(windowId => {
         this.desktopService.openWindow(windowId);
       })
-    },500)
+    }, 500)
 
 
   }

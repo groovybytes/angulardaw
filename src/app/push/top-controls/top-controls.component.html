@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.listenToKeyboard}"
+  (click)="push.listenToKeyboard=!push.listenToKeyboard">Activate Keyboard</button>
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.mode===1}"
+  (click)="learnKeyClick()">Learn Keys</button>

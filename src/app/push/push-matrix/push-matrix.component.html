@@ -1,17 +1,18 @@
 <div class="grid-container">
   <div
     class="grid-item"
-    *ngFor="let pad of pads"
+    *ngFor="let pad of push.pads"
     [ngStyle]="{'grid-column':pad.column,'grid-row':pad.row}"
+    [ngClass]="pad.cssClass"
     [attr.data-note]="pad.note" #padElement>
 
     <span>{{pad.note}}</span>
     <span *ngIf="pad.keyBinding">({{pad.keyBinding}})</span>
    <!-- <button
-      (click)="learnKey(triggerInfo)"
-      [ngClass]="{'active':keyToLearnTarget && keyToLearnTarget.note===triggerInfo.note}"
+      (click)="learnKey(pad)"
+      [ngClass]="{'active':push.padKeyTarget && push.padKeyTarget.note===pad.note}"
       type="button"
-      class="btn assign-btn">
+      class="assign-btn">
       assign key
     </button>-->
   </div>
