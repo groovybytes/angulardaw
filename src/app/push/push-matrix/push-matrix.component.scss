@@ -1,0 +1,31 @@
+@import "utils";
+
+$pad-color: rgba(79, 93, 117, 1);
+:host{
+  display:grid;
+  grid-template-rows: 1fr;
+
+}
+.grid-container {
+  padding:5px;
+  display: grid;
+  overflow:hidden;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.grid-item {
+  position: relative;
+  background-color: $pad-color;
+  border:1px solid black;
+  @include vertical-center;
+
+  &.active{
+    background-color: lighten($pad-color,5%);
+  }
+  .assign-btn{
+    position: absolute;
+    bottom:0;
+    width:100%;
+  }
+}

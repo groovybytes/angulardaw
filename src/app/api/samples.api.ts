@@ -5,7 +5,7 @@ import {AudioContextService} from "../shared/services/audiocontext.service";
 import {System} from "../system/System";
 import {AppConfiguration} from "../app.configuration";
 import {Sample} from "../model/daw/Sample";
-import {Notes} from "../model/daw/Notes";
+import {Notes} from "../model/mip/Notes";
 import {Buffers} from "../model/utils/Buffers";
 
 

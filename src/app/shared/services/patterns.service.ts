@@ -3,9 +3,9 @@ import {Project} from "../../model/daw/Project";
 import {Pattern} from "../../model/daw/Pattern";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {NoteLength} from "../../model/mip/NoteLength";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import * as _ from "lodash";
 import {AudioContextService} from "./audiocontext.service";
+import {NoteEvent} from "../../model/mip/NoteEvent";
 
 @Injectable()
 export class PatternsService {
@@ -71,10 +71,10 @@ export class PatternsService {
     return patternClone;
   }
 
-  createMetronomeEvents(beatUnit:number): Array<NoteTrigger> {
+  createMetronomeEvents(beatUnit:number): Array<NoteEvent> {
     let events = [];
     for (let i = 0; i < beatUnit; i++) {
-      events.push(new NoteTrigger(null, i === 0 ? "A0" : "", i * MusicMath.getBeatTime(120)));
+      events.push(new NoteEvent( i === 0 ? "A0" : "", i * MusicMath.getBeatTime(120)));
     }
 
     return events;

@@ -1,8 +1,9 @@
 {
   "apps": [
+ 
     {
-      "name": "audiotools",
-      "cwd": "audiotools",
+      "name": "angular2-desktop",
+      "cwd": "angular2-desktop",
       "script": "./app.js",
       "watch": true,
       "env": {
@@ -12,9 +13,9 @@
         "NODE_ENV": "production"
       }
     },
-    {
-      "name": "angular2-desktop",
-      "cwd": "angular2-desktop",
+ {
+      "name": "audiotools",
+      "cwd": "audiotools",
       "script": "./app.js",
       "watch": true,
       "env": {

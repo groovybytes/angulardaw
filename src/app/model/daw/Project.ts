@@ -11,9 +11,11 @@ import {PluginInfo} from "./plugins/PluginInfo";
 import {ProjectSettings} from "./ProjectSettings";
 import {VirtualAudioNode} from "./VirtualAudioNode";
 import {TrackCategory} from "./TrackCategory";
-import {Plugin} from "./plugins/Plugin";
-import {NoteTrigger} from "./NoteTrigger";
+
 import {AudioContextService} from "../../shared/services/audiocontext.service";
+import {NoteEvent} from "../mip/NoteEvent";
+import {DeviceEvent} from "./devices/DeviceEvent";
+import {AudioPlugin} from "./plugins/AudioPlugin";
 
 
 export class Project {
@@ -35,12 +37,13 @@ export class Project {
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
-  plugins: Array<Plugin> = [];
+  plugins: Array<AudioPlugin> = [];
   colors = ["lightblue", "yellow", "red"];
   record: EventEmitter<Pattern> = new EventEmitter<Pattern>();
-  recordNoteStart: EventEmitter<NoteTrigger> = new EventEmitter<NoteTrigger>();
-  recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();
+  /*recordNoteStart: EventEmitter<NoteEvent> = new EventEmitter<NoteEvent>();
+  recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();*/
   metronomePattern: Pattern;
+  readonly deviceEvents:EventEmitter<DeviceEvent<any> >=new EventEmitter();
 
   private subscriptions: Array<Subscription> = [];
 
@@ -60,7 +63,7 @@ export class Project {
     return this.tracks.find(track => track.id === id);
   }
 
-  getPlugin(id: string): Plugin {
+  getPlugin(id: string): AudioPlugin {
     let result = this.plugins.find(pl => pl.getId() === id);
     return result;
   }

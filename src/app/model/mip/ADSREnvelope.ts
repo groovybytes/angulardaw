@@ -1,4 +1,4 @@
-import {NoteTrigger} from "../daw/NoteTrigger";
+import {NoteEvent} from "./NoteEvent";
 
 export class ADSREnvelope {
   constructor(attackTime: number, decayReduction: number, decayTime: number, releaseTime: number, sustainTime: number) {
@@ -19,7 +19,7 @@ export class ADSREnvelope {
     return new ADSREnvelope(0.01, 0.2,0.3, 0.8, 0);
   }*/
 
-  static fromNote(note:NoteTrigger):ADSREnvelope{
+  static fromNote(note:NoteEvent):ADSREnvelope{
     let duration=note.length/1000;
 
     function percentage(value):number{
@@ -33,12 +33,12 @@ export class ADSREnvelope {
     let sustainTIme=percentage(60);
     let releaseTime=percentage(29);
 
-    console.log("note duration: "+duration);
+  /*  console.log("note duration: "+duration);
     console.log("attack: "+attack);
     console.log("decayReduction: "+decayReduction);
     console.log("decayTime: "+decayTime);
     console.log("releaseTime: "+releaseTime);
-    console.log("sustainTIme: "+sustainTIme);
+    console.log("sustainTIme: "+sustainTIme);*/
     return new ADSREnvelope(attack,decayReduction,decayTime,releaseTime,sustainTIme);
   }
   getDuration(): number {

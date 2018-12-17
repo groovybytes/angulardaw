@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {Project} from "../../model/daw/Project";
 import {PadsComponent} from "../pads/pads.component";
+import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
 
 @Component({
   selector: 'plugin-widget',
@@ -11,7 +11,7 @@ import {PadsComponent} from "../pads/pads.component";
 export class PluginWidgetComponent implements OnInit {
 
   @Input() project: Project;
-  @Input() plugin: WstPlugin;
+  @Input() plugin: AudioPlugin;
   @Input() appId: string;
 
   constructor() {

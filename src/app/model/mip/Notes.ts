@@ -4,7 +4,7 @@ import {NoteInfo} from "../utils/NoteInfo";
 export class Notes {
   private readonly notes: any;
   private readonly notesByMidi: any;
-  private notesArray:Array<NoteInfo>=[];
+  private notesArray: Array<NoteInfo> = [];
 
   constructor() {
     let i = 0;
@@ -18,30 +18,34 @@ export class Notes {
       note.midi = i + 21;
       this.notes[note.id] = note;
       this.notesArray.push(note);
-      this.notesByMidi["midi_"+note.midi]=note;
+      this.notesByMidi["midi_" + note.midi] = note;
       i++;
     })
   }
 
-  public getAllIds():Array<string>{
+  public getAllIds(): Array<string> {
     return _.keys(this.notes);
   }
 
-  public move(note:NoteInfo,semitones: number): NoteInfo {
+  public move(note: NoteInfo, semitones: number): NoteInfo {
     let key = Object.keys(this.notes)[note.index + semitones];
     return this.notes[key];
   }
 
   public getNote(id: string): NoteInfo {
-    if (!this.notes[id]) console.warn("couldnt find note with id "+id);
+    if (!this.notes[id]) console.warn("couldnt find note with id " + id);
     return this.notes[id];
   }
 
-  public getNoteRange(from:string,to:string):Array<string>{
+  public getNoteByIndex(index: number): NoteInfo {
+    return this.notesArray.find(note => note.index === index);
+  }
+
+  public getNoteRange(from: string, to: string): Array<string> {
     let startNote = this.getNote(from);
     let endNote = this.getNote(to);
 
-    return this.notesArray.filter(note=>note.index>=startNote.index && note.index<=endNote.index).map(note=>note.id);
+    return this.notesArray.filter(note => note.index >= startNote.index && note.index <= endNote.index).map(note => note.id);
   }
 
   public getInterval(note1: NoteInfo, note2: NoteInfo): number {

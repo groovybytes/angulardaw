@@ -10,7 +10,9 @@
               [ngClass]="{'active':track.controlParameters.solo.getValue()}"
               (click)="solo()">S
       </button>
-      <button type="button" class="btn " (click)="arm()"><i
+      <button type="button" class="btn "
+              [ngClass]="{'active':track.controlParameters.record.getValue()}"
+              (click)="arm()"><i
         class="fas fa-circle"></i></button>
     </div>
 

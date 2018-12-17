@@ -1,10 +1,10 @@
 import {Subscription} from "rxjs";
 import {TrackControlParameters} from "./TrackControlParameters";
-import {Plugin} from "./plugins/Plugin";
-import {WstPlugin} from "./plugins/WstPlugin";
-import {Instrument} from "./plugins/Instrument";
 import {VirtualAudioNode} from "./VirtualAudioNode";
 import {TrackCategory} from "./TrackCategory";
+import {AudioPlugin} from "./plugins/AudioPlugin";
+import {EventEmitter} from "@angular/core";
+import {DeviceEvent} from "./devices/DeviceEvent";
 
 
 export class Track {
@@ -15,17 +15,27 @@ export class Track {
   color:string;
   controlParameters: TrackControlParameters=new TrackControlParameters();
   private subscriptions: Array<Subscription> = [];
-  plugins: Array<Plugin>=[];
+  plugins: Array<AudioPlugin>=[];
   inputNode:VirtualAudioNode<PannerNode>;
   outputNode:VirtualAudioNode<GainNode>;
 
- constructor(id:string,inputNode:VirtualAudioNode<PannerNode>,outputNode:VirtualAudioNode<GainNode>,private audioContext:AudioContext){
+ constructor(id:string,
+             private deviceEvents: EventEmitter<DeviceEvent<any>>,
+             inputNode:VirtualAudioNode<PannerNode>,
+             outputNode:VirtualAudioNode<GainNode>,
+             private audioContext:AudioContext){
    this.id=id;
    this.inputNode=inputNode;
    this.outputNode=outputNode;
    this.subscriptions.push(this.controlParameters.gain.subscribe(gain => {
      this.outputNode.node.gain.setValueAtTime(gain / 100, audioContext.currentTime);
    }));
+   this.subscriptions.push(this.controlParameters.record.subscribe(record => {
+     this.plugins.forEach(plugin=>{
+       plugin.hot.next(record===true);
+     })
+   }));
+
  }
 
  /* constructor(
@@ -51,8 +61,8 @@ export class Track {
   }*/
 
 
-  getInstrumentPlugin():WstPlugin{
-    return <WstPlugin>this.plugins.find(p=>p instanceof Instrument);
+  getInstrumentPlugin():AudioPlugin{
+    return <AudioPlugin>this.plugins.find(p=>p instanceof AudioPlugin);
   }
 
   destroy(): void {

@@ -6,7 +6,7 @@ import {NoteCell} from "../model/NoteCell";
 import {Project} from "../../model//daw/Project";
 import {Subscription} from "rxjs/internal/Subscription";
 import {ProjectsService} from "../../shared/services/projects.service";
-import {Notes} from "../../model/daw/Notes";
+import {Notes} from "../../model/mip/Notes";
 import {SequencerService} from "../sequencer.service";
 import {SequencerInteractionService} from "../sequencer.interaction.service";
 import {EventTableModel} from "./event-table.model";
@@ -74,6 +74,9 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
         this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
           this.sequencerService.addCellWithNote(nextValue, this.model.eventCells, this.model.specs, this.pattern);
           this.updateCells();
+        }));
+        this.subscriptions.push(this.pattern.noteUpdated.subscribe(nextValue => {
+            this.updateCells();
         }));
         this.updateCells();
       }

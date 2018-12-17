@@ -1,4 +1,4 @@
-import {Inject, Injectable} from "@angular/core";
+import {EventEmitter, Inject, Injectable} from "@angular/core";
 import {Project} from "../../model/daw/Project";
 import {Track} from "../../model/daw/Track";
 import {VirtualAudioNode} from "../../model/daw/VirtualAudioNode";
@@ -12,6 +12,7 @@ import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioContextService} from "./audiocontext.service";
 import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {PluginsService} from "./plugins.service";
+import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
 
 
 @Injectable()
@@ -26,12 +27,12 @@ export class TracksService {
   }
 
 
-  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>, category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>, hint?: string): Track {
+  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>, deviceEvents: EventEmitter<DeviceEvent<any>>, category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>, hint?: string): Track {
     let trackId = _.uniqueId("track-" + (hint ? hint : ""));
     let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, "track: " + trackId);
     let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, "track: " + trackId);
 
-    let track = new Track(trackId, inputNode, outputNode, this.audioContext.getAudioContext());
+    let track = new Track(trackId, deviceEvents,inputNode, outputNode, this.audioContext.getAudioContext());
 
     nodes.push(track.inputNode);
     nodes.push(track.outputNode);
@@ -53,7 +54,7 @@ export class TracksService {
   addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
 
     return new Promise((resolve, reject) => {
-      let track: Track = this.createTrack(project.nodes, TrackCategory.DEFAULT, project.getMasterBus().inputNode);
+      let track: Track = this.createTrack(project.nodes, project.deviceEvents,TrackCategory.DEFAULT, project.getMasterBus().inputNode);
       project.tracks.push(track);
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
       this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"), pluginInfo, project)
@@ -70,10 +71,10 @@ export class TracksService {
     })
   }
 
-  convertTrackFromJson(trackDto: TrackDto, nodes: Array<VirtualAudioNode<AudioNode>>): Track {
+  convertTrackFromJson(trackDto: TrackDto,deviceEvents: EventEmitter<DeviceEvent<any>>, nodes: Array<VirtualAudioNode<AudioNode>>): Track {
     let inputNode = <VirtualAudioNode<PannerNode>>nodes.find(n => n.id === trackDto.inputNode);
     let outputNode = <VirtualAudioNode<GainNode>>nodes.find(n => n.id === trackDto.outputNode);
-    let track = new Track(trackDto.id, inputNode, outputNode, this.audioContext.getAudioContext());
+    let track = new Track(trackDto.id, deviceEvents,inputNode, outputNode, this.audioContext.getAudioContext());
 
     track.category = trackDto.category;
     track.name = trackDto.name;
@@ -81,6 +82,7 @@ export class TracksService {
     track.controlParameters.gain.next(trackDto.controlParameters.gain ? trackDto.controlParameters.gain : 100);
     track.controlParameters.mute.next(trackDto.controlParameters.mute ? trackDto.controlParameters.mute : false);
     track.controlParameters.solo.next(trackDto.controlParameters.solo ? trackDto.controlParameters.solo : false);
+    track.controlParameters.record.next(trackDto.controlParameters.record ? trackDto.controlParameters.record : false);
     return track;
   }
 
@@ -106,6 +108,7 @@ export class TracksService {
     trackDto.controlParameters.gain = track.controlParameters.gain.getValue();
     trackDto.controlParameters.mute = track.controlParameters.mute.getValue();
     trackDto.controlParameters.solo = track.controlParameters.solo.getValue();
+    trackDto.controlParameters.record = track.controlParameters.record.getValue();
 
     return trackDto;
   }

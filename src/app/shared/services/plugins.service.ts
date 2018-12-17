@@ -1,9 +1,7 @@
 import {Inject, Injectable} from "@angular/core";
-import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {System} from "../../system/System";
 import {AppConfiguration} from "../../app.configuration";
 import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
-import {GenericInstrumentSampler} from "../../model/daw/plugins/GenericInstrumentSampler";
 import {Drums} from "../../model/daw/plugins/Drums";
 import * as _ from "lodash";
 import {Track} from "../../model/daw/Track";
@@ -12,10 +10,11 @@ import {AudioNodesService} from "./audionodes.service";
 import {Project} from "../../model/daw/Project";
 import {FilesApi} from "../../api/files.api";
 import {SamplesApi} from "../../api/samples.api";
-import {Notes} from "../../model/daw/Notes";
+import {Notes} from "../../model/mip/Notes";
 import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
-import {TrackCategory} from "../../model/daw/TrackCategory";
 import {AudioContextService} from "./audiocontext.service";
+import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
+import {InstrumentSampler} from "../../model/daw/plugins/InstrumentSampler";
 
 @Injectable()
 export class PluginsService {
@@ -52,7 +51,7 @@ export class PluginsService {
 
   }*/
 
-  setupInstrumentRoutes(project: Project, track: Track, plugin: WstPlugin): void {
+  setupInstrumentRoutes(project: Project, track: Track, plugin: AudioPlugin): void {
     let meta = "plugin_" + plugin.getInfo().name;
 
     let inputNode = this.nodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, meta);
@@ -67,19 +66,27 @@ export class PluginsService {
     outputNode.connect(track.outputNode);
   }
 
-  loadPluginWithInfo(id: string, info: PluginInfo, project: Project): Promise<WstPlugin> {
+  loadPluginWithInfo(id: string, info: PluginInfo, project: Project): Promise<AudioPlugin> {
 
-    let plugin: WstPlugin;
+    return new Promise((resolve,reject)=>{
+      let plugin: AudioPlugin;
 
-    if (info.id === "drumkit1") plugin = new Drums(id, this.fileService, this.config, info, this.samplesV2Service);
-    else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService, project, this.config, this.samplesV2Service);
-    else plugin = new GenericInstrumentSampler(
-        id,
-        info,
-        (name) => this.samplesV2Service.loadAllInstrumentSamples(name),
-        this.notes);
+      if (info.id === "drumkit1") plugin = new Drums(id,project.deviceEvents, this.fileService, this.config, info, this.samplesV2Service);
+      else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService,
+        project.deviceEvents,project, this.config, this.samplesV2Service);
+      else plugin = new InstrumentSampler(
+          id,
+          project.deviceEvents,
+          this.notes,
+          info,
+          (name) => this.samplesV2Service.loadAllInstrumentSamples(name),
+          );
 
-    return plugin.load();
+       plugin.load()
+         .then(()=>resolve(plugin))
+         .catch(error=>reject(error));
+    })
+
 
   }
 

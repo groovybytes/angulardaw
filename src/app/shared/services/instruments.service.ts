@@ -1,7 +1,7 @@
 import {FilesApi} from "../../api/files.api";
 import {AppConfiguration} from "../../app.configuration";
 import {SamplesApi} from "../../api/samples.api";
-import {Notes} from "../../model/daw/Notes";
+import {Notes} from "../../model/mip/Notes";
 
 export class InstrumentsService{
   constructor(

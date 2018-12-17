@@ -1,27 +1,29 @@
-import {NoteStream} from "./events/NoteStream";
-import {NoteTrigger} from "./NoteTrigger";
-import {WstPlugin} from "./plugins/WstPlugin";
+import {NoteStream} from "./NoteStream";
+
 import {BehaviorSubject, Subscription} from "rxjs/index";
 import {TrackControlParameters} from "./TrackControlParameters";
 import {NoteLength} from "../mip/NoteLength";
 import {TransportContext} from "./transport/TransportContext";
 import {EventEmitter} from "@angular/core";
 import * as _ from "lodash";
+import {NoteEvent} from "../mip/NoteEvent";
+import {AudioPlugin} from "./plugins/AudioPlugin";
 
 
 export class Pattern {
 
   id: string;
   length: number = 8;//beats
-  readonly events: Array<NoteTrigger> = [];
+  readonly events: Array<NoteEvent> = [];
   notes: Array<string> = [];
   time:EventEmitter<number>=new EventEmitter<number>();
   quantizationEnabled:BehaviorSubject<boolean>=new BehaviorSubject<boolean>(true);
   quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
   transportContext: TransportContext;
   marked:boolean=false;
-  noteInserted:EventEmitter<NoteTrigger>=new EventEmitter();
-  noteRemoved:EventEmitter<NoteTrigger>=new EventEmitter();
+  noteInserted:EventEmitter<NoteEvent>=new EventEmitter();
+  noteUpdated:EventEmitter<NoteEvent>=new EventEmitter();
+  noteRemoved:EventEmitter<NoteEvent>=new EventEmitter();
   private subscriptions: Array<Subscription> = [];
   stream: NoteStream;
 
@@ -29,7 +31,7 @@ export class Pattern {
     id: string,
     notes: Array<string>,
     transportContext: TransportContext,
-    private plugin: WstPlugin,
+    private plugin: AudioPlugin,
     private _quantization: NoteLength,
     private  controlParameters: TrackControlParameters
 /*    private channels?:Array<string>*/
@@ -45,13 +47,12 @@ export class Pattern {
   }
 
 
-  private onNextEvent(offset: number, event: NoteTrigger): void {
+  private onNextEvent(offset: number, event: NoteEvent): void {
     if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset);
   }
 
 
-  insertNote(note: NoteTrigger,publish?:boolean): void {
-    note.id = this.guid();
+  insertNote(note: NoteEvent, publish?:boolean): void {
     let index = _.sortedIndexBy(this.events, {'time': note.time}, d => d.time);
     this.events.splice(index, 0, note);
     if (publish) this.noteInserted.emit(note);

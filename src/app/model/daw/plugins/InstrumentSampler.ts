@@ -1,15 +1,16 @@
 import {Sample} from "../Sample";
-import {WstPlugin} from "./WstPlugin";
 import {NoteInfo} from "../../utils/NoteInfo";
-import {NoteTrigger} from "../NoteTrigger";
 import {PluginInfo} from "./PluginInfo";
-import {Instrument} from "./Instrument";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
-import {Notes} from "../Notes";
+import {Notes} from "../../mip/Notes";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
+import {NoteEvent} from "../../mip/NoteEvent";
+import {AudioPlugin} from "./AudioPlugin";
+import {EventEmitter} from "@angular/core";
+import {DeviceEvent} from "../devices/DeviceEvent";
 
-export abstract class AbstractInstrumentSampler extends Instrument implements WstPlugin {
+export  class InstrumentSampler extends AudioPlugin {
 
   protected samples:Array<Sample>=[];
   protected baseSampleNotes:Array<number>=[];
@@ -17,36 +18,64 @@ export abstract class AbstractInstrumentSampler extends Instrument implements Ws
   protected inputNode: VirtualAudioNode<AudioNode>;
   protected outputNode: VirtualAudioNode<AudioNode>;
 
+  private currentPlayingNotes:Array<string>=[];
+
   constructor(
     protected id:string,
+    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
     protected notes: Notes,
-    private info:PluginInfo) {
-    super();
+    private pluginInfo: PluginInfo,
+    private sampleGetter: (instrumentName: string) => Promise<{ samples: Array<Sample>, baseNotes: Array<number> }>) {
+    super(deviceEvents);
     this.id=id;
   }
 
 
-  abstract getNotes(): Array<string>;
-
-  abstract getId(): string;
-
-  abstract destroy(): void;
-
   getInfo():PluginInfo{
-    return this.info;
+    return this.pluginInfo;
   }
 
-  feed(event: NoteTrigger, offset: number): any {
+  feed(event: NoteEvent, offset: number): any {
     let eventNote = this.notes.getNote(event.note);
     let sample = this.chooseSample(this.notes.getNote(event.note));
 
     let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
 
+
     sample.triggerWith(offset, detune, ADSREnvelope.fromNote(event), event.length / 1000);
 
   }
 
-  abstract load(): Promise<AbstractInstrumentSampler>;
+
+  getId(): string {
+    return this.id;
+  }
+
+  destroy(): void {
+    super.destroy();
+    this.samples.forEach(sample => sample.destroy());
+  }
+
+  load(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.sampleGetter(this.pluginInfo.folder)
+        .then(result => {
+          this.samples = result.samples;
+          this.baseSampleNotes = result.baseNotes;
+          resolve();
+        })
+        .catch(error => reject(error));
+    })
+  }
+
+  getNotes(): Array<string> {
+    if (this.pluginInfo.noteRange) return this.notes.getNoteRange(this.pluginInfo.noteRange.start, this.pluginInfo.noteRange.end);
+    else this.notes.getNoteRange("C0", "B10");
+  }
+
+  getInstrumentCategory(): InstrumentCategory {
+    return InstrumentCategory.KEYS;
+  }
 
 
   private chooseSample(note: NoteInfo): Sample {
@@ -88,7 +117,18 @@ export abstract class AbstractInstrumentSampler extends Instrument implements Ws
     this.samples.forEach(sample=>sample.setDestination(node.node));
   }
 
-  abstract getInstrumentCategory(): InstrumentCategory;
+
+  startPlay(event: NoteEvent):AudioBufferSourceNode {
+    let eventNote = this.notes.getNote(event.note);
+    let sample =this.chooseSample(this.notes.getNote(event.note));
+    let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
+    this.currentPlayingNotes.push(event.note);
+    return sample.start(0, detune, ADSREnvelope.fromNote(event));
+  }
+
+  stopPlay(node:AudioBufferSourceNode): void {
+    node.stop();
+  }
 
 
 

@@ -35,7 +35,7 @@ export class ConsoleComponent implements OnInit {
   }
 
   arm(): void {
-
+    this.track.controlParameters.record.next(!this.track.controlParameters.record.getValue());
 
   }
 

@@ -62,7 +62,7 @@ export class ProjectsService {
 
       //!todo t this.layout.createDefaultLayout();
 
-      let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
+      let masterBus = this.trackService.createTrack(project.nodes,project.deviceEvents, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
       project.tracks.push(masterBus);
 
@@ -140,9 +140,9 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project, this.config, this.samplesService);
-      metronome.load().then(metronome => {
-        let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project.deviceEvents,project, this.config, this.samplesService);
+      metronome.load().then(() => {
+        let track = this.trackService.createTrack(project.nodes,project.deviceEvents, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
         project.plugins.push(metronome);
         this.pluginsService.setupInstrumentRoutes(project, track, metronome);
@@ -232,7 +232,7 @@ export class ProjectsService {
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
-            let track = this.trackService.convertTrackFromJson(t, project.nodes);
+            let track = this.trackService.convertTrackFromJson(t, project.deviceEvents,project.nodes);
             project.tracks.push(track);
             track.plugins = [];
             t.plugins.forEach(pluginDto => {
@@ -247,6 +247,7 @@ export class ProjectsService {
 
                 _plugin.setInputNode(project.nodes.find(n => n.id === pluginDto.inputNode));
                 _plugin.setOutputNode(project.nodes.find(n => n.id === pluginDto.outputNode));
+                _plugin.hot.next(track.controlParameters.record.getValue());
                 track.plugins.push(_plugin);
                 project.plugins.push(_plugin);
               });

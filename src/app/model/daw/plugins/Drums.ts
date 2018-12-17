@@ -1,18 +1,18 @@
 import {Sample} from "../Sample";
-import {WstPlugin} from "./WstPlugin";
 import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
-
 import {AppConfiguration} from "../../../app.configuration";
-import {NoteTrigger} from "../NoteTrigger";
+import {NoteEvent} from "../../mip/NoteEvent";
 import {PluginInfo} from "./PluginInfo";
-import {Instrument} from "./Instrument";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
+import {AudioPlugin} from "./AudioPlugin";
+import {EventEmitter} from "@angular/core";
+import {DeviceEvent} from "../devices/DeviceEvent";
 
 
-export class Drums extends Instrument implements WstPlugin {
+export class Drums extends AudioPlugin {
 
   protected inputNode: VirtualAudioNode<AudioNode>;
   protected outputNode: VirtualAudioNode<AudioNode>;
@@ -21,12 +21,13 @@ export class Drums extends Instrument implements WstPlugin {
 
   constructor(
     id:string,
+    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
     private fileService: FilesApi,
     private config: AppConfiguration,
     private info: PluginInfo,
     private samplesV2Service: SamplesApi
   ) {
-    super();
+    super(deviceEvents);
     this.id=id;
   }
 
@@ -49,14 +50,14 @@ export class Drums extends Instrument implements WstPlugin {
     this.samples.forEach(sample=>sample.destroy());
   }
 
-  feed(event: NoteTrigger, offset: number): any {
+  feed(event: NoteEvent, offset: number): any {
     let trigger = this.triggers.find(trigger => trigger.note === event.note);
     if (!trigger) console.warn("no trigger found for " + event.note);
     else trigger.sample.trigger(offset);
   }
 
 
-  load(): Promise<WstPlugin> {
+  load(): Promise<void> {
     return new Promise((resolve, reject) => {
 
       this.fileService.getFile(this.config.getAssetsUrl("config/drums/drumkit1.json"))
@@ -74,7 +75,7 @@ export class Drums extends Instrument implements WstPlugin {
 
           }).catch(error => reject(error));
 
-          Promise.all(promises).then(() => resolve(this)).catch(error => reject(error));
+          Promise.all(promises).then(() => resolve()).catch(error => reject(error));
         })
         .catch(error => reject(error));
     })
@@ -103,6 +104,12 @@ export class Drums extends Instrument implements WstPlugin {
 
   getInstrumentCategory(): InstrumentCategory {
     return InstrumentCategory.PERCUSSION;
+  }
+
+  startPlay(event: NoteEvent) {
+  }
+
+  stopPlay(): void {
   }
 
 }

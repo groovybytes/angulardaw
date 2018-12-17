@@ -1,22 +1,22 @@
 import * as _ from "lodash";
 import {Subscription} from "rxjs/internal/Subscription";
 import {Observable, Subject} from "rxjs";
-import {NoteTrigger} from "../NoteTrigger";
-import {TransportContext} from "../transport/TransportContext";
-import {MusicMath} from "../../utils/MusicMath";
-import {TransportEvent} from "../transport/TransportEvent";
+
+import {TransportContext} from "./transport/TransportContext";
+import {MusicMath} from "../utils/MusicMath";
 import {filter} from "rxjs/operators";
 import {EventEmitter} from "@angular/core";
+import {NoteEvent} from "../mip/NoteEvent";
 
 
 export class NoteStream {
-  events: Array<NoteTrigger> = [];
+  events: Array<NoteEvent> = [];
   time: EventEmitter<number> = new EventEmitter<number>();
   private lookAhead: number = 0.5;//seconds
-  trigger: Observable<{ event: NoteTrigger, offset: number }>;
-  private triggerSubject: Subject<{ event: NoteTrigger, offset: number }> = new Subject();
+  trigger: Observable<{ event: NoteEvent, offset: number }>;
+  private triggerSubject: Subject<{ event: NoteEvent, offset: number }> = new Subject();
   private timeStamp: number;
-  private eventPool: Array<NoteTrigger> = [];
+  private eventPool: Array<NoteEvent> = [];
   private subscriptions: Array<Subscription> = [];
   transportTimeOffset:number=0;
 

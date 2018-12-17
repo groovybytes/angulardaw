@@ -10,10 +10,10 @@ import {
   ViewChildren
 } from "@angular/core";
 import {Pad} from "../../model/daw/pad/Pad";
-import {WstPlugin} from "../../model/daw/plugins/WstPlugin";
 import {Project} from "../../model/daw/Project";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
 import {TriggerInfo} from "../../model/daw/pad/TriggerInfo";
+import {NoteEvent} from "../../model/mip/NoteEvent";
+import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
 
 
 @Component({
@@ -26,37 +26,40 @@ export class PadsComponent implements OnInit, AfterViewInit {
   @Input() rows: number;
   @Input() columns: number;
   @Input() pad: Pad;
-  @Input() plugin: WstPlugin;
+  @Input() plugin: AudioPlugin;
   @Input() project: Project;
   @ViewChildren('trigger') triggers: QueryList<ElementRef>;
 
-  public size: number = 0;
   public listenToKeyboard: boolean = false;
   public keyToLearnTarget: TriggerInfo;
 
-  private padTriggers: Array<TriggerInfo>;
-  private currentNote:string;
+   padTriggers: Array<TriggerInfo>;
+  private nodes:Array<{node:AudioBufferSourceNode,note:string}>=[];
 
 
   @HostListener('window:keyup', ['$event'])
   keyUpEvent(event: KeyboardEvent) {
     if (this.keyToLearnTarget){
-      this.keyToLearnTarget.key=event.keyCode;
+      this.keyToLearnTarget.key=String.fromCharCode(event.keyCode);
       this.keyToLearnTarget=null;
     }
     else if (this.listenToKeyboard) {
-      this.onNoteOutEnd();
+      let trigger = this.padTriggers.find(trigger => this.keyEquals(event.keyCode,trigger.key));
+      console.log("stop " + trigger.note);
+      this.onNoteOutEnd(trigger.note);
     }
-    this.currentNote=null;
   }
 
   @HostListener('window:keydown', ['$event'])
   keyDownEvent(event: KeyboardEvent) {
-    if (this.listenToKeyboard && !this.keyToLearnTarget) {
-      let trigger = this.padTriggers.find(trigger => trigger.key === event.keyCode);
+
+    if (this.listenToKeyboard && !this.keyToLearnTarget && !event.repeat) {
+      let trigger = this.padTriggers.find(trigger => this.keyEquals(event.keyCode,trigger.key));
       if (trigger) {
-        this.currentNote=trigger.note;
-        this.onNoteOutStart({note: trigger.note});
+        console.log("play " + trigger.note);
+        let index = this.nodes.findIndex(node=>node.note===trigger.note);
+        if (index===-1)  this.onNoteOutStart({note: trigger.note});
+        else console.log("blocked!");
       }
     }
   }
@@ -64,20 +67,29 @@ export class PadsComponent implements OnInit, AfterViewInit {
   constructor(private element: ElementRef, private zone: NgZone) {
   }
 
+  private keyEquals(eventKey:number,stringCode:string):boolean{
+    return String.fromCharCode(eventKey).toLowerCase()===stringCode.toLowerCase();
+  }
   ngOnInit() {
-    this.padTriggers = [].concat.apply([], this.pad.grid);
+    if (this.pad){
+      this.padTriggers = [].concat.apply([], this.pad.grid);
+    }
+    else{
+
+    }
+
   }
 
-  getRows(): Array<number> {
+ /* getRows(): Array<number> {
     return Array(this.rows).fill(0);
   }
 
   getColumns(): Array<number> {
     return Array(this.columns).fill(0);
-  }
+  }*/
 
   getKeyString(code): string {
-    return String.fromCharCode(code);
+    return code;//String.fromCharCode(code);
   }
 
   ngAfterViewInit(): void {
@@ -85,15 +97,6 @@ export class PadsComponent implements OnInit, AfterViewInit {
     this.triggers.changes.subscribe(t => {
       this.setupEventHandlers();
     })
-  }
-
-  increaseSize(): void {
-    if (this.size < 1) this.size++;
-
-  }
-
-  decreaseSize(): void {
-    if (this.size > 0) this.size--;
   }
 
   private setupEventHandlers(): void {
@@ -104,7 +107,7 @@ export class PadsComponent implements OnInit, AfterViewInit {
           this.onNoteOutStart({note: $(element.nativeElement).attr("data-note")});
         });
         $(element.nativeElement).on("mouseup", () => {
-          this.onNoteOutEnd();
+          this.onNoteOutEnd($(element.nativeElement).attr("data-note"));
         })
       });
     });
@@ -122,16 +125,19 @@ export class PadsComponent implements OnInit, AfterViewInit {
   }
 
   private onNoteOutStart(event: { note: string }): void {
-    let wstPlugin = this.plugin as WstPlugin;
-    let trigger = new NoteTrigger(null, event.note);
-    this.currentNote=event.note;
-    wstPlugin.feed(trigger, 0);
-    this.project.recordNoteStart.emit(trigger);
+
+    let trigger = new NoteEvent(event.note);
+    let node = this.plugin.startPlay(trigger);
+    this.nodes.push({node:node,note:trigger.note});
+    //this.project.recordNoteStart.emit(trigger);
   }
 
-  private onNoteOutEnd(): void {
-    this.currentNote=null;
-    this.project.recordNoteEnd.emit();
+  private onNoteOutEnd(note:string): void {
+
+    let index = this.nodes.findIndex(node=>node.note===note);
+    this.plugin.stopPlay(this.nodes[index].node);
+    this.nodes.splice(index,1);
+    //this.project.recordNoteEnd.emit();
   }
 
 }

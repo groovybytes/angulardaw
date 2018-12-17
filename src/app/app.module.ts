@@ -13,6 +13,7 @@ import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
 import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
+import {DawInfo} from "./model/DawInfo";
 
 
 @NgModule({
@@ -36,13 +37,8 @@ import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
   providers: [
     System,
     AppConfiguration,
-    MessagingService
-   /* {
-      provide: HTTP_INTERCEPTORS,
-      useClass: SystemMonitorService,
-      multi: true
-    }*/
-   /* {provide: ErrorHandler, useClass: SystemMonitorService}*/
+    MessagingService,
+    {provide: "daw", useValue: new DawInfo()}
 
   ],
   entryComponents:[WindowComponent],

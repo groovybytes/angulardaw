@@ -1,18 +1,18 @@
 import {Sample} from "../Sample";
-
-import {WstPlugin} from "./WstPlugin";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../app.configuration";
-import {NoteTrigger} from "../NoteTrigger";
+import {NoteEvent} from "../../mip/NoteEvent";
 import {PluginInfo} from "./PluginInfo";
 import {VirtualAudioNode} from "../VirtualAudioNode";
-import {Instrument} from "./Instrument";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
+import {AudioPlugin} from "./AudioPlugin";
+import {EventEmitter} from "@angular/core";
+import {DeviceEvent} from "../devices/DeviceEvent";
 
 
-export class MetronomePlugin extends Instrument implements WstPlugin {
+export class MetronomePlugin extends AudioPlugin {
 
   private inputNode: VirtualAudioNode<AudioNode>;
   private outputNode: VirtualAudioNode<AudioNode>;
@@ -26,10 +26,11 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
   constructor(
     private audioContext: AudioContext,
     private fileService: FilesApi,
+    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
     private project: Project,
     private config: AppConfiguration,
     private samplesV2Service: SamplesApi) {
-    super();
+    super(deviceEvents);
     /* let track = this.tracksService.createDefaultTrack(this.project.transport.masterParams);
      let tickTime =
        MusicMath.getTickTime(track.transport.getBpm(),
@@ -72,18 +73,18 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
     }
   */
 
-  load(): Promise<WstPlugin> {
+  load(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.samplesV2Service.getClickSamples().then(result => {
         this.accentSample = result.accentSample;
         this.otherSample = result.defaultSample;
-        resolve(this);
+        resolve();
       })
         .catch(error => reject(error));
     })
   }
 
-  feed(event: NoteTrigger, offset: number): any {
+  feed(event: NoteEvent, offset: number): any {
     if (this.project.metronomeEnabled) {
       if (event.note === "A0") this.accentSample.trigger(offset);//trigger(offset);
       else this.otherSample.trigger(offset);
@@ -125,5 +126,11 @@ export class MetronomePlugin extends Instrument implements WstPlugin {
 
   getInstrumentCategory(): InstrumentCategory {
     return InstrumentCategory.OTHER;
+  }
+
+  startPlay(event: NoteEvent) {
+  }
+
+  stopPlay(): void {
   }
 }

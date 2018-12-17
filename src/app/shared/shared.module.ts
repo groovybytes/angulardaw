@@ -7,9 +7,11 @@ import {PatternsService} from "./services/patterns.service";
 import {KeyboardState} from "../model/KeyboardState";
 import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
-import {Notes} from "../model/daw/Notes";
+import {Notes} from "../model/mip/Notes";
 import {UiModule} from "../ui/ui.module";
 import {CommonModule} from "@angular/common";
+import {AppHistoryService} from "./services/app-history.service";
+import {RouterService} from "./services/router.service";
 
 
 @NgModule({
@@ -26,6 +28,8 @@ import {CommonModule} from "@angular/common";
     PatternsService,
     AudioNodesService,
     AudioContextService,
+    AppHistoryService,
+    RouterService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

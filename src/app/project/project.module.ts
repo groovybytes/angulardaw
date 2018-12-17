@@ -20,6 +20,8 @@ import {RouterModule} from "@angular/router";
 import {PluginWidgetComponent} from './plugin-widget/plugin-widget.component';
 import {PadsComponent} from "./pads/pads.component";
 import {PadsModule} from "./pads/pads.module";
+import {PushModule} from "../push/push.module";
+import {PushComponent} from "../push/push/push.component";
 
 
 @NgModule({
@@ -45,12 +47,13 @@ import {PadsModule} from "./pads/pads.module";
     SharedModule,
     RouterModule,
     CoreModule,
+    PushModule,
     Angular2DesktopModule
   ],
   providers: [
 
   ],
-  entryComponents:[PadsComponent],
+  entryComponents:[PadsComponent,PushComponent],
   exports: []
 })
 export class ProjectModule {

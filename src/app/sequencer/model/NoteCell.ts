@@ -1,6 +1,7 @@
 
 import * as _ from "lodash";
-import {NoteTrigger} from "../../model/daw/NoteTrigger";
+import {NoteEvent} from "../../model/mip/NoteEvent";
+
 
 export class NoteCell{
 
@@ -18,7 +19,7 @@ export class NoteCell{
   y:number;
   width:number;
   height:number;
-  data:NoteTrigger;
+  data:NoteEvent;
   beat:number;
   tick:number;
   row:number;

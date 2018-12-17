@@ -2,11 +2,12 @@ import {Inject, Injectable} from "@angular/core";
 import {MusicMath} from "../model//utils/MusicMath";
 import {Loudness} from "../model//mip/Loudness";
 import {Pattern} from "../model//daw/Pattern";
-import {NoteTrigger} from "../model//daw/NoteTrigger";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
 import {TimeSignature} from "../model//mip/TimeSignature";
-import {Notes} from "../model/daw/Notes";
+import {Notes} from "../model/mip/Notes";
+import {NoteEvent} from "../model/mip/NoteEvent";
+
 
 @Injectable()
 export class SequencerService {
@@ -91,13 +92,13 @@ export class SequencerService {
     let notes = pattern.notes;
     let note = notes[rowIndex - 1];
     let noteLength = this.getNoteLength(specs.cellWidth, pattern, specs);
-    let trigger = new NoteTrigger(null, note, noteTime, noteLength, Loudness.fff, 0);
+    let trigger = new NoteEvent(note, noteTime, noteLength, Loudness.fff, 0);
     this.initializeNoteCell(rowIndex,cell, trigger, pattern);
     cells.push(cell);
     pattern.insertNote(trigger);
   }
 
-  addCellWithNote(note: NoteTrigger, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
+  addCellWithNote(note: NoteEvent, cells: Array<NoteCell>, specs: SequencerD3Specs, pattern: Pattern): void {
 
     let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
     let cell = this.createEventCell(note, pattern, specs, nColumns);
@@ -143,7 +144,7 @@ export class SequencerService {
 
 
 
-  private createEventCell(event: NoteTrigger, pattern: Pattern, specs: SequencerD3Specs, nColumns): NoteCell {
+  private createEventCell(event: NoteEvent, pattern: Pattern, specs: SequencerD3Specs, nColumns): NoteCell {
     let eventTick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
 
     if (eventTick < nColumns) {
@@ -162,7 +163,7 @@ export class SequencerService {
     return null;
   }
 
-  private initializeNoteCell(rowIndex:number,cell: NoteCell, event: NoteTrigger, pattern: Pattern): void {
+  private initializeNoteCell(rowIndex:number, cell: NoteCell, event: NoteEvent, pattern: Pattern): void {
     cell.tick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
     //let rowIndex = pattern.notes.indexOf(event.note);
     cell.row = rowIndex;

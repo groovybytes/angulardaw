@@ -2,6 +2,11 @@
 @import "utils";
 @import "bootstrap_conflicts";
 
+#shortcut-push{
+  filter:invert(100%);
+
+}
+
 .angular2-desktop {
   background: url("/assets/images/ableton.png") no-repeat center center fixed;
   -webkit-background-size: cover;

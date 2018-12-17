@@ -33,7 +33,7 @@ if (cfg.production) {
 /**
  * Get port from environment and store in Express.
  */
-const port = process.env.PORT || '9000';
+const port = '9000';
 app.set('port', port);
 
 /**
@@ -44,4 +44,4 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => console.log(`API running on localhost:${port}`));
+server.listen(9000, () => console.log(`server running on localhost:${port}`));
