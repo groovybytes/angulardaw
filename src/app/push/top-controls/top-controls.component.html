@@ -28,3 +28,18 @@
   class="btn"
 
   (click)="changeSize(4,4)">4</button>
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.settings.scale===ScaleId.CHROMATIC}"
+  (click)="setScale(ScaleId.CHROMATIC)">CHROMATIC</button>
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.settings.scale===ScaleId.IONIAN}"
+  (click)="setScale(ScaleId.IONIAN)">IONIAN</button>
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.settings.scale===ScaleId.NATURAL_MINOR}"
+  (click)="setScale(ScaleId.NATURAL_MINOR)">NATURAL MINOR</button>

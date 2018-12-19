@@ -29,6 +29,8 @@ export class PushComponent implements OnInit,OnDestroy {
     this.pushService.setup();
     this.push.deviceEvent.subscribe(event=>this.deviceEvent.emit(event));
     this.push.message.next(new PushMessage("Welcome to push!"));
+
+
   }
 
   ngOnDestroy(): void {

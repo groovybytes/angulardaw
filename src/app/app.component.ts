@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {System} from "./system/System";
 import {MessagingService} from "./system/messaging.service";
 import {KeyboardState} from "./model/KeyboardState";
+import {Scales} from "./model/mip/scales/Scales";
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
+    Scales.initialize();
     this.keyboardState.bind("ctrl",this.keyboardState.Ctrl);
     this.system.errors.subscribe(error => {
       throw error;

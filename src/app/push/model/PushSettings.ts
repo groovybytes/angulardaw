@@ -1,10 +1,10 @@
 import {KeyBindings} from "./KeyBindings";
+import {ScaleId} from "../../model/mip/scales/ScaleId";
 
 export class PushSettings {
   baseNote: string;
-  scale: string;
+  scale: ScaleId;
   keyBindings:KeyBindings;
-  //size:number;
   columns:number;
   rows:number;
   showKeyBindings:boolean=false;

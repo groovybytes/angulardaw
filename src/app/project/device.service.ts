@@ -3,6 +3,7 @@ import {PushComponent} from "../push/push/push.component";
 import {DawInfo} from "../model/DawInfo";
 import {PushSettings} from "../push/model/PushSettings";
 import {KeyBindings} from "../push/model/KeyBindings";
+import {ScaleId} from "../model/mip/scales/ScaleId";
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class DeviceService {
       push.settings.columns = 7;
       push.settings.rows = 3;
       push.settings.baseNote="C2";
+      push.settings.scale=ScaleId.IONIAN;
       push.settings.keyBindings=KeyBindings.default;
     }
     else push.settings = project.pushSettings;

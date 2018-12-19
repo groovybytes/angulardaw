@@ -5,9 +5,6 @@
   [ngClass]="pad.cssClass"
   [attr.data-note]="pad.info.note" #padElement>
 
-  <span>{{pad.info.note}} {{pad.info.row}} {{pad.info.column}}</span>
+  <span>{{pad.info.note}}</span>
   <span *ngIf="getKeyBinding(pad) && push.settings.showKeyBindings">({{getKeyBinding(pad)}})</span>
 </div>
-
-<!--
-[ngClass]="{'active':currentNote === triggerInfo.note}"-->

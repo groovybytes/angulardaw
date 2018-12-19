@@ -1,58 +1,93 @@
 import * as _ from "lodash";
 import {NoteInfo} from "../utils/NoteInfo";
+import {ScaleId} from "./scales/ScaleId";
+import {Scales} from "./scales/Scales";
+import {Scale} from "./scales/Scale";
 
 export class Notes {
-  private readonly notes: any;
+  //private readonly notes: any;
+  private readonly notes: Array<NoteInfo>;
   private readonly notesByMidi: any;
-  private notesArray: Array<NoteInfo> = [];
+  //private notesArray: Array<NoteInfo> = [];
+  private scale: Scale;
+  private frequencies;
 
-  constructor() {
+  constructor(private scaleId: ScaleId) {
+
     let i = 0;
-    this.notes = {};
+    //this.notes = {};
+    this.notes = [];
     this.notesByMidi = {};
+
+    let scale = this.scale = Scales.get(scaleId);
+    if (scaleId !== ScaleId.CHROMATIC) {
+      this.frequencies = this.getFrequenciesByFormula(scale.formula);
+    } else this.frequencies = this.allFrequencies;
+
     Object.keys(this.frequencies).forEach(freq => {
       let note = new NoteInfo();
       note.frequency = this.frequencies[freq];
       note.id = freq.replace("#", "i");
       note.index = i;
       note.midi = i + 21;
-      this.notes[note.id] = note;
-      this.notesArray.push(note);
+      this.notes.push(note);
       this.notesByMidi["midi_" + note.midi] = note;
       i++;
     })
   }
 
   public getAllIds(): Array<string> {
-    return _.keys(this.notes);
+    return this.notes.map(note=>note.id);
+  }
+
+  public getSortedByIndex(): Array<string> {
+    return null;
   }
 
   public move(note: NoteInfo, semitones: number): NoteInfo {
-    let key = Object.keys(this.notes)[note.index + semitones];
-    return this.notes[key];
+    return this.notes.find(_note=>_note.index===note.index + semitones)
   }
 
   public getNote(id: string): NoteInfo {
-    if (!this.notes[id]) console.warn("couldnt find note with id " + id);
-    return this.notes[id];
+    return this.notes.find(note=>note.id===id);
   }
 
   public getNoteByIndex(index: number): NoteInfo {
-    return this.notesArray.find(note => note.index === index);
+    return this.notes.find(note => note.index === index);
   }
 
   public getNoteRange(from: string, to: string): Array<string> {
     let startNote = this.getNote(from);
     let endNote = this.getNote(to);
 
-    return this.notesArray.filter(note => note.index >= startNote.index && note.index <= endNote.index).map(note => note.id);
+    return this.notes.filter(note => note.index >= startNote.index && note.index <= endNote.index).map(note => note.id);
   }
 
   public getInterval(note1: NoteInfo, note2: NoteInfo): number {
     return note2.index - note1.index;
   }
 
-  private frequencies = {
+  public getNoteByDegree(baseNote: string, degree: number): string {
+
+    let base = this.getNote(baseNote);
+    let index = base.index + degree;
+    return this.getNoteByIndex(index).id;
+  }
+
+  public getFrequenciesByFormula(formula: Array<number>): any {
+
+    let result = {};
+
+    _.keys(this.allFrequencies).forEach((key, i) => {
+      let interval = (i % 12) + 1;
+      if (formula.indexOf(interval) >= 0) result[key] = this.allFrequencies[key];
+    });
+
+    return result;
+  }
+
+
+  private allFrequencies = {
     "C0": 16.351597831287414,
     "C#0": 17.323914436054505,
     "D0": 18.354047994837977,

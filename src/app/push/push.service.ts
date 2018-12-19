@@ -5,6 +5,8 @@ import {Notes} from "../model/mip/Notes";
 import {PadInfo} from "./model/PadInfo";
 import {KeyBindings} from "./model/KeyBindings";
 import {PushSettings} from "./model/PushSettings";
+import {Scale} from "../model/mip/scales/Scale";
+import {ScaleId} from "../model/mip/scales/ScaleId";
 
 @Injectable({
   providedIn: 'root'
@@ -18,35 +20,11 @@ export class PushService {
   setup() {
 
     if (!this.push.keyBindings || this.push.keyBindings.length === 0) {
-      this.push.keyBindings=[];
+      this.push.keyBindings = [];
       this.push.keyBindings.push(KeyBindings.default);
 
     }
-
     this.setPadCollection(this.push.settings);
-
-    /*if (this.push.config.activeCollection) {
-      this.setPadCollection(this.push.config.activeCollection);
-    } else {
-      let startNote = this.noteInfo.getNote("C0");
-      let endNote = this.noteInfo.getNoteByIndex((startNote.index - 1) + size * size);
-
-      let padCollection = new PadCollection();
-      padCollection.id = "default";
-      padCollection.pads = [];
-      this.push.config.padCollections.push(padCollection);
-      this.push.config.activeCollection = "default";
-      this.noteInfo.getNoteRange(startNote.id, endNote.id).forEach((note, i) => {
-        let row = (size - Math.ceil((i + 1) / size)) + 1;
-        let column = (i % size) + 1;
-        let defaultKey = this.push.config.defaultKeyboardSetup
-          .find(setting => setting.column === column && setting.row === row);
-
-        let pad = new Pad(new PadInfo(note, row, note, column, defaultKey ? defaultKey.key : null));
-        this.push.pads.push(pad);
-        padCollection.pads.push(new PadInfo(note, row, "note", column, defaultKey ? defaultKey.key : null));
-      });
-    }*/
 
 
   }
@@ -54,30 +32,40 @@ export class PushService {
   setPadCollection(settings: PushSettings): void {
     this.push.pads.length = 0;
 
-    let nCells = this.push.settings.columns*this.push.settings.rows;
+    let notes = this.noteInfo;
+    if (settings.scale !== ScaleId.CHROMATIC) {
+      notes = new Notes(settings.scale);
+    }
     let rows = this.push.settings.rows;
     let columns = this.push.settings.columns;
-    let startNote = this.noteInfo.getNote(settings.baseNote);
-    let endNote = this.noteInfo.getNoteByIndex((startNote.index - 1) + nCells);
+    let startIndex = notes.getNote(settings.baseNote).index;
 
-    this.noteInfo.getNoteRange(startNote.id, endNote.id).forEach((note, i) => {
-      let row =  rows-Math.ceil((i+1) / columns)+1;
-      let column = (i % columns) + 1;
-      let pad = new Pad(new PadInfo(note, row, note, column));
-      this.push.pads.push(pad);
-    });
-  }
-  changeSize(columns:number,rows:number): void {
-      this.push.settings.rows=rows;
-      this.push.settings.columns=columns;
-      this.setPadCollection(this.push.settings);
+    let currentIndex = startIndex;
+    for (let i = 0; i < rows; i++) {
+      if (i > 0) currentIndex = startIndex + 3 * i;
+
+      for (let j = 0; j < columns; j++) {
+        let note = notes.getNoteByIndex(currentIndex);
+        let pad = new Pad(new PadInfo(note.id, rows - (i + 1) + 1, note.id, j + 1));
+        this.push.pads.push(pad);
+
+        currentIndex++;
+      }
+    }
   }
 
-  moveMatrix(semitones:number):void{
+
+  changeSize(columns: number, rows: number): void {
+    this.push.settings.rows = rows;
+    this.push.settings.columns = columns;
+    this.setPadCollection(this.push.settings);
+  }
+
+  moveMatrix(semitones: number): void {
 
     let baseNote = this.noteInfo.getNote(this.push.settings.baseNote);
-    let newBase = this.noteInfo.move(baseNote,semitones);
-    this.push.settings.baseNote=newBase.id;
+    let newBase = this.noteInfo.move(baseNote, semitones);
+    this.push.settings.baseNote = newBase.id;
     this.setPadCollection(this.push.settings);
   }
 

@@ -12,6 +12,7 @@ import {UiModule} from "../ui/ui.module";
 import {CommonModule} from "@angular/common";
 import {AppHistoryService} from "./services/app-history.service";
 import {RouterService} from "./services/router.service";
+import {ScaleId} from "../model/mip/scales/ScaleId";
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import {RouterService} from "./services/router.service";
     },
     {
       provide: "Notes",
-      useValue: new Notes()
+      useValue: new Notes(ScaleId.CHROMATIC)
     }
   ],
   exports: []
