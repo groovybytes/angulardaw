@@ -8,3 +8,23 @@
   class="btn"
   [ngClass]="{'active':push.mode===1}"
   (click)="learnKeyClick()">Learn Keys</button>
+<button
+  type="button"
+  class="btn"
+  [ngClass]="{'active':push.settings.showKeyBindings}"
+  (click)="push.settings.showKeyBindings=!push.settings.showKeyBindings">Show Keys</button>
+<button
+  type="button"
+  class="btn"
+
+  (click)="movePads(12)">Octave +</button>
+<button
+  type="button"
+  class="btn"
+
+  (click)="movePads(-12)">Octave -</button>
+<button
+  type="button"
+  class="btn"
+
+  (click)="changeSize(4,4)">4</button>

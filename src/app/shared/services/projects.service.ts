@@ -62,7 +62,7 @@ export class ProjectsService {
 
       //!todo t this.layout.createDefaultLayout();
 
-      let masterBus = this.trackService.createTrack(project.nodes,project.deviceEvents, TrackCategory.BUS, null);
+      let masterBus = this.trackService.createTrack(project.nodes, project.deviceEvents, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
       project.tracks.push(masterBus);
 
@@ -140,9 +140,9 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project.deviceEvents,project, this.config, this.samplesService);
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project.deviceEvents, project, this.config, this.samplesService);
       metronome.load().then(() => {
-        let track = this.trackService.createTrack(project.nodes,project.deviceEvents, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
+        let track = this.trackService.createTrack(project.nodes, project.deviceEvents, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
         project.plugins.push(metronome);
         this.pluginsService.setupInstrumentRoutes(project, track, metronome);
@@ -167,6 +167,8 @@ export class ProjectsService {
     projectDto.patterns = [];
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
+    projectDto.pushKeyBindings = project.pushKeyBindings;
+    projectDto.pushSettings = project.pushSettings;
 
     //!todo tprojectDto.desktop = this.layout.serialize();
 
@@ -223,6 +225,8 @@ export class ProjectsService {
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
+      project.pushSettings = dto.pushSettings;
+      project.pushKeyBindings = dto.pushKeyBindings;
 
       //!todo t this.layout.deSerialize(dto.desktop);
 
@@ -232,14 +236,14 @@ export class ProjectsService {
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
-            let track = this.trackService.convertTrackFromJson(t, project.deviceEvents,project.nodes);
+            let track = this.trackService.convertTrackFromJson(t, project.deviceEvents, project.nodes);
             project.tracks.push(track);
             track.plugins = [];
             t.plugins.forEach(pluginDto => {
               let pluginInfo = project.pluginTypes.find(p => p.id === pluginDto.pluginTypeId);
               if (!pluginInfo) throw "plugin not found with id " + pluginDto.pluginTypeId;
-              if (pluginDto.pad){
-                pluginInfo.pad=pluginDto.pad;//override default pads
+              if (pluginDto.pad) {
+                pluginInfo.pad = pluginDto.pad;//override default pads
               }
               let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginInfo, project);
               pluginPromises.push(promise);
@@ -259,8 +263,8 @@ export class ProjectsService {
           Promise.all(pluginPromises)
             .then(() => {
 
-              let metronomeTrack=project.tracks.find(track=>track.id.startsWith("track-metronome"));
-              project.metronomePattern=this.createMetronomePattern(project,metronomeTrack);
+              let metronomeTrack = project.tracks.find(track => track.id.startsWith("track-metronome"));
+              project.metronomePattern = this.createMetronomePattern(project, metronomeTrack);
 
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);
@@ -269,8 +273,7 @@ export class ProjectsService {
                   pattern.quantizationEnabled.next(p.quantizationEnabled);
                   p.events.forEach(ev => pattern.events.push(ev));
                   pattern.length = p.length;
-                }
-                else throw new Error("invalid matrix data");
+                } else throw new Error("invalid settings data");
 
               });
               dto.matrix.body.forEach(_row => {

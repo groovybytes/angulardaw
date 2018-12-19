@@ -2,7 +2,6 @@ import {Inject, Injectable} from "@angular/core";
 import {Matrix} from "../model/daw/matrix/Matrix";
 import * as $ from "jquery";
 import * as _ from "lodash";
-import {Cell} from "../model//daw/matrix/Cell";
 import {TracksService} from "../shared/services/tracks.service";
 import {Project} from "../model//daw/Project";
 import {PluginsService} from "../shared/services/plugins.service";
@@ -14,6 +13,7 @@ import {KeyboardState} from "../model/KeyboardState";
 import {MatrixService} from "../shared/services/matrix.service";
 import {AudioNodesService} from "../shared/services/audionodes.service";
 import {System} from "../system/System";
+import {Cell} from "../model/daw/matrix/Cell";
 
 @Injectable()
 export class DawMatrixService {

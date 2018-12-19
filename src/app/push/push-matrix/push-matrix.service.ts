@@ -3,8 +3,9 @@ import {NoteOffEvent} from "../../model/mip/NoteOffEvent";
 import {EventCategory} from "../../model/daw/devices/EventCategory";
 import {Push} from "../model/Push";
 import {NoteOnEvent} from "../../model/mip/NoteOnEvent";
-import {PadInfo} from "./model/PadInfo";
 import {PushMode} from "../model/PushMode";
+import {PadInfo} from "../model/PadInfo";
+import {Pad} from "../model/Pad";
 
 @Injectable({
   providedIn: 'root'
@@ -15,30 +16,38 @@ export class PushMatrixService {
   }
 
   onKeyUp(event: KeyboardEvent): void {
-    if (this.push.listenToKeyboard && this.push.mode===PushMode.DEFAULT){
-      let pad = this.push.pads.find(pad => this.keyEquals(event.keyCode, pad.keyBinding));
-      if (pad) this.push.publish(EventCategory.NOTE_OFF, NoteOffEvent.default(pad.note));
-    }
-    else if (this.push.mode === PushMode.LEARN_KEY) {
-      let pad = this.push.pads.find(pad => pad.note===this.push.noteToLearn);
-      pad.keyBinding=String.fromCharCode(event.keyCode);
-      this.push.mode=PushMode.DEFAULT;
+    if (this.push.listenToKeyboard && this.push.mode === PushMode.DEFAULT) {
+      let keyBinding = this.push.getKeyBindingFromKeyCode(event.keyCode);
+      let pad = this.push.getPadByPosition(keyBinding.row, keyBinding.column);
+      if (pad) {
+        pad.state.next(0);
+        this.push.publish(EventCategory.NOTE_OFF, NoteOffEvent.default(pad.info.note));
+      }
+      else console.log("pad not found");
+    } else if (this.push.mode === PushMode.LEARN_KEY) {
+      let pad = this.push.getPadByNote(this.push.noteToLearn);
+      this.updateBinding(pad, String.fromCharCode(event.keyCode));
+      pad.state.next(0);
+      this.push.mode = PushMode.DEFAULT;
     }
   }
 
   onKeyDown(event: KeyboardEvent): void {
 
-    if (this.push.listenToKeyboard && this.push.mode===PushMode.DEFAULT && !event.repeat) {
-      let pad = this.push.pads.find(pad => this.keyEquals(event.keyCode, pad.keyBinding));
-      if (pad) {
-        this.push.publish(EventCategory.NOTE_ON, NoteOnEvent.default(pad.note));
+    if (this.push.listenToKeyboard && this.push.mode === PushMode.DEFAULT && !event.repeat) {
+      let keyBinding = this.push.getKeyBindingFromKeyCode(event.keyCode);
+      let pad = this.push.getPadByPosition(keyBinding.row, keyBinding.column);
+
+      if (pad && pad.state.getValue()===0) { // recheck here: event.repeat not trustable :)
+        pad.state.next(1);
+        this.push.publish(EventCategory.NOTE_ON, NoteOnEvent.default(pad.info.note));
       }
     }
   }
 
   onMouseDown(element: ElementRef): void {
     let note = $(element.nativeElement).attr("data-note");
-    let pad = this.push.getPad(note);
+    let pad = this.push.getPadByNote(note);
     if (this.push.mode === PushMode.DEFAULT) {
 
       pad.state.next(1);
@@ -53,7 +62,7 @@ export class PushMatrixService {
 
   onMouseUp(element: ElementRef): void {
     let note = $(element.nativeElement).attr("data-note");
-    let pad = this.push.getPad(note);
+    let pad = this.push.getPadByNote(note);
 
     if (this.push.mode === PushMode.DEFAULT) {
       pad.state.next(0);
@@ -62,7 +71,18 @@ export class PushMatrixService {
 
   }
 
-  private keyEquals(eventKey: number, stringCode: string): boolean {
-    return stringCode !== null && String.fromCharCode(eventKey).toLowerCase() === stringCode.toLowerCase();
+  private updateBinding(pad: Pad, key: string): void {
+    let keyBindings = this.push.settings.keyBindings;
+
+    let keyBinding = keyBindings.bindings.find(binding => binding.column === pad.info.column && binding.row === pad.info.row);
+    if (!keyBinding) {
+      let newBinding = {row:pad.info.row,column:pad.info.column,key:key.toLowerCase()};
+      keyBindings.bindings.push(newBinding);
+    }
+    else{
+      keyBinding.key = key;
+    }
+
+
   }
 }

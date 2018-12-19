@@ -13,7 +13,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import {Notes} from "../../model/mip/Notes";
-import {PadInfo} from "./model/PadInfo";
+import {Pad} from "../model/Pad";
 import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
 import {EventCategory} from "../../model/daw/devices/EventCategory";
 import {NoteOnEvent} from "../../model/mip/NoteOnEvent";
@@ -30,7 +30,6 @@ export class PushMatrixComponent implements OnInit, AfterViewInit {
 
 
   @ViewChildren('padElement') padElements: QueryList<ElementRef>;
-  public padKeyTarget: PadInfo;
 
   @HostListener('window:keyup', ['$event'])
   keyUpEvent(event: KeyboardEvent) {
@@ -56,6 +55,11 @@ export class PushMatrixComponent implements OnInit, AfterViewInit {
   ngOnInit() {
 
 
+  }
+
+  getKeyBinding(pad:Pad):string{
+    let binding = this.push.getKeyBinding(pad);
+    return binding?binding.key:null;
   }
 
   ngAfterViewInit(): void {

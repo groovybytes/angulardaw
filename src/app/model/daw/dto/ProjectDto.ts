@@ -3,6 +3,8 @@ import {MatrixDto} from "./MatrixDto";
 import {PatternDto} from "./PatternDto";
 import {TransportSettings} from "../transport/TransportSettings";
 import {AudioNodeDto} from "./AudioNodeDto";
+import {PushSettings} from "../../../push/model/PushSettings";
+import {KeyBindings} from "../../../push/model/KeyBindings";
 
 export class ProjectDto{
   id: any;
@@ -16,4 +18,6 @@ export class ProjectDto{
   routes:Array<{source:string,target:string}>;
   nodes:Array<AudioNodeDto>;
   transportSettings:TransportSettings;
+  pushSettings:PushSettings;
+  pushKeyBindings:KeyBindings;
 }

@@ -110,7 +110,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   //!todo
   /*getWindow(): WindowInfo {
-    return this.layout.getWindowInfo("matrix");
+    return this.layout.getWindowInfo("settings");
   }*/
 
   ngAfterViewInit() {

@@ -22,6 +22,8 @@ import {PadsComponent} from "./pads/pads.component";
 import {PadsModule} from "./pads/pads.module";
 import {PushModule} from "../push/push.module";
 import {PushComponent} from "../push/push/push.component";
+import {BootstrapperService} from "./bootstrapper.service";
+import {DeviceService} from "./device.service";
 
 
 @NgModule({
@@ -51,7 +53,7 @@ import {PushComponent} from "../push/push/push.component";
     Angular2DesktopModule
   ],
   providers: [
-
+    BootstrapperService,DeviceService
   ],
   entryComponents:[PadsComponent,PushComponent],
   exports: []

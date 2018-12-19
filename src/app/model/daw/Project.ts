@@ -11,11 +11,11 @@ import {PluginInfo} from "./plugins/PluginInfo";
 import {ProjectSettings} from "./ProjectSettings";
 import {VirtualAudioNode} from "./VirtualAudioNode";
 import {TrackCategory} from "./TrackCategory";
-
 import {AudioContextService} from "../../shared/services/audiocontext.service";
-import {NoteEvent} from "../mip/NoteEvent";
 import {DeviceEvent} from "./devices/DeviceEvent";
 import {AudioPlugin} from "./plugins/AudioPlugin";
+import {PushSettings} from "../../push/model/PushSettings";
+import {KeyBindings} from "../../push/model/KeyBindings";
 
 
 export class Project {
@@ -43,6 +43,8 @@ export class Project {
   /*recordNoteStart: EventEmitter<NoteEvent> = new EventEmitter<NoteEvent>();
   recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();*/
   metronomePattern: Pattern;
+  pushSettings:PushSettings;
+  pushKeyBindings:KeyBindings;
   readonly deviceEvents:EventEmitter<DeviceEvent<any> >=new EventEmitter();
 
   private subscriptions: Array<Subscription> = [];

@@ -8,11 +8,13 @@ import {NoteEvent} from "../../mip/NoteEvent";
 import {EventCategory} from "../devices/EventCategory";
 import {NoteOnEvent} from "../../mip/NoteOnEvent";
 import {NoteOffEvent} from "../../mip/NoteOffEvent";
+import {Pad} from "../../../push/model/Pad";
 
 export abstract class AudioPlugin {
 
   private deviceSubscription: Subscription;
   private nodes:Array<{node:AudioBufferSourceNode,note:string}>=[];
+  pads:Array<Pad>=[];
 
   hot:BehaviorSubject<boolean>=new BehaviorSubject(false);
 

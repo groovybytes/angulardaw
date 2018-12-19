@@ -103,9 +103,9 @@
 </nav>
 
 <div class="drag-container"  *ngIf="project && project.ready">
-  <daw-matrix [project]="project"
-              [ngStyle]="{'z-index':getWindow('matrix').zIndex}"
-              [ngClass]="getWindow('matrix').clazz"></daw-matrix>
+  <daw-settings [project]="project"
+              [ngStyle]="{'z-index':getWindow('settings').zIndex}"
+              [ngClass]="getWindow('settings').clazz"></daw-settings>
 
   <sequencer [ngClass]="getWindow('sequencer').clazz"
              [ngStyle]="{'z-index':getWindow('sequencer').zIndex}"

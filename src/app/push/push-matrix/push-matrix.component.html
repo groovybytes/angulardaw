@@ -1,21 +1,13 @@
-<div class="grid-container">
-  <div
-    class="grid-item"
-    *ngFor="let pad of push.pads"
-    [ngStyle]="{'grid-column':pad.column,'grid-row':pad.row}"
-    [ngClass]="pad.cssClass"
-    [attr.data-note]="pad.note" #padElement>
+<div
+  class="grid-item"
+  *ngFor="let pad of push.pads"
+  [ngStyle]="{'grid-column':pad.info.column,'grid-row':pad.info.row}"
+  [ngClass]="pad.cssClass"
+  [attr.data-note]="pad.info.note" #padElement>
 
-    <span>{{pad.note}}</span>
-    <span *ngIf="pad.keyBinding">({{pad.keyBinding}})</span>
-   <!-- <button
-      (click)="learnKey(pad)"
-      [ngClass]="{'active':push.padKeyTarget && push.padKeyTarget.note===pad.note}"
-      type="button"
-      class="assign-btn">
-      assign key
-    </button>-->
-  </div>
+  <span>{{pad.info.note}} {{pad.info.row}} {{pad.info.column}}</span>
+  <span *ngIf="getKeyBinding(pad) && push.settings.showKeyBindings">({{getKeyBinding(pad)}})</span>
 </div>
+
 <!--
 [ngClass]="{'active':currentNote === triggerInfo.note}"-->

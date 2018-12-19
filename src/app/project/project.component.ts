@@ -5,12 +5,10 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
 import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {DesktopApplication, A2dClientService, WindowState, DockPosition, WindowParams} from "angular2-desktop";
-import {PadsComponent} from "./pads/pads.component";
+import {DockPosition, WindowState} from "angular2-desktop";
 import {DawInfo} from "../model/DawInfo";
-import {PushComponent} from "../push/push/push.component";
 import {Subscription} from "rxjs";
-import {PushConfig} from "../push/model/PushConfig";
+import {BootstrapperService} from "./bootstrapper.service";
 
 
 @Component({
@@ -45,7 +43,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private projectsService: ProjectsService,
-    private desktopService: A2dClientService,
+    private bootstrapper:BootstrapperService,
     private projectsApi: ProjectsApi,
     @Inject("daw") private daw: DawInfo,
     private system: System) {
@@ -169,52 +167,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    let pads = new DesktopApplication();
-    pads.component = PadsComponent;
-    pads.id = 'pads';
-    pads.title = 'pads';
-    pads.singleInstanceMode = false;
-    pads.defaultWindowParams = new WindowParams(
-      null,
-      400,
-      100,
-      200,
-      600,
-      'pads',
-      true,
-      true
-    );
-    this.desktopService.addApplication(pads);
-
-    let push = new DesktopApplication();
-    push.component = PushComponent;
-    push.id = 'push';
-    push.title = 'push';
-    push.singleInstanceMode = true;
-    push.defaultWindowParams = new WindowParams(
-      null,
-      400,
-      100,
-      800,
-      600,
-      'push',
-      true,
-      true
-    );
-    this.desktopService.addApplication(push);
-
-    setTimeout(() => {
-      this.desktopService.createWindow<PushComponent>("push", (push) => {
-        push.deviceEvent.subscribe(event => {
-          this.project.deviceEvents.emit(event);
-        });
-        push.config = new PushConfig();
-
-      }).then(windowId => {
-        this.desktopService.openWindow(windowId);
-      })
-    }, 500)
-
+    this.bootstrapper.setupDesktop();
 
   }
 
