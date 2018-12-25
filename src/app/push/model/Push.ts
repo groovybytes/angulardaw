@@ -18,6 +18,7 @@ export class Push {
   mode:PushMode=PushMode.DEFAULT;
   message:BehaviorSubject<PushMessage>=new BehaviorSubject(null);
   settings:PushSettings;
+  settingsCollection:Array<PushSettings>=[];
   keyBindings:Array<KeyBindings>;
 
 

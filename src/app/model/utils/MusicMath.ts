@@ -65,6 +65,12 @@ export class MusicMath {
     //return tick*quantization*4 % signature.beatUnit;
   }
 
+  public static getLength(bars:number,bpm:number,beatUnit:number): number {
+
+    let beatTime = MusicMath.getBeatTime(bpm);
+    return beatUnit*bars*beatTime;
+  }
+
   public static getStartTime(loopStart: number, bpm: number): number {
     return loopStart * MusicMath.getBeatTime(bpm);
   }

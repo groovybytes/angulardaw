@@ -10,6 +10,7 @@ import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 import {AudioPlugin} from "./AudioPlugin";
 import {EventEmitter} from "@angular/core";
 import {DeviceEvent} from "../devices/DeviceEvent";
+import {SampleEventInfo} from "../SampleEventInfo";
 
 
 export class MetronomePlugin extends AudioPlugin {
@@ -26,11 +27,10 @@ export class MetronomePlugin extends AudioPlugin {
   constructor(
     private audioContext: AudioContext,
     private fileService: FilesApi,
-    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
     private project: Project,
     private config: AppConfiguration,
     private samplesV2Service: SamplesApi) {
-    super(deviceEvents);
+    super();
     /* let track = this.tracksService.createDefaultTrack(this.project.transport.masterParams);
      let tickTime =
        MusicMath.getTickTime(track.transport.getBpm(),
@@ -84,11 +84,18 @@ export class MetronomePlugin extends AudioPlugin {
     })
   }
 
-  feed(event: NoteEvent, offset: number): any {
-    if (this.project.metronomeEnabled) {
-      if (event.note === "A0") this.accentSample.trigger(offset);//trigger(offset);
-      else this.otherSample.trigger(offset);
-    }
+  getSample(note:string): Sample {
+
+    if (note === "A0") return this.accentSample;
+    else return this.otherSample;
+
+   /* return new Promise<void>(((resolve, reject) => {
+      if (this.project.metronomeEnabled) {
+        if (event.note === "A0") this.accentSample.trigger(event);//trigger(offset);
+        else this.otherSample.trigger(event);
+      }
+    }))*/
+
 
   }
 
@@ -128,9 +135,9 @@ export class MetronomePlugin extends AudioPlugin {
     return InstrumentCategory.OTHER;
   }
 
-  startPlay(event: NoteEvent) {
-  }
+ /* stop(): void {
 
-  stopPlay(): void {
-  }
+    this.accentSample.stop();
+    this.otherSample.stop();
+  }*/
 }

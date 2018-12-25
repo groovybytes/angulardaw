@@ -5,7 +5,6 @@ import {Notes} from "../model/mip/Notes";
 import {PadInfo} from "./model/PadInfo";
 import {KeyBindings} from "./model/KeyBindings";
 import {PushSettings} from "./model/PushSettings";
-import {Scale} from "../model/mip/scales/Scale";
 import {ScaleId} from "../model/mip/scales/ScaleId";
 
 @Injectable({
@@ -46,7 +45,8 @@ export class PushService {
 
       for (let j = 0; j < columns; j++) {
         let note = notes.getNoteByIndex(currentIndex);
-        let pad = new Pad(new PadInfo(note.id, rows - (i + 1) + 1, note.id, j + 1));
+        let noteMapping = settings.noteMappings.find(mapping => mapping.note === note.id);
+        let pad = new Pad(new PadInfo(note.id, rows - (i + 1) + 1, noteMapping ? noteMapping.label : note.id, j + 1));
         this.push.pads.push(pad);
 
         currentIndex++;

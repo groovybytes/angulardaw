@@ -1,4 +1,4 @@
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {EventEmitter} from "@angular/core";
 import {TransportPosition} from "./TransportPosition";
 import {MusicMath} from "../../utils/MusicMath";
@@ -6,11 +6,14 @@ import {TimeSignature} from "../../mip/TimeSignature";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {TransportSettings} from "./TransportSettings";
 import {TransportEvent} from "./TransportEvent";
+import {Thread} from "../Thread";
+import set = Reflect.set;
+import {ScriptEngine} from "../../../shared/services/scriptengine.service";
 
 
 export class Transport {
 
-  channels: Array<string>=[];
+  channels: Array<string> = [];
   settings: TransportSettings;
   time: Observable<TransportEvent<number>>;
   transportEnd: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
@@ -19,15 +22,19 @@ export class Transport {
   timeReset: EventEmitter<TransportEvent<void>> = new EventEmitter<TransportEvent<void>>();
   private position: TransportPosition;
   private intervalHandle: any;
+  private threadSubscription: Subscription;
   private run: boolean = false;
+  private ticker: Thread;
   private timeSubject: BehaviorSubject<TransportEvent<number>>
     = new BehaviorSubject<TransportEvent<number>>(null);
 
-  private startTime:number;
+  private startTime: number;
 
 
   constructor(
-    private audioContext: AudioContext, settings: TransportSettings) {
+    private audioContext: AudioContext,
+    private scriptEngine: ScriptEngine,
+    settings: TransportSettings) {
 
     /*  this.tickTock = this.tickSubject.asObservable();
       this.beat = this.beatSubject.asObservable();*/
@@ -40,7 +47,6 @@ export class Transport {
     this.position.tick = 0;
 
   }
-
 
 
   private getBeatTime(): number {
@@ -56,39 +62,39 @@ export class Transport {
     return this.settings.loopEnd * this.getBeatTime();
   }
 
-  start(): void {
+  start(ticker: Thread): void {
+
+
+    this.ticker = ticker;
     if (this.isRunning()) this.stop();
     this.startTime = this.audioContext.currentTime;
     this.beforeStart.emit(new TransportEvent<void>(this.channels));
     this.run = true;
     this.timeReset.emit(new TransportEvent<void>(this.channels));
 
-    this.intervalHandle = setInterval(() => {
+    ticker.post("start");
+    this.threadSubscription = ticker.message.subscribe(msg => {
+      /* this.scriptEngine.setImmediate(()=>{*/
       let currentTime = this.audioContext.currentTime - this.startTime;
-      this.timeSubject.next( new TransportEvent<number>(this.channels,currentTime));
+      this.timeSubject.next(new TransportEvent<number>(this.channels, currentTime));
+      /* });*/
+    });
+
+    /* this.intervalHandle = setInterval(() => {
+
+       let currentTime = this.audioContext.currentTime - this.startTime;
+       requestAnimationFrame(()=>{
+         this.timeSubject.next( new TransportEvent<number>(this.channels,currentTime));
+       })
 
 
-      /*if (currentTime > this.getEndTime() / 1000) {
-
-        if (this.settings.loop) {
-          start = this.audioContext.currentTime;
-        }
-        else {
-          this.run = false;
-          this.transportEnd.emit(new TransportEvent<void>(this.channel));
-        }
-
-      }
-      else {
-        this.timeSubject.next( new TransportEvent<number>(this.channel,currentTime));
-      }*/
-    }, 5)
+     }, 5)*/
 
   }
 
- /* resetStartTime():void{
-    this.startTime = this.audioContext.currentTime;
-  }*/
+  /* resetStartTime():void{
+     this.startTime = this.audioContext.currentTime;
+   }*/
 
   destroy(): void {
     this.stop();
@@ -103,8 +109,11 @@ export class Transport {
   stop(): void {
 
     this.run = false;
+    this.threadSubscription.unsubscribe();
+
     if (this.intervalHandle) clearInterval(this.intervalHandle);
     this.transportEnd.emit(new TransportEvent<void>(this.channels));
+    this.ticker.post("stop");
   }
 
   isRunning(): boolean {

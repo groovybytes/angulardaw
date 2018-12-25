@@ -14,15 +14,13 @@ import {AudioPlugin} from "./plugins/AudioPlugin";
 export class NoteStream {
   events: Array<NoteEvent> = [];
   time: EventEmitter<number> = new EventEmitter<number>();
-  private lookAhead: number = 1.5;//5 notes
+  private lookAhead: number = 0.5;//seconds
   trigger: Observable<{ event: NoteEvent, offset: number }>;
   private triggerSubject: Subject<{ event: NoteEvent, offset: number }> = new Subject();
   private index: number = 0;
   private lastTime: number = 1000000000000;
-  private timeStamp;
 
   private debugId: string;
-  private lastIndex:number;
 
   private subscriptions: Array<Subscription> = [];
   transportTimeOffset: number = 0;
@@ -54,33 +52,17 @@ export class NoteStream {
     let endTime = MusicMath.getEndTime(this.transportContext.settings.loopEnd, this.transportContext.settings.global.bpm) / 1000;
     let loopTime = actualTransportTime % endTime;
 
+    /!* if (this.lastTime > loopTime) {
+       this.index = 0;
+     }
+     this.lastTime = loopTime;*!/
+
 
     let timeFactor = 120 / this.transportContext.settings.global.bpm;
 
-
-    for (let i = this.index; i < this.queue.length; i++) {
-      if (this.queue[i].time < loopTime+this.lookAhead){
-        let eventClone = new NoteEvent(this.queue[i].note, this.queue[i].time, this.queue[i].length, this.queue[i].loudness, this.queue[i].articulation);
-        eventClone.time = this.queue[i].time * timeFactor;
-        eventClone.length = this.queue[i].length * timeFactor;
-
-        let offset = eventClone.time / 1000 - loopTime;
-        if (offset < 0) offset = 0;
-        this.scriptEngine.setImmediate(() => {
-          this.plugin.feed(eventClone, offset);
-        });
-      }
-      else{
-        this.index=i;
-        break;
-      }
-    }
-
-
-
     let repeat = true;
 
-   /!* while (repeat) {
+    while (repeat) {
       let nextEvent = this.queue[this.index];
       let eventTime = nextEvent.time * timeFactor / 1000;
       if (eventTime <= (loopTime + this.lookAhead)) {
@@ -100,7 +82,7 @@ export class NoteStream {
         this.nextIndex();
         repeat = true;
       } else repeat = false;
-    }*!/
+    }
 
     this.time.emit(loopTime);
 

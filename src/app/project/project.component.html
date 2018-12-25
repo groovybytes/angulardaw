@@ -4,7 +4,7 @@
       [id]="'matrix'"
       [title]="''"
       [state]="WindowState.DOCKED"
-      [dockPosition]="DockPosition.TOP"
+      [dockPosition]="DockPosition.TOP_LEFT"
       [x]="400"
       [y]="400"
       [width]="400"
@@ -14,6 +14,11 @@
           <li>
             <a [ngClass]="{'active':project?.metronomeEnabled | async}"
                href [routerLink]="" (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
+            </a>
+          </li>
+          <li>
+            <a [ngClass]="{'active':project?.recording | async}"
+               href [routerLink]="" (click)="toggleRecord()">REC
             </a>
           </li>
           <li>
@@ -35,7 +40,7 @@
 
       </div>
     </a2d-window>
-    <a2d-window
+    <!--<a2d-window
       [id]="'sequencer'"
       [title]="'sequencer'"
       [state]="WindowState.DOCKED"
@@ -52,8 +57,8 @@
         <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
 
       </div>
-    </a2d-window>
-    <a2d-window
+    </a2d-window>-->
+    <!--<a2d-window
       [id]="'plugin-panel'"
       [title]="'plugins'"
       [state]="WindowState.DOCKED"
@@ -66,16 +71,67 @@
         <plugin-panel [project]="project" [track]="project.selectedTrack.getValue()"></plugin-panel>
 
       </div>
-    </a2d-window>
+    </a2d-window>-->
   </div>
   <div class="bar-left">
 
-    <a2d-shortcut [appId]="'push'" [icon]="'/assets/images/push.png'"></a2d-shortcut>
+    <button
+      type="button"
+      style=""
+      a2dShortCut
+      (initialize)="initializePush($event)"
+      [appId]="'push'">Push</button>
+
+    <!--<a2d-shortcut [appId]="'push'" [icon]="'/assets/images/push.png'"></a2d-shortcut>-->
 
   </div>
+
+  <a2d-desktop-application
+    id="'matrix'"
+    title="'matrix'"
+    [dockPosition]="DockPosition.LEFT"
+    [singleInstanceMode]="true"
+    [open]="true"
+    [x]="300"
+    [y]="300"
+    [width]="300"
+    [height]="300"
+    (initialize)="initializeMatrix($event)"
+    [component]="DawMatrixComponent">
+
+  </a2d-desktop-application>
+
+  <a2d-desktop-application
+    id="'push'"
+    title="'push'"
+    [singleInstanceMode]="true"
+    [dockPosition]="DockPosition.RIGHT"
+    [open]="true"
+    [x]="300"
+    [y]="300"
+    [width]="300"
+    [height]="300"
+    (initialize)="initializePush($event)"
+    [component]="PushComponent">
+
+  </a2d-desktop-application>
+  <a2d-desktop-application
+    id="'sequencer'"
+    title="'Sequencer'"
+    [singleInstanceMode]="false"
+    [open]="false"
+    [x]="300"
+    [y]="300"
+    [width]="300"
+    [height]="300"
+    (initialize)="initializeSequencer($event)"
+    [component]="SequencerComponent">
+
+  </a2d-desktop-application>
+
 </a2d-desktop>
 
-<recorder *ngIf="project" [project]="project"></recorder>
+<!--<recorder *ngIf="project" [project]="project"></recorder>-->
 
 
 

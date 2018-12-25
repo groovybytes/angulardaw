@@ -10,4 +10,5 @@ export class DeviceEvent<T> {
   deviceId:string;
   category: EventCategory;
   data:T;
+  channels:Array<string>;
 }

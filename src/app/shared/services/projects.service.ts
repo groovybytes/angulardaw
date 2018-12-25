@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 
 import {AppConfiguration} from "../../app.configuration";
 import {PluginsService} from "./plugins.service";
@@ -23,6 +23,11 @@ import {MatrixService} from "./matrix.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
+import {RecordSession} from "../../model/daw/RecordSession";
+import {DawInfo} from "../../model/DawInfo";
+import {ScriptEngine} from "./scriptengine.service";
+import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
+import {EventCategory} from "../../model/daw/devices/EventCategory";
 
 
 @Injectable()
@@ -37,7 +42,9 @@ export class ProjectsService {
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
     private samplesService: SamplesApi,
+    @Inject("daw") private daw: DawInfo,
     private patternsService: PatternsService,
+    private scriptEngine:ScriptEngine,
     private pluginsService: PluginsService) {
 
   }
@@ -54,7 +61,7 @@ export class ProjectsService {
       transportSettings.loopEnd = 0;
       transportSettings.loopStart = 0;
 
-      let project = new Project(this.audioContext, transportSettings);
+      let project = new Project(this.scriptEngine,this.audioContext, transportSettings);
       project.patterns = [];
       project.id = id;
       project.name = name;
@@ -62,7 +69,7 @@ export class ProjectsService {
 
       //!todo t this.layout.createDefaultLayout();
 
-      let masterBus = this.trackService.createTrack(project.nodes, project.deviceEvents, TrackCategory.BUS, null);
+      let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
       project.tracks.push(masterBus);
 
@@ -127,10 +134,13 @@ export class ProjectsService {
     let pattern = project.metronomePattern = new Pattern(
       "_metronome",
       [],
+      this.scriptEngine,
       transportContext,
-      track.getInstrumentPlugin(),
+      track.getMasterPlugin(),
       NoteLength.Quarter,
       track.controlParameters);
+
+    pattern.length=4;
 
     metronomeEvents.forEach(ev => pattern.events.push(ev));
 
@@ -140,9 +150,9 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project.deviceEvents, project, this.config, this.samplesService);
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService,project, this.config, this.samplesService);
       metronome.load().then(() => {
-        let track = this.trackService.createTrack(project.nodes, project.deviceEvents, TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
+        let track = this.trackService.createTrack(project.nodes,  TrackCategory.SYSTEM, project.getMasterBus().inputNode, "metronome-");
         track.plugins = [metronome];
         project.plugins.push(metronome);
         this.pluginsService.setupInstrumentRoutes(project, track, metronome);
@@ -167,8 +177,8 @@ export class ProjectsService {
     projectDto.patterns = [];
     projectDto.routes = this.audioNodesService.getRoutes(project.getMasterBus().outputNode);
     projectDto.nodes = project.nodes.map(node => this.audioNodesService.convertNodeToJson(node));
-    projectDto.pushKeyBindings = project.pushKeyBindings;
-    projectDto.pushSettings = project.pushSettings;
+    /*  projectDto.pushKeyBindings = project.pushKeyBindings;
+      projectDto.pushSettings = project.pushSettings;*/
 
     //!todo tprojectDto.desktop = this.layout.serialize();
 
@@ -183,7 +193,7 @@ export class ProjectsService {
       patternDto.id = pattern.id;
       patternDto.length = pattern.length;
       patternDto.events = pattern.events;
-      patternDto.notes = pattern.notes;
+      patternDto.triggers = pattern.triggers;
       patternDto.quantizationEnabled = pattern.quantizationEnabled.getValue();
       patternDto.quantization = pattern.quantization.getValue();
       patternDto.settings = pattern.transportContext.settings;
@@ -220,7 +230,7 @@ export class ProjectsService {
   deSerializeProject(dto: ProjectDto): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
-      let project = new Project(this.audioContext, dto.transportSettings);
+      let project = new Project(this.scriptEngine,this.audioContext, dto.transportSettings);
       project.id = dto.id;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
@@ -236,7 +246,7 @@ export class ProjectsService {
           let pluginPromises = [];
 
           dto.tracks.forEach(t => {
-            let track = this.trackService.convertTrackFromJson(t, project.deviceEvents, project.nodes);
+            let track = this.trackService.convertTrackFromJson(t, project.nodes);
             project.tracks.push(track);
             track.plugins = [];
             t.plugins.forEach(pluginDto => {
@@ -325,6 +335,22 @@ export class ProjectsService {
 
   }
 
+  toggleRecord(pattern?: Pattern): void {
+    let project = this.daw.project.getValue();
+
+    if (project.recording.getValue() === true) project.recording.next(false);
+    else {
+      project.recordSession = new RecordSession(pattern);
+      project.recording.next(true);
+    }
+
+  }
+
+  handleDeviceEvent(event:DeviceEvent<any>):void{
+    if (event.category === EventCategory.RECORD_TOGGLE) {
+      this.toggleRecord(this.daw.project.getValue().selectedPattern.getValue());
+    }
+  }
 
   guid() {
     function s4() {
@@ -336,3 +362,24 @@ export class ProjectsService {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 }
+
+
+/* this.deviceSubscription = deviceEvents.subscribe(deviceEvent => {
+     if (this.hot.getValue()) {
+       if (deviceEvent.category === EventCategory.NOTE_ON) {
+         let event = deviceEvent.data as NoteOnEvent;
+
+         let sampleEvent = new SampleEventInfo();
+         sampleEvent.note = event.note;
+         this.startPlay(sampleEvent);
+         this.playingEvents.push(sampleEvent);
+
+       } else if (deviceEvent.category === EventCategory.NOTE_OFF) {
+         let event = deviceEvent.data as NoteOffEvent;
+         let index = this.playingEvents.findIndex(sampleEvent => sampleEvent.note === event.note);
+         this.stopPlay(this.playingEvents[index].node);
+         this.playingEvents.splice(index, 1);
+       }
+     }
+
+   })*/

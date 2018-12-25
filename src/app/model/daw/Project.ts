@@ -16,6 +16,9 @@ import {DeviceEvent} from "./devices/DeviceEvent";
 import {AudioPlugin} from "./plugins/AudioPlugin";
 import {PushSettings} from "../../push/model/PushSettings";
 import {KeyBindings} from "../../push/model/KeyBindings";
+import {RecordSession} from "./RecordSession";
+import {Thread} from "./Thread";
+import {ScriptEngine} from "../../shared/services/scriptengine.service";
 
 
 export class Project {
@@ -39,25 +42,32 @@ export class Project {
   pluginTypes: Array<PluginInfo> = [];
   plugins: Array<AudioPlugin> = [];
   colors = ["lightblue", "yellow", "red"];
-  record: EventEmitter<Pattern> = new EventEmitter<Pattern>();
-  /*recordNoteStart: EventEmitter<NoteEvent> = new EventEmitter<NoteEvent>();
-  recordNoteEnd: EventEmitter<void> = new EventEmitter<void>();*/
+  recording: BehaviorSubject<boolean>=new BehaviorSubject(null);
+  recordSession:RecordSession;
   metronomePattern: Pattern;
-  pushSettings:PushSettings;
+  pushSettings:Array<PushSettings>;
   pushKeyBindings:KeyBindings;
-  readonly deviceEvents:EventEmitter<DeviceEvent<any> >=new EventEmitter();
+  readonly deviceEvents2:EventEmitter<DeviceEvent<any> >=new EventEmitter();
 
-  private subscriptions: Array<Subscription> = [];
+  threads:Array<Thread>=[];
 
   constructor(
+    private scriptEngine:ScriptEngine,
     private audioContext: AudioContextService, transportSettings: TransportSettings) {
 
     this.transportSettings = transportSettings;
-    this.transport = new Transport(this.audioContext.getAudioContext(), transportSettings);
+    this.transport = new Transport(
+      this.audioContext.getAudioContext(),
+      scriptEngine,
+      transportSettings);
     this.metronomeEnabled.subscribe(isEnabled => {
       if (isEnabled) this.addChannel("_metronome");
       else this.removeChannel("_metronome");
     })
+
+  }
+
+  createTransport():void{
 
   }
 
@@ -71,7 +81,10 @@ export class Project {
   }
 
   setChannels(channels: Array<string>): void {
-    this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
+    this.transport.channels.length=0;
+    channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []).forEach(channel=>
+    this.addChannel(channel));
+    //this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
   }
 
   addChannel(channel: string): void {
@@ -83,7 +96,7 @@ export class Project {
   }
 
   isRunningWithChannel(channel: string): boolean {
-    return this.transport.isRunning() && this.transport.channels.indexOf(channel) >= 0;
+    return this.transport.channels.indexOf(channel) >= 0;
   }
 
   createTransportContext(): TransportContext {
@@ -104,18 +117,19 @@ export class Project {
   }
 
 
-  start(): void {
+ /* start(): void {
     if (this.transport.isRunning()) this.transport.stop();
-    this.transport.start();
-  }
+    let ticker = this.threads.find(t=>t.id==="ticker");
+    this.transport.start(ticker);
+  }*/
 
   startRecord(): void {
 
   }
 
-  stop(): void {
+  /*stop(): void {
     this.transport.stop();
-  }
+  }*/
 
   destroy(): void {
     this.transport.stop();
@@ -125,6 +139,7 @@ export class Project {
     this.tracks.forEach(track => track.destroy());
     this.tracks.length = 0;
     this.audioContext.getAudioContext().destination.disconnect();
+    this.threads.forEach(t=>t.destroy());
     //return this.audioContext.destroy();
   }
 

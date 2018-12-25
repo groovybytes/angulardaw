@@ -4,16 +4,13 @@ import * as $ from "jquery";
 import * as _ from "lodash";
 import {TracksService} from "../shared/services/tracks.service";
 import {Project} from "../model//daw/Project";
-import {PluginsService} from "../shared/services/plugins.service";
 import {Pattern} from "../model//daw/Pattern";
 import {ProjectsService} from "../shared/services/projects.service";
 import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model//mip/NoteLength";
 import {KeyboardState} from "../model/KeyboardState";
-import {MatrixService} from "../shared/services/matrix.service";
-import {AudioNodesService} from "../shared/services/audionodes.service";
-import {System} from "../system/System";
 import {Cell} from "../model/daw/matrix/Cell";
+import {A2dClientService} from "angular2-desktop";
 
 @Injectable()
 export class DawMatrixService {
@@ -21,10 +18,8 @@ export class DawMatrixService {
   constructor(private trackService: TracksService,
               private patternService: PatternsService,
               private projectsService: ProjectsService,
-              @Inject("KeyboardState") private keyboardState: KeyboardState,
-              private matrixService: MatrixService,
-              private nodesService:AudioNodesService,
-              private pluginService: PluginsService, private system: System) {
+              private desktop:A2dClientService,
+              @Inject("KeyboardState") private keyboardState: KeyboardState) {
 
   }
 
@@ -81,12 +76,14 @@ export class DawMatrixService {
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
 
+   
+    this.desktop.createWindow("sequencer")
     //project.desktop.toggleWindow("sequencer");
-    /*  let track = project.getTrack(cell.trackId);
+      let track = project.getTrack(cell.trackId);
       track.focusedPattern = cell.data;
       project.selectedTrack = track;
 
-      project.sequencerOpen = true;*/
+      project.sequencerOpen = true;
   }
 
   removePatternsFromRow(project: Project, row: number): void {

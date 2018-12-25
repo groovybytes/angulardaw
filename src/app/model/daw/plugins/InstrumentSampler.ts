@@ -9,40 +9,44 @@ import {NoteEvent} from "../../mip/NoteEvent";
 import {AudioPlugin} from "./AudioPlugin";
 import {EventEmitter} from "@angular/core";
 import {DeviceEvent} from "../devices/DeviceEvent";
+import {Trigger} from "../Trigger";
+import {TriggerSpec} from "../TriggerSpec";
+import {SampleEventInfo} from "../SampleEventInfo";
+import {sample} from "rxjs/operators";
 
-export  class InstrumentSampler extends AudioPlugin {
+export class InstrumentSampler extends AudioPlugin {
 
-  protected samples:Array<Sample>=[];
-  protected baseSampleNotes:Array<number>=[];
+  protected samples: Array<Sample> = [];
+  protected baseSampleNotes: Array<number> = [];
 
   protected inputNode: VirtualAudioNode<AudioNode>;
   protected outputNode: VirtualAudioNode<AudioNode>;
 
-  private currentPlayingNotes:Array<string>=[];
+  //private runningSamples: Array<{ eventId: string, sample: Sample }> = [];
 
   constructor(
-    protected id:string,
-    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
+    protected id: string,
     protected notes: Notes,
     private pluginInfo: PluginInfo,
     private sampleGetter: (instrumentName: string) => Promise<{ samples: Array<Sample>, baseNotes: Array<number> }>) {
-    super(deviceEvents);
-    this.id=id;
+    super();
+    this.id = id;
+
   }
 
 
-  getInfo():PluginInfo{
+  getInfo(): PluginInfo {
     return this.pluginInfo;
   }
 
-  feed(event: NoteEvent, offset: number): any {
-    let eventNote = this.notes.getNote(event.note);
-    let sample = this.chooseSample(this.notes.getNote(event.note));
+  getSample(note:string): Sample {
 
-    let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
+    return this.chooseSample(this.notes.getNote(note));
+   // let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
 
+   // sample.trigger(event);// triggerWith(offset, detune, ADSREnvelope.fromNote(event), event.length / 1000);
 
-    sample.triggerWith(offset, detune, ADSREnvelope.fromNote(event), event.length / 1000);
+   // return sample;
 
   }
 
@@ -62,6 +66,10 @@ export  class InstrumentSampler extends AudioPlugin {
         .then(result => {
           this.samples = result.samples;
           this.baseSampleNotes = result.baseNotes;
+
+          this.notes.getNoteRange(this.getInfo().noteRange.start, this.getInfo().noteRange.end).forEach(note => {
+            this.triggers.push(new Trigger(new TriggerSpec(note, note, null), null));
+          });
           resolve();
         })
         .catch(error => reject(error));
@@ -70,7 +78,7 @@ export  class InstrumentSampler extends AudioPlugin {
 
   getNotes(): Array<string> {
     if (this.pluginInfo.noteRange) return this.notes.getNoteRange(this.pluginInfo.noteRange.start, this.pluginInfo.noteRange.end);
-    else this.notes.getNoteRange("C0", "B10");
+    else this.notes.getNoteRange("A0", "C7");
   }
 
   getInstrumentCategory(): InstrumentCategory {
@@ -80,8 +88,8 @@ export  class InstrumentSampler extends AudioPlugin {
 
   private chooseSample(note: NoteInfo): Sample {
     let closestSampleByNote = this.closest(this.baseSampleNotes, note.index);
-    let sample =  this.samples.find(sample => sample.baseNote.index === closestSampleByNote);
-    if (!sample) console.warn("no sample found for note "+note.id);
+    let sample = this.samples.find(sample => sample.baseNote.index === closestSampleByNote);
+    if (!sample) console.warn("no sample found for note " + note.id);
     return sample;
   }
 
@@ -109,27 +117,45 @@ export  class InstrumentSampler extends AudioPlugin {
   }
 
   setInputNode(node: VirtualAudioNode<AudioNode>): void {
-    this.inputNode=node;
+    this.inputNode = node;
   }
 
   setOutputNode(node: VirtualAudioNode<AudioNode>): void {
-    this.outputNode=node;
-    this.samples.forEach(sample=>sample.setDestination(node.node));
+    this.outputNode = node;
+    this.samples.forEach(sample => sample.setDestination(node.node));
   }
 
 
-  startPlay(event: NoteEvent):AudioBufferSourceNode {
+ /* startPlay(event: SampleEventInfo): void {
+
+    let sample = this.samples[0];//this.chooseSample(this.notes.getNote(event.note));
+    this.runningSamples.push({eventId: event.id, sample: sample});
+    sample.trigger(event);//, ADSREnvelope.fromNote(event));
+  }*/
+
+
+  /*startPlay(event: NoteEvent):AudioBufferSourceNode {
+    let t1 = performance.now();
     let eventNote = this.notes.getNote(event.note);
     let sample =this.chooseSample(this.notes.getNote(event.note));
     let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
     this.currentPlayingNotes.push(event.note);
+    console.log(performance.now()-t1);
     return sample.start(0, detune, ADSREnvelope.fromNote(event));
-  }
+  }*/
 
-  stopPlay(node:AudioBufferSourceNode): void {
-    node.stop();
-  }
+ /* stopPlay(id: string): void {
+    let index = this.runningSamples.findIndex(d => d.eventId === id);
+    if (index >= 0) {
+      this.runningSamples[0].sample.stop();
+      this.runningSamples.splice(index, 1);
+    }
+  }*/
 
+ /* stop(): void {
+
+    this.samples.forEach(sample => sample.stop());
+  }*/
 
 
 }

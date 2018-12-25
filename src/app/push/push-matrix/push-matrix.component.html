@@ -3,8 +3,11 @@
   *ngFor="let pad of push.pads"
   [ngStyle]="{'grid-column':pad.info.column,'grid-row':pad.info.row}"
   [ngClass]="pad.cssClass"
-  [attr.data-note]="pad.info.note" #padElement>
+  [attr.data-note]="pad.info.note"
+  [attr.data-row]="pad.info.row"
+  [attr.data-column]="pad.info.column"
+  #padElement>
 
-  <span>{{pad.info.note}}</span>
+  <span>{{pad.info.label}}</span>
   <span *ngIf="getKeyBinding(pad) && push.settings.showKeyBindings">({{getKeyBinding(pad)}})</span>
 </div>

@@ -71,12 +71,11 @@ export class PluginsService {
     return new Promise((resolve,reject)=>{
       let plugin: AudioPlugin;
 
-      if (info.id === "drumkit1") plugin = new Drums(id,project.deviceEvents, this.fileService, this.config, info, this.samplesV2Service);
+      if (info.id === "drumkit1") plugin = new Drums(id,this.fileService, this.config, info, this.samplesV2Service);
       else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService,
-        project.deviceEvents,project, this.config, this.samplesV2Service);
+        project, this.config, this.samplesV2Service);
       else plugin = new InstrumentSampler(
           id,
-          project.deviceEvents,
           this.notes,
           info,
           (name) => this.samplesV2Service.loadAllInstrumentSamples(name),
@@ -89,6 +88,8 @@ export class PluginsService {
 
 
   }
+
+
 
 
 }

@@ -1,6 +1,7 @@
 
 import * as _ from "lodash";
 import {NoteEvent} from "../../model/mip/NoteEvent";
+import {TriggerSpec} from "../../model/daw/TriggerSpec";
 
 
 export class NoteCell{
@@ -24,7 +25,7 @@ export class NoteCell{
   tick:number;
   row:number;
   column:number;
-  note:string;
+  trigger:TriggerSpec;
   time:number;
   isDragTarget:boolean=false;
   isDragging:boolean=false;
@@ -35,7 +36,7 @@ export class NoteCell{
     this.row=cell.row;
     this.header=cell.header;
     this.column=cell.column;
-    this.note=cell.note;
+    this.trigger=cell.trigger;
     this.time=cell.time;
     this.x=cell.x;
     this.y=cell.y;

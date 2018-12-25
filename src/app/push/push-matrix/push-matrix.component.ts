@@ -5,19 +5,15 @@ import {
   EventEmitter,
   HostListener,
   Inject,
-  Input,
-  NgZone,
+  NgZone, OnChanges,
   OnInit,
   Output,
-  QueryList,
+  QueryList, SimpleChanges,
   ViewChildren
 } from '@angular/core';
 import {Notes} from "../../model/mip/Notes";
 import {Pad} from "../model/Pad";
 import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
-import {EventCategory} from "../../model/daw/devices/EventCategory";
-import {NoteOnEvent} from "../../model/mip/NoteOnEvent";
-import {NoteOffEvent} from "../../model/mip/NoteOffEvent";
 import {Push} from "../model/Push";
 import {PushMatrixService} from "./push-matrix.service";
 
@@ -26,7 +22,7 @@ import {PushMatrixService} from "./push-matrix.service";
   templateUrl: './push-matrix.component.html',
   styleUrls: ['./push-matrix.component.scss']
 })
-export class PushMatrixComponent implements OnInit, AfterViewInit {
+export class PushMatrixComponent implements OnInit, AfterViewInit,OnChanges {
 
 
   @ViewChildren('padElement') padElements: QueryList<ElementRef>;
@@ -39,6 +35,14 @@ export class PushMatrixComponent implements OnInit, AfterViewInit {
   @HostListener('window:keydown', ['$event'])
   keyDownEvent(event: KeyboardEvent) {
     this.pushMatrixService.onKeyDown(event);
+  }
+  @HostListener('mousedown', ['$event'])
+  mouseDownEvent(event: MouseEvent) {
+    this.pushMatrixService.onMouseDown(event);
+  }
+  @HostListener('mouseup', ['$event'])
+  mouseUpEvent(event: MouseEvent) {
+    this.pushMatrixService.onMouseUp(event);
   }
 
   @Output() deviceEvent: EventEmitter<DeviceEvent<any>> = new EventEmitter();
@@ -63,12 +67,17 @@ export class PushMatrixComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.padElements.forEach(element => {
+   /* this.padElements.forEach(element => {
       this.zone.runOutsideAngular(() => {
         $(element.nativeElement).on("mousedown", () => this.pushMatrixService.onMouseDown(element));
         $(element.nativeElement).on("mouseup", () => this.pushMatrixService.onMouseUp(element));
       });
-    });
+    });*/
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
+
 
 }

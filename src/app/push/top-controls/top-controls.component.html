@@ -1,3 +1,23 @@
+<div class="dropdown">
+  <button class="dropbtn" type="button">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <div class="dropdown-content">
+    <a class=""
+       href
+       (click)="setSettings(settings.id)"
+       [routerLink]=""
+       *ngFor="let settings of push.settingsCollection">{{settings.title}}</a>
+  </div>
+</div>
+
+
+<button
+  type="button"
+  class="btn"
+  (click)="toggleRecord()">REC</button>
+
 <button
   type="button"
   class="btn"

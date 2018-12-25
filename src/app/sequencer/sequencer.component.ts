@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Si
 import {Subscription} from "rxjs/internal/Subscription";
 import {Project} from "../model/daw/Project";
 import {Pattern} from "../model/daw/Pattern";
+import {Track} from "../model/daw/Track";
 
 
 
@@ -13,6 +14,7 @@ import {Pattern} from "../model/daw/Pattern";
 export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() project: Project;
+  @Input() track: Track;
   @Input() pattern: Pattern;
   @Input() cellWidth: number = 50;
   @Input() cellHeight: number = 50;

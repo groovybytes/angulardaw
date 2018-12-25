@@ -13,6 +13,8 @@ import {CommonModule} from "@angular/common";
 import {AppHistoryService} from "./services/app-history.service";
 import {RouterService} from "./services/router.service";
 import {ScaleId} from "../model/mip/scales/ScaleId";
+import {ScriptEngine} from "./services/scriptengine.service";
+import {EventStreamService} from "./services/event-stream.service";
 
 
 @NgModule({
@@ -29,8 +31,10 @@ import {ScaleId} from "../model/mip/scales/ScaleId";
     PatternsService,
     AudioNodesService,
     AudioContextService,
+    ScriptEngine,
     AppHistoryService,
     RouterService,
+    EventStreamService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

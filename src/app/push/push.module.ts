@@ -5,10 +5,12 @@ import {PushMatrixComponent} from './push-matrix/push-matrix.component';
 import {TopControlsComponent} from './top-controls/top-controls.component';
 import {Push} from "./model/Push";
 import { DisplayComponent } from './display/display.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   providers: [{provide: "Push", useValue: new Push()}],
   declarations: [PushComponent, TopControlsComponent, PushMatrixComponent, DisplayComponent],

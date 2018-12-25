@@ -13,28 +13,37 @@ import {KeyBindings} from "../model/KeyBindings";
   templateUrl: './push.component.html',
   styleUrls: ['./push.component.scss']
 })
-export class PushComponent implements OnInit,OnDestroy {
+export class PushComponent implements OnInit, OnDestroy {
 
-  @Input() settings:PushSettings;
-  @Input() keyBindings:Array<KeyBindings>;
-  @Output() deviceEvent:EventEmitter<DeviceEvent<any> >=new EventEmitter();
+  @Input() channels:Array<string>=[];
+  @Input() settingsCollection: Array<PushSettings> = [];
+  @Input() keyBindings: Array<KeyBindings>;
+  @Output() deviceEvent: EventEmitter<DeviceEvent<any>> = new EventEmitter();
 
-  private subscriptions:Array<Subscription>=[];
+  private subscriptions: Array<Subscription> = [];
 
-  constructor(@Inject("Push") private push: Push,private pushService:PushService) { }
+  constructor(@Inject("Push") private push: Push, private pushService: PushService) {
+  }
 
   ngOnInit() {
-    this.push.settings=this.settings;
-    this.push.keyBindings=this.keyBindings;
+    this.push.settingsCollection = this.settingsCollection;
+    this.push.settings = this.push.settingsCollection[0];
+    this.push.keyBindings = this.keyBindings;
     this.pushService.setup();
-    this.push.deviceEvent.subscribe(event=>this.deviceEvent.emit(event));
+    this.push.deviceEvent.subscribe((event:DeviceEvent<any>) => {
+
+      if (this.channels.length>0) {
+        event.channels=this.channels;
+        this.deviceEvent.emit(event);
+      }
+    });
     this.push.message.next(new PushMessage("Welcome to push!"));
 
 
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscr=>subscr.unsubscribe());
+    this.subscriptions.forEach(subscr => subscr.unsubscribe());
   }
 
 

@@ -22,7 +22,7 @@ export class SequencerService {
     let model: Array<NoteCell> = [];
     let nColumns = MusicMath.getBeatTicks(pattern.quantization.getValue()) * pattern.length;
 
-    specs.rows = pattern.notes.length;
+    specs.rows = pattern.triggers.length;
     specs.columns = nColumns;
     let tickTime = MusicMath.getTickTime(pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
 
@@ -40,26 +40,26 @@ export class SequencerService {
     }
 
     // create body cells
-    for (let i = 0; i < pattern.notes.length; i++) {
+    for (let i = 0; i < pattern.triggers.length; i++) {
       specs.rows++;
       for (let j = 0; j < nColumns; j++) {
         let cell = new NoteCell((j + 1) * specs.cellWidth, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
         cell.tick = j;
         cell.row = i + 1;
         cell.column = j + 1;
-        cell.note = pattern.notes[i];
+        cell.trigger = pattern.triggers[i];
         cell.time = tickTime * j;
         model.push(cell);
       }
     }
 
     // create row header cells
-    for (let i = 0; i < pattern.notes.length; i++) {
+    for (let i = 0; i < pattern.triggers.length; i++) {
       let cell = new NoteCell(0, (i + 1) * specs.cellHeight, specs.cellWidth, specs.cellHeight);
       cell.tick = -1;
       cell.row = i + 1;
       cell.column = 0;
-      cell.note = pattern.notes[i];
+      cell.trigger = pattern.triggers[i];
       model.push(cell);
     }
 
@@ -89,11 +89,11 @@ export class SequencerService {
     let cell = new NoteCell(x, y, specs.cellWidth, specs.cellHeight);
     let noteTime = this.getTimeForXPosition(x, specs, pattern);//fullTime * percentage;
     let rowIndex = cell.y / specs.cellHeight;
-    let notes = pattern.notes;
+    let notes = pattern.getNotes();
     let note = notes[rowIndex - 1];
     let noteLength = this.getNoteLength(specs.cellWidth, pattern, specs);
     let trigger = new NoteEvent(note, noteTime, noteLength, Loudness.fff, 0);
-    this.initializeNoteCell(rowIndex,cell, trigger, pattern);
+    this.initializeNoteCell(rowIndex, cell, trigger, pattern);
     cells.push(cell);
     pattern.insertNote(trigger);
   }
@@ -113,9 +113,9 @@ export class SequencerService {
   }
 
   setCellXPosition(cell: NoteCell, x: number, specs: SequencerD3Specs, pattern: Pattern): void {
-    let widthDelta=specs.cellWidth-cell.width;
+    let widthDelta = specs.cellWidth - cell.width;
     if (x <= specs.cellWidth) cell.x = specs.cellWidth;
-    else if (x >= (specs.cellWidth * specs.columns)+widthDelta) cell.x = specs.cellWidth * specs.columns+widthDelta;
+    else if (x >= (specs.cellWidth * specs.columns) + widthDelta) cell.x = specs.cellWidth * specs.columns + widthDelta;
     else cell.x = x;
 
     cell.time = cell.data.time = this.getTimeForXPosition(cell.x, specs, pattern);
@@ -123,25 +123,25 @@ export class SequencerService {
   }
 
   setCellYPosition(cell: NoteCell, row: number, specs: SequencerD3Specs, pattern: Pattern): void {
-    cell.note = cell.data.note = pattern.notes[row-1];
+    cell.trigger.note = pattern.triggers[row - 1].note;
+    cell.data.note = cell.trigger.note;
     cell.row = row;
     cell.y = specs.cellHeight * row;
 
   }
 
   setCellNoteLength(cell: NoteCell, specs: SequencerD3Specs, pattern: Pattern): void {
-    cell.data.length=this.getNoteLength(cell.width,pattern,specs);
+    cell.data.length = this.getNoteLength(cell.width, pattern, specs);
   }
 
   moveCell(sourceCell: NoteCell, targetCell: NoteCell): void {
     if (targetCell && targetCell.row >= 0 && targetCell.column >= 0) {
       sourceCell.applyAttributesFrom(targetCell);
-      sourceCell.data.note = sourceCell.note;
+      sourceCell.data.note = sourceCell.trigger.note;
       sourceCell.data.time = sourceCell.time;
     }
 
   }
-
 
 
   private createEventCell(event: NoteEvent, pattern: Pattern, specs: SequencerD3Specs, nColumns): NoteCell {
@@ -149,13 +149,13 @@ export class SequencerService {
 
     if (eventTick < nColumns) {
       let left = this.getXPositionForTime(event.time, specs, pattern);
-      let notes = pattern.notes;
-      let rowIndex = notes.indexOf(event.note)+1;
+      let notes = pattern.getNotes();
+      let rowIndex = notes.findIndex(note=>note===event.note) + 1;
       let top = (rowIndex) * specs.cellHeight;
 
       let width = this.getEventWidth(event.length, pattern, specs);
       let cell = new NoteCell(left, top, width, specs.cellHeight);
-      this.initializeNoteCell(rowIndex,cell, event, pattern);
+      this.initializeNoteCell(rowIndex, cell, event, pattern);
 
       return cell;
     }
@@ -163,13 +163,13 @@ export class SequencerService {
     return null;
   }
 
-  private initializeNoteCell(rowIndex:number, cell: NoteCell, event: NoteEvent, pattern: Pattern): void {
+  private initializeNoteCell(rowIndex: number, cell: NoteCell, event: NoteEvent, pattern: Pattern): void {
     cell.tick = MusicMath.getTickForTime(event.time, pattern.transportContext.settings.global.bpm, pattern.quantization.getValue());
     //let rowIndex = pattern.notes.indexOf(event.note);
     cell.row = rowIndex;
     cell.data = event;
     cell.column = cell.tick;
-    cell.note = pattern.notes[rowIndex];
+    cell.trigger = pattern.triggers[rowIndex];
     cell.time = event.time;
   }
 

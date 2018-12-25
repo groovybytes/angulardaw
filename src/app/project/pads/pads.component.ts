@@ -126,18 +126,10 @@ export class PadsComponent implements OnInit, AfterViewInit {
 
   private onNoteOutStart(event: { note: string }): void {
 
-    let trigger = new NoteEvent(event.note);
-    let node = this.plugin.startPlay(trigger);
-    this.nodes.push({node:node,note:trigger.note});
-    //this.project.recordNoteStart.emit(trigger);
   }
 
   private onNoteOutEnd(note:string): void {
 
-    let index = this.nodes.findIndex(node=>node.note===note);
-    this.plugin.stopPlay(this.nodes[index].node);
-    this.nodes.splice(index,1);
-    //this.project.recordNoteEnd.emit();
   }
 
 }

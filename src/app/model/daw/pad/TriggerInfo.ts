@@ -4,3 +4,4 @@ export class TriggerInfo{
   iconUrl:string;
   key:string;
 }
+//todo:remove

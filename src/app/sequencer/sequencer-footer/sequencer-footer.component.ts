@@ -54,9 +54,5 @@ export class SequencerFooterComponent implements OnInit {
     this.desktop.openWindow(windowId);*/
   }
 
-  toggleRecord(): void {
-    this.project.record.emit(this.pattern);
-  }
-
 
 }

@@ -9,6 +9,12 @@ import {DockPosition, WindowState} from "angular2-desktop";
 import {DawInfo} from "../model/DawInfo";
 import {Subscription} from "rxjs";
 import {BootstrapperService} from "./bootstrapper.service";
+import {DeviceEvent} from "../model/daw/devices/DeviceEvent";
+import {EventCategory} from "../model/daw/devices/EventCategory";
+import {DeviceService} from "./device.service";
+import {PushComponent} from "../push/push/push.component";
+import {SequencerComponent} from "../sequencer/sequencer.component";
+import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
 
 
 @Component({
@@ -18,11 +24,15 @@ import {BootstrapperService} from "./bootstrapper.service";
 })
 export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  PushComponent = PushComponent;
+  DawMatrixComponent=DawMatrixComponent;
+  SequencerComponent = SequencerComponent;
+  DockPosition = DockPosition;
+  WindowState = WindowState;
 
   @ViewChild('pads') pads: TemplateRef<any>;
   project: Project;
   sideBarOpen: boolean = true;
-  slideOut: boolean = false;
   slider: SimpleSliderModel = {
     value: 50,
     options: {
@@ -35,15 +45,15 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
 
-  WindowState = WindowState;
-  DockPosition = DockPosition;
+
   private subscriptions: Array<Subscription> = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private deviceService: DeviceService,
     private projectsService: ProjectsService,
-    private bootstrapper:BootstrapperService,
+    private bootstrapper: BootstrapperService,
     private projectsApi: ProjectsApi,
     @Inject("daw") private daw: DawInfo,
     private system: System) {
@@ -61,61 +71,18 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
 
     this.route.params.subscribe(params => {
-
-      let newProject = JSON.parse(localStorage.getItem("new_project"));
-      if (newProject) {
-        localStorage.setItem("new_project", null);
-
-        this.projectsService.createProject(params.projectId, newProject.name, newProject.plugins)
-          .then(project => {
-
-            let dto = this.projectsService.serializeProject(project);
-            dto.id = params.projectId;
-            dto.name = dto.id;
-            this.projectsApi.create(dto)
-              .then(() => {
-                this.project = project;
-
-                this.daw.project.next(project);
-                //!todo this.layout.reset();
-                //!todo this.layout.applyLayout();
-                project.ready = true;
-              })
-              .catch(error => this.system.error(error));
-          })
-          .catch(error => this.system.error(error));
-      } else {
-
-        this.projectsApi.getById(params.projectId).then(result => {
-          this.projectsService.deSerializeProject(result.data)
-            .then(project => {
-              this.project = project;
-              this.daw.project.next(project);
-              this.project.ready = true;
-              console.log("ready");
-            })
-            .catch(error => this.system.error(error));
+      console.log("bootstrap");
+      this.bootstrapper.loadProject(params.projectId)
+        .then(project => {
+          this.project = project;
+          this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
+           this.projectsService.handleDeviceEvent(event);
+          }));
         })
-          .catch(error => this.system.error(error));
-      }
+        .catch(error => this.system.error(error));
 
     });
 
-
-  }
-
-//!todo t
-  /*getWindow(id:string):WindowInfo{
-    return this.layout.getWindowInfo(id);
-  }*/
-
-  setLayout(layout): void {
-
-  }
-
-  getLayout(): string {
-
-    return "";
   }
 
   switchMetronome(): void {
@@ -139,36 +106,35 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-
-  togglePlugin(): void {
-    /* if (this.project.openedWindows.indexOf("plugin") >= 0) {
-       this.slideOut = true;
-       setTimeout(() => {
-         this.slideOut = false;
-         this.project.openedWindows = [];
-       }, 700);
-
-     }
-     else this.project.openedWindows = ["plugin"];*/
-
-  }
-
   ngOnDestroy(): void {
     this.project.destroy();
     this.subscriptions.forEach(subscr => subscr.unsubscribe());
-    /* .then(() => {
-       console.log("context destroyed");
-     })
-     .catch(error => {
-       debugger;
-       this.system.error(error)
-     });*/
+
   }
 
-
   ngAfterViewInit(): void {
-    this.bootstrapper.setupDesktop();
 
+
+  }
+
+  toggleRecord(): void {
+    this.projectsService.toggleRecord(this.project.selectedPattern.getValue());
+  }
+
+ /* initializePush(push): void {
+
+    this.deviceService.setupPush(push.component);
+  }*/
+
+  initializePush(component: PushComponent): void {
+    this.deviceService.setupPush(component);
+  }
+
+  initializeSequencer(component: SequencerComponent): void {
+    component.project=this.project;
+  }
+  initializeMatrix(component: DawMatrixComponent): void {
+    component.project=this.project;
   }
 
 }

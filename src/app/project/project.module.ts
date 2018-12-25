@@ -5,7 +5,6 @@ import {PluginListComponent} from "./plugin-list/plugin-list.component";
 import {PluginPanelComponent} from "./plugin-panel/plugin-panel.component";
 import {ProjectObserverComponent} from "./project-observer/project-observer.component";
 import {ProjectsCreateComponent} from "./projects-create/projects-create.component";
-import {RecorderComponent} from "./recorder/recorder.component";
 import {TransportComponent} from "./transport/transport.component";
 import {FormsModule} from "@angular/forms";
 import {Ng5SliderModule} from "ng5-slider";
@@ -24,6 +23,8 @@ import {PushModule} from "../push/push.module";
 import {PushComponent} from "../push/push/push.component";
 import {BootstrapperService} from "./bootstrapper.service";
 import {DeviceService} from "./device.service";
+import {SequencerComponent} from "../sequencer/sequencer.component";
+import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
 
 
 @NgModule({
@@ -33,7 +34,6 @@ import {DeviceService} from "./device.service";
     PluginPanelComponent,
     ProjectObserverComponent,
     ProjectsCreateComponent,
-    RecorderComponent,
     TransportComponent,
     PluginWidgetComponent
   ],
@@ -55,7 +55,7 @@ import {DeviceService} from "./device.service";
   providers: [
     BootstrapperService,DeviceService
   ],
-  entryComponents:[PadsComponent,PushComponent],
+  entryComponents:[PadsComponent,PushComponent,SequencerComponent,DawMatrixComponent],
   exports: []
 })
 export class ProjectModule {

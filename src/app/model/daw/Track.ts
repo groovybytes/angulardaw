@@ -20,7 +20,6 @@ export class Track {
   outputNode:VirtualAudioNode<GainNode>;
 
  constructor(id:string,
-             private deviceEvents: EventEmitter<DeviceEvent<any>>,
              inputNode:VirtualAudioNode<PannerNode>,
              outputNode:VirtualAudioNode<GainNode>,
              private audioContext:AudioContext){
@@ -61,12 +60,16 @@ export class Track {
   }*/
 
 
-  getInstrumentPlugin():AudioPlugin{
+ /* getInstrumentPlugin():AudioPlugin{
     return <AudioPlugin>this.plugins.find(p=>p instanceof AudioPlugin);
-  }
+  }*/
 
   destroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  getMasterPlugin():AudioPlugin{
+    return this.plugins[0];
   }
 
 

@@ -1,4 +1,14 @@
-import {Component, Inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
 
 import {MusicMath} from "../../model//utils/MusicMath";
 import {Pattern} from "../../model//daw/Pattern";
@@ -17,6 +27,7 @@ import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";
   selector: 'event-table',
   templateUrl: './event-table.component.html',
   styleUrls: ['./event-table.component.scss']
+ /*changeDetection: ChangeDetectionStrategy.OnPush*/
 })
 export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -33,6 +44,8 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(@Inject("Notes") private notes: Notes,
               @Inject("MouseEvents") private mouseEvents: MouseTrapEvents,
+              private cdr: ChangeDetectorRef,
+              private zone: NgZone,
               private interaction: SequencerInteractionService,
               private projectsService: ProjectsService,
               private sequencerService: SequencerService) {
@@ -61,13 +74,17 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
         this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
           this.interaction.onDrag(event, this.model, this.pattern)));
 
-        this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event,this.model,this.pattern)));
-        this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event,this.model)));
+        this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event, this.model, this.pattern)));
+        this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event, this.model)));
         this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
 
-        this.subscriptions.push(this.pattern.time.subscribe(time => {
-          this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
-        }));
+       /* this.subscriptions.push(this.pattern.time.subscribe(time => {
+            this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
+          this.cdr.detectChanges();
+          /!*   this.zone.run(() => {
+
+             });*!/
+        }));*/
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
           if (nextValue) this.updateCells();
         }));
@@ -76,7 +93,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
           this.updateCells();
         }));
         this.subscriptions.push(this.pattern.noteUpdated.subscribe(nextValue => {
-            this.updateCells();
+          this.updateCells();
         }));
         this.updateCells();
       }

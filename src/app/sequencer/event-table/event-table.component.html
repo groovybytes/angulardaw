@@ -17,7 +17,7 @@
 
   <span *ngIf="cell.row===0"
         class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
-  <span *ngIf="cell.column===0" class="">{{cell.note}}</span>
+  <span *ngIf="cell.column===0" class="">{{cell.trigger.label}}</span>
 </div>
 <!--<div  class="sequencer-drag-container"
       [ngStyle]="{

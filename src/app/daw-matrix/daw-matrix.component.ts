@@ -59,6 +59,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
+
     this.patternsService.togglePattern(cell.data.id, this.project);
   }
 

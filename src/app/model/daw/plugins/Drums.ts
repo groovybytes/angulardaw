@@ -1,15 +1,15 @@
 import {Sample} from "../Sample";
 import {InstrumentMapping} from "../../mip/instruments/drums/spec/InstrumentMapping";
 import {AppConfiguration} from "../../../app.configuration";
-import {NoteEvent} from "../../mip/NoteEvent";
 import {PluginInfo} from "./PluginInfo";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 import {AudioPlugin} from "./AudioPlugin";
-import {EventEmitter} from "@angular/core";
-import {DeviceEvent} from "../devices/DeviceEvent";
+import {Trigger} from "../Trigger";
+import {TriggerSpec} from "../TriggerSpec";
+import {SampleEventInfo} from "../SampleEventInfo";
 
 
 export class Drums extends AudioPlugin {
@@ -17,43 +17,37 @@ export class Drums extends AudioPlugin {
   protected inputNode: VirtualAudioNode<AudioNode>;
   protected outputNode: VirtualAudioNode<AudioNode>;
   private readonly id: string;
-  private samples:Array<Sample>=[];
+  private samples: Array<Sample> = [];
 
   constructor(
-    id:string,
-    protected deviceEvents: EventEmitter<DeviceEvent<any>>,
+    id: string,
     private fileService: FilesApi,
     private config: AppConfiguration,
     private info: PluginInfo,
     private samplesV2Service: SamplesApi
   ) {
-    super(deviceEvents);
-    this.id=id;
+    super();
+    this.id = id;
   }
 
-  private triggers: Array<{ note: string, sample: Sample }> = [];
 
   getInfo(): PluginInfo {
     return this.info;
   }
 
-  addTrigger(note: string, sample: Sample): void {
-    this.triggers.push({note: note, sample: sample});
-  }
 
   getNotes(): Array<string> {
-    return this.triggers.map(t => t.note);
+    return this.triggers.map(t => t.spec.note);
   }
 
 
   destroy(): void {
-    this.samples.forEach(sample=>sample.destroy());
+    this.samples.forEach(sample => sample.destroy());
   }
 
-  feed(event: NoteEvent, offset: number): any {
-    let trigger = this.triggers.find(trigger => trigger.note === event.note);
-    if (!trigger) console.warn("no trigger found for " + event.note);
-    else trigger.sample.trigger(offset);
+  getSample(note: string): Sample {
+    let trigger = this.triggers.find(trigger => trigger.spec.note === note);
+    return trigger ? trigger.sample : null;
   }
 
 
@@ -67,10 +61,11 @@ export class Drums extends AudioPlugin {
           let promise = this.samplesV2Service.getSamples(urls);
           promises.push(promise);
           promise.then((samples: Array<Sample>) => {
-            this.samples=samples;
+            this.samples = samples;
+
             samples.forEach((sample, i) => {
               let spec = config.mappings[i];
-              this.addTrigger(spec.note, sample);
+              this.triggers.push(new Trigger(new TriggerSpec(spec.note, spec.instrument, spec.url), sample));
             })
 
           }).catch(error => reject(error));
@@ -94,22 +89,24 @@ export class Drums extends AudioPlugin {
   }
 
   setInputNode(node: VirtualAudioNode<AudioNode>): void {
-    this.inputNode=node;
+    this.inputNode = node;
   }
 
   setOutputNode(node: VirtualAudioNode<AudioNode>): void {
-    this.outputNode=node;
-    this.samples.forEach(sample=>sample.setDestination(node.node));
+    this.outputNode = node;
+    this.samples.forEach(sample => sample.setDestination(node.node));
   }
 
   getInstrumentCategory(): InstrumentCategory {
     return InstrumentCategory.PERCUSSION;
   }
 
-  startPlay(event: NoteEvent) {
+  /*startPlay(event: SampleEventInfo) {
+    return this.feed(event);
   }
 
   stopPlay(): void {
-  }
+  }*/
+
 
 }

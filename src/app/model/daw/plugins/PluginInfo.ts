@@ -1,4 +1,5 @@
 import {Pad} from "../pad/Pad";
+import {PluginId} from "./PluginId";
 
 export class PluginInfo{
   id:string;
