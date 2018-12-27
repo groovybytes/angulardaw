@@ -15,6 +15,7 @@ import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
 import {AudioContextService} from "./audiocontext.service";
 import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
 import {InstrumentSampler} from "../../model/daw/plugins/InstrumentSampler";
+import {Lang} from "../../model/utils/Lang";
 
 @Injectable()
 export class PluginsService {
@@ -54,8 +55,8 @@ export class PluginsService {
   setupInstrumentRoutes(project: Project, track: Track, plugin: AudioPlugin): void {
     let meta = "plugin_" + plugin.getInfo().name;
 
-    let inputNode = this.nodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, meta);
-    let outputNode = this.nodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, meta);
+    let inputNode = this.nodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.PANNER, meta);
+    let outputNode = this.nodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.GAIN, meta);
     plugin.setInputNode(inputNode);
     plugin.setOutputNode(outputNode);
 
@@ -66,12 +67,12 @@ export class PluginsService {
     outputNode.connect(track.outputNode);
   }
 
-  loadPluginWithInfo(id: string, info: PluginInfo, project: Project): Promise<AudioPlugin> {
+  loadPluginWithInfo(id: string, instanceId: string, info: PluginInfo, project: Project): Promise<AudioPlugin> {
 
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
       let plugin: AudioPlugin;
 
-      if (info.id === "drumkit1") plugin = new Drums(id,this.fileService, this.config, info, this.samplesV2Service);
+      if (info.id === "drumkit1") plugin = new Drums(id, this.fileService, this.config, info, this.samplesV2Service);
       else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService,
         project, this.config, this.samplesV2Service);
       else plugin = new InstrumentSampler(
@@ -79,17 +80,16 @@ export class PluginsService {
           this.notes,
           info,
           (name) => this.samplesV2Service.loadAllInstrumentSamples(name),
-          );
+        );
 
-       plugin.load()
-         .then(()=>resolve(plugin))
-         .catch(error=>reject(error));
+      if (instanceId) plugin.setInstanceId(instanceId);
+      plugin.load()
+        .then(() => resolve(plugin))
+        .catch(error => reject(error));
     })
 
 
   }
-
-
 
 
 }

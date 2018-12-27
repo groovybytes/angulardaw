@@ -1,7 +1,9 @@
+import {Lang} from "../utils/Lang";
+
 export class SampleEventInfo{
   constructor(note: string) {
     this.note = note;
-    this.id=this.guid();
+    this.id=Lang.guid();
   }
 
 
@@ -13,16 +15,8 @@ export class SampleEventInfo{
   loopLength:number;
   loopsPlayed:number=0;
   getOffset:()=>number;
+  detune:number=0;
 
-  private guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 
 
 }

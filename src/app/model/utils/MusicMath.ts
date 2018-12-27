@@ -25,8 +25,16 @@ export class MusicMath {
     return Math.pow(quantization * 4, -1);
   }
 
-  public static getBarTicks(quantization: NoteLength, signature: TimeSignature): number {
-    return MusicMath.getBeatTicks(quantization) * signature.beatUnit;
+  public static getTick(tick:number,baseQuantization:NoteLength,quantization: NoteLength,loopTicks): number {
+    let i=1/baseQuantization;
+    let j=1/quantization;
+
+    return Math.floor((tick/i*j) % loopTicks);
+  }
+
+
+  public static getBarTicks(quantization: NoteLength, beatUnit:number,bars?:number): number {
+    return MusicMath.getBeatTicks(quantization) * beatUnit*bars?bars:1;
   }
 
   public static getTickFor(beat: number, bar: number, quantization: NoteLength, signature: TimeSignature): number {

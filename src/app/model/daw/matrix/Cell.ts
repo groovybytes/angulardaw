@@ -1,9 +1,9 @@
-import * as _ from "lodash";
 import {Pattern} from "../Pattern";
+import {Lang} from "../../utils/Lang";
 
 export class Cell<T>{
   constructor( row: number, column: number) {
-    this.id = _.uniqueId("cell_");
+    this.id = Lang.guid();
     this.row = row;
     this.column = column;
   }

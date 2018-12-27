@@ -7,6 +7,7 @@ import * as _ from "lodash";
 import {NoteEvent} from "../../model/mip/NoteEvent";
 import {ScriptEngine} from "./scriptengine.service";
 import {EventStreamService} from "./event-stream.service";
+import {Lang} from "../../model/utils/Lang";
 
 @Injectable()
 export class PatternsService {
@@ -28,7 +29,7 @@ export class PatternsService {
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = patternLength;
     let pattern = new Pattern(
-      patternId ? patternId : this.guid(),
+      patternId ? patternId : Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
       this.scriptEngine,
       transportContext,
@@ -57,7 +58,7 @@ export class PatternsService {
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = pattern.length;
     let patternClone = new Pattern(
-      this.guid(),
+      Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
       this.scriptEngine,
       transportContext,
@@ -122,14 +123,5 @@ export class PatternsService {
     project.setChannels([]);
   }
 
-  private guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 
 }

@@ -7,6 +7,7 @@ import {Cell} from "../../model/daw/matrix/Cell";
 import {Track} from "../../model/daw/Track";
 import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {Project} from "../../model/daw/Project";
+import {Lang} from "../../model/utils/Lang";
 
 
 @Injectable()
@@ -36,7 +37,7 @@ export class MatrixService {
     if (isEmptyMatrix) {
       for (let i = 0; i < defaultNumberOfRows; i++) {
         let rowHeaderCell = new Cell<string>(i, -1);
-        rowHeaderCell.data = this.guid();
+        rowHeaderCell.data = Lang.guid();
         matrix.rowHeader.push(rowHeaderCell);
       }
       for (let i = 0; i <defaultNumberOfRows; i++) {
@@ -113,14 +114,4 @@ export class MatrixService {
   }
 
 
-
-  private guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 }

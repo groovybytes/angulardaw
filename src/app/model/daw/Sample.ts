@@ -12,6 +12,7 @@ export class Sample {
   private destination: AudioNode;
   private gainNode: GainNode;
   private node: AudioBufferSourceNode;
+  private stopEvent:EventEmitter<void>=new EventEmitter();
 
   constructor(id: string, private buffer: AudioBuffer, private context: AudioContext) {
     this.id = id;
@@ -35,20 +36,26 @@ export class Sample {
 
   private _trigger(event: SampleEventInfo):void {
 
-
     let sourceNode = this.node = this.context.createBufferSource();
+    let stopSubscription = this.stopEvent.subscribe(()=>{
+      sourceNode.stop(0);
+      sourceNode.disconnect();
+    });
     sourceNode.connect(this.gainNode);
     sourceNode.buffer = this.buffer;
 
+    if (event.detune) sourceNode.detune.value = event.detune;
     let offset=event.getOffset?event.getOffset():event.offset;
 
-    sourceNode.start(event.time+offset, 0, event.duration ? event.duration : 0.7);
+    sourceNode.start(event.time+offset, 0, event.duration);
     sourceNode.addEventListener("ended", () => {
+      stopSubscription.unsubscribe();
       sourceNode.disconnect();
       Sample.onEnd.emit({relatedEvent:event,sample:this});
-    })
-
+    });
   }
+
+
 
   /* public trigger(offset: number, duration?: number,): void {
      this.triggerWith(offset, 0, null, duration)
@@ -103,12 +110,13 @@ export class Sample {
 
 
   public stop(): void {
-    if (this.node) this.node.stop();
+    this.stopEvent.emit();
   }
 
   destroy(): void {
     this.gainNode.disconnect();
     this.gainNode = null;
   }
+
 
 }

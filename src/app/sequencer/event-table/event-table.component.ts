@@ -27,7 +27,7 @@ import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";
   selector: 'event-table',
   templateUrl: './event-table.component.html',
   styleUrls: ['./event-table.component.scss']
- /*changeDetection: ChangeDetectionStrategy.OnPush*/
+  /*changeDetection: ChangeDetectionStrategy.OnPush*/
 })
 export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -78,13 +78,15 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
         this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event, this.model)));
         this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
 
-       /* this.subscriptions.push(this.pattern.time.subscribe(time => {
-            this.tick = MusicMath.getTickForTime(time * 1000, this.pattern.transportContext.settings.global.bpm, this.pattern.quantization.getValue());
-          this.cdr.detectChanges();
-          /!*   this.zone.run(() => {
 
-             });*!/
-        }));*/
+        let ticker = this.project.threads.find(t => t.id === "ticker");
+
+
+        this.subscriptions.push(ticker.message.subscribe(msg => {
+          let loopTicks = MusicMath.getBeatTicks(this.pattern.quantization.getValue()) * this.pattern.length;
+          this.tick = MusicMath.getTick(msg.data,this.project.settings.quantizationBase, this.pattern.quantization.getValue(), loopTicks);
+        }));
+
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
           if (nextValue) this.updateCells();
         }));

@@ -7,7 +7,6 @@ import {ProjectObserverComponent} from "./project-observer/project-observer.comp
 import {ProjectsCreateComponent} from "./projects-create/projects-create.component";
 import {TransportComponent} from "./transport/transport.component";
 import {FormsModule} from "@angular/forms";
-import {Ng5SliderModule} from "ng5-slider";
 import {DawMatrixModule} from "../daw-matrix/daw-matrix.module";
 import {SequencerModule} from "../sequencer/sequencer.module";
 import {ApiModule} from "../api/api.module";
@@ -41,7 +40,6 @@ import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
     BrowserModule,
     FormsModule,
     PadsModule,
-    Ng5SliderModule,
     DawMatrixModule,
     SequencerModule,
     ApiModule,

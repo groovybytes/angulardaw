@@ -13,6 +13,18 @@
 </div>
 
 
+
+<button
+  type="button"
+  class="btn"
+  (click)="nextPlugin(-1)"><i class="fas fa-chevron-left"></i></button>
+<span>{{push.plugin.getValue()?.getInfo().name}}</span>
+<span *ngIf="!push.plugin.getValue()">No target selected</span>
+<button
+  type="button"
+  class="btn"
+  (click)="nextPlugin(1)"><i class="fas fa-chevron-right"></i></button>
+
 <button
   type="button"
   class="btn"

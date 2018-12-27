@@ -13,6 +13,7 @@ export class ProjectDto{
   selectedPattern:string;
   selectedTrack:string;
   matrix: MatrixDto;
+  activePlugin:string;
   patterns:Array<PatternDto>;
   tracks: Array<TrackDto> = [];
   routes:Array<{source:string,target:string}>;

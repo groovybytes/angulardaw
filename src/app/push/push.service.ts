@@ -6,6 +6,7 @@ import {PadInfo} from "./model/PadInfo";
 import {KeyBindings} from "./model/KeyBindings";
 import {PushSettings} from "./model/PushSettings";
 import {ScaleId} from "../model/mip/scales/ScaleId";
+import {EventCategory} from "../model/daw/devices/EventCategory";
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,24 @@ export class PushService {
     let newBase = this.noteInfo.move(baseNote, semitones);
     this.push.settings.baseNote = newBase.id;
     this.setPadCollection(this.push.settings);
+  }
+
+  nextPlugin(deltaIndex: number): void {
+    let nextIndex = 0;
+    let plugins = this.push.availablePlugins.filter(plugin=>plugin.getInfo().category!=="system");
+    if (plugins.length > 0) {
+      let currentPlugin = this.push.plugin.getValue();
+      if (currentPlugin) {
+        let index = plugins.findIndex(plugin => plugin.getInstanceId() === currentPlugin.getInstanceId());
+        nextIndex = (index + deltaIndex) % plugins.length;
+      }
+
+      this.push.plugin.next(plugins[nextIndex]);
+
+      this.push.publish(EventCategory.SET_PLUGIN, this.push.plugin.getValue().getInstanceId());
+    }
+
+
   }
 
 }

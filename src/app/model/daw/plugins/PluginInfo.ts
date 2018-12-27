@@ -2,7 +2,8 @@ import {Pad} from "../pad/Pad";
 import {PluginId} from "./PluginId";
 
 export class PluginInfo{
-  id:string;
+
+  id:PluginId;
   name:string;
   category:string;
   pad:Pad;

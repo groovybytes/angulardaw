@@ -52,4 +52,10 @@ export class TopControlsComponent implements OnInit {
     this.push.publish(EventCategory.RECORD_TOGGLE, null);
   }
 
+
+  nextPlugin(delta):void{
+   this.pushService.nextPlugin(delta);
+
+  }
+
 }

@@ -1,5 +1,6 @@
 @import "variables";
 @import "matrix-table";
+@import "theme/utils";
 
 .menu-btn {
   width: 30px;
@@ -29,6 +30,10 @@
 
   }
 
+}
+
+.marked{
+  background-color: contrastColor("dark", "primary") !important;
 }
 
 

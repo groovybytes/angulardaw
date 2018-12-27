@@ -41,6 +41,7 @@ export class Project {
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
   plugins: Array<AudioPlugin> = [];
+  activePlugin:BehaviorSubject<AudioPlugin>=new BehaviorSubject(null);
   colors = ["lightblue", "yellow", "red"];
   recording: BehaviorSubject<boolean>=new BehaviorSubject(null);
   recordSession:RecordSession;

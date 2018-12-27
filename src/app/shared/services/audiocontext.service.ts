@@ -36,4 +36,8 @@ export class AudioContextService {
     return new ContextClass();
   }
 
+  getTime():number{
+    return this.getAudioContext().currentTime;
+  }
+
 }

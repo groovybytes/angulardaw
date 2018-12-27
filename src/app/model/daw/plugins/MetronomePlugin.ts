@@ -1,16 +1,13 @@
 import {Sample} from "../Sample";
 import {Project} from "../Project";
 import {AppConfiguration} from "../../../app.configuration";
-import {NoteEvent} from "../../mip/NoteEvent";
 import {PluginInfo} from "./PluginInfo";
 import {VirtualAudioNode} from "../VirtualAudioNode";
 import {FilesApi} from "../../../api/files.api";
 import {SamplesApi} from "../../../api/samples.api";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 import {AudioPlugin} from "./AudioPlugin";
-import {EventEmitter} from "@angular/core";
-import {DeviceEvent} from "../devices/DeviceEvent";
-import {SampleEventInfo} from "../SampleEventInfo";
+import {PluginId} from "./PluginId";
 
 
 export class MetronomePlugin extends AudioPlugin {
@@ -109,7 +106,8 @@ export class MetronomePlugin extends AudioPlugin {
 
   getInfo(): PluginInfo {
     let info= new PluginInfo();
-    info.id="metronome";
+    info.id=PluginId.METRONOME;
+    info.category="system";
     return info;
   }
 

@@ -57,7 +57,12 @@
 
 }
 
+.bar-top{
+  background-color: theme-color("foreground");
+}
 .taskbar-entry {
+
+  background-color: theme-color("background");
   span {
     color: theme-color("foreground");
   }
@@ -65,7 +70,7 @@
     background-color: theme-color("accent");
   }
   &:hover {
-    background-color: theme-color("background");
+    background-color: lighten(theme-color("background"),5%);
   }
 
 }

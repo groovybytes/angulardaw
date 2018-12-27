@@ -6,9 +6,8 @@ import {Pattern} from "../../model/daw/Pattern";
 import {SampleEventInfo} from "../../model/daw/SampleEventInfo";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {AudioContextService} from "./audiocontext.service";
-import {NoteLength} from "../../model/mip/NoteLength";
-import {filter} from "rxjs/operators";
 import {Sample} from "../../model/daw/Sample";
+import {Notes} from "../../model/mip/Notes";
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +20,12 @@ export class EventStreamService {
   private loop: boolean = false;
   private audioContext: AudioContext;
   patterns: Array<Pattern>;
+  private samples:Array<Sample>=[];
 
-  constructor(@Inject("daw") private daw: DawInfo, private audioContextService: AudioContextService) {
+  constructor(
+    @Inject("daw") private daw: DawInfo,
+    @Inject("Notes") private notes:Notes,
+    private audioContextService: AudioContextService) {
     this.audioContext = audioContextService.getAudioContext();
   }
 
@@ -35,17 +38,13 @@ export class EventStreamService {
       this.loop = true;
       this.debug("start");
       let project = this.daw.project.getValue();
-      //this.ticker = project.threads.find(t => t.id === "ticker");
-      /*this.ticker.post(
+      this.ticker = project.threads.find(t => t.id === "ticker");
+      this.ticker.post(
         {
           command: "set-interval"
-          , params: MusicMath.getTickTime(project.transport.settings.global.bpm, NoteLength.Quarter)
+          , params: MusicMath.getTickTime(project.transport.settings.global.bpm, project.settings.quantizationBase)
         });
-*/
-     /* this.subscriptions.push(this.ticker.error.subscribe(error => console.error(error)));
-      this.subscriptions.push(this.ticker.message.subscribe(tick => {
-        //this.debug((tick.data % project.transport.settings.global.beatUnit) + 1);
-      }));*/
+       this.subscriptions.push(this.ticker.error.subscribe(error => console.error(error)));
 
       let loopBars = 0;
 
@@ -76,9 +75,9 @@ export class EventStreamService {
 
       this.debug("loop length " + loopLength);
 
-      let startTime:number;
+      let startTime: number;
 
-      this.subscriptions.push(Sample.onEnd.subscribe((event:{relatedEvent:SampleEventInfo,sample:Sample}) => {
+      this.subscriptions.push(Sample.onEnd.subscribe((event: { relatedEvent: SampleEventInfo, sample: Sample }) => {
         if (this.loop) {
           event.relatedEvent.loopsPlayed++;
           event.sample.trigger(event.relatedEvent);
@@ -86,26 +85,32 @@ export class EventStreamService {
       }));
 
 
-      let startPromise=new Promise<void>((resolve)=>{
-        patterns.forEach(pattern => {
-          pattern.events.forEach(event => {
-            let sampleEvent = new SampleEventInfo(event.note);
-            sampleEvent.note = event.note;
-            sampleEvent.time = event.time / 1000;
-            sampleEvent.loopLength = pattern.getLength() / 1000;
-            sampleEvent.getOffset = ()=> startTime+sampleEvent.loopLength*sampleEvent.loopsPlayed;
-            let sample = pattern.plugin.getSample(event.note);
-            sample.trigger(sampleEvent,startPromise);
-          });
-          startTime = this.audioContext.currentTime;
-          resolve();
+      let start = false;
+      let startPromise = new Promise<void>((resolve) => {
+        setInterval(() => {
+          if (start) resolve();
 
+        })
+      });
+
+      patterns.forEach(pattern => {
+        pattern.events.forEach(event => {
+          let sampleEvent = new SampleEventInfo(event.note);
+          sampleEvent.note = event.note;
+          sampleEvent.time = event.time / 1000;
+          sampleEvent.loopLength = pattern.getLength() / 1000;
+          sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsPlayed;
+          sampleEvent.duration=event.length;
+          let sample = pattern.plugin.getSample(event.note);
+          if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
+          sample.trigger(sampleEvent, startPromise);
+          this.samples.push(sample);
         });
       });
 
-
-
-      //this.ticker.post({command:"start"});
+      startTime = this.audioContext.currentTime;
+      start = true;
+      this.ticker.post({command:"start"});
     }
 
   }
@@ -141,8 +146,10 @@ export class EventStreamService {
     this.isRunning = false;
     this.loop = false;
     this.debug("stop");
-    //this.ticker.post({command: "stop"});
+    this.ticker.post({command: "stop"});
+    this.daw.project.getValue().transport.channels.length=0;
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.samples.forEach(sample=>sample.stop());
 
 
   }

@@ -1,7 +1,6 @@
-
-import * as _ from "lodash";
 import {NoteEvent} from "../../model/mip/NoteEvent";
 import {TriggerSpec} from "../../model/daw/TriggerSpec";
+import {Lang} from "../../model/utils/Lang";
 
 
 export class NoteCell{
@@ -11,7 +10,7 @@ export class NoteCell{
     this.y = y;
     this.width = width;
     this.height = height;
-    this.id = _.uniqueId("note-cell_");
+    this.id = Lang.guid();
   }
 
   header:boolean=false;

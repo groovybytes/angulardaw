@@ -1,3 +1,4 @@
+<daw-matrix-controls></daw-matrix-controls>
 <table class="matrix-table size-1">
   <thead class="">
   <tr class="">
@@ -8,6 +9,7 @@
     <th class="text-center column-header"
         (click)="onHeaderClicked(project.matrix.header[i])"
         [ngStyle]="{'background-color':getTrack(cell.trackId)?.color}"
+        [ngClass]="{'marked':getTrack(cell.trackId)?.getMasterPlugin()?.getInstanceId()===project.activePlugin.getValue()?.getInstanceId()}"
         [title]="cell.data?.name"
         *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
       <div class="header-text text-center">{{cell.data?.name}}</div>

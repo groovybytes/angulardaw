@@ -14,6 +14,7 @@ import {PluginInfo} from "../../model/daw/plugins/PluginInfo";
 import {PluginsService} from "./plugins.service";
 import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
 import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
+import {Lang} from "../../model/utils/Lang";
 
 
 @Injectable()
@@ -28,10 +29,10 @@ export class TracksService {
   }
 
 
-  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>,  category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>, hint?: string): Track {
-    let trackId = _.uniqueId("track-" + (hint ? hint : ""));
-    let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.PANNER, "track: " + trackId);
-    let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(_.uniqueId("node-"), AudioNodeTypes.GAIN, "track: " + trackId);
+  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>,  category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>): Track {
+    let trackId = Lang.guid();// _.uniqueId("track-" + (hint ? hint : ""));
+    let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.PANNER, "track: " + trackId);
+    let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.GAIN, "track: " + trackId);
 
     let track = new Track(trackId,inputNode, outputNode, this.audioContext.getAudioContext());
 
@@ -58,7 +59,7 @@ export class TracksService {
       let track: Track = this.createTrack(project.nodes,TrackCategory.DEFAULT, project.getMasterBus().inputNode);
       project.tracks.push(track);
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
-      this.pluginService.loadPluginWithInfo(_.uniqueId("instrument-"), pluginInfo, project)
+      this.pluginService.loadPluginWithInfo(Lang.guid(),null, pluginInfo, project)
         .then(plugin => {
           track.plugins = [plugin];
           this.pluginService.setupInstrumentRoutes(project, track, plugin);
@@ -99,6 +100,7 @@ export class TracksService {
     track.plugins.forEach(p => {
       let dto = new PluginDto();
       dto.id = p.getId();
+      dto.instanceId = p.getInstanceId();
       dto.pluginTypeId = p.getInfo().id;
       dto.inputNode = p.getInputNode().id;
       dto.outputNode = p.getOutputNode().id;

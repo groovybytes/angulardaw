@@ -1,16 +1,13 @@
-import {AfterViewInit, Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {Project} from "../model//daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
-import {SimpleSliderModel} from "../model//daw/visual/SimpleSliderModel";
-import {ProjectsApi} from "../api/projects.api";
 import {System} from "../system/System";
-import {DockPosition, WindowState} from "angular2-desktop";
+import {DockPosition} from "angular2-desktop";
 import {DawInfo} from "../model/DawInfo";
 import {Subscription} from "rxjs";
 import {BootstrapperService} from "./bootstrapper.service";
 import {DeviceEvent} from "../model/daw/devices/DeviceEvent";
-import {EventCategory} from "../model/daw/devices/EventCategory";
 import {DeviceService} from "./device.service";
 import {PushComponent} from "../push/push/push.component";
 import {SequencerComponent} from "../sequencer/sequencer.component";
@@ -28,22 +25,8 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
   DawMatrixComponent=DawMatrixComponent;
   SequencerComponent = SequencerComponent;
   DockPosition = DockPosition;
-  WindowState = WindowState;
 
-  @ViewChild('pads') pads: TemplateRef<any>;
   project: Project;
-  sideBarOpen: boolean = true;
-  slider: SimpleSliderModel = {
-    value: 50,
-    options: {
-      floor: 40,
-      ceil: 240,
-      vertical: false,
-      hidePointerLabels: true,
-      hideLimitLabels: true
-    }
-  };
-
 
 
   private subscriptions: Array<Subscription> = [];
@@ -54,19 +37,11 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     private deviceService: DeviceService,
     private projectsService: ProjectsService,
     private bootstrapper: BootstrapperService,
-    private projectsApi: ProjectsApi,
     @Inject("daw") private daw: DawInfo,
     private system: System) {
 
   }
 
-  close(): void {
-    this.router.navigate(['/welcome']);
-  }
-
-  toggleSidebar() {
-    this.sideBarOpen = !this.sideBarOpen;
-  }
 
   ngOnInit() {
 
@@ -76,7 +51,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
         .then(project => {
           this.project = project;
           this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
-           this.projectsService.handleDeviceEvent(event);
+            this.deviceService.handleDeviceEvent(event);
           }));
         })
         .catch(error => this.system.error(error));
@@ -85,30 +60,14 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  switchMetronome(): void {
-    this.project.metronomeEnabled.next(!this.project.metronomeEnabled.getValue());
-  }
 
-  changeTempo(bpm: SimpleSliderModel): void {
-    this.project.transportSettings.global.bpm = bpm.value;
-  }
 
-  save(): void {
-    let dto = this.projectsService.serializeProject(this.project);
-    console.log("saving");
-    this.projectsApi.update(dto)
-      .then((result) => {
-        console.log("project saved")
-      })
-      .catch(error => {
-        this.system.error(error)
-      });
 
-  }
 
   ngOnDestroy(): void {
     this.project.destroy();
     this.subscriptions.forEach(subscr => subscr.unsubscribe());
+    this.daw.destroy.emit();
 
   }
 
@@ -117,14 +76,6 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  toggleRecord(): void {
-    this.projectsService.toggleRecord(this.project.selectedPattern.getValue());
-  }
-
- /* initializePush(push): void {
-
-    this.deviceService.setupPush(push.component);
-  }*/
 
   initializePush(component: PushComponent): void {
     this.deviceService.setupPush(component);

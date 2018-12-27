@@ -11,6 +11,8 @@ import {ConsoleModule} from "../console/console.module";
 import {CoreModule} from "../core/core.module";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
+import {Ng5SliderModule} from "ng5-slider";
+import { ControlsComponent } from './controls/controls.component';
 
 
 @NgModule({
@@ -18,7 +20,8 @@ import {RouterModule} from "@angular/router";
     DawMatrixComponent,
     HeaderCellMenuComponent,
     BodyCellMenuComponent,
-    PluginDropdownComponent
+    PluginDropdownComponent,
+    ControlsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -27,8 +30,8 @@ import {RouterModule} from "@angular/router";
     ConsoleModule,
     CoreModule,
     SharedModule,
-    RouterModule
-  ],
+    RouterModule,
+    Ng5SliderModule],
   providers: [
    DawMatrixService
   ],

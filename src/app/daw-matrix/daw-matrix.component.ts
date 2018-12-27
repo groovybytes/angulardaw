@@ -36,11 +36,13 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   dragHandler: DragHandler;
 
+
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
               private matrixService: MatrixService,
               private tracksService: TracksService,
               private system: System,
+
               private dawMatrixService: DawMatrixService) {
   }
 
@@ -57,6 +59,8 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
 
   }
+
+
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
 
@@ -75,6 +79,8 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
     this.matrixService.addMatrixColumnWithPlugin(plugin, this.project)
       .catch(error => this.system.error(error));
   }
+
+
 
   addRow(): void {
     this.matrixService.addRow(this.project.matrix);
@@ -108,11 +114,6 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   colorChanged(color: string, trackId: string): void {
     this.project.tracks.find(track => track.id === trackId).color = color;
   }
-
-  //!todo
-  /*getWindow(): WindowInfo {
-    return this.layout.getWindowInfo("settings");
-  }*/
 
   ngAfterViewInit() {
 

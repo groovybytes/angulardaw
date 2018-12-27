@@ -1,0 +1,13 @@
+
+nav {
+  padding: 0;
+}
+
+:host /deep/ {
+  .ng5-slider {
+    margin: 0;
+    width: 200px;
+
+  }
+
+}

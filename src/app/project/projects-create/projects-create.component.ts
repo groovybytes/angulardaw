@@ -7,6 +7,7 @@ import {ProjectDto} from "../../model//daw/dto/ProjectDto";
 import {ProjectsService} from "../../shared/services/projects.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
+import {Lang} from "../../model/utils/Lang";
 
 @Component({
   selector: 'projects-create',
@@ -79,7 +80,7 @@ export class ProjectsCreateComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.selectedPlugins.length === 0) this.msg = "Musik machen ohne Instrument? Ist das dein Ernst?";
     else {
-      let id = this.projectService.guid();
+      let id = Lang.guid();
       localStorage.setItem("new_project", JSON.stringify({
         plugins: this.selectedPlugins.map(plugin => plugin.id)
       }));

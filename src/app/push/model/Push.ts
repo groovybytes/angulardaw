@@ -7,10 +7,13 @@ import {BehaviorSubject} from "rxjs";
 import {PushMessage} from "./PushMessage";
 import {PushSettings} from "./PushSettings";
 import {KeyBindings} from "./KeyBindings";
+import {PluginHost} from "../../model/daw/plugins/PluginHost";
 
 
 export class Push {
   listenToKeyboard: boolean = false;
+  plugin:BehaviorSubject<PluginHost>=new BehaviorSubject(null);
+  availablePlugins:Array<PluginHost>=[];
   readonly deviceEvent: EventEmitter<DeviceEvent<any>> = new EventEmitter();
   readonly pads: Array<Pad>=[];
   noteToLearn: string;

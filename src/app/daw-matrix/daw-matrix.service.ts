@@ -11,6 +11,7 @@ import {NoteLength} from "../model//mip/NoteLength";
 import {KeyboardState} from "../model/KeyboardState";
 import {Cell} from "../model/daw/matrix/Cell";
 import {A2dClientService} from "angular2-desktop";
+import {SequencerComponent} from "../sequencer/sequencer.component";
 
 @Injectable()
 export class DawMatrixService {
@@ -18,7 +19,7 @@ export class DawMatrixService {
   constructor(private trackService: TracksService,
               private patternService: PatternsService,
               private projectsService: ProjectsService,
-              private desktop:A2dClientService,
+              private desktop: A2dClientService,
               @Inject("KeyboardState") private keyboardState: KeyboardState) {
 
   }
@@ -32,8 +33,7 @@ export class DawMatrixService {
     if (this.keyboardState.Ctrl.getValue() === true) {
       let patternCopy = this.patternService.copyPattern(sourceCell.data, sourceCell.trackId, project);
       targetCell.data = patternCopy;
-    }
-    else {
+    } else {
       targetCell.data = sourceCell.data;
       sourceCell.data = null;
     }
@@ -61,29 +61,29 @@ export class DawMatrixService {
 
   bodyCellMenuBtnClicked(cell: Cell<Pattern>, project: Project): void {
 
-      let nextRowCell = project.matrix.body[cell.row + 1][cell.column];
-      if (nextRowCell.patternMenu) {
-        cell.menuOpen=false;
-        nextRowCell.patternMenu=null;
-      }
-      else {
-        nextRowCell.patternMenu = cell.data;
-        cell.menuOpen=true;
-      }
+    let nextRowCell = project.matrix.body[cell.row + 1][cell.column];
+    if (nextRowCell.patternMenu) {
+      cell.menuOpen = false;
+      nextRowCell.patternMenu = null;
+    } else {
+      nextRowCell.patternMenu = cell.data;
+      cell.menuOpen = true;
+    }
 
   }
 
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
 
-   
-    this.desktop.createWindow("sequencer")
-    //project.desktop.toggleWindow("sequencer");
-      let track = project.getTrack(cell.trackId);
-      track.focusedPattern = cell.data;
-      project.selectedTrack = track;
+    let trackIndex =project.tracks.findIndex(t=>t.id===cell.trackId);
+    this.desktop.trigger("sequencer", cell.data.plugin.getInfo().name+"(track "+trackIndex+")", cell.data.id,
+      (component: SequencerComponent, windowId) => {
+        component.project=project;
+        component.pattern=cell.data;
+        component.track=project.tracks[trackIndex];
 
-      project.sequencerOpen = true;
+      })
+      .catch(error=>console.error(error));
   }
 
   removePatternsFromRow(project: Project, row: number): void {
@@ -109,16 +109,6 @@ export class DawMatrixService {
     matrix.rowHeader.forEach(cell => result.push(cell));
 
     return result;
-  }
-
-  guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }
 
 
