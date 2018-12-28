@@ -59,7 +59,7 @@ export class ControlsComponent implements OnInit {
   }
 
   toggleRecord(): void {
-    this.projectsService.toggleRecord(this.daw.project.getValue().selectedPattern.getValue());
+    this.projectsService.toggleRecord();
   }
 
   switchMetronome(): void {

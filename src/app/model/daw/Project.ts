@@ -43,8 +43,7 @@ export class Project {
   plugins: Array<AudioPlugin> = [];
   activePlugin:BehaviorSubject<AudioPlugin>=new BehaviorSubject(null);
   colors = ["lightblue", "yellow", "red"];
-  recording: BehaviorSubject<boolean>=new BehaviorSubject(null);
-  recordSession:RecordSession;
+  recordSession: BehaviorSubject<RecordSession>=new BehaviorSubject(null);
   metronomePattern: Pattern;
   pushSettings:Array<PushSettings>;
   pushKeyBindings:KeyBindings;
@@ -124,9 +123,6 @@ export class Project {
     this.transport.start(ticker);
   }*/
 
-  startRecord(): void {
-
-  }
 
   /*stop(): void {
     this.transport.stop();

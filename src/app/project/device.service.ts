@@ -12,9 +12,9 @@ import {EventCategory} from "../model/daw/devices/EventCategory";
 import {ProjectsService} from "../shared/services/projects.service";
 import {NoteOnEvent} from "../model/mip/NoteOnEvent";
 import {Lang} from "../model/utils/Lang";
-import {SampleEventInfo} from "../model/daw/SampleEventInfo";
 import {MakeMusicService} from "../shared/services/make-music.service";
 import {NoteOffEvent} from "../model/mip/NoteOffEvent";
+import {RecorderService} from "../shared/services/recorder.service";
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,9 @@ export class DeviceService {
     @Inject("daw") private daw: DawInfo,
     private fileService: FilesApi,
     private makeMusicSerice: MakeMusicService,
+
     private projectsService: ProjectsService,
+    private recorderService:RecorderService,
     private config: AppConfiguration) {
   }
 
@@ -82,16 +84,18 @@ export class DeviceService {
     console.log("new device event: " + JSON.stringify(event));
     let project = this.daw.project.getValue();
     if (event.category === EventCategory.RECORD_TOGGLE) {
-      this.projectsService.toggleRecord(project.selectedPattern.getValue());
+      this.projectsService.toggleRecord();
     } else if (event.category === EventCategory.SET_PLUGIN) {
       let plugin = project.plugins.find(plugin => plugin.getInstanceId() === event.data);
       project.activePlugin.next(plugin);
     } else if (event.category === EventCategory.NOTE_ON) {
-      let noteEvent = event.data as NoteOnEvent;
-      this.makeMusicSerice.startPlay(noteEvent.note);
+      let noteOnEvent = event.data as NoteOnEvent;
+      this.makeMusicSerice.startPlay(noteOnEvent.note);
+      let stopEvent = this.recorderService.recordNoteStart(noteOnEvent,event.deviceId);
     } else if (event.category === EventCategory.NOTE_OFF) {
       let noteEvent = event.data as NoteOffEvent;
       this.makeMusicSerice.stopPlay(noteEvent.note);
+      this.recorderService.recordNoteEnd(noteEvent,event.deviceId);
     }
 
     /*else if (event.category === EventCategory.RECORD_TOGGLE) {

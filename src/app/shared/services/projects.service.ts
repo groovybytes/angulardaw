@@ -29,6 +29,8 @@ import {ScriptEngine} from "./scriptengine.service";
 import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
 import {EventCategory} from "../../model/daw/devices/EventCategory";
 import {Lang} from "../../model/utils/Lang";
+import {EventStreamService} from "./event-stream.service";
+import {Thread} from "../../model/daw/Thread";
 
 
 @Injectable()
@@ -43,6 +45,7 @@ export class ProjectsService {
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
     private samplesService: SamplesApi,
+    private stream:EventStreamService,
     @Inject("daw") private daw: DawInfo,
     private patternsService: PatternsService,
     private scriptEngine:ScriptEngine,
@@ -132,9 +135,12 @@ export class ProjectsService {
     let metronomeEvents = this.patternsService.createMetronomeEvents(project.transportSettings.global.beatUnit);
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = project.transportSettings.global.beatUnit;
+    let ticker = project.threads.find(t => t.id === "ticker");
     let pattern = project.metronomePattern = new Pattern(
       "_metronome",
       [],
+      ticker,
+      project.settings,
       this.scriptEngine,
       transportContext,
       track.getMasterPlugin(),
@@ -229,10 +235,11 @@ export class ProjectsService {
     return projectDto;
   }
 
-  deSerializeProject(dto: ProjectDto): Promise<Project> {
+  deSerializeProject(dto: ProjectDto,threads:Array<Thread>): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
       let project = new Project(this.scriptEngine,this.audioContext, dto.transportSettings);
+      project.threads=threads;
       project.id = dto.id;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
@@ -341,13 +348,18 @@ export class ProjectsService {
 
   }
 
-  toggleRecord(pattern?: Pattern): void {
+  toggleRecord(): void {
     let project = this.daw.project.getValue();
 
-    if (project.recording.getValue() === true) project.recording.next(false);
-    else {
-      project.recordSession = new RecordSession(pattern);
-      project.recording.next(true);
+    if (project.recordSession.getValue() != null) {
+      project.recordSession.next(null);
+      this.stream.stop();
+    }
+    else if (project.selectedPattern.getValue())
+    {
+      project.recordSession.next( new RecordSession(project.selectedPattern.getValue()));
+      this.stream.start();
+
     }
 
   }

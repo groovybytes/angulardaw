@@ -28,9 +28,12 @@ export class PatternsService {
 
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = patternLength;
+    let ticker = project.threads.find(t => t.id === "ticker");
     let pattern = new Pattern(
       patternId ? patternId : Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
+      ticker,
+      project.settings,
       this.scriptEngine,
       transportContext,
       plugin,
@@ -57,9 +60,12 @@ export class PatternsService {
     let plugin = track.getMasterPlugin();
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = pattern.length;
+    let ticker = project.threads.find(t => t.id === "ticker");
     let patternClone = new Pattern(
       Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
+      ticker,
+      project.settings,
       this.scriptEngine,
       transportContext,
       plugin,

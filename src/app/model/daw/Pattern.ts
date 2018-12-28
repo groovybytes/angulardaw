@@ -1,5 +1,3 @@
-
-
 import {BehaviorSubject, Subscription} from "rxjs/index";
 import {TrackControlParameters} from "./TrackControlParameters";
 import {NoteLength} from "../mip/NoteLength";
@@ -11,6 +9,8 @@ import {AudioPlugin} from "./plugins/AudioPlugin";
 import {TriggerSpec} from "./TriggerSpec";
 import {ScriptEngine} from "../../shared/services/scriptengine.service";
 import {MusicMath} from "../utils/MusicMath";
+import {Thread} from "./Thread";
+import {ProjectSettings} from "./ProjectSettings";
 
 
 export class Pattern {
@@ -26,12 +26,18 @@ export class Pattern {
   noteInserted: EventEmitter<NoteEvent> = new EventEmitter();
   noteUpdated: EventEmitter<NoteEvent> = new EventEmitter();
   noteRemoved: EventEmitter<NoteEvent> = new EventEmitter();
+  loopsPlayed: number = 0;
+  tick: EventEmitter<number> = new EventEmitter();
+
   private subscriptions: Array<Subscription> = [];
   plugin: AudioPlugin;
+
 
   constructor(
     id: string,
     triggers: Array<TriggerSpec>,
+    private ticker: Thread,
+    private projectSettings: ProjectSettings,
     private scriptEngine: ScriptEngine,
     transportContext: TransportContext,
     plugin: AudioPlugin,
@@ -44,7 +50,22 @@ export class Pattern {
 
     this.triggers = triggers;
     this.quantization.next(_quantization);
-    this.plugin=plugin;
+    this.plugin = plugin;
+
+
+    this.subscriptions.push(this.ticker.message.subscribe(msg => {
+      if (msg.data.hint==="tick"){
+        let loopTicks = MusicMath.getBeatTicks(this.quantization.getValue()) * this.length;
+        let tick = MusicMath.getTick(msg.data, projectSettings.quantizationBase, this.quantization.getValue(), loopTicks);
+        this.tick.next(tick);
+      }
+      else if (msg.data.hint==="start"){
+        this.loopsPlayed=0;
+      }
+
+    }));
+
+
   }
 
 
@@ -52,29 +73,29 @@ export class Pattern {
     if (this.controlParameters.mute.getValue() === false) this.plugin.feed(event, offset);
   }*/
 
-  getNotes():Array<string>{
-    return this.triggers.map(trigger=>trigger.note);
+  getNotes(): Array<string> {
+    return this.triggers.map(trigger => trigger.note);
   }
 
-  insertNote(event: NoteEvent, publish?: boolean): boolean {
+  insertNote(event: NoteEvent): boolean {
 
     let index = this.triggers.findIndex(trigger => trigger.note === event.note);
 
     if (index >= 0) {
       let index = _.sortedIndexBy(this.events, {'time': event.time}, d => d.time);
       this.events.splice(index, 0, event);
-      if (publish) this.noteInserted.emit(event);
+      this.noteInserted.emit(event);
 
       return true;
     } else return false;
 
   }
 
-  removeNote(id: string, publish?: boolean): void {
+  removeNote(id: string): void {
     let index = this.events.findIndex(ev => ev.id === id);
     let event = this.events[index];
     this.events.splice(index, 1);
-    if (publish) this.noteRemoved.emit(event);
+    this.noteRemoved.emit(event);
 
   }
 
@@ -86,8 +107,8 @@ export class Pattern {
     return this.length / this.transportContext.settings.global.beatUnit;
   }
 
-  getLength():number{
-    return MusicMath.getEndTime(this.length,this.transportContext.settings.global.bpm);
+  getLength(): number {
+    return MusicMath.getEndTime(this.length, this.transportContext.settings.global.bpm);
   }
 
   setLengthInBars(bars: number): void {

@@ -13,7 +13,6 @@ import {NoteEvent} from "../../model/mip/NoteEvent";
 export class MakeMusicService {
 
   private subscriptions:Array<Subscription>=[];
-  private playingPlugin:AudioPlugin;
 
   constructor(
     private audioContextService: AudioContextService,
@@ -36,11 +35,11 @@ export class MakeMusicService {
   trigger(event:NoteEvent,startTime:number,startPromise?:Promise<void>,loopLength?:number):void {
     let pluginTarget = this.daw.project.getValue().activePlugin.getValue();
     if (pluginTarget) {
-      let sampleEvent = new SampleEventInfo(event.note);
+      let sampleEvent = new SampleEventInfo();
       sampleEvent.note = event.note;
       sampleEvent.time = event.time / 1000;
       sampleEvent.loopLength = loopLength;
-      sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsPlayed;
+      sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsDone;
       let sample = pluginTarget.getSample(event.note);
       if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
       sample.trigger(sampleEvent, startPromise);
@@ -48,11 +47,11 @@ export class MakeMusicService {
 
   }
 
-  startPlay(note:string):EventEmitter<void>{
+  startPlay(note:string):void{
 
     let pluginTarget= this.daw.project.getValue().activePlugin.getValue();
     if (pluginTarget){
-      let sampleEvent = new SampleEventInfo(note);
+      let sampleEvent = new SampleEventInfo();
       sampleEvent.note = note;
       sampleEvent.time = this.audioContextService.getTime();
       sampleEvent.loopLength = 0;
@@ -62,12 +61,6 @@ export class MakeMusicService {
       if (sample) {
         if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
         sample.trigger(sampleEvent);
-        let stopEvent = new EventEmitter<void>();
-        let subscription = stopEvent.subscribe(()=>{
-          subscription.unsubscribe();
-          sample.stop();
-        });
-        return stopEvent;
       }
       else console.warn("no sample found for "+note);
 

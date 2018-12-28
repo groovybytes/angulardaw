@@ -75,8 +75,10 @@ export class Transport {
     ticker.post("start");
     this.threadSubscription = ticker.message.subscribe(msg => {
       /* this.scriptEngine.setImmediate(()=>{*/
-      let currentTime = this.audioContext.currentTime - this.startTime;
-      this.timeSubject.next(new TransportEvent<number>(this.channels, currentTime));
+      if (msg.data.hint==="tick") {
+        let currentTime = this.audioContext.currentTime - this.startTime;
+        this.timeSubject.next(new TransportEvent<number>(this.channels, currentTime));
+      }
       /* });*/
     });
 

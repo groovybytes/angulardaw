@@ -83,8 +83,10 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
 
         this.subscriptions.push(ticker.message.subscribe(msg => {
-          let loopTicks = MusicMath.getBeatTicks(this.pattern.quantization.getValue()) * this.pattern.length;
-          this.tick = MusicMath.getTick(msg.data,this.project.settings.quantizationBase, this.pattern.quantization.getValue(), loopTicks);
+          if (msg.data.hint === "tick") {
+            let loopTicks = MusicMath.getBeatTicks(this.pattern.quantization.getValue()) * this.pattern.length;
+            this.tick = MusicMath.getTick(msg.data, this.project.settings.quantizationBase, this.pattern.quantization.getValue(), loopTicks);
+          }
         }));
 
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {

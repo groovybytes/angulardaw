@@ -16,6 +16,7 @@ import {ScaleId} from "../model/mip/scales/ScaleId";
 import {ScriptEngine} from "./services/scriptengine.service";
 import {EventStreamService} from "./services/event-stream.service";
 import {MakeMusicService} from "./services/make-music.service";
+import {RecorderService} from "./services/recorder.service";
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import {MakeMusicService} from "./services/make-music.service";
     RouterService,
     EventStreamService,
     MakeMusicService,
+    RecorderService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

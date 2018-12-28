@@ -7,10 +7,10 @@ self.onmessage=function(e){
   if (e.data.command=="start") {
     console.log("starting");
     tick=0;
-    //postMessage("tick");
+    postMessage({hint:"start"});
     timerID=setInterval(function(){
 
-        postMessage(tick);
+        postMessage({hint:"tick",value:tick});
         tick++;
         },interval);
 
@@ -18,12 +18,15 @@ self.onmessage=function(e){
 
   else if (e.data.command=="stop") {
     console.log("stopping");
+
     clearInterval(timerID);
     timerID=null;
+    postMessage({hint:"stop"});
   }
   else if (e.data.command=="set-interval") {
     console.log("set interval to "+e.data.params);
     interval=e.data.params;
+    postMessage({hint:"set-interval",value:interval});
   }
 };
 

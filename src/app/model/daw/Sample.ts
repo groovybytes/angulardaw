@@ -114,8 +114,11 @@ export class Sample {
   }
 
   destroy(): void {
-    this.gainNode.disconnect();
-    this.gainNode = null;
+    if (this.gainNode){
+      this.gainNode.disconnect();
+      this.gainNode = null;
+    }
+
   }
 
 

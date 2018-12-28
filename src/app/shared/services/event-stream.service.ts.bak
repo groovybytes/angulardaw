@@ -9,6 +9,7 @@ import {AudioContextService} from "./audiocontext.service";
 import {Sample} from "../../model/daw/Sample";
 import {Notes} from "../../model/mip/Notes";
 import {NoteEvent} from "../../model/mip/NoteEvent";
+import {st} from "@angular/core/src/render3";
 import {NoteInfo} from "../../model/utils/NoteInfo";
 
 @Injectable({
@@ -22,7 +23,7 @@ export class EventStreamService {
   private loop: boolean = false;
   private audioContext: AudioContext;
   patterns: Array<Pattern>;
-  private samples: Array<{ value: Sample, pattern: Pattern }> = [];
+  private samples: Array<Sample> = [];
 
   constructor(
     @Inject("daw") private daw: DawInfo,
@@ -47,7 +48,6 @@ export class EventStreamService {
           , params: MusicMath.getTickTime(project.transport.settings.global.bpm, project.settings.quantizationBase)
         });
       this.subscriptions.push(this.ticker.error.subscribe(error => console.error(error)));
-
 
       let loopBars = 0;
 
@@ -81,10 +81,8 @@ export class EventStreamService {
       let startTime: number;
 
       this.subscriptions.push(Sample.onEnd.subscribe((event: { relatedEvent: SampleEventInfo, sample: Sample }) => {
-
         if (this.loop) {
-          let pattern = this.samples.find(_sample => _sample.value.id === event.sample.id).pattern;
-          event.relatedEvent.loopsDone = pattern.loopsPlayed;
+          event.relatedEvent.loopsPlayed++;
           event.sample.trigger(event.relatedEvent);
         }
       }));
@@ -100,26 +98,8 @@ export class EventStreamService {
 
       patterns.forEach(pattern => {
         this.subscriptions.push(pattern.noteInserted.subscribe((event) => {
-
-          let sample = event.sample = pattern.plugin.getSample(event.note);
-          if (sample) {
-
-            let sampleEvent = this.createSampleEventFromNoteEvent(event, pattern, startTime, sample.baseNote);
-            sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * pattern.loopsPlayed;
-
-            let subscription = pattern.tick.subscribe((tick) => {
-              if (tick === 0) {
-                subscription.unsubscribe();
-                sample.trigger(sampleEvent, startPromise);
-                let existingSample = this.samples.find(s => s.value.id === sample.id);
-                if (!existingSample) this.samples.push({value: sample, pattern: pattern});
-              }
-            });
-
-            this.subscriptions.push(subscription);
-          }
-
-
+          console.log("note inserted");
+         // let sample = this.samples.find(sample => sample.)
         }));
         this.subscriptions.push(pattern.noteRemoved.subscribe((event) => {
           console.log("note noteRemoved");
@@ -127,20 +107,15 @@ export class EventStreamService {
         this.subscriptions.push(pattern.noteUpdated.subscribe((event) => {
           console.log("note noteUpdated");
         }));
-
-
         pattern.events.forEach(event => {
-          /* if (event.sample) {
-             event.sample.stop();
-             event.sample.destroy();
-           }*/
-
+          if (event.sample) {
+            event.sample.stop();
+            event.sample.destroy();
+          }
           let sample = event.sample = pattern.plugin.getSample(event.note);
-          let sampleEvent = this.createSampleEventFromNoteEvent(event, pattern, startTime, sample.baseNote);
-          sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * pattern.loopsPlayed;
-
+          let sampleEvent = this.createSampleEventFromNoteEvent(event,pattern,startTime, this.notes.getNote(event.note));
           sample.trigger(sampleEvent, startPromise);
-          this.samples.push({value: sample, pattern: pattern});
+          this.samples.push(sample);
         });
       });
 
@@ -152,16 +127,14 @@ export class EventStreamService {
   }
 
 
-  private createSampleEventFromNoteEvent(event: NoteEvent, pattern: Pattern, startTime: number, baseNote: NoteInfo): SampleEventInfo {
-    let sampleEvent = new SampleEventInfo();
+  private createSampleEventFromNoteEvent(event: NoteEvent, pattern: Pattern, startTime: number,baseNote:NoteInfo): SampleEventInfo {
+    let sampleEvent = new SampleEventInfo(event.note);
     sampleEvent.note = event.note;
     sampleEvent.time = event.time / 1000;
     sampleEvent.loopLength = pattern.getLength() / 1000;
-    //sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsPlayed;
-    sampleEvent.duration = event.length ? event.length / 1000 : MusicMath.getBeatTime(pattern.transportContext.settings.global.bpm);
-
+    sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsPlayed;
+    sampleEvent.duration = event.length;
     if (baseNote) sampleEvent.detune = this.notes.getInterval(baseNote, this.notes.getNote(event.note)) * 100;
-
     return sampleEvent;
   }
 
@@ -171,12 +144,8 @@ export class EventStreamService {
     this.debug("stop");
     this.ticker.post({command: "stop"});
     this.daw.project.getValue().transport.channels.length = 0;
-    this.subscriptions.forEach(sub => {
-      if (!sub.closed) sub.unsubscribe();
-    });
-    this.samples.forEach(sample => sample.value.stop());
-
-    this.samples.length=0;
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.samples.forEach(sample => sample.stop());
 
 
   }

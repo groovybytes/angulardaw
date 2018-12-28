@@ -1,8 +1,8 @@
 import {Lang} from "../utils/Lang";
 
 export class SampleEventInfo{
-  constructor(note: string) {
-    this.note = note;
+  constructor() {
+
     this.id=Lang.guid();
   }
 
@@ -13,7 +13,7 @@ export class SampleEventInfo{
   offset:number;
   duration:number;
   loopLength:number;
-  loopsPlayed:number=0;
+  loopsDone:number=0;
   getOffset:()=>number;
   detune:number=0;
 
