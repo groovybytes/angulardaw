@@ -30,8 +30,7 @@ export class SequencerService {
     for (let j = 0; j < nColumns; j++) {
       let cell = new NoteCell((j + 1) * specs.cellWidth, 0, specs.cellWidth, specs.cellHeight);
       cell.header = true;
-      cell.beat = MusicMath.getBeatNumber(j, pattern.quantization.getValue(),
-        new TimeSignature(pattern.transportContext.settings.global.beatUnit, pattern.transportContext.settings.global.barUnit));
+      cell.beat = MusicMath.getBeatNumber(j, pattern.quantization.getValue(),pattern.transportContext.settings.global.beatUnit);
       cell.tick = j;
       cell.row = 0;
       cell.column = j + 1;

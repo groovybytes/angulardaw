@@ -33,7 +33,7 @@ export class NoteStream {
 
   private onTransportTime(_transportTime: number): void {
     let actualTransportTime = _transportTime-this.transportTimeOffset;
-    let endTime =MusicMath.getEndTime(this.transportContext.settings.loopEnd,this.transportContext.settings.global.bpm)/1000;
+    let endTime =MusicMath.getLoopLength(this.transportContext.settings.loopEnd,this.transportContext.settings.global.bpm)/1000;
     let loopTime=actualTransportTime % endTime;
     this.time.emit(loopTime);
     let timeFactor = 120 / this.transportContext.settings.global.bpm;
@@ -60,7 +60,7 @@ export class NoteStream {
 
   private initLoopQueue(): void {
     let startTime = MusicMath.getStartTime(this.transportContext.settings.loopStart, this.transportContext.settings.global.bpm);
-    let endTime = MusicMath.getEndTime(this.transportContext.settings.loopEnd, this.transportContext.settings.global.bpm);
+    let endTime = MusicMath.getLoopLength(this.transportContext.settings.loopEnd, this.transportContext.settings.global.bpm);
     let timeFactor = 120 / this.transportContext.settings.global.bpm;
     this.eventPool = _.clone(this.events.filter(ev => ev.time * timeFactor >= startTime && ev.time * timeFactor <= endTime));
   }

@@ -9,12 +9,12 @@ export class SampleEventInfo{
 
   id:string;
   note:string;
-  time:number;
   offset:number;
   duration:number;
   loopLength:number;
-  loopsDone:number=0;
-  getOffset:()=>number;
+  loop:boolean;
+  loopsPlayed:number=0;
+  getLoopStartTime:()=>number;
   detune:number=0;
 
 

@@ -8,12 +8,12 @@ export class MusicMath {
     return 240 / bpm * 1000 * quantization; //240/bpm*1000==wholenotetime
   }
 
- /* public static getBeatTime(bpm: number, quantization: NoteLength): number {
-    return MusicMath.getBeatTicks(quantization) * MusicMath.getTickTime(bpm, quantization);
-  }*/
+  /* public static getBeatTime(bpm: number, quantization: NoteLength): number {
+     return MusicMath.getBeatTicks(quantization) * MusicMath.getTickTime(bpm, quantization);
+   }*/
 
   public static getBeatTime(bpm: number): number {
-    return 60000/bpm;
+    return 60000 / bpm;
   }
 
   /* public static getNoteLength(bpm: number,length:NoteLength): number {
@@ -25,16 +25,16 @@ export class MusicMath {
     return Math.pow(quantization * 4, -1);
   }
 
-  public static getTick(tick:number,baseQuantization:NoteLength,quantization: NoteLength,loopTicks): number {
-    let i=1/baseQuantization;
-    let j=1/quantization;
+  public static getTick(tick: number, baseQuantization: NoteLength, quantization: NoteLength, loopTicks): number {
+    let i = 1 / baseQuantization;
+    let j = 1 / quantization;
 
-    return Math.floor((tick/i*j) % loopTicks);
+    return Math.floor((tick / i * j) % loopTicks);
   }
 
 
-  public static getBarTicks(quantization: NoteLength, beatUnit:number,bars?:number): number {
-    return MusicMath.getBeatTicks(quantization) * beatUnit*bars?bars:1;
+  public static getBarTicks(quantization: NoteLength, beatUnit: number, bars?: number): number {
+    return MusicMath.getBeatTicks(quantization) * beatUnit * bars ? bars : 1;
   }
 
   public static getTickFor(beat: number, bar: number, quantization: NoteLength, signature: TimeSignature): number {
@@ -53,37 +53,43 @@ export class MusicMath {
     return beat * beatTicks * tickTime;
   }
 
-  public static getBarNumber(time: number, bpm:number,quantization: NoteLength, signature: TimeSignature): number {
-    let tick = MusicMath.getTickForTime(time,bpm,quantization);
-    return Math.floor(tick / MusicMath.getBeatTicks(quantization) / signature.beatUnit);
+  public static getBarNumber(time: number, bpm: number, quantization: NoteLength, beatUnit: number): number {
+    let tick = MusicMath.getTickForTime(time, bpm, quantization);
+    return Math.floor(tick / MusicMath.getBeatTicks(quantization) / beatUnit);
   }
 
-  public static getBeatNumberWithTime(time: number, bpm:number,quantization: NoteLength, signature: TimeSignature): number {
+  public static getBeatNumberWithTime(time: number, bpm: number, quantization: NoteLength, signature: TimeSignature): number {
     let beatTicks = MusicMath.getBeatTicks(quantization);
-    let tick = MusicMath.getTickForTime(time,bpm,quantization);
+    let tick = MusicMath.getTickForTime(time, bpm, quantization);
     if (tick % beatTicks != 0) return -1;
     return Math.floor(tick / beatTicks % signature.beatUnit);
     //return tick*quantization*4 % signature.beatUnit;
   }
 
-  public static getBeatNumber(tick: number, quantization: NoteLength, signature: TimeSignature): number {
+  public static getBeatNumber(tick: number, quantization: NoteLength, beatUnit: number): number {
     let beatTicks = MusicMath.getBeatTicks(quantization);
-    if (tick % beatTicks != 0) return -1;
-    return Math.floor(tick / beatTicks % signature.beatUnit);
+    //if (tick % beatTicks != 0) return -1;
+    return Math.floor(tick / beatTicks % beatUnit);
     //return tick*quantization*4 % signature.beatUnit;
   }
 
-  public static getLength(bars:number,bpm:number,beatUnit:number): number {
+  public static getLength(bars: number, bpm: number, beatUnit: number): number {
 
     let beatTime = MusicMath.getBeatTime(bpm);
-    return beatUnit*bars*beatTime;
+    return beatUnit * bars * beatTime;
   }
 
   public static getStartTime(loopStart: number, bpm: number): number {
     return loopStart * MusicMath.getBeatTime(bpm);
   }
 
-  public static getEndTime(loopEnd: number, bpm: number): number {
+  public static getLoopLength(loopEnd: number, bpm: number): number {
     return loopEnd * MusicMath.getBeatTime(bpm);
   }
+
+  public static getLoopTime(audioTimeStart: number, audioTimeCurrent: number, loopLength: number): number {
+    return (audioTimeCurrent - audioTimeStart) % loopLength;
+  }
+
+
 }

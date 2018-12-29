@@ -37,9 +37,9 @@ export class MakeMusicService {
     if (pluginTarget) {
       let sampleEvent = new SampleEventInfo();
       sampleEvent.note = event.note;
-      sampleEvent.time = event.time / 1000;
       sampleEvent.loopLength = loopLength;
-      sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsDone;
+      sampleEvent.offset = 0;
+      //sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsDone;
       let sample = pluginTarget.getSample(event.note);
       if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
       sample.trigger(sampleEvent, startPromise);
@@ -53,7 +53,6 @@ export class MakeMusicService {
     if (pluginTarget){
       let sampleEvent = new SampleEventInfo();
       sampleEvent.note = note;
-      sampleEvent.time = this.audioContextService.getTime();
       sampleEvent.loopLength = 0;
       sampleEvent.duration=1000;
       sampleEvent.offset=0;

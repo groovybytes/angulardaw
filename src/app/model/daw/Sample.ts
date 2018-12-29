@@ -7,12 +7,12 @@ export class Sample {
   id: string;
   baseNote: NoteInfo;
 
-  static onEnd:EventEmitter<{relatedEvent:SampleEventInfo,sample:Sample}>=new EventEmitter();
+  onEnd: EventEmitter<void> = new EventEmitter();
 
   private destination: AudioNode;
   private gainNode: GainNode;
   private node: AudioBufferSourceNode;
-  private stopEvent:EventEmitter<void>=new EventEmitter();
+  private stopEvent: EventEmitter<void> = new EventEmitter();
 
   constructor(id: string, private buffer: AudioBuffer, private context: AudioContext) {
     this.id = id;
@@ -27,34 +27,41 @@ export class Sample {
   }
 
 
-  public trigger(event: SampleEventInfo,wait?:Promise<void>):void {
+  public trigger(event: SampleEventInfo, wait?: Promise<void>): void {
 
-    if (wait) wait.then(()=>this._trigger(event));
+    if (wait) wait.then(() => this._trigger(event));
     else this._trigger(event);
 
   }
 
-  private _trigger(event: SampleEventInfo):void {
+  private _trigger(event: SampleEventInfo): void {
 
     let sourceNode = this.node = this.context.createBufferSource();
-    let stopSubscription = this.stopEvent.subscribe(()=>{
+    let stopSubscription = this.stopEvent.subscribe(() => {
       sourceNode.stop(0);
       sourceNode.disconnect();
     });
     sourceNode.connect(this.gainNode);
     sourceNode.buffer = this.buffer;
 
-    if (event.detune) sourceNode.detune.value = event.detune;
-    let offset=event.getOffset?event.getOffset():event.offset;
 
-    sourceNode.start(event.time+offset, 0, event.duration);
+    if (event.detune) sourceNode.detune.value = event.detune;
+
+    let time = event.getLoopStartTime() + event.loopLength*event.loopsPlayed+ event.offset;
+    sourceNode.start(time, 0, event.duration);
+    //todo: remove event listener on destroy?
     sourceNode.addEventListener("ended", () => {
       stopSubscription.unsubscribe();
       sourceNode.disconnect();
-      Sample.onEnd.emit({relatedEvent:event,sample:this});
+      if (event.loop) {
+        event.loopsPlayed++;
+        this._trigger(event);
+      }
+      /*
+
+       this.onEnd.emit();*/
     });
   }
-
 
 
   /* public trigger(offset: number, duration?: number,): void {
@@ -114,7 +121,7 @@ export class Sample {
   }
 
   destroy(): void {
-    if (this.gainNode){
+    if (this.gainNode) {
       this.gainNode.disconnect();
       this.gainNode = null;
     }

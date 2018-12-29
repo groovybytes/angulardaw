@@ -26,7 +26,7 @@ export class Pattern {
   noteInserted: EventEmitter<NoteEvent> = new EventEmitter();
   noteUpdated: EventEmitter<NoteEvent> = new EventEmitter();
   noteRemoved: EventEmitter<NoteEvent> = new EventEmitter();
-  loopsPlayed: number = 0;
+  beat: number = -1;
   tick: EventEmitter<number> = new EventEmitter();
 
   private subscriptions: Array<Subscription> = [];
@@ -51,19 +51,6 @@ export class Pattern {
     this.triggers = triggers;
     this.quantization.next(_quantization);
     this.plugin = plugin;
-
-
-    this.subscriptions.push(this.ticker.message.subscribe(msg => {
-      if (msg.data.hint==="tick"){
-        let loopTicks = MusicMath.getBeatTicks(this.quantization.getValue()) * this.length;
-        let tick = MusicMath.getTick(msg.data, projectSettings.quantizationBase, this.quantization.getValue(), loopTicks);
-        this.tick.next(tick);
-      }
-      else if (msg.data.hint==="start"){
-        this.loopsPlayed=0;
-      }
-
-    }));
 
 
   }
@@ -108,7 +95,8 @@ export class Pattern {
   }
 
   getLength(): number {
-    return MusicMath.getEndTime(this.length, this.transportContext.settings.global.bpm);
+
+    return MusicMath.getLoopLength(this.length, this.transportContext.settings.global.bpm);
   }
 
   setLengthInBars(bars: number): void {
