@@ -22,12 +22,11 @@ export class BootstrapperService {
   loadProject(projectId: string): Promise<Project> {
 
     return new Promise((resolve, reject) => {
-      let threads = this.createThreads();
       let newProject = JSON.parse(localStorage.getItem("new_project"));
       if (newProject) {
         localStorage.setItem("new_project", null);
 
-        this.projectsService.createProject(projectId, newProject.name, newProject.plugins)
+        this.projectsService.initializeNewProject(projectId, newProject.name, newProject.plugins)
           .then(project => {
             let dto = this.projectsService.serializeProject(project);
             dto.id = projectId;
@@ -47,7 +46,7 @@ export class BootstrapperService {
       } else {
 
         this.projectsApi.getById(projectId).then(result => {
-          this.projectsService.deSerializeProject(result.data,threads)
+          this.projectsService.deSerializeProject(result.data)
             .then(project => {
               this.recorderService.recordSession = project.recordSession;
               this.daw.project.next(project);
@@ -64,8 +63,5 @@ export class BootstrapperService {
 
   }
 
-  private createThreads(): Array<Thread> {
-    return [new Thread("ticker", "assets/js/tick_worker.js")];
-  }
 
 }

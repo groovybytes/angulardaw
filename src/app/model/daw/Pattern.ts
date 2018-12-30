@@ -41,9 +41,7 @@ export class Pattern {
     private scriptEngine: ScriptEngine,
     transportContext: TransportContext,
     plugin: AudioPlugin,
-    private _quantization: NoteLength,
-    private  controlParameters: TrackControlParameters
-    /*    private channels?:Array<string>*/
+    private _quantization: NoteLength
   ) {
     this.id = id;
     this.transportContext = transportContext;

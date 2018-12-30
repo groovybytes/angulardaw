@@ -14,6 +14,7 @@ import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
 import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
 import {DawInfo} from "./model/DawInfo";
+import {PrototypingModule} from "./prototyping/prototyping.module";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {DawInfo} from "./model/DawInfo";
     HttpClientModule,
     AuthenticationModule,
     ProjectModule,
+    PrototypingModule,
     Angular2DesktopModule
 
   ],

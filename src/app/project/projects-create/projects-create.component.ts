@@ -67,7 +67,7 @@ export class ProjectsCreateComponent implements OnInit, OnDestroy {
   /*  onSubmit2(): void {
       if (this.selectedPlugins.length === 0) this.msg = "Musik machen ohne Instrument? Ist das dein Ernst?";
       else {
-        let project = this.projectService.createProject(this.newProjectName, this.selectedPlugins);
+        let project = this.projectService.initializeNewProject(this.newProjectName, this.selectedPlugins);
         this.projectService.save(project).then(() => {
           this.projects.push(project);
           project.destroy()

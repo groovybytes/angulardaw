@@ -46,7 +46,7 @@ export class DawMatrixService {
       //let track = project.tracks.find(track => track.id === cell.trackId);
       let rowHeaderCell = project.matrix.rowHeader.find(header => header.row === cell.row);
       if (!cell.data) {
-        let pattern = this.patternService.addPattern(project, cell.trackId, NoteLength.Quarter, 8);
+        let pattern = this.patternService.createPattern(project, cell.trackId, NoteLength.Quarter, 8);
         cell.data = pattern;
       }
       project.selectedPattern.next(cell.data);

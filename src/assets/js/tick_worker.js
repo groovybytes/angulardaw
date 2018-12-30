@@ -4,21 +4,26 @@ var tick=0;
 
 console.log("starting tick thread");
 self.onmessage=function(e){
+
+  function ticker() {
+    tick=0;
+    return setInterval(function(){
+
+      postMessage({hint:"tick",value:tick});
+      tick++;
+    },interval);
+
+  }
   if (e.data.command=="start") {
     console.log("starting");
-    tick=0;
-    postMessage({hint:"start"});
-    timerID=setInterval(function(){
 
-        postMessage({hint:"tick",value:tick});
-        tick++;
-        },interval);
+    postMessage({hint:"start"});
+    timerID=ticker();
 
   }
 
   else if (e.data.command=="stop") {
     console.log("stopping");
-
     clearInterval(timerID);
     timerID=null;
     postMessage({hint:"stop"});
@@ -26,6 +31,10 @@ self.onmessage=function(e){
   else if (e.data.command=="set-interval") {
     console.log("set interval to "+e.data.params);
     interval=e.data.params;
+    if (timerID){
+      clearInterval(timerID);
+      timerID=ticker();
+    }
     postMessage({hint:"set-interval",value:interval});
   }
 };

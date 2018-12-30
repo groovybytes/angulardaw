@@ -31,6 +31,7 @@ export class Project {
   activeSceneRow: number;
   matrix: Matrix = new Matrix();
 /*  openedWindows: Array<string>;*/
+  bpm:BehaviorSubject<number>=new BehaviorSubject(120);
   nodes: Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
   ready: boolean = false;

@@ -26,11 +26,10 @@ import {SamplesApi} from "../../api/samples.api";
 import {RecordSession} from "../../model/daw/RecordSession";
 import {DawInfo} from "../../model/DawInfo";
 import {ScriptEngine} from "./scriptengine.service";
-import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
-import {EventCategory} from "../../model/daw/devices/EventCategory";
 import {Lang} from "../../model/utils/Lang";
 import {EventStreamService} from "./event-stream.service";
 import {Thread} from "../../model/daw/Thread";
+import {RecorderService} from "./recorder.service";
 
 
 @Injectable()
@@ -44,16 +43,17 @@ export class ProjectsService {
     private trackService: TracksService,
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
+    private recorderService: RecorderService,
     private samplesService: SamplesApi,
-    private stream:EventStreamService,
+    private stream: EventStreamService,
     @Inject("daw") private daw: DawInfo,
     private patternsService: PatternsService,
-    private scriptEngine:ScriptEngine,
+    private scriptEngine: ScriptEngine,
     private pluginsService: PluginsService) {
 
   }
 
-  createProject(id: string, name: string, addPlugins: Array<string>): Promise<Project> {
+  initializeNewProject(id: string, name: string, addPlugins: Array<string>): Promise<Project> {
 
     return new Promise((resolve, reject) => {
       let transportSettings = new TransportSettings();
@@ -65,7 +65,8 @@ export class ProjectsService {
       transportSettings.loopEnd = 0;
       transportSettings.loopStart = 0;
 
-      let project = new Project(this.scriptEngine,this.audioContext, transportSettings);
+      let project = new Project(this.scriptEngine, this.audioContext, transportSettings);
+      project.threads=this.createThreads();
       project.patterns = [];
       project.id = id;
       project.name = name;
@@ -122,6 +123,22 @@ export class ProjectsService {
 
   }
 
+  /*createProject(id: string, name: string, addPlugins: Array<string>): Promise<Project> {
+
+    return new Promise((resolve, reject) => {
+      this.initializeNewProject(id, name, addPlugins)
+        .then(project => {
+          this.recorderService.recordSession = project.recordSession;
+          project.ready = true;
+          this.daw.project.next(project);
+          resolve(project);
+
+        })
+        .catch(error => reject(error));
+    })
+
+  }*/
+
   changeQuantization(project: Project, loopLength: number, quantization: NoteLength): void {
     /* project.quantization=quantization;
 
@@ -144,10 +161,9 @@ export class ProjectsService {
       this.scriptEngine,
       transportContext,
       track.getMasterPlugin(),
-      NoteLength.Quarter,
-      track.controlParameters);
+      NoteLength.Quarter);
 
-    pattern.length=4;
+    pattern.length = 4;
 
     metronomeEvents.forEach(ev => pattern.events.push(ev));
 
@@ -157,9 +173,9 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService,project, this.config, this.samplesService);
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project, this.config, this.samplesService);
       metronome.load().then(() => {
-        let track = this.trackService.createTrack(project.nodes,  TrackCategory.SYSTEM, project.getMasterBus().inputNode);//, "metronome-");
+        let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode);//, "metronome-");
         track.plugins = [metronome];
         project.plugins.push(metronome);
         this.pluginsService.setupInstrumentRoutes(project, track, metronome);
@@ -176,7 +192,7 @@ export class ProjectsService {
     let projectDto = new ProjectDto();
     projectDto.id = project.id;
     projectDto.name = project.name;
-    projectDto.activePlugin = project.activePlugin.getValue()?project.activePlugin.getValue().getInstanceId():null;
+    projectDto.activePlugin = project.activePlugin.getValue() ? project.activePlugin.getValue().getInstanceId() : null;
     projectDto.transportSettings = project.transportSettings;
     projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
     projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
@@ -235,11 +251,11 @@ export class ProjectsService {
     return projectDto;
   }
 
-  deSerializeProject(dto: ProjectDto,threads:Array<Thread>): Promise<Project> {
+  deSerializeProject(dto: ProjectDto): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
-      let project = new Project(this.scriptEngine,this.audioContext, dto.transportSettings);
-      project.threads=threads;
+      let project = new Project(this.scriptEngine, this.audioContext, dto.transportSettings);
+      project.threads=this.createThreads();
       project.id = dto.id;
       project.name = dto.name;
       project.metronomeEnabled.next(dto.metronomeEnabled);
@@ -264,7 +280,7 @@ export class ProjectsService {
               if (pluginDto.pad) {
                 pluginInfo.pad = pluginDto.pad;//override default pads
               }
-              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id,pluginDto.instanceId, pluginInfo, project);
+              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginDto.instanceId, pluginInfo, project);
               pluginPromises.push(promise);
               promise.then(_plugin => {
 
@@ -282,8 +298,8 @@ export class ProjectsService {
           Promise.all(pluginPromises)
             .then(() => {
 
-              if (dto.activePlugin){
-                let plugin = project.plugins.find(plugin=>plugin.getInstanceId()===dto.activePlugin);
+              if (dto.activePlugin) {
+                let plugin = project.plugins.find(plugin => plugin.getInstanceId() === dto.activePlugin);
                 project.activePlugin.next(plugin);
               }
               let metronomeTrack = project.tracks.find(track => track.id.startsWith("track-metronome"));
@@ -292,7 +308,7 @@ export class ProjectsService {
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);
                 if (matrixCell) {
-                  let pattern = this.patternsService.addPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
+                  let pattern = this.patternsService.createPattern(project, matrixCell.trackId, p.quantization, p.length, p.id);
                   pattern.quantizationEnabled.next(p.quantizationEnabled);
                   p.events.forEach(ev => pattern.events.push(ev));
                   pattern.length = p.length;
@@ -354,16 +370,17 @@ export class ProjectsService {
     if (project.recordSession.getValue() != null) {
       project.recordSession.next(null);
       this.stream.stop();
-    }
-    else if (project.selectedPattern.getValue())
-    {
-      project.recordSession.next( new RecordSession(project.selectedPattern.getValue()));
+    } else if (project.selectedPattern.getValue()) {
+      project.recordSession.next(new RecordSession(project.selectedPattern.getValue()));
       this.stream.start();
 
     }
 
   }
 
+  private createThreads(): Array<Thread> {
+    return [new Thread("ticker", "assets/js/tick_worker.js")];
+  }
 
 
 }

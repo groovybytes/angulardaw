@@ -6,7 +6,7 @@ import {Scale} from "./scales/Scale";
 
 export class Notes {
   //private readonly notes: any;
-  private readonly notes: Array<NoteInfo>;
+  readonly notes: Array<NoteInfo>;
   private readonly notesByMidi: any;
   //private notesArray: Array<NoteInfo> = [];
   private scale: Scale;

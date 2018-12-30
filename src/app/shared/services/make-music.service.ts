@@ -42,7 +42,7 @@ export class MakeMusicService {
       //sampleEvent.getOffset = () => startTime + sampleEvent.loopLength * sampleEvent.loopsDone;
       let sample = pluginTarget.getSample(event.note);
       if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
-      sample.trigger(sampleEvent, startPromise);
+      //sample.trigger(sampleEvent, startPromise);
     }
 
   }
@@ -59,7 +59,7 @@ export class MakeMusicService {
       let sample = pluginTarget.getSample(note);
       if (sample) {
         if (sample.baseNote) sampleEvent.detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
-        sample.trigger(sampleEvent);
+        //sample.trigger(sampleEvent);
       }
       else console.warn("no sample found for "+note);
 
@@ -73,7 +73,7 @@ export class MakeMusicService {
     if (pluginTarget){
       let sample = pluginTarget.getSample(note);
       if (sample) {
-        sample.stop();
+        //sample.stop();
       }
       else console.warn("no sample found for "+note);
 

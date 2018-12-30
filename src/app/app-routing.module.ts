@@ -4,6 +4,8 @@ import {RegisterComponent} from "./authentication/register/register.component";
 import {LoginComponent} from "./authentication/login/login.component";
 import {ProjectsCreateComponent} from "./project/projects-create/projects-create.component";
 import {ProjectComponent} from "./project/project.component";
+import {MidiparserComponent} from "./prototyping/midiparser/midiparser.component";
+import {TransporttestComponent} from "./prototyping/transporttest/transporttest.component";
 
 const routes: Routes = [
   {
@@ -25,6 +27,14 @@ const routes: Routes = [
   {
     path: 'project/:projectId',
     component: ProjectComponent
+  },
+  {
+    path: 'prototyping/midiparser',
+    component: MidiparserComponent
+  },
+  {
+    path: 'prototyping/transport',
+    component: TransporttestComponent
   }
 ];
 

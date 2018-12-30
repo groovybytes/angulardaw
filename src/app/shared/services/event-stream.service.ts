@@ -32,7 +32,7 @@ export class EventStreamService {
 
 
   start(): void {
-    if (this.isRunning) {
+    /*if (this.isRunning) {
       this.stop();
     } else {
       this.isRunning = true;
@@ -48,7 +48,7 @@ export class EventStreamService {
       this.subscriptions.push(this.ticker.error.subscribe(error => console.error(error)));
 
 
-      /*this.subscriptions.push(this.ticker.message.subscribe(msg => {
+      /!*this.subscriptions.push(this.ticker.message.subscribe(msg => {
         this.patterns.forEach(pattern => {
           if (msg.data.hint === "tick") {
 
@@ -70,7 +70,7 @@ export class EventStreamService {
             pattern.beat = -1;
           }
         })
-      }));*/
+      }));*!/
 
 
       let loopBars = 0;
@@ -82,11 +82,11 @@ export class EventStreamService {
         let pattern = project.patterns.find(pattern => pattern.id === channel);
         if (pattern) {
           patterns.push(pattern);
-          /*this.subscriptions.push(this.ticker.message
+          /!*this.subscriptions.push(this.ticker.message
             .pipe(filter(event =>  {
 
             }))
-            .subscribe(event => ));*/
+            .subscribe(event => ));*!/
         }
       });
       patterns.push(project.metronomePattern);
@@ -168,7 +168,7 @@ export class EventStreamService {
       start = true;
       this.ticker.post({command: "start"});
 
-    }
+    }*/
 
   }
 
@@ -206,7 +206,7 @@ export class EventStreamService {
     this.ticker.post({command: "stop"});
     this.daw.project.getValue().transport.channels.length = 0;
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    this.samples.forEach(sample => sample.stop());
+    //this.samples.forEach(sample => sample.stop());
 
 
   }

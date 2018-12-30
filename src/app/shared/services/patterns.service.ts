@@ -8,6 +8,7 @@ import {NoteEvent} from "../../model/mip/NoteEvent";
 import {ScriptEngine} from "./scriptengine.service";
 import {EventStreamService} from "./event-stream.service";
 import {Lang} from "../../model/utils/Lang";
+import {TrackCategory} from "../../model/daw/TrackCategory";
 
 @Injectable()
 export class PatternsService {
@@ -16,7 +17,7 @@ export class PatternsService {
 
   }
 
-  addPattern(project: Project,
+  createPattern(project: Project,
              trackId: string,
              quantization: NoteLength,
              patternLength: number,
@@ -37,8 +38,7 @@ export class PatternsService {
       this.scriptEngine,
       transportContext,
       plugin,
-      quantization,
-      track.controlParameters
+      quantization
     );
 
     pattern.length = patternLength;
@@ -69,8 +69,7 @@ export class PatternsService {
       this.scriptEngine,
       transportContext,
       plugin,
-      pattern.quantization.getValue(),
-      track.controlParameters
+      pattern.quantization.getValue()
     );
 
     patternClone.length = pattern.length;

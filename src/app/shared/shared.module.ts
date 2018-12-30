@@ -17,6 +17,9 @@ import {ScriptEngine} from "./services/scriptengine.service";
 import {EventStreamService} from "./services/event-stream.service";
 import {MakeMusicService} from "./services/make-music.service";
 import {RecorderService} from "./services/recorder.service";
+import {MidiBridgeService} from "./services/midi-bridge.service";
+import {SchedulerService} from "./services/scheduler.service";
+import {SamplePlayerService} from "./services/sample-player.service";
 
 
 @NgModule({
@@ -39,6 +42,9 @@ import {RecorderService} from "./services/recorder.service";
     EventStreamService,
     MakeMusicService,
     RecorderService,
+    MidiBridgeService,
+    SamplePlayerService,
+    SchedulerService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

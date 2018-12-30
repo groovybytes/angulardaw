@@ -38,16 +38,13 @@
               ]
             },
             "scripts": [
-              "node_modules/d3/dist/d3.js",
               "node_modules/midiconvert/build/MidiConvert.js",
               "node_modules/midi-writer-js/build/browser/index.min.js",
               "node_modules/interactjs/dist/interact.min.js",
-              "node_modules/sample-player/dist/sample-player.min.js",
               "node_modules/midiutils/src/MIDIUtils.js",
-              "node_modules/fuse.js/dist/fuse.min.js",
-              "node_modules/toastr/build/toastr.min.js",
               "node_modules/lodash/lodash.min.js",
-              "node_modules/jquery/dist/jquery.min.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/midi-parser-js/src/midi-parser.js"
             ]
           },
           "configurations": {
