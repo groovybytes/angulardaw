@@ -5,7 +5,7 @@ import {MusicMath} from "../../model/utils/MusicMath";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {Subscription} from "rxjs";
 import {AudioContextService} from "./audiocontext.service";
-import {PlayerSession} from "../../model/daw/PlayerSession";
+import {PlayerSession} from "../../model/daw/session/PlayerSession";
 import {Thread} from "../../model/daw/Thread";
 
 

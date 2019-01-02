@@ -10,6 +10,7 @@ import {AudioPlugin} from "./AudioPlugin";
 import {Trigger} from "../Trigger";
 import {TriggerSpec} from "../TriggerSpec";
 import {SampleEventInfo} from "../SampleEventInfo";
+import {Notes} from "../../mip/Notes";
 
 
 export class Drums extends AudioPlugin {
@@ -24,9 +25,9 @@ export class Drums extends AudioPlugin {
     private fileService: FilesApi,
     private config: AppConfiguration,
     private info: PluginInfo,
-    private samplesV2Service: SamplesApi
+    private samplesV2Service: SamplesApi,  protected notes: Notes
   ) {
-    super();
+    super(notes);
     this.id = id;
   }
 

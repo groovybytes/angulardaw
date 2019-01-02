@@ -12,6 +12,9 @@ import {DeviceService} from "./device.service";
 import {PushComponent} from "../push/push/push.component";
 import {SequencerComponent} from "../sequencer/sequencer.component";
 import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
+import {DawEvent} from "../model/daw/DawEvent";
+import {filter} from "rxjs/operators";
+import {DawEventCategory} from "../model/daw/DawEventCategory";
 
 
 @Component({
@@ -22,7 +25,7 @@ import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
 export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   PushComponent = PushComponent;
-  DawMatrixComponent=DawMatrixComponent;
+  DawMatrixComponent = DawMatrixComponent;
   SequencerComponent = SequencerComponent;
   DockPosition = DockPosition;
 
@@ -53,15 +56,17 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
           this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
             this.deviceService.handleDeviceEvent(event);
           }));
+          this.subscriptions.push(
+            this.project.events.pipe(filter(event => event.category === DawEventCategory.TRANSPORT_START))
+              .subscribe((event: DawEvent<any>) => {
+
+              }));
         })
         .catch(error => this.system.error(error));
 
     });
 
   }
-
-
-
 
 
   ngOnDestroy(): void {
@@ -82,10 +87,11 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   initializeSequencer(component: SequencerComponent): void {
-    component.project=this.project;
+    component.project = this.project;
   }
+
   initializeMatrix(component: DawMatrixComponent): void {
-    component.project=this.project;
+    component.project = this.project;
   }
 
 }

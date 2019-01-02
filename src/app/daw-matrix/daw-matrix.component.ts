@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, Inject,
   Input,
   OnChanges,
   OnInit,
@@ -21,6 +21,7 @@ import {Pattern} from "../model/daw/Pattern";
 import {Cell} from "../model/daw/matrix/Cell";
 import {Track} from "../model/daw/Track";
 import {PluginInfo} from "../model/daw/plugins/PluginInfo";
+import {DawInfo} from "../model/DawInfo";
 
 
 @Component({
@@ -40,6 +41,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private el: ElementRef,
               private patternsService: PatternsService,
               private matrixService: MatrixService,
+              @Inject("daw") private daw: DawInfo,
               private tracksService: TracksService,
               private system: System,
 
@@ -64,7 +66,13 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
 
-    this.patternsService.togglePattern(cell.data.id, this.project);
+    if (this.daw.project.getValue().session.running.getValue()){
+      this.patternsService.stop(this.project);
+    }
+    else{
+      this.patternsService.startPattern(cell.data.id, this.project);
+    }
+
   }
 
   onCellContainerClicked(cell: Cell<Pattern>): void {

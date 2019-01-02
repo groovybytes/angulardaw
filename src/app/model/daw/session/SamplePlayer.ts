@@ -1,4 +1,4 @@
-import {AudioPlugin} from "./plugins/AudioPlugin";
+import {AudioPlugin} from "../plugins/AudioPlugin";
 import {PlayerSession} from "./PlayerSession";
 
 export interface SamplePlayer{

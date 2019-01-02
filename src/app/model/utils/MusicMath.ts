@@ -83,8 +83,8 @@ export class MusicMath {
     return loopStart * MusicMath.getBeatTime(bpm);
   }
 
-  public static getLoopLength(loopEnd: number, bpm: number): number {
-    return loopEnd * MusicMath.getBeatTime(bpm);
+  public static getLoopLength(beats: number, bpm: number): number {
+    return beats * MusicMath.getBeatTime(bpm)/1000;
   }
 
   public static getLoopTime(audioTimeStart: number, audioTimeCurrent: number, loopLength: number): number {

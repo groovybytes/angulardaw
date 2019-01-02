@@ -1,5 +1,6 @@
 export enum TrackCategory{
   DEFAULT=0,
   BUS=1,
-  SYSTEM=2
+  SYSTEM=2,
+  METRONOME=3,
 }

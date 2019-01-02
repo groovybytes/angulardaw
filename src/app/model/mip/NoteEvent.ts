@@ -9,8 +9,6 @@ export class NoteEvent{
   length: number;
   loudness: number;
   articulation: number;
-  sample:Sample;
-
 
   constructor(note: string,time?: number, length?: number, loudness?: number, articulation?: number) {
     this.id = Lang.guid();

@@ -30,6 +30,8 @@ import {Lang} from "../../model/utils/Lang";
 import {EventStreamService} from "./event-stream.service";
 import {Thread} from "../../model/daw/Thread";
 import {RecorderService} from "./recorder.service";
+import {Notes} from "../../model/mip/Notes";
+
 
 
 @Injectable()
@@ -45,6 +47,7 @@ export class ProjectsService {
     private audioNodesService: AudioNodesService,
     private recorderService: RecorderService,
     private samplesService: SamplesApi,
+    @Inject("Notes") private notes: Notes,
     private stream: EventStreamService,
     @Inject("daw") private daw: DawInfo,
     private patternsService: PatternsService,
@@ -71,6 +74,8 @@ export class ProjectsService {
       project.id = id;
       project.name = name;
       project.nodes = [];
+      //project.session = this.transport.createSession(pattern.plugin);
+
 
       //!todo t this.layout.createDefaultLayout();
 
@@ -173,9 +178,10 @@ export class ProjectsService {
 
   createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
-      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(), this.filesService, project, this.config, this.samplesService);
+      let metronome = new MetronomePlugin(this.audioContext.getAudioContext(),
+        this.filesService, project, this.config, this.samplesService,this.notes);
       metronome.load().then(() => {
-        let track = this.trackService.createTrack(project.nodes, TrackCategory.SYSTEM, project.getMasterBus().inputNode);//, "metronome-");
+        let track = this.trackService.createTrack(project.nodes, TrackCategory.METRONOME, project.getMasterBus().inputNode);//, "metronome-");
         track.plugins = [metronome];
         project.plugins.push(metronome);
         this.pluginsService.setupInstrumentRoutes(project, track, metronome);
@@ -302,7 +308,7 @@ export class ProjectsService {
                 let plugin = project.plugins.find(plugin => plugin.getInstanceId() === dto.activePlugin);
                 project.activePlugin.next(plugin);
               }
-              let metronomeTrack = project.tracks.find(track => track.id.startsWith("track-metronome"));
+              let metronomeTrack = project.tracks.find(track => track.category===TrackCategory.METRONOME);
               project.metronomePattern = this.createMetronomePattern(project, metronomeTrack);
 
               dto.patterns.forEach(p => {

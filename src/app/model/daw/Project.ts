@@ -19,19 +19,25 @@ import {KeyBindings} from "../../push/model/KeyBindings";
 import {RecordSession} from "./RecordSession";
 import {Thread} from "./Thread";
 import {ScriptEngine} from "../../shared/services/scriptengine.service";
+import {DawEvent} from "./DawEvent";
+import {TransportSession} from "./session/TransportSession";
+import {filter} from "rxjs/operators";
+import {DawEventCategory} from "./DawEventCategory";
 
 
 export class Project {
   id: string;
   name: string = "default";
+  events: EventEmitter<DawEvent<any>> = new EventEmitter();
+  session: TransportSession;
   metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
   activeSceneRow: number;
   matrix: Matrix = new Matrix();
-/*  openedWindows: Array<string>;*/
-  bpm:BehaviorSubject<number>=new BehaviorSubject(120);
+  /*  openedWindows: Array<string>;*/
+  bpm: BehaviorSubject<number> = new BehaviorSubject(120);
   nodes: Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
   ready: boolean = false;
@@ -42,18 +48,18 @@ export class Project {
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
   plugins: Array<AudioPlugin> = [];
-  activePlugin:BehaviorSubject<AudioPlugin>=new BehaviorSubject(null);
+  activePlugin: BehaviorSubject<AudioPlugin> = new BehaviorSubject(null);
   colors = ["lightblue", "yellow", "red"];
-  recordSession: BehaviorSubject<RecordSession>=new BehaviorSubject(null);
+  recordSession: BehaviorSubject<RecordSession> = new BehaviorSubject(null);
   metronomePattern: Pattern;
-  pushSettings:Array<PushSettings>;
-  pushKeyBindings:KeyBindings;
-  readonly deviceEvents2:EventEmitter<DeviceEvent<any> >=new EventEmitter();
+  pushSettings: Array<PushSettings>;
+  pushKeyBindings: KeyBindings;
+  readonly deviceEvents2: EventEmitter<DeviceEvent<any>> = new EventEmitter();
 
-  threads:Array<Thread>=[];
+  threads: Array<Thread> = [];
 
   constructor(
-    private scriptEngine:ScriptEngine,
+    private scriptEngine: ScriptEngine,
     private audioContext: AudioContextService, transportSettings: TransportSettings) {
 
     this.transportSettings = transportSettings;
@@ -68,7 +74,11 @@ export class Project {
 
   }
 
-  createTransport():void{
+  subscribe(categories:Array<DawEventCategory>,callback:(event:DawEvent<any>)=>void): Subscription {
+    return this.events.pipe(filter((event=>categories.indexOf(event.category)>=0))).subscribe(event=>callback(event));
+  }
+
+  createTransport(): void {
 
   }
 
@@ -82,9 +92,9 @@ export class Project {
   }
 
   setChannels(channels: Array<string>): void {
-    this.transport.channels.length=0;
-    channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []).forEach(channel=>
-    this.addChannel(channel));
+    this.transport.channels.length = 0;
+    channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []).forEach(channel =>
+      this.addChannel(channel));
     //this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
   }
 
@@ -118,11 +128,11 @@ export class Project {
   }
 
 
- /* start(): void {
-    if (this.transport.isRunning()) this.transport.stop();
-    let ticker = this.threads.find(t=>t.id==="ticker");
-    this.transport.start(ticker);
-  }*/
+  /* start(): void {
+     if (this.transport.isRunning()) this.transport.stop();
+     let ticker = this.threads.find(t=>t.id==="ticker");
+     this.transport.start(ticker);
+   }*/
 
 
   /*stop(): void {
@@ -132,12 +142,12 @@ export class Project {
   destroy(): void {
     this.transport.stop();
     this.nodes.forEach(node => node.destroy());
-    this.nodes.length=0;
+    this.nodes.length = 0;
     this.plugins.forEach(plugin => plugin.destroy());
     this.tracks.forEach(track => track.destroy());
     this.tracks.length = 0;
     this.audioContext.getAudioContext().destination.disconnect();
-    this.threads.forEach(t=>t.destroy());
+    this.threads.forEach(t => t.destroy());
     //return this.audioContext.destroy();
   }
 

@@ -16,7 +16,7 @@ export class MessagingService {
   log(msg:string, severity?:Severity):void{
     let _severity = severity?severity:Severity.DEBUG;
     this.consoleLog(msg,_severity);
-    //this.http.post(this.config.getUrl("log"),{msg:msg,severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
+    this.http.post(this.config.getUrl("log"),{msg:msg,severity:_severity.toString().toLowerCase()}).subscribe(result=>{});
   }
 
   logObject(o:any, severity?:Severity):void{

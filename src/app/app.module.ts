@@ -35,6 +35,7 @@ import {PrototypingModule} from "./prototyping/prototyping.module";
     PrototypingModule,
     Angular2DesktopModule
 
+
   ],
   providers: [
     System,

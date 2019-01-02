@@ -1,8 +1,8 @@
 import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {AudioPlugin} from "../../model/daw/plugins/AudioPlugin";
 import {Notes} from "../../model/mip/Notes";
-import {PlayerSession} from "../../model/daw/PlayerSession";
-import {SamplePlayer} from "../../model/daw/SamplePlayer";
+import {PlayerSession} from "../../model/daw/session/PlayerSession";
+import {SamplePlayer} from "../../model/daw/session/SamplePlayer";
 
 @Injectable({
   providedIn: 'root'

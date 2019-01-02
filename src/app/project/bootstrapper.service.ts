@@ -5,6 +5,9 @@ import {Project} from "../model/daw/Project";
 import {DawInfo} from "../model/DawInfo";
 import {Thread} from "../model/daw/Thread";
 import {RecorderService} from "../shared/services/recorder.service";
+import {TransportSession} from "../model/daw/session/TransportSession";
+import {Notes} from "../model/mip/Notes";
+import {AudioContextService} from "../shared/services/audiocontext.service";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +17,9 @@ export class BootstrapperService {
   constructor(
     private projectsService: ProjectsService,
     private recorderService: RecorderService,
+    private audioContext:AudioContextService,
     @Inject("daw") private daw: DawInfo,
+    @Inject("Notes") private notes: Notes,
     private projectsApi: ProjectsApi) {
   }
 
@@ -34,7 +39,7 @@ export class BootstrapperService {
             this.projectsApi.create(dto)
               .then(() => {
 
-                this.recorderService.recordSession = project.recordSession;
+                this.initializeProject(project);
                 project.ready = true;
                 this.daw.project.next(project);
 
@@ -48,7 +53,7 @@ export class BootstrapperService {
         this.projectsApi.getById(projectId).then(result => {
           this.projectsService.deSerializeProject(result.data)
             .then(project => {
-              this.recorderService.recordSession = project.recordSession;
+              this.initializeProject(project);
               this.daw.project.next(project);
               project.ready = true;
 
@@ -61,6 +66,17 @@ export class BootstrapperService {
       }
     })
 
+  }
+
+  initializeProject(project:Project):void{
+    this.recorderService.recordSession = project.recordSession;
+    project.session= new TransportSession(
+      project.events,
+      project.threads.find(t => t.id === "ticker"),
+      (note1, note2) => this.notes.getInterval(this.notes.getNote(note1), this.notes.getNote(note2)) * 100,
+      (targetId,note) => project.plugins.find(plugin=>plugin.getInstanceId()===targetId).getSample(note),
+      this.audioContext.getAudioContext(),
+      project.bpm);
   }
 
 

@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {Pattern} from "../../model/daw/Pattern";
 import {NoteLength} from "../../model/mip/NoteLength";
 import {Project} from "../../model/daw/Project";
 import {PatternsService} from "../../shared/services/patterns.service";
+import {DawInfo} from "../../model/DawInfo";
 
 @Component({
   selector: 'sequencer-footer',
@@ -14,7 +15,7 @@ export class SequencerFooterComponent implements OnInit {
   @Input() pattern: Pattern;
   @Input() project: Project;
 
-  constructor(private patternsService: PatternsService) {
+  constructor(private patternsService: PatternsService,@Inject("daw") private daw: DawInfo) {
   }
 
   ngOnInit() {
@@ -26,7 +27,13 @@ export class SequencerFooterComponent implements OnInit {
 
 
   toggleClip(): void {
-    this.patternsService.togglePattern(this.pattern.id, this.project);
+    if (this.daw.project.getValue().session.running.getValue()){
+      this.patternsService.stop(this.project);
+    }
+    else{
+      this.patternsService.startPattern(this.pattern.id, this.project);
+    }
+
   }
 
   changeQuantization(value: NoteLength): void {

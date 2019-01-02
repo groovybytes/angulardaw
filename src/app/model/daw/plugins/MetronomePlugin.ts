@@ -8,6 +8,7 @@ import {SamplesApi} from "../../../api/samples.api";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 import {AudioPlugin} from "./AudioPlugin";
 import {PluginId} from "./PluginId";
+import {Notes} from "../../mip/Notes";
 
 
 export class MetronomePlugin extends AudioPlugin {
@@ -26,8 +27,8 @@ export class MetronomePlugin extends AudioPlugin {
     private fileService: FilesApi,
     private project: Project,
     private config: AppConfiguration,
-    private samplesV2Service: SamplesApi) {
-    super();
+    private samplesV2Service: SamplesApi,  protected notes: Notes) {
+    super(notes);
     /* let track = this.tracksService.createDefaultTrack(this.project.transport.masterParams);
      let tickTime =
        MusicMath.getTickTime(track.transport.getBpm(),

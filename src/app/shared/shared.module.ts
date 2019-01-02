@@ -21,7 +21,6 @@ import {MidiBridgeService} from "./services/midi-bridge.service";
 import {SchedulerService} from "./services/scheduler.service";
 import {SamplePlayerService} from "./services/sample-player.service";
 
-
 @NgModule({
   declarations: [],
   imports: [

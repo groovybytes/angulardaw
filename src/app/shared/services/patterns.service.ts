@@ -8,20 +8,25 @@ import {NoteEvent} from "../../model/mip/NoteEvent";
 import {ScriptEngine} from "./scriptengine.service";
 import {EventStreamService} from "./event-stream.service";
 import {Lang} from "../../model/utils/Lang";
-import {TrackCategory} from "../../model/daw/TrackCategory";
+import {FilesApi} from "../../api/files.api";
+import {AppConfiguration} from "../../app.configuration";
 
 @Injectable()
 export class PatternsService {
 
-  constructor(private scriptEngine: ScriptEngine, private eventStream: EventStreamService) {
+  constructor(
+    private scriptEngine: ScriptEngine,
+    private fileService: FilesApi,
+    private config: AppConfiguration,
+    private eventStream: EventStreamService) {
 
   }
 
   createPattern(project: Project,
-             trackId: string,
-             quantization: NoteLength,
-             patternLength: number,
-             patternId?: string): Pattern {
+                trackId: string,
+                quantization: NoteLength,
+                patternLength: number,
+                patternId?: string): Pattern {
 
     let track = project.tracks.find(track => track.id === trackId);
     let plugin = track.getMasterPlugin();
@@ -46,6 +51,27 @@ export class PatternsService {
     project.patterns.push(pattern);
 
     return pattern;
+  }
+
+  createPatternFromUrl(project: Project,
+                       trackId: string, url: string): Promise<Pattern> {
+
+    return new Promise<Pattern>(((resolve, reject) => {
+      this.fileService.getFile(this.config.getAssetsUrl(url))
+        .then((patternJson) => {
+          let newPattern = this.createPattern(project,trackId,patternJson.quantization,patternJson.length);
+          patternJson.events.forEach(event=>{
+            newPattern.events.push(new NoteEvent(event.note, event.time, event.length));
+          });
+
+          resolve(newPattern);
+
+        })
+        .catch(error => reject(error));
+
+    }));
+
+
   }
 
   removePattern(project: Project, patternId: string): void {
@@ -108,23 +134,29 @@ export class PatternsService {
 
   }
 
-  togglePattern(patternId: string, project: Project): void {
-
-    if (project.isRunningWithChannel(patternId)) {
+  startPattern(patternId: string, project: Project): void {
+    let pattern = project.patterns.find(pattern => pattern.id === patternId);
+    let session = project.session;//this.transport.createSession(pattern.plugin);
+    project.setChannels([patternId]);
+    session.start([pattern],true,
+      MusicMath.getLoopLength(pattern.length,project.bpm.getValue()));
+    /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();
-    } else {
+    } else {*/
 
-      project.setChannels([patternId]);
-      project.activeSceneRow = null;
+    /*project.setChannels([patternId]);
+    project.activeSceneRow = null;*/
+    /*let pattern = project.patterns.find(pattern=>pattern.id===patternId);
+    let session=this.transport.createSession(pattern.plugin);
+    session.start(pattern.events);*/
 
-      this.eventStream.start();
-
-    }
+    //}
 
   }
 
-  stopAndClear(project: Project): void {
-    this.eventStream.stop();
+  stop(project: Project): void {
+   // this.eventStream.stop();
+    project.session.stop();
     project.setChannels([]);
   }
 

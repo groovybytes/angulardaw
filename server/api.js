@@ -13,6 +13,11 @@ router.post('/save', function (req, res) {
   });
 });
 
+router.post('/log', function (req, res) {
+  console.log(req.body);
+  res.end();
+});
+
 router.get('/get', function (req, res) {
   fs.readFile(__dirname + "/assets/projects/" + req.param('id') + ".json", 'utf8', function (err, data) {
     if (err) {

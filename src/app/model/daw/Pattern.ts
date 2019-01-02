@@ -1,5 +1,4 @@
 import {BehaviorSubject, Subscription} from "rxjs/index";
-import {TrackControlParameters} from "./TrackControlParameters";
 import {NoteLength} from "../mip/NoteLength";
 import {TransportContext} from "./transport/TransportContext";
 import {EventEmitter} from "@angular/core";
@@ -101,6 +100,7 @@ export class Pattern {
     this.length = bars * this.transportContext.settings.global.beatUnit;
     this.transportContext.settings.loopEnd = this.length;
   }
+
 
 
 }

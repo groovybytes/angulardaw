@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectorRef,
   Component,
   Inject,
   Input,
@@ -21,6 +21,7 @@ import {SequencerService} from "../sequencer.service";
 import {SequencerInteractionService} from "../sequencer.interaction.service";
 import {EventTableModel} from "./event-table.model";
 import {MouseTrapEvents} from "../mousetrap/MouseTrapEvents";
+import {DawEventCategory} from "../../model/daw/DawEventCategory";
 
 
 @Component({
@@ -78,16 +79,17 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
         this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event, this.model)));
         this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
 
+        /*this.project.events.subscribe(event => {
+          console.log("sadfsadf");
+        });
+*/
 
-        let ticker = this.project.threads.find(t => t.id === "ticker");
-
-
-        /*this.subscriptions.push(ticker.message.subscribe(msg => {
-          if (msg.data.hint === "tick") {
-            let loopTicks = MusicMath.getBeatTicks(this.pattern.quantization.getValue()) * this.pattern.length;
-            this.tick = MusicMath.getTick(msg.data.value, this.project.settings.quantizationBase, this.pattern.quantization.getValue(), loopTicks);;
-          }
-        }));*/
+        this.subscriptions.push(
+          this.project.subscribe([DawEventCategory.TICK],(event => {
+            let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
+            let loopTicks =ticksPerBeat * this.pattern.length;
+            this.tick = event.data*ticksPerBeat % loopTicks;
+        })));
 
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
           if (nextValue) this.updateCells();

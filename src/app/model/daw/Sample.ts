@@ -1,7 +1,7 @@
 import {NoteInfo} from "../utils/NoteInfo";
 import {EventEmitter} from "@angular/core";
 
-export class Sample {
+export class Sample  {
   id: string;
   baseNote: NoteInfo;
 
@@ -45,11 +45,11 @@ export class Sample {
 
 
     if (detune) sourceNode.detune.value = detune;
-
-    sourceNode.start(this.context.currentTime+time, 0, length);
+    sourceNode.start(time, 0, length);
     //todo: remove event listener on destroy?
     sourceNode.addEventListener("ended", () => {
       sourceNode.disconnect();
+      sourceNode=null;
     });
 
     return sourceNode;
