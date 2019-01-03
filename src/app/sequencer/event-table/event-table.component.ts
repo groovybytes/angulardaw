@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
@@ -28,7 +29,7 @@ import {DawEventCategory} from "../../model/daw/DawEventCategory";
   selector: 'event-table',
   templateUrl: './event-table.component.html',
   styleUrls: ['./event-table.component.scss']
-  /*changeDetection: ChangeDetectionStrategy.OnPush*/
+// changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -89,6 +90,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
             let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
             let loopTicks =ticksPerBeat * this.pattern.length;
             this.tick = event.data*ticksPerBeat % loopTicks;
+            this.cdr.markForCheck();
         })));
 
         this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {

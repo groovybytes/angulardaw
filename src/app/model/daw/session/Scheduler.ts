@@ -10,7 +10,7 @@ import {DawEventCategory} from "../DawEventCategory";
 
 export class Scheduler {
 
-  playEvent: EventEmitter<{ note: string, time: number, length: number }> = new EventEmitter();
+  playEvent: EventEmitter<{ note: string, time: number, length: number,target:string }> = new EventEmitter();
   private running: boolean = false;
 
   private subscriptions: Array<Subscription> = [];
@@ -22,7 +22,7 @@ export class Scheduler {
   }
 
 
-  run(events: Array<NoteEvent>, loop?: boolean, loopLength?: number): void {
+  run(events: Array<{event:NoteEvent,target:string}>, loop?: boolean, loopLength?: number): void {
 
     if (this.running) return;
 
@@ -48,13 +48,14 @@ export class Scheduler {
 
         let bpmFactor = 120 / this.bpm.getValue();
         let exit = false;
-        while (!exit && inFrame(getTriggerTime(events[position]))) {
+        while (!exit && inFrame(getTriggerTime(events[position].event))) {
           if (!startTime) startTime = this.audioContext.currentTime;
-          let triggerTime = getTriggerTime(events[position]);
+          let triggerTime = getTriggerTime(events[position].event);
           this.playEvent.emit({
-            note: events[position].note,
+            note: events[position].event.note,
             time: triggerTime,
-            length: events[position].length * bpmFactor
+            length: events[position].event.length * bpmFactor,
+            target:events[position].target
           });
           position++;
           if (position === events.length) {

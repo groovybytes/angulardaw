@@ -318,7 +318,7 @@ export class ProjectsService {
                   pattern.quantizationEnabled.next(p.quantizationEnabled);
                   p.events.forEach(ev => pattern.events.push(ev));
                   pattern.length = p.length;
-                } else throw new Error("invalid settings data");
+                } else console.warn("invalid settings data");
 
               });
               dto.matrix.body.forEach(_row => {

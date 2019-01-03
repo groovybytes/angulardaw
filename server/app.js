@@ -15,8 +15,8 @@ app.use(cors());
 express.static('assets');
 app.use('/assets', express.static('assets'), serveIndex('assets', {'icons': true}));
 // Parsers for POST data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '1000mb'}));
+app.use(bodyParser.urlencoded({ extended: false,limit: '1000mb' }));
 
 // Set our api routes
 app.use('/api', api);

@@ -25,6 +25,10 @@ export class MusicMath {
     return Math.pow(quantization * 4, -1);
   }
 
+  public static getBeatsForDuration(bpm:number,duration:number): number {
+    return Math.ceil(duration/(MusicMath.getBeatTime(bpm)/1000));
+  }
+
   public static getTick(tick: number, baseQuantization: NoteLength, quantization: NoteLength, loopTicks): number {
     let i = 1 / baseQuantization;
     let j = 1 / quantization;

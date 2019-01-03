@@ -4,5 +4,6 @@ export enum DawEventCategory {
 
   TRANSPORT_STOP = 1,
   TRANSPORT_START = 2,
-  TICK = 3
+  TICK = 3,
+  GENERIC=4
 }

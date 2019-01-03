@@ -6,10 +6,11 @@ import {NoteLength} from "../../model/mip/NoteLength";
 import * as _ from "lodash";
 import {NoteEvent} from "../../model/mip/NoteEvent";
 import {ScriptEngine} from "./scriptengine.service";
-import {EventStreamService} from "./event-stream.service";
 import {Lang} from "../../model/utils/Lang";
 import {FilesApi} from "../../api/files.api";
 import {AppConfiguration} from "../../app.configuration";
+import {Cell} from "../../model/daw/matrix/Cell";
+import {bootloader} from "@angularclass/hmr";
 
 @Injectable()
 export class PatternsService {
@@ -17,8 +18,7 @@ export class PatternsService {
   constructor(
     private scriptEngine: ScriptEngine,
     private fileService: FilesApi,
-    private config: AppConfiguration,
-    private eventStream: EventStreamService) {
+    private config: AppConfiguration) {
 
   }
 
@@ -59,8 +59,8 @@ export class PatternsService {
     return new Promise<Pattern>(((resolve, reject) => {
       this.fileService.getFile(this.config.getAssetsUrl(url))
         .then((patternJson) => {
-          let newPattern = this.createPattern(project,trackId,patternJson.quantization,patternJson.length);
-          patternJson.events.forEach(event=>{
+          let newPattern = this.createPattern(project, trackId, patternJson.quantization, patternJson.length);
+          patternJson.events.forEach(event => {
             newPattern.events.push(new NoteEvent(event.note, event.time, event.length));
           });
 
@@ -121,25 +121,39 @@ export class PatternsService {
   toggleScene(row: number, project: Project): void {
     if (project.activeSceneRow === row) {
       project.activeSceneRow = null;
-      this.eventStream.stop();
+      project.session.stop();
     } else {
       let matrixRow = project.matrix.body[row];
-      let patterns = matrixRow.filter(cell => cell.data).map(cell => cell.data.id);
+      let patterns = matrixRow.filter(cell => cell.data).map(cell => <Pattern>cell.data);
       if (patterns.length > 0) {
-        project.setChannels(patterns);
+        project.setChannels(patterns.map(pattern => pattern.id));
         project.activeSceneRow = row;
-        this.eventStream.start();
+        project.session.start(patterns, true,
+          MusicMath.getLoopLength(patterns[0].length, project.bpm.getValue()));
       }
     }
 
   }
 
+  insertPattern(trackId: string, row: number, pattern: Pattern, project: Project): void {
+
+    let trackIndex = project.matrix.header.findIndex(cell => cell.data && cell.data.id === trackId);
+    //todo: horrible search :)
+    let cell = _.flatten(project.matrix.body).find(cell => cell.column === trackIndex && cell.row === row);
+    if (cell) {
+      cell.data = pattern;
+      project.selectedPattern.next(pattern);
+    }
+    else console.warn("cell not found");
+  }
+
+  //todo: move start+stop to ......
   startPattern(patternId: string, project: Project): void {
     let pattern = project.patterns.find(pattern => pattern.id === patternId);
     let session = project.session;//this.transport.createSession(pattern.plugin);
     project.setChannels([patternId]);
-    session.start([pattern],true,
-      MusicMath.getLoopLength(pattern.length,project.bpm.getValue()));
+    session.start([pattern], true,
+      MusicMath.getLoopLength(pattern.length, project.bpm.getValue()));
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();
     } else {*/
@@ -155,7 +169,7 @@ export class PatternsService {
   }
 
   stop(project: Project): void {
-   // this.eventStream.stop();
+    // this.eventStream.stop();
     project.session.stop();
     project.setChannels([]);
   }

@@ -15,6 +15,7 @@ import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
 import {DawEvent} from "../model/daw/DawEvent";
 import {filter} from "rxjs/operators";
 import {DawEventCategory} from "../model/daw/DawEventCategory";
+import {MidiBridgeService} from "../shared/services/midi-bridge.service";
 
 
 @Component({
@@ -41,6 +42,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     private projectsService: ProjectsService,
     private bootstrapper: BootstrapperService,
     @Inject("daw") private daw: DawInfo,
+    private midiBridge:MidiBridgeService,
     private system: System) {
 
   }
@@ -53,6 +55,10 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
       this.bootstrapper.loadProject(params.projectId)
         .then(project => {
           this.project = project;
+         /* this.midiBridge.createTracksFromMidi("assets/midi/songs/bach_846.mid",this.project)
+            .then(()=>{
+
+            })*/
           this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
             this.deviceService.handleDeviceEvent(event);
           }));

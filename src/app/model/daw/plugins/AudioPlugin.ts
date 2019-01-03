@@ -74,8 +74,9 @@ export abstract class AudioPlugin implements PluginHost {
         //todo: remove event listener?
         node.addEventListener("ended", () => {
           node=null;
+          stopSubscription.unsubscribe();
         });
-        stopSubscription.unsubscribe();
+
       });
 
     let stopSubscription = cancelEvent.subscribe(() => {

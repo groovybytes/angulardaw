@@ -1,3 +1,5 @@
-<p>
-  midiparser works!
-</p>
+<input type="text" [(ngModel)]="file">
+<button type="button" (click)="loadMidi()">Parse</button>
+<input type="text" [(ngModel)]="songFile">
+<button type="button" (click)="convertSong()">convert midi song</button>
+<app-monitor></app-monitor>

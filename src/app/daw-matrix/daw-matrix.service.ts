@@ -41,17 +41,11 @@ export class DawMatrixService {
   }
 
   bodyCellDblClicked(cell: Cell<Pattern>, project: Project): void {
-
-    if (cell.trackId) {
-      //let track = project.tracks.find(track => track.id === cell.trackId);
-      let rowHeaderCell = project.matrix.rowHeader.find(header => header.row === cell.row);
-      if (!cell.data) {
-        let pattern = this.patternService.createPattern(project, cell.trackId, NoteLength.Quarter, 8);
-        cell.data = pattern;
-      }
-      project.selectedPattern.next(cell.data);
-      //!todo this.layout.openWindow("sequencer");
+    if (!cell.data){
+      let pattern = this.patternService.createPattern(project, cell.trackId, NoteLength.Quarter, 8);
+      this.patternService.insertPattern(cell.trackId,cell.row,pattern,project);
     }
+    else project.selectedPattern.next(cell.data);
   }
 
   bodyCellClicked(cell: Cell<Pattern>, project: Project): void {

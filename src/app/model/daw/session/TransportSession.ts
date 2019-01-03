@@ -2,17 +2,13 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {Scheduler} from "./Scheduler";
 import {Thread} from "../Thread";
 import {Sample} from "../Sample";
-import {NoteEvent} from "../../mip/NoteEvent";
 import {EventEmitter} from "@angular/core";
 import {DawEvent} from "../DawEvent";
 import {DawEventCategory} from "../DawEventCategory";
 import {Pattern} from "../Pattern";
+import * as _ from "lodash";
 
-
-export class
-
-
-TransportSession {
+export class TransportSession {
 
   private scheduler: Scheduler;
   private stopEvent: EventEmitter<void> = new EventEmitter();
@@ -38,12 +34,21 @@ TransportSession {
     else{
       this.running.next(true);
       this.playSubscription = this.scheduler.playEvent
-        .subscribe((event: { note: string, time: number, length: number,targetId:string }) => {
-          patterns[0].plugin.play(event.note, event.time, event.length,this.stopEvent);
+        .subscribe((event: { note: string, time: number, length: number,target:string }) => {
+          patterns.find(pattern=>pattern.id===event.target).plugin.play(event.note, event.time, event.length,this.stopEvent);
           this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_NOTE_QUEUED, event));
         });
 
-      this.scheduler.run(patterns[0].events,loop,loopLenth);
+      let events = [];
+      patterns.forEach(pattern=>{
+        pattern.events.forEach(event=>{
+          events.push({event:event,target:pattern.id});
+        })
+      });
+
+      events=_.sortBy(events, event=>event.event.time);
+
+      this.scheduler.run(events,loop,loopLenth);
     }
 
 

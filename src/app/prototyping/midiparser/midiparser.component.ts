@@ -1,9 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {Notes} from "../../model/mip/Notes";
 import {ProjectsService} from "../../shared/services/projects.service";
-import {NoteEvent} from "../../model/mip/NoteEvent";
+import {Project} from "../../model/daw/Project";
+import {DawEvent} from "../../model/daw/DawEvent";
+import {DawEventCategory} from "../../model/daw/DawEventCategory";
+import {BootstrapperService} from "../../project/bootstrapper.service";
+import {DawInfo} from "../../model/DawInfo";
+import {MidiBridgeService} from "../../shared/services/midi-bridge.service";
+import {ProjectsApi} from "../../api/projects.api";
 
-declare var MidiConvert;
 
 @Component({
   selector: 'app-midiparser',
@@ -12,25 +17,49 @@ declare var MidiConvert;
 })
 export class MidiparserComponent implements OnInit {
 
+  file:string="assets/midi/loops/bass/1.mid";
+  songFile:string="assets/midi/songs/bach_846.mid";
+
+  project:Project;
+
   constructor(@Inject("Notes") private notes:Notes,
+              private bootstrapper:BootstrapperService,
+              private midiBridge:MidiBridgeService,
+              private projectsApi:ProjectsApi,
+              @Inject("daw") private daw: DawInfo,
               private projectsService:ProjectsService) { }
 
   ngOnInit() {
-
-
-    this.projectsService.initializeNewProject("tmp", "tmp", ["bass_acoustic"])
+    this.projectsService.initializeNewProject("tmp", "tmp", ["piano_1"])
       .then(project => {
-
-
-        MidiConvert.load("assets/midi/loops/bass/1.mid", (midi)=> {
-          let converted = midi.tracks[1].notes.map(midiEvent=>{
-            let noteInfo=this.notes.notes.find(d=>d.midi===midiEvent.midi);
-            let event = new NoteEvent(noteInfo.id,midiEvent.time,midiEvent.duration,midiEvent.velocity);
-            return event;
-          });
-          console.log(converted);
-        })
+        this.bootstrapper.initializeProject(project);
+        this.project = project;
+        this.daw.project.next(project);
       });
+  }
+
+  loadMidi():void{
+    this.midiBridge.convertMidi(this.file)
+      .then((midi)=>{
+        this.project.events.emit(new DawEvent<any>(DawEventCategory.GENERIC,midi));
+      })
+
+  }
+
+  convertSong():void{
+    this.midiBridge.createTracksFromMidi(this.songFile,this.project)
+      .then(()=>{
+        let dto = this.projectsService.serializeProject(this.daw.project.getValue());
+        debugger;
+        console.log("saving");
+        this.projectsApi.update(dto)
+          .then((result) => {
+            console.log("project saved")
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      })
 
   }
 
