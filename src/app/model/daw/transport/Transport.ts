@@ -2,13 +2,10 @@ import {Observable, Subscription} from "rxjs";
 import {EventEmitter} from "@angular/core";
 import {TransportPosition} from "./TransportPosition";
 import {MusicMath} from "../../utils/MusicMath";
-import {TimeSignature} from "../../mip/TimeSignature";
 import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 import {TransportSettings} from "./TransportSettings";
 import {TransportEvent} from "./TransportEvent";
 import {Thread} from "../Thread";
-import set = Reflect.set;
-import {ScriptEngine} from "../../../shared/services/scriptengine.service";
 
 
 export class Transport {
@@ -33,7 +30,6 @@ export class Transport {
 
   constructor(
     private audioContext: AudioContext,
-    private scriptEngine: ScriptEngine,
     settings: TransportSettings) {
 
     /*  this.tickTock = this.tickSubject.asObservable();

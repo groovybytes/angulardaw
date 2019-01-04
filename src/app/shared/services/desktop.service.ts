@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {A2dClientService} from "angular2-desktop";
-import {Subscription} from "rxjs";
-import {PadsComponent} from "../../project/pads/pads.component";
 
 @Injectable({
   providedIn: 'root'

@@ -9,6 +9,8 @@ import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
 import {AudioPlugin} from "./AudioPlugin";
 import {PluginId} from "./PluginId";
 import {Notes} from "../../mip/Notes";
+import {EventEmitter} from "@angular/core";
+import {st} from "@angular/core/src/render3";
 
 
 export class MetronomePlugin extends AudioPlugin {
@@ -96,6 +98,8 @@ export class MetronomePlugin extends AudioPlugin {
 
 
   }
+
+
 
   getId(): string {
     return "metronome";

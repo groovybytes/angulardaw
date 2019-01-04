@@ -32,9 +32,13 @@ export class MidiparserComponent implements OnInit {
   ngOnInit() {
     this.projectsService.initializeNewProject("tmp", "tmp", ["piano_1"])
       .then(project => {
-        this.bootstrapper.initializeProject(project);
-        this.project = project;
-        this.daw.project.next(project);
+        this.bootstrapper.initializeProject(project)
+          .then(()=>{
+            this.project = project;
+            this.daw.project.next(project);
+          })
+          .catch(error=>console.error(error));
+
       });
   }
 

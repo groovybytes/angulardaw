@@ -27,12 +27,7 @@ export class SequencerFooterComponent implements OnInit {
 
 
   toggleClip(): void {
-    if (this.daw.project.getValue().session.running.getValue()){
-      this.patternsService.stop(this.project);
-    }
-    else{
-      this.patternsService.startPattern(this.pattern.id, this.project);
-    }
+    this.patternsService.togglePattern(this.pattern.id);
 
   }
 

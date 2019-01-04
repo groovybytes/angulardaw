@@ -29,7 +29,7 @@ import {DawEventCategory} from "../../model/daw/DawEventCategory";
   selector: 'event-table',
   templateUrl: './event-table.component.html',
   styleUrls: ['./event-table.component.scss']
-// changeDetection: ChangeDetectionStrategy.OnPush
+//changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -42,6 +42,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   allNotes: Array<string>;
   tick: number;
   private subscriptions: Array<Subscription> = [];
+  private patternSubscriptions: Array<Subscription> = [];
 
 
   constructor(@Inject("Notes") private notes: Notes,
@@ -60,6 +61,22 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
 
 
+    this.subscriptions.forEach(subscr => subscr.unsubscribe());
+    this.subscriptions.push(this.mouseEvents.click.subscribe(event => this.interaction.onClick(event, this.model)));
+    this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event => this.interaction.onDblClick(event, this.pattern, this.model)));
+    this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
+      this.interaction.onDrag(event, this.model, this.pattern)));
+    this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event, this.model, this.pattern)));
+    this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event, this.model)));
+    this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
+    this.subscriptions.push(
+      this.project.subscribe([DawEventCategory.TICK],(event => {
+        let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
+        let loopTicks =ticksPerBeat * this.pattern.length;
+        this.tick = event.data*ticksPerBeat % loopTicks;
+        this.cdr.markForCheck();
+      })));
+
   }
 
 
@@ -70,38 +87,21 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pattern) {
       if (this.pattern) {
-        this.subscriptions.forEach(subscr => subscr.unsubscribe());
-        this.subscriptions.push(this.mouseEvents.click.subscribe(event => this.interaction.onClick(event, this.model)));
-        this.subscriptions.push(this.mouseEvents.dblClick.subscribe(event => this.interaction.onDblClick(event, this.pattern, this.model)));
-        this.subscriptions.push(this.mouseEvents.drag.subscribe(event =>
-          this.interaction.onDrag(event, this.model, this.pattern)));
 
-        this.subscriptions.push(this.mouseEvents.mouseOver.subscribe(event => this.interaction.onMouseOver(event, this.model, this.pattern)));
-        this.subscriptions.push(this.mouseEvents.mouseOut.subscribe(event => this.interaction.onMouseOut(event, this.model)));
-        this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
+        this.patternSubscriptions.forEach(subscr=>subscr.unsubscribe());
 
-        /*this.project.events.subscribe(event => {
-          console.log("sadfsadf");
-        });
-*/
-
-        this.subscriptions.push(
-          this.project.subscribe([DawEventCategory.TICK],(event => {
-            let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
-            let loopTicks =ticksPerBeat * this.pattern.length;
-            this.tick = event.data*ticksPerBeat % loopTicks;
-            this.cdr.markForCheck();
-        })));
-
-        this.subscriptions.push(this.pattern.quantization.subscribe(nextValue => {
+        this.patternSubscriptions.push(this.pattern.quantization.subscribe(nextValue => {
           if (nextValue) this.updateCells();
         }));
-        this.subscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
+        this.patternSubscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
+          console.log(nextValue);
           this.sequencerService.addCellWithNote(nextValue, this.model.eventCells, this.model.specs, this.pattern);
           this.updateCells();
+          this.cdr.markForCheck();
         }));
-        this.subscriptions.push(this.pattern.noteUpdated.subscribe(nextValue => {
+        this.patternSubscriptions.push(this.pattern.noteUpdated.subscribe(nextValue => {
           this.updateCells();
+          this.cdr.markForCheck();
         }));
         this.updateCells();
       }
@@ -126,6 +126,7 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
 
     this.subscriptions.forEach(subscr => subscr.unsubscribe());
+    this.patternSubscriptions.forEach(subscr=>subscr.unsubscribe());
   }
 
 

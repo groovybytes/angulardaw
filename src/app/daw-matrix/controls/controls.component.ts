@@ -59,11 +59,11 @@ export class ControlsComponent implements OnInit {
   }
 
   toggleRecord(): void {
-    this.projectsService.toggleRecord();
+    //this.projectsService.toggleRecord();
   }
 
   switchMetronome(): void {
-    this.daw.project.getValue().metronomeEnabled.next(!this.daw.project.getValue().metronomeEnabled.getValue());
+    this.daw.project.getValue().settings.metronomeSettings.enabled.next(!this.daw.project.getValue().settings.metronomeSettings.enabled.getValue());
   }
 
   changeTempo(bpm: SimpleSliderModel): void {

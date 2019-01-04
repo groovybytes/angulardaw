@@ -61,33 +61,32 @@ export abstract class AudioPlugin implements PluginHost {
     return this.instanceId;
   }
 
-  play(note: string, time: number, length: number,cancelEvent:EventEmitter<void>): void {
+  play(note: string, time: number, length: number,stopEvent:EventEmitter<void>): void {
 
-
-    let detune = 0;
-    let node: AudioBufferSourceNode;
-    let sample = this.getSample(note);
-    if (sample.baseNote) detune =  this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
-    sample.trigger(time, length, null, detune)
-      .then(_node => {
-        node = _node;
-        //todo: remove event listener?
-        node.addEventListener("ended", () => {
-          node=null;
-          stopSubscription.unsubscribe();
-        });
-
-      });
-
-    let stopSubscription = cancelEvent.subscribe(() => {
-      console.log("cancelling");
+    let stopSubscription=stopEvent?stopEvent.subscribe(() => {
       stopSubscription.unsubscribe();
       if (node) {
         node.stop(0);
         node.disconnect();
         node=null;
       }
-    });
+    }):null;
+    let detune = 0;
+    let node: AudioBufferSourceNode;
+    let sample = this.getSample(note);
+    if (sample.baseNote) detune =  this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
+
+
+    sample.trigger(time, length, null, detune)
+      .then(_node => {
+        node = _node;
+        //todo: remove event listener?
+        node.addEventListener("ended", () => {
+          node=null;
+          if (stopSubscription) stopSubscription.unsubscribe();
+        });
+
+      });
 
   }
 

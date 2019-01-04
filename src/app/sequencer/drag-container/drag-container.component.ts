@@ -7,7 +7,8 @@ import {MouseTrapEvent} from "../mousetrap/MouseTrapEvent";
 @Component({
   selector: 'drag-container',
   templateUrl: './drag-container.component.html',
-  styleUrls: ['./drag-container.component.scss']
+  styleUrls: ['./drag-container.component.scss'],
+  providers:[MouseGesturesService]
 })
 export class DragContainerComponent implements OnInit{
  /* @ContentChild("et") eventTable:EventTableComponent;*/
@@ -27,6 +28,7 @@ export class DragContainerComponent implements OnInit{
     return this.dragContainerService.onMouseDown(cell,event);*/
   }
   @HostListener('document:mouseup', ['$event']) onMouseUp(event:MouseEvent) {
+
 
     return this.mouseGesturesService.mouseUp(event);
    /* let cell = this.dragContainerService.getEventCell(event,this.eventTable);

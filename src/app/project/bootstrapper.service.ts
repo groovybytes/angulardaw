@@ -3,11 +3,13 @@ import {ProjectsService} from "../shared/services/projects.service";
 import {ProjectsApi} from "../api/projects.api";
 import {Project} from "../model/daw/Project";
 import {DawInfo} from "../model/DawInfo";
-import {Thread} from "../model/daw/Thread";
-import {RecorderService} from "../shared/services/recorder.service";
 import {TransportSession} from "../model/daw/session/TransportSession";
 import {Notes} from "../model/mip/Notes";
 import {AudioContextService} from "../shared/services/audiocontext.service";
+import {Metronome} from "../model/daw/Metronome";
+import {filter} from "rxjs/operators";
+import {DawEventCategory} from "../model/daw/DawEventCategory";
+import {SamplesApi} from "../api/samples.api";
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +18,8 @@ export class BootstrapperService {
 
   constructor(
     private projectsService: ProjectsService,
-    private recorderService: RecorderService,
-    private audioContext:AudioContextService,
+    private audioContext: AudioContextService,
+    private samplesV2Service: SamplesApi,
     @Inject("daw") private daw: DawInfo,
     @Inject("Notes") private notes: Notes,
     private projectsApi: ProjectsApi) {
@@ -39,11 +41,12 @@ export class BootstrapperService {
             this.projectsApi.create(dto)
               .then(() => {
 
-                this.initializeProject(project);
-                project.ready = true;
-                this.daw.project.next(project);
-
-                resolve(project);
+                this.initializeProject(project)
+                  .then(() => {
+                    this.daw.project.next(project);
+                    project.ready = true;
+                    resolve(project);
+                  })
               })
               .catch(error => reject(error));
           })
@@ -53,11 +56,14 @@ export class BootstrapperService {
         this.projectsApi.getById(projectId).then(result => {
           this.projectsService.deSerializeProject(result.data)
             .then(project => {
-              this.initializeProject(project);
-              this.daw.project.next(project);
-              project.ready = true;
+              this.initializeProject(project)
+                .then(() => {
+                  this.daw.project.next(project);
+                  project.ready = true;
+                  resolve(project);
+                })
+                .catch(error => reject(error));
 
-              resolve(project);
 
             })
             .catch(error => reject(error));
@@ -68,15 +74,34 @@ export class BootstrapperService {
 
   }
 
-  initializeProject(project:Project):void{
-    this.recorderService.recordSession = project.recordSession;
-    project.session= new TransportSession(
-      project.events,
-      project.threads.find(t => t.id === "ticker"),
-      (note1, note2) => this.notes.getInterval(this.notes.getNote(note1), this.notes.getNote(note2)) * 100,
-      (targetId,note) => project.plugins.find(plugin=>plugin.getInstanceId()===targetId).getSample(note),
-      this.audioContext.getAudioContext(),
-      project.bpm);
+  initializeProject(project: Project): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
+
+      project.session = new TransportSession(
+        project.events,
+        project.recordSession,
+        project.threads.find(t => t.id === "ticker"),
+        (note1, note2) => this.notes.getInterval(this.notes.getNote(note1), this.notes.getNote(note2)) * 100,
+        (targetId, note) => project.plugins.find(plugin => plugin.getInstanceId() === targetId).getSample(note),
+        this.audioContext.getAudioContext(),
+        project.bpm);
+
+
+      this.samplesV2Service.getClickSamples().then(result => {
+        project.metronome = new Metronome(
+          this.audioContext.getAudioContext(),
+          project.events,
+          this.daw.destroy,
+          project.settings.metronomeSettings.enabled,
+          result.accentSample.buffer,
+          result.defaultSample.buffer);
+
+        resolve();
+      })
+
+
+    }));
+
   }
 
 

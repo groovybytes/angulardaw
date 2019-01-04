@@ -6,7 +6,6 @@ import * as _ from "lodash";
 import {NoteEvent} from "../mip/NoteEvent";
 import {AudioPlugin} from "./plugins/AudioPlugin";
 import {TriggerSpec} from "./TriggerSpec";
-import {ScriptEngine} from "../../shared/services/scriptengine.service";
 import {MusicMath} from "../utils/MusicMath";
 import {Thread} from "./Thread";
 import {ProjectSettings} from "./ProjectSettings";
@@ -37,7 +36,6 @@ export class Pattern {
     triggers: Array<TriggerSpec>,
     private ticker: Thread,
     private projectSettings: ProjectSettings,
-    private scriptEngine: ScriptEngine,
     transportContext: TransportContext,
     plugin: AudioPlugin,
     private _quantization: NoteLength

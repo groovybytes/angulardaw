@@ -1,7 +1,7 @@
 import {NoteLength} from "../mip/NoteLength";
+import {MetronomeSettings} from "./MetronomeSettings";
 
 export class ProjectSettings{
-  countIn:boolean=true;
-  countInBars:number=1;
+  metronomeSettings:MetronomeSettings=new MetronomeSettings();
   quantizationBase=NoteLength.SixtyFourth;
 }

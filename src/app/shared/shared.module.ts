@@ -11,15 +11,11 @@ import {Notes} from "../model/mip/Notes";
 import {UiModule} from "../ui/ui.module";
 import {CommonModule} from "@angular/common";
 import {AppHistoryService} from "./services/app-history.service";
-import {RouterService} from "./services/router.service";
 import {ScaleId} from "../model/mip/scales/ScaleId";
-import {ScriptEngine} from "./services/scriptengine.service";
-import {EventStreamService} from "./services/event-stream.service";
 import {MakeMusicService} from "./services/make-music.service";
-import {RecorderService} from "./services/recorder.service";
 import {MidiBridgeService} from "./services/midi-bridge.service";
 import {SchedulerService} from "./services/scheduler.service";
-import {SamplePlayerService} from "./services/sample-player.service";
+
 
 @NgModule({
   declarations: [],
@@ -35,15 +31,10 @@ import {SamplePlayerService} from "./services/sample-player.service";
     PatternsService,
     AudioNodesService,
     AudioContextService,
-    ScriptEngine,
     AppHistoryService,
-    RouterService,
-    EventStreamService,
     MakeMusicService,
-    RecorderService,
     MidiBridgeService,
-    SamplePlayerService,
-    SchedulerService,
+  SchedulerService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

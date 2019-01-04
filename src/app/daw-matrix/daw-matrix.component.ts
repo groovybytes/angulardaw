@@ -66,13 +66,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
 
   onCellBtnClicked(cell: Cell<Pattern>, event: MouseEvent): void {
 
-    if (this.daw.project.getValue().session.running.getValue()){
-      this.patternsService.stop(this.project);
-    }
-    else{
-      this.patternsService.startPattern(cell.data.id, this.project);
-    }
-
+    this.patternsService.togglePattern(cell.data.id);
   }
 
   onCellContainerClicked(cell: Cell<Pattern>): void {
@@ -80,7 +74,7 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   onRowHeaderClicked(row: number): void {
-    this.patternsService.toggleScene(row, this.project);
+    this.patternsService.toggleScene(row);
   }
 
   pluginSelected(plugin: PluginInfo): void {

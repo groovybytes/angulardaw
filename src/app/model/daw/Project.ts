@@ -18,11 +18,11 @@ import {PushSettings} from "../../push/model/PushSettings";
 import {KeyBindings} from "../../push/model/KeyBindings";
 import {RecordSession} from "./RecordSession";
 import {Thread} from "./Thread";
-import {ScriptEngine} from "../../shared/services/scriptengine.service";
 import {DawEvent} from "./DawEvent";
 import {TransportSession} from "./session/TransportSession";
 import {filter} from "rxjs/operators";
 import {DawEventCategory} from "./DawEventCategory";
+import {Metronome} from "./Metronome";
 
 
 export class Project {
@@ -30,7 +30,7 @@ export class Project {
   name: string = "default";
   events: EventEmitter<DawEvent<any>> = new EventEmitter();
   session: TransportSession;
-  metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  //metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
@@ -48,10 +48,11 @@ export class Project {
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
   plugins: Array<AudioPlugin> = [];
+  metronome: Metronome;
   activePlugin: BehaviorSubject<AudioPlugin> = new BehaviorSubject(null);
   colors = ["lightblue", "yellow", "red"];
-  recordSession: BehaviorSubject<RecordSession> = new BehaviorSubject(null);
-  metronomePattern: Pattern;
+  recordSession: RecordSession=new RecordSession();
+  //metronomePattern: Pattern;
   pushSettings: Array<PushSettings>;
   pushKeyBindings: KeyBindings;
   readonly deviceEvents2: EventEmitter<DeviceEvent<any>> = new EventEmitter();
@@ -59,23 +60,21 @@ export class Project {
   threads: Array<Thread> = [];
 
   constructor(
-    private scriptEngine: ScriptEngine,
     private audioContext: AudioContextService, transportSettings: TransportSettings) {
 
     this.transportSettings = transportSettings;
     this.transport = new Transport(
       this.audioContext.getAudioContext(),
-      scriptEngine,
       transportSettings);
-    this.metronomeEnabled.subscribe(isEnabled => {
+    this.settings.metronomeSettings.enabled.subscribe(isEnabled => {
       if (isEnabled) this.addChannel("_metronome");
       else this.removeChannel("_metronome");
     })
 
   }
 
-  subscribe(categories:Array<DawEventCategory>,callback:(event:DawEvent<any>)=>void): Subscription {
-    return this.events.pipe(filter((event=>categories.indexOf(event.category)>=0))).subscribe(event=>callback(event));
+  subscribe(categories: Array<DawEventCategory>, callback: (event: DawEvent<any>) => void): Subscription {
+    return this.events.pipe(filter((event => categories.indexOf(event.category) >= 0))).subscribe(event => callback(event));
   }
 
   createTransport(): void {
@@ -93,7 +92,7 @@ export class Project {
 
   setChannels(channels: Array<string>): void {
     this.transport.channels.length = 0;
-    channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []).forEach(channel =>
+    channels.concat(this.settings.metronomeSettings.enabled.getValue() ? ["_metronome"] : []).forEach(channel =>
       this.addChannel(channel));
     //this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
   }

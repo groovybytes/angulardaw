@@ -11,6 +11,7 @@ import {DawEventCategory} from "../DawEventCategory";
 export class Scheduler {
 
   playEvent: EventEmitter<{ note: string, time: number, length: number,target:string }> = new EventEmitter();
+  startEvent: EventEmitter<number> = new EventEmitter();
   private running: boolean = false;
 
   private subscriptions: Array<Subscription> = [];
@@ -22,7 +23,7 @@ export class Scheduler {
   }
 
 
-  run(events: Array<{event:NoteEvent,target:string}>, loop?: boolean, loopLength?: number): void {
+  run(events: Array<{event:NoteEvent,target:string,offset:number}>, loop?: boolean, loopLength?: number): void {
 
     if (this.running) return;
 
@@ -44,13 +45,18 @@ export class Scheduler {
         let frameStart = this.audioContext.currentTime;
         let frameEnd = frameStart + lookAhead;
         let inFrame = (time) => time >= frameStart && time <= frameEnd;
-        let getTriggerTime = (event: NoteEvent) => (startTime ? startTime : frameStart) + event.time / 1000 * bpmFactor + (loopLength * bpmFactor * currentLoop);
+       // let getTriggerTime = (event: NoteEvent) => (startTime ? startTime : frameStart) + event.time / 1000 * bpmFactor + (loopLength * bpmFactor * currentLoop);
+        let getTriggerTime = (event: NoteEvent) => MusicMath.getNoteEventTriggerTime(
+          startTime?startTime:frameStart,event.time,loopLength,currentLoop,this.bpm.getValue());
 
         let bpmFactor = 120 / this.bpm.getValue();
         let exit = false;
-        while (!exit && inFrame(getTriggerTime(events[position].event))) {
-          if (!startTime) startTime = this.audioContext.currentTime;
-          let triggerTime = getTriggerTime(events[position].event);
+        while (!exit && inFrame(getTriggerTime(events[position].event)+events[position].offset)) {
+          if (!startTime) {
+            startTime = this.audioContext.currentTime;
+            this.startEvent.emit(startTime);
+          }
+          let triggerTime = getTriggerTime(events[position].event)+events[position].offset;
           this.playEvent.emit({
             note: events[position].event.note,
             time: triggerTime,
@@ -67,6 +73,13 @@ export class Scheduler {
         }
 
       }
+      else {
+        //this happens if there are no events
+        if (!startTime){
+          startTime = this.audioContext.currentTime;
+          this.startEvent.emit(startTime);
+        }
+      }
     };
 
     this.subscriptions.push(this.ticker.error.subscribe(error => console.error(error)));
@@ -75,6 +88,7 @@ export class Scheduler {
 
         nextTick(msg.data.value);
         this.events.emit(new DawEvent(DawEventCategory.TICK, msg.data.value));
+
       }
       if (msg.data.hint === "start") {
 
@@ -91,6 +105,7 @@ export class Scheduler {
     this.ticker.post({command: "start"});
 
   }
+
 
   private nextTick(): void {
 

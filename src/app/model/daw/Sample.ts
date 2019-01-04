@@ -9,8 +9,9 @@ export class Sample  {
   private destination: AudioNode;
   private gainNode: GainNode;
   private node: AudioBufferSourceNode;
+  buffer:AudioBuffer;
 
-  constructor(id: string, private buffer: AudioBuffer, private context: AudioContext) {
+  constructor(id: string, buffer: AudioBuffer, private context: AudioContext) {
     this.id = id;
     this.buffer = buffer;
 
@@ -45,6 +46,7 @@ export class Sample  {
 
 
     if (detune) sourceNode.detune.value = detune;
+
     sourceNode.start(time, 0, length);
     //todo: remove event listener on destroy?
     sourceNode.addEventListener("ended", () => {

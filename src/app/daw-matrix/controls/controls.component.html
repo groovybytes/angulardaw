@@ -1,6 +1,6 @@
 <ul class="nav">
   <li>
-    <a [ngClass]="{'active':daw.project.getValue()?.metronomeEnabled | async}"
+    <a [ngClass]="{'active':daw.project.getValue()?.settings.metronomeSettings.enabled | async}"
        href [routerLink]="" (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
     </a>
   </li>

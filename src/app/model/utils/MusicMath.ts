@@ -1,6 +1,7 @@
 import {TimeSignature} from "../mip/TimeSignature";
 import {NoteLength} from "../mip/NoteLength";
 import {s} from "@angular/core/src/render3";
+import {NoteEvent} from "../mip/NoteEvent";
 
 export class MusicMath {
 
@@ -25,9 +26,17 @@ export class MusicMath {
     return Math.pow(quantization * 4, -1);
   }
 
-  public static getBeatsForDuration(bpm:number,duration:number): number {
-    return Math.ceil(duration/(MusicMath.getBeatTime(bpm)/1000));
+  public static getBeatsForDuration(bpm: number, duration: number): number {
+    return Math.ceil(duration / (MusicMath.getBeatTime(bpm) / 1000));
   }
+
+  public static getNoteEventTriggerTime(startTime: number, eventTime: number, loopLength: number, currentLoop: number, bpm: number): number {
+    let bpmFactor = 120 / bpm;
+    return startTime + eventTime / 1000 * bpmFactor + (loopLength * bpmFactor * currentLoop);
+  }
+
+
+
 
   public static getTick(tick: number, baseQuantization: NoteLength, quantization: NoteLength, loopTicks): number {
     let i = 1 / baseQuantization;
@@ -88,12 +97,12 @@ export class MusicMath {
   }
 
   public static getLoopLength(beats: number, bpm: number): number {
-    return beats * MusicMath.getBeatTime(bpm)/1000;
+    return beats * MusicMath.getBeatTime(bpm) / 1000;
   }
 
-  public static getLoopTime(audioTimeStart: number, audioTimeCurrent: number, loopLength: number): number {
+ /* public static getLoopTime(audioTimeStart: number, audioTimeCurrent: number, loopLength: number,bpm:number): number {
     return (audioTimeCurrent - audioTimeStart) % loopLength;
-  }
+  }*/
 
 
 }

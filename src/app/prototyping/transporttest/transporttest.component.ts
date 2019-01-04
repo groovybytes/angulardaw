@@ -34,29 +34,34 @@ export class TransporttestComponent implements OnInit {
 
     this.projectsService.initializeNewProject("tmp", "tmp", ["drumkit1"])
       .then(project => {
-        this.bootstrapper.initializeProject(project);
-        this.project = project;
-        this.daw.project.next(project);
+        this.bootstrapper.initializeProject(project)
+          .then(()=>{
+            this.project = project;
+            this.daw.project.next(project);
 
-        let track = project.tracks.find(t => t.category === TrackCategory.DEFAULT);
-        this.patternService
-          .createPatternFromUrl(project, track.id, "patterns/drums/pattern1.json")
-          .then(pattern=>{
+            let track = project.tracks.find(t => t.category === TrackCategory.DEFAULT);
+            this.patternService
+              .createPatternFromUrl(project, track.id, "patterns/drums/pattern1.json")
+              .then(pattern=>{
 
-            this.pattern=pattern;
-            this.session = this.project.session;
+                this.pattern=pattern;
+                this.session = this.project.session;
+              })
+              .catch(error=>console.error(error));
           })
           .catch(error=>console.error(error));
+
 
       })
       .catch(error=>console.error(error));
   }
 
   start(): void {
+
     this.session.start(
       [this.pattern],
       true,
-      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().bpm.getValue()));
+      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().bpm.getValue()),this.daw.project.getValue().settings.metronomeSettings);
   }
 
   stop(): void {

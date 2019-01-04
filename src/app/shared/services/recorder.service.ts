@@ -1,3 +1,4 @@
+/*
 import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {NoteEvent} from "../../model/mip/NoteEvent";
 import {Pattern} from "../../model/daw/Pattern";
@@ -18,10 +19,10 @@ export class RecorderService {
   private recordingEvents: Array<{ note: NoteEvent, sourceId: string, updater: any }> = [];
 
   constructor() {
- /*   this.subscriptions.push(daw.destroy.subscribe(()=>{
+ /!*   this.subscriptions.push(daw.destroy.subscribe(()=>{
       this.subscriptions.forEach(subscription=>subscription.unsubscribe());
     }));
-*/
+*!/
   }
 
   recordNoteStart(event: NoteOnEvent, sourceId: string): void {
@@ -64,3 +65,4 @@ export class RecorderService {
 }
 
 
+*/

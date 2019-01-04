@@ -25,11 +25,8 @@ import {ProjectsApi} from "../../api/projects.api";
 import {SamplesApi} from "../../api/samples.api";
 import {RecordSession} from "../../model/daw/RecordSession";
 import {DawInfo} from "../../model/DawInfo";
-import {ScriptEngine} from "./scriptengine.service";
 import {Lang} from "../../model/utils/Lang";
-import {EventStreamService} from "./event-stream.service";
 import {Thread} from "../../model/daw/Thread";
-import {RecorderService} from "./recorder.service";
 import {Notes} from "../../model/mip/Notes";
 
 
@@ -45,13 +42,10 @@ export class ProjectsService {
     private trackService: TracksService,
     private config: AppConfiguration,
     private audioNodesService: AudioNodesService,
-    private recorderService: RecorderService,
     private samplesService: SamplesApi,
     @Inject("Notes") private notes: Notes,
-    private stream: EventStreamService,
     @Inject("daw") private daw: DawInfo,
     private patternsService: PatternsService,
-    private scriptEngine: ScriptEngine,
     private pluginsService: PluginsService) {
 
   }
@@ -68,7 +62,7 @@ export class ProjectsService {
       transportSettings.loopEnd = 0;
       transportSettings.loopStart = 0;
 
-      let project = new Project(this.scriptEngine, this.audioContext, transportSettings);
+      let project = new Project(this.audioContext, transportSettings);
       project.threads=this.createThreads();
       project.patterns = [];
       project.id = id;
@@ -158,12 +152,11 @@ export class ProjectsService {
     let transportContext = project.createTransportContext();
     transportContext.settings.loopEnd = project.transportSettings.global.beatUnit;
     let ticker = project.threads.find(t => t.id === "ticker");
-    let pattern = project.metronomePattern = new Pattern(
+    let pattern = project.settings.metronomeSettings.pattern = new Pattern(
       "_metronome",
       [],
       ticker,
       project.settings,
-      this.scriptEngine,
       transportContext,
       track.getMasterPlugin(),
       NoteLength.Quarter);
@@ -200,7 +193,7 @@ export class ProjectsService {
     projectDto.name = project.name;
     projectDto.activePlugin = project.activePlugin.getValue() ? project.activePlugin.getValue().getInstanceId() : null;
     projectDto.transportSettings = project.transportSettings;
-    projectDto.metronomeEnabled = project.metronomeEnabled.getValue();
+    projectDto.metronomeEnabled = project.settings.metronomeSettings.enabled.getValue();
     projectDto.selectedPattern = project.selectedPattern.getValue() ? project.selectedPattern.getValue().id : null;
     projectDto.selectedTrack = project.selectedTrack.getValue() ? project.selectedTrack.getValue().id : null;
     projectDto.tracks = [];
@@ -260,11 +253,11 @@ export class ProjectsService {
   deSerializeProject(dto: ProjectDto): Promise<Project> {
 
     return new Promise<Project>((resolve, reject) => {
-      let project = new Project(this.scriptEngine, this.audioContext, dto.transportSettings);
+      let project = new Project(this.audioContext, dto.transportSettings);
       project.threads=this.createThreads();
       project.id = dto.id;
       project.name = dto.name;
-      project.metronomeEnabled.next(dto.metronomeEnabled);
+      project.settings.metronomeSettings.enabled.next(dto.metronomeEnabled);
       project.nodes = this.audioNodesService.convertNodesFromJson(dto.nodes, dto.routes);
       project.pushSettings = dto.pushSettings;
       project.pushKeyBindings = dto.pushKeyBindings;
@@ -309,7 +302,7 @@ export class ProjectsService {
                 project.activePlugin.next(plugin);
               }
               let metronomeTrack = project.tracks.find(track => track.category===TrackCategory.METRONOME);
-              project.metronomePattern = this.createMetronomePattern(project, metronomeTrack);
+              project.settings.metronomeSettings.pattern = this.createMetronomePattern(project, metronomeTrack);
 
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);
@@ -370,19 +363,6 @@ export class ProjectsService {
 
   }
 
-  toggleRecord(): void {
-    let project = this.daw.project.getValue();
-
-    if (project.recordSession.getValue() != null) {
-      project.recordSession.next(null);
-      this.stream.stop();
-    } else if (project.selectedPattern.getValue()) {
-      project.recordSession.next(new RecordSession(project.selectedPattern.getValue()));
-      this.stream.start();
-
-    }
-
-  }
 
   private createThreads(): Array<Thread> {
     return [new Thread("ticker", "assets/js/tick_worker.js")];
