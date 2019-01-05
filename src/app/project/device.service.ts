@@ -39,7 +39,7 @@ export class DeviceService {
     //todo:unsubscribe
     if (!project.pushSettings) {
       let settingsCollection = project.pushSettings = [];
-      let settings = new PushSettings(Lang.guid(), "default");
+      let settings = new PushSettings(Lang.guid(), "default","default");
       settingsCollection.push(settings);
       settings.columns = 7;
       settings.rows = 3;
@@ -47,7 +47,7 @@ export class DeviceService {
       settings.scale = ScaleId.IONIAN;
       settings.keyBindings = KeyBindings.default;
 
-      settings = new PushSettings(Lang.guid(), "percussion");
+      settings = new PushSettings(Lang.guid(), "percussion","percussion");
       settingsCollection.push(settings);
       settings.columns = 5;
       settings.rows = 3;

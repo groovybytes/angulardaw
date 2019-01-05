@@ -44,8 +44,7 @@ export class TopControlsComponent implements OnInit {
 
   setSettings(id: string): void {
     let settings = this.push.settingsCollection.find(s => s.id === id);
-    this.push.settings = settings;
-    this.pushService.setPadCollection(this.push.settings);
+    this.pushService.changeSettings(settings);
   }
 
   toggleRecord(): void {
@@ -53,8 +52,9 @@ export class TopControlsComponent implements OnInit {
   }
 
 
-  nextPlugin(delta):void{
-   this.pushService.nextPlugin(delta);
+  nextPlugin(delta): void {
+
+    this.pushService.nextPlugin(this.pushService.getPluginWithWithIndex(delta));
 
   }
 

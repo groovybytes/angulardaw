@@ -1,7 +1,7 @@
 import {Component, HostBinding, Input, OnInit} from '@angular/core';
-import {Project} from "../../model/daw/Project";
 import {Pattern} from "../../model/daw/Pattern";
-import {PatternsService} from "../../shared/services/patterns.service";
+import {DawMatrixService} from "../daw-matrix.service";
+import {Cell} from "../../model/daw/matrix/Cell";
 
 
 @Component({
@@ -11,22 +11,29 @@ import {PatternsService} from "../../shared/services/patterns.service";
 })
 export class BodyCellMenuComponent implements OnInit {
 
-  @Input() project: Project;
-  @Input() pattern: Pattern;
+  @Input() cell: Cell<Pattern>;
   @Input() color: string;
 
- /* @HostBinding('style.left') left: string="100px";*/
+   @HostBinding('style.display')
+   get display() {
+     return this.cell.patternMenu?"":"none";
+   }
 
 
-  constructor(private patternsService: PatternsService) {
+  constructor(private dawMatrixService: DawMatrixService) {
   }
 
   ngOnInit() {
   }
 
+
+/*  removeRow(row: number): void {
+    this.dawMatrixService.removePatternsFromRow(this.project, row);
+  }*/
+
   remove(): void {
-    /*this.patternsService.removePattern(this.project, this.cell.data.id);
-    this.cell.data=null;*/
+    this.dawMatrixService.removePattern(this.cell.patternMenu.id);
+    this.cell.patternMenu=null;
   }
 }
 

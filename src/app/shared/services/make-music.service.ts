@@ -40,19 +40,6 @@ export class MakeMusicService {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  /*toggleRecord(): void {
-    let project = this.daw.project.getValue();
-
-    if (project.recordSession.hot.getValue()) {
-      this.patternsService.stop(project);
-      project.recordSession.hot.next(false);
-    } else if (project.selectedPattern.getValue()) {
-      project.recordSession.pattern=project.selectedPattern.getValue();
-      this.patternsService.startPattern(project.selectedPattern.getValue().id,project);
-
-    }
-  }*/
-
 
   startPlay(note: string): void {
 
@@ -106,21 +93,6 @@ export class MakeMusicService {
     pattern.noteUpdated.emit(noteEvent);
   }
 
-  /* recordNoteEnd(session: RecordSession,event: NoteOffEvent, sourceId: string): void {
-
-
-       let index = this.recordingEvents
-         .findIndex(_event =>
-           _event.note.note === event.note && _event.sourceId === sourceId);
-       if (index >= 0) {
-         this.recordingEvents[index].note.length = this.recordTime * 1000 - this.recordingEvents[index].note.time;
-         session.pattern.noteUpdated.emit(this.recordingEvents[index].note);
-         clearInterval(this.recordingEvents[index].updater);
-         this.recordingEvents.splice(index, 1);
-       }
-
-
-   }*/
 
 }
 

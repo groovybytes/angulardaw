@@ -50,6 +50,7 @@ export abstract class AudioPlugin implements PluginHost {
   abstract getInfo(): PluginInfo;
 
   abstract load(): Promise<void>;
+  abstract getPushSettingsHint(): string;
 
   abstract getInstrumentCategory(): InstrumentCategory;
 
@@ -75,7 +76,6 @@ export abstract class AudioPlugin implements PluginHost {
     let node: AudioBufferSourceNode;
     let sample = this.getSample(note);
     if (sample.baseNote) detune =  this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
-
 
     sample.trigger(time, length, null, detune)
       .then(_node => {

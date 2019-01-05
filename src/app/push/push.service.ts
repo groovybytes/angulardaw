@@ -7,6 +7,7 @@ import {KeyBindings} from "./model/KeyBindings";
 import {PushSettings} from "./model/PushSettings";
 import {ScaleId} from "../model/mip/scales/ScaleId";
 import {EventCategory} from "../model/daw/devices/EventCategory";
+import {PluginHost} from "../model/daw/plugins/PluginHost";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,8 @@ export class PushService {
   }
 
   setPadCollection(settings: PushSettings): void {
+
+    console.log("settings now " + settings.hint);
     this.push.pads.length = 0;
 
     let notes = this.noteInfo;
@@ -70,7 +73,7 @@ export class PushService {
     this.setPadCollection(this.push.settings);
   }
 
-  nextPlugin(deltaIndex: number): void {
+  getPluginWithWithIndex(deltaIndex: number): PluginHost{
     let nextIndex = 0;
     let plugins = this.push.availablePlugins.filter(plugin=>plugin.getInfo().category!=="system");
     if (plugins.length > 0) {
@@ -79,13 +82,21 @@ export class PushService {
         let index = plugins.findIndex(plugin => plugin.getInstanceId() === currentPlugin.getInstanceId());
         nextIndex = (index + deltaIndex) % plugins.length;
       }
-
-      this.push.plugin.next(plugins[nextIndex]);
-
-      this.push.publish(EventCategory.SET_PLUGIN, this.push.plugin.getValue().getInstanceId());
     }
 
+    return plugins[nextIndex];
+  }
 
+  nextPlugin(plugin: PluginHost): void {
+      this.push.plugin.next(plugin);
+      let settings = this.push.settingsCollection.find(setting=>setting.hint===plugin.getPushSettingsHint());
+      this.changeSettings(settings);
+      this.push.publish(EventCategory.SET_PLUGIN, this.push.plugin.getValue().getInstanceId());
+
+  }
+  changeSettings(settings: PushSettings): void {
+    this.push.settings = settings;
+    this.setPadCollection(this.push.settings);
   }
 
 }

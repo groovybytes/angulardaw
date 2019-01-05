@@ -4,9 +4,10 @@ import {ScaleId} from "../../model/mip/scales/ScaleId";
 export class PushSettings {
 
 
-  constructor(id: string, title: string) {
+  constructor(id: string, title: string,hint:string) {
     this.id = id;
     this.title = title;
+    this.hint = hint;
   }
 
   baseNote: string;
@@ -17,5 +18,6 @@ export class PushSettings {
   rows:number;
   showKeyBindings:boolean=false;
   id:string;
+  hint:string;
   title:string;
 }

@@ -1,4 +1,4 @@
-import {NoteEvent} from "../../mip/NoteEvent";
+
 import {MusicMath} from "../../utils/MusicMath";
 import {NoteLength} from "../../mip/NoteLength";
 import {BehaviorSubject, Subscription} from "rxjs";
@@ -6,13 +6,18 @@ import {Thread} from "../Thread";
 import {EventEmitter} from "@angular/core";
 import {DawEvent} from "../DawEvent";
 import {DawEventCategory} from "../DawEventCategory";
+import {SchedulerEvent} from "./SchedulerEvent";
+import * as _ from "lodash";
 
 
 export class Scheduler {
 
-  playEvent: EventEmitter<{ note: string, time: number, length: number,target:string }> = new EventEmitter();
+  playEvent: EventEmitter<SchedulerEvent> = new EventEmitter();
   startEvent: EventEmitter<number> = new EventEmitter();
   private running: boolean = false;
+  private startTime: number;
+  private currentLoop: number=0;
+  private schedulerEvents:Array<SchedulerEvent>;
 
   private subscriptions: Array<Subscription> = [];
 
@@ -23,15 +28,16 @@ export class Scheduler {
   }
 
 
-  run(events: Array<{event:NoteEvent,target:string,offset:number}>, loop?: boolean, loopLength?: number): void {
+
+  run(events: Array<SchedulerEvent>, loop?: boolean, loopLength?: number): void {
+
 
     if (this.running) return;
-
+    this.schedulerEvents=events;
     this.running = true;
     let position = 0;
     let lookAhead = 2;//seconds
-    let startTime;
-    let currentLoop = 0;
+
 
     this.ticker.post(
       {
@@ -40,34 +46,40 @@ export class Scheduler {
       });
 
     let nextTick = (tick: number) => {
+
+   /*   if (loop && this.startTime) {
+        currentLoop=Math.floor((this.audioContext.currentTime-this.startTime) / loopLength);
+      }
+*/
+
       if (position < events.length) {
 
         let frameStart = this.audioContext.currentTime;
         let frameEnd = frameStart + lookAhead;
         let inFrame = (time) => time >= frameStart && time <= frameEnd;
-       // let getTriggerTime = (event: NoteEvent) => (startTime ? startTime : frameStart) + event.time / 1000 * bpmFactor + (loopLength * bpmFactor * currentLoop);
-        let getTriggerTime = (event: NoteEvent) => MusicMath.getNoteEventTriggerTime(
-          startTime?startTime:frameStart,event.time,loopLength,currentLoop,this.bpm.getValue());
+
+        let getTriggerTime = (time: number) => MusicMath.getNoteEventTriggerTime(
+          this.startTime?this.startTime:frameStart,time,loopLength,this.currentLoop,this.bpm.getValue());
 
         let bpmFactor = 120 / this.bpm.getValue();
         let exit = false;
-        while (!exit && inFrame(getTriggerTime(events[position].event)+events[position].offset)) {
-          if (!startTime) {
-            startTime = this.audioContext.currentTime;
-            this.startEvent.emit(startTime);
+        
+        while (!exit && inFrame(getTriggerTime(events[position].time)+events[position].offset)) {
+
+          if (!this.startTime) {
+            this.startTime = this.audioContext.currentTime;
+            this.startEvent.emit(this.startTime);
           }
-          let triggerTime = getTriggerTime(events[position].event)+events[position].offset;
-          this.playEvent.emit({
-            note: events[position].event.note,
-            time: triggerTime,
-            length: events[position].event.length * bpmFactor,
-            target:events[position].target
-          });
+          let triggerTime = getTriggerTime(events[position].time)+events[position].offset;
+          this.playEvent.emit(new SchedulerEvent(events[position].note,events[position].id,
+            triggerTime,
+            events[position].target,0,events[position].length * bpmFactor));
+
           position++;
           if (position === events.length) {
             if (loop) {
               position = 0;
-              currentLoop += 1;
+              this.currentLoop++;
             } else exit = true;
           }
         }
@@ -75,9 +87,9 @@ export class Scheduler {
       }
       else {
         //this happens if there are no events
-        if (!startTime){
-          startTime = this.audioContext.currentTime;
-          this.startEvent.emit(startTime);
+        if (!this.startTime){
+          this.startTime = this.audioContext.currentTime;
+          this.startEvent.emit(this.startTime);
         }
       }
     };
@@ -97,7 +109,7 @@ export class Scheduler {
       }
       if (msg.data.hint === "stop") {
 
-        startTime=null;
+        this.startTime=null;
 
       }
     }));
@@ -106,12 +118,22 @@ export class Scheduler {
 
   }
 
+  addEvent(event:SchedulerEvent,loopLength:number):void{
+    let sortedIndex = _.sortedIndexBy(this.schedulerEvents, {"time": event.time}, (event) => event.time);
+    if (this.schedulerEvents.length===0){
+      this.currentLoop=Math.floor((this.audioContext.currentTime - this.startTime)/ loopLength)+1;
+    }
+    this.schedulerEvents.splice(sortedIndex, 0,event);
 
-  private nextTick(): void {
-
+  }
+  updateEventLength(eventId:string,length:number):void{
+    let event = this.schedulerEvents.find(event=>event.id===eventId);
+    if (event) event.length=length;
+    else console.warn("event not found");
   }
 
   stop(): void {
+    this.currentLoop=0;
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.ticker.post({command: "stop"});
     this.running = false;

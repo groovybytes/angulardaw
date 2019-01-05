@@ -14,7 +14,7 @@ import {Lang} from "../../model/utils/Lang";
 export class MatrixService {
 
   constructor(
-    private trackService:TracksService
+    private trackService: TracksService
   ) {
 
   }
@@ -40,15 +40,14 @@ export class MatrixService {
         rowHeaderCell.data = Lang.guid();
         matrix.rowHeader.push(rowHeaderCell);
       }
-      for (let i = 0; i <defaultNumberOfRows; i++) {
-        let newRow=[];
+      for (let i = 0; i < defaultNumberOfRows; i++) {
+        let newRow = [];
         matrix.body.push(newRow);
         newRow.push(new Cell<Pattern>(i, 0));
       }
 
 
-    }
-    else{
+    } else {
       for (let i = 0; i < matrix.body.length; i++) {
         let cell = new Cell<Pattern>(i, columnIndex);
         matrix.body[i].push(cell);
@@ -64,7 +63,7 @@ export class MatrixService {
     let rowIndex = matrix.rowHeader.length;
 
     let rowHeaderCell = new Cell<string>(rowIndex, -1);
-    rowHeaderCell.animation="1";
+    rowHeaderCell.animation = "1";
     matrix.rowHeader.push(rowHeaderCell);
 
     let newBodyRow = [];
@@ -78,16 +77,16 @@ export class MatrixService {
 
   }
 
-  removeRow(matrix: Matrix,row:number): void {
-    matrix.rowHeader[row].animation="2";
-    setTimeout(()=>{
-      matrix.rowHeader.splice(row,1);
+  removeRow(matrix: Matrix, row: number): void {
+    matrix.rowHeader[row].animation = "2";
+    setTimeout(() => {
+      matrix.rowHeader.splice(row, 1);
 
       //rowHeaderCell.animation="1";
-      matrix.body.forEach((_row,index)=>{
-        if (index === row) matrix.body.splice(index,1);
+      matrix.body.forEach((_row, index) => {
+        if (index === row) matrix.body.splice(index, 1);
       });
-    },500)
+    }, 500)
 
 
   }
@@ -98,8 +97,8 @@ export class MatrixService {
       let matrix = project.matrix;
       let newColumnIndex = this.addColumn(matrix, 4);
 
-      this.trackService.addTrackWithPlugin(plugin,project)
-        .then(track=>{
+      this.trackService.addTrackWithPlugin(plugin, project)
+        .then(track => {
           let header = matrix.header.find(cell => cell.column === newColumnIndex);
           header.data = track;
           header.trackId = track.id;
@@ -108,7 +107,7 @@ export class MatrixService {
           });
           resolve(track);
         })
-        .catch(error=>reject(error));
+        .catch(error => reject(error));
 
     })
   }

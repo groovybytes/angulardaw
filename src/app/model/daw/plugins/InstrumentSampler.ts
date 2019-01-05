@@ -157,5 +157,9 @@ export class InstrumentSampler extends AudioPlugin {
     this.samples.forEach(sample => sample.stop());
   }*/
 
+  getPushSettingsHint(): string {
+    return "default";
+  }
+
 
 }

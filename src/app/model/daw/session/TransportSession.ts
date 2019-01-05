@@ -11,6 +11,8 @@ import {MetronomeSettings} from "../MetronomeSettings";
 import {filter} from "rxjs/operators";
 import {MusicMath} from "../../utils/MusicMath";
 import {RecordSession} from "../RecordSession";
+import {SchedulerEvent} from "./SchedulerEvent";
+import {NoteEvent} from "../../mip/NoteEvent";
 
 export class TransportSession {
 
@@ -52,37 +54,36 @@ export class TransportSession {
 
       let countInOffset = 0;//MusicMath.getLoopLength(metronomeSettings.pattern.length,this.bpm.getValue());
       this.playSubscription = this.scheduler.playEvent
-        .subscribe((event: { note: string, time: number, length: number, target: string }) => {
+        .subscribe((event: SchedulerEvent) => {
           patterns.find(pattern => pattern.id === event.target).plugin.play(event.note, event.time, event.length, this.stopEvent);
           this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_NOTE_QUEUED, event));
         });
 
-      let events = [];
+      let events: Array<SchedulerEvent> = [];
       patterns.forEach(pattern => {
-        pattern.events.forEach(event => {
-          events.push({event: event, target: pattern.id, offset: countInOffset});
-        })
-      });
+        pattern.events.forEach(event =>{
+          events.push(new SchedulerEvent(event.note, event.id,event.time, pattern.id, countInOffset,event.length));
+        });
 
-      /* if (metronomeSettings.enabled.getValue()===true){
-         metronomeSettings.pattern.events.forEach(event=>{
-           events.push({event:event,target:metronomeSettings.pattern.id,offset:0});
-         })
-       }*/
+        pattern.noteInserted.subscribe((event:NoteEvent) => {
+          this.scheduler.addEvent(new SchedulerEvent(event.note,event.id, event.time, pattern.id, countInOffset,event.length),pattern.getLength());
+        });
+        pattern.noteUpdated.subscribe((event:NoteEvent) => {
 
-      //patterns.push(metronomeSettings.pattern);
+          this.scheduler.updateEventLength(event.id,event.length);
+        });
+        if (this.recordSession.state.getValue() === 1) {
+          this.startEventSubscription = this.scheduler.startEvent.subscribe((startTime) => {
+            this.recordSession.startTime = startTime;
+            this.recordSession.state.next(2);
+          })
+        }
+        events = _.sortBy(events, event => event.time);
+        this.scheduler.run(events, loop, loopLength);
 
-      if (this.recordSession.state.getValue() === 1) {
-        this.startEventSubscription = this.scheduler.startEvent.subscribe((startTime) => {
-          this.recordSession.startTime = startTime;
-          this.recordSession.state.next(2);
-        })
-      }
-      events = _.sortBy(events, event => event.event.time);
-      this.scheduler.run(events, loop, loopLength);
+      })
 
     }
-
   }
 
   stop(): void {
@@ -96,32 +97,6 @@ export class TransportSession {
     if (this.recordSession.state.getValue() === 2) this.recordSession.state.next(0);
     this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_STOP));
   }
-
-  /*private play(note: string, time: number, length: number,targetId:string): void {
-
-
-    let detune = 0;
-    let node: AudioBufferSourceNode;
-    let sample = this.sampleGetter(targetId,note);
-    if (sample.baseNote) detune = this.getNoteInterval(sample.baseNote.id, note);
-    sample.trigger(time, length, null, detune)
-      .then(_node => {
-        node = _node;
-        node.addEventListener("ended", () => {
-          node=null;
-        });
-      });
-
-    let stopSubscription = this.stopEvent.subscribe(() => {
-      stopSubscription.unsubscribe();
-      if (node) {
-        node.stop(0);
-        node.disconnect();
-        node=null;
-      }
-    });
-
-  }*/
 
 
 }

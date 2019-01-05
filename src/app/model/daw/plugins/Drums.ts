@@ -109,5 +109,9 @@ export class Drums extends AudioPlugin {
   stopPlay(): void {
   }*/
 
+  getPushSettingsHint(): string {
+    return "percussion";
+  }
+
 
 }

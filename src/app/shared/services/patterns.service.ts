@@ -12,6 +12,7 @@ import {AppConfiguration} from "../../app.configuration";
 import {Cell} from "../../model/daw/matrix/Cell";
 import {bootloader} from "@angularclass/hmr";
 import {DawInfo} from "../../model/DawInfo";
+import {Matrix} from "../../model/daw/matrix/Matrix";
 
 @Injectable()
 export class PatternsService {
@@ -74,11 +75,6 @@ export class PatternsService {
 
   }
 
-  removePattern(project: Project, patternId: string): void {
-    let selectedPattern = project.selectedPattern.getValue();
-    _.remove(project.patterns, pattern => pattern.id === patternId);
-    if (selectedPattern && selectedPattern.id === patternId) project.selectedPattern.next(null);
-  }
 
   copyPattern(pattern: Pattern, trackId: string, project: Project): Pattern {
     let track = project.tracks.find(track => track.id === trackId);

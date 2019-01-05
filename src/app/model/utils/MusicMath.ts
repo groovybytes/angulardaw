@@ -30,7 +30,19 @@ export class MusicMath {
     return Math.ceil(duration / (MusicMath.getBeatTime(bpm) / 1000));
   }
 
-  public static getNoteEventTriggerTime(startTime: number, eventTime: number, loopLength: number, currentLoop: number, bpm: number): number {
+  /*public static getNoteEventTriggerTime(currentTime: number,
+                                        startTime:number,
+                                        eventTime: number,
+                                        loopLength: number,
+                                        bpm: number): number {
+
+
+    return currentTime+(Math.floor((currentTime-startTime) / loopLength)+eventTime/1000)*120/bpm;
+
+  }*/
+   public static getNoteEventTriggerTime(startTime: number, eventTime: number, loopLength: number, currentLoop: number, bpm: number): number {
+
+
     let bpmFactor = 120 / bpm;
     return startTime + eventTime / 1000 * bpmFactor + (loopLength * bpmFactor * currentLoop);
   }

@@ -138,6 +138,10 @@ export class MetronomePlugin extends AudioPlugin {
     return InstrumentCategory.OTHER;
   }
 
+  getPushSettingsHint(): string {
+    return "default";
+  }
+
  /* stop(): void {
 
     this.accentSample.stop();

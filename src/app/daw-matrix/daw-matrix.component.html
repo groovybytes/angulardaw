@@ -93,12 +93,8 @@
           <i class="fas fa-chevron-up" *ngIf="cell.menuOpen===true"></i>
         </button>
       </div>
-      <div *ngIf="cell.patternMenu" class="cell-container animated fadeInDown faster">
-        <body-cell-menu class=""
-                        [color]="getTrack(cell.trackId).color"
-                        [project]="project"
-                        [pattern]="cell.patternMenu"></body-cell-menu>
-      </div>
+
+        <body-cell-menu [cell]="cell" [color]="getTrack(cell.trackId).color"></body-cell-menu>
 
     </td>
 

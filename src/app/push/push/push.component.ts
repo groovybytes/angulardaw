@@ -43,6 +43,8 @@ export class PushComponent implements OnInit, OnDestroy {
     });
     this.push.message.next(new PushMessage("Welcome to push!"));
 
+    if (this.plugin.getValue()) this.pushService.nextPlugin(this.plugin.getValue());
+
 
   }
 
