@@ -71,10 +71,14 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
     this.subscriptions.push(
       this.project.subscribe([DawEventCategory.TICK],(event => {
-        let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
-        let loopTicks =ticksPerBeat * this.pattern.length;
-        this.tick = event.data*ticksPerBeat % loopTicks;
-        this.cdr.markForCheck();
+
+        if (!event.data.countIn){
+          let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
+          let loopTicks =ticksPerBeat * this.pattern.length;
+          this.tick = event.data.tick*ticksPerBeat % loopTicks;
+          this.cdr.markForCheck();
+        }
+
       })));
 
   }
@@ -94,7 +98,6 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
           if (nextValue) this.updateCells();
         }));
         this.patternSubscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
-          console.log(nextValue);
           this.sequencerService.addCellWithNote(nextValue, this.model.eventCells, this.model.specs, this.pattern);
           this.updateCells();
           this.cdr.markForCheck();
@@ -103,6 +106,10 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
           this.updateCells();
           this.cdr.markForCheck();
         }));
+       /* this.patternSubscriptions.push(this.pattern.onDestroy.subscribe(() => {
+          this.model.eventCells.length = 0;
+          this.cdr.markForCheck();
+        }));*/
         this.updateCells();
       }
     }

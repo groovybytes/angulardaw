@@ -64,7 +64,7 @@ export class MakeMusicService {
 
       if (recordSession.pattern.insertNote(eventMarker.recordingNoteEvent)) {
         eventMarker.updater = setInterval(() =>
-          this.updateNoteEvent(recordSession.pattern, eventMarker.recordingNoteEvent, eventMarker), 100);
+          this.updateNoteEvent(recordSession.pattern, eventMarker.recordingNoteEvent, eventMarker), 0);
       } else console.warn("no matching event found for recording");
     }
 
@@ -85,10 +85,11 @@ export class MakeMusicService {
 
 
   private getNoteLength(eventMarker: EventMarker): number {
-    return this.audioContextService.getTime() * 1000 - eventMarker.startTime;
+    return (this.audioContextService.getTime() * 1000 - eventMarker.startTime)*1000;
   }
 
   private updateNoteEvent(pattern: Pattern, noteEvent: NoteEvent, eventMarker: EventMarker): void {
+
     noteEvent.length = this.getNoteLength(eventMarker);
     pattern.noteUpdated.emit(noteEvent);
   }

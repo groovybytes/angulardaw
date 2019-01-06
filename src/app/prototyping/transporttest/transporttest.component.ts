@@ -60,6 +60,7 @@ export class TransporttestComponent implements OnInit {
 
     this.session.start(
       [this.pattern],
+      4,
       true,
       MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().bpm.getValue()),this.daw.project.getValue().settings.metronomeSettings);
   }

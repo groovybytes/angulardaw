@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 
 import {DeviceEvent} from "../../model/daw/devices/DeviceEvent";
 import {PushService} from "../push.service";
@@ -24,7 +24,7 @@ export class PushComponent implements OnInit, OnDestroy {
 
   private subscriptions: Array<Subscription> = [];
 
-  constructor(@Inject("Push") private push: Push, private pushService: PushService) {
+  constructor(@Inject("Push") private push: Push, private cdr: ChangeDetectorRef,private pushService: PushService) {
   }
 
   ngOnInit() {
@@ -33,7 +33,7 @@ export class PushComponent implements OnInit, OnDestroy {
     this.push.keyBindings = this.keyBindings;
     this.push.plugin=this.plugin;
     this.push.availablePlugins=this.availablePlugins;
-    this.pushService.setup(this.plugin.getValue(),   this.push.settingsCollection);
+
     this.push.deviceEvent.subscribe((event:DeviceEvent<any>) => {
       let plugin = this.plugin.getValue();
       if (plugin) {
@@ -46,6 +46,11 @@ export class PushComponent implements OnInit, OnDestroy {
 
 
 
+  }
+
+  check():void{
+    this.pushService.setup(this.plugin.getValue(),   this.push.settingsCollection);
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

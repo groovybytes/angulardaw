@@ -24,6 +24,7 @@ export class Pattern {
   noteInserted: EventEmitter<NoteEvent> = new EventEmitter();
   noteUpdated: EventEmitter<NoteEvent> = new EventEmitter();
   noteRemoved: EventEmitter<NoteEvent> = new EventEmitter();
+  onDestroy:EventEmitter<void>=new EventEmitter();
   beat: number = -1;
   tick: EventEmitter<number> = new EventEmitter();
 
@@ -83,6 +84,7 @@ export class Pattern {
 
   destroy(): void {
     this.subscriptions.forEach(subscr => subscr.unsubscribe());
+    this.onDestroy.emit();
   }
 
   getLengthInBars(): number {

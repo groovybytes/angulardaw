@@ -21,6 +21,10 @@ self.onmessage=function(e){
     timerID=ticker();
 
   }
+  else if (e.data.command=="reset") {
+
+    tick=0;
+  }
 
   else if (e.data.command=="stop") {
     console.log("stopping");

@@ -23,6 +23,7 @@ export class TransportSession {
   private metronomeSettingsSubscription: Subscription;
   private tickerSubscription: Subscription;
   private startEventSubscription: Subscription;
+  private patternSubscriptions: Array<Subscription>=[];
 
   constructor(
     private dawEvents: EventEmitter<DawEvent<any>>,
@@ -38,24 +39,22 @@ export class TransportSession {
   }
 
   //returns event which provides starting time
-  start(patterns: Array<Pattern>, loop: boolean, loopLength: number,
+  start(patterns: Array<Pattern>,countIn:number, loop: boolean, loopLength: number,
         metronomeSettings: MetronomeSettings): void {
     // metronomeSettings.pattern.plugin.play("A0",0,0.5,null);
     if (this.running.getValue()) this.stop();
     else {
       this.running.next(true);
 
-      this.tickerSubscription = this.dawEvents.pipe(filter((event => event.category === DawEventCategory.TICK))).subscribe(tickerEvent => {
-        metronomeSettings.pattern.plugin.play("A0", 0, 0.5, null);
+     /* this.tickerSubscription = this.dawEvents.pipe(filter((event => event.category === DawEventCategory.TICK))).subscribe(tickerEvent => {
+        if (metronomeSettings.enabled.getValue()) metronomeSettings.pattern.plugin.play("A0", 0, 0.5, null);
       });
-      this.metronomeSettingsSubscription = metronomeSettings.enabled.subscribe(enabled => {
-
-      });
+*/
 
       let countInOffset = 0;//MusicMath.getLoopLength(metronomeSettings.pattern.length,this.bpm.getValue());
       this.playSubscription = this.scheduler.playEvent
         .subscribe((event: SchedulerEvent) => {
-          patterns.find(pattern => pattern.id === event.target).plugin.play(event.note, event.time, event.length, this.stopEvent);
+          patterns.find(pattern => pattern.id === event.target).plugin.play(event.note, event.time, event.length/1000, this.stopEvent);
           this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_NOTE_QUEUED, event));
         });
 
@@ -65,13 +64,20 @@ export class TransportSession {
           events.push(new SchedulerEvent(event.note, event.id,event.time, pattern.id, countInOffset,event.length));
         });
 
-        pattern.noteInserted.subscribe((event:NoteEvent) => {
-          this.scheduler.addEvent(new SchedulerEvent(event.note,event.id, event.time, pattern.id, countInOffset,event.length),pattern.getLength());
-        });
-        pattern.noteUpdated.subscribe((event:NoteEvent) => {
+        this.patternSubscriptions.push(pattern.onDestroy.subscribe(() => {
+            let index= patterns.findIndex(p=>p.id===pattern.id);
+            patterns.splice(index,1);
+            this.scheduler.removeEventsWithTarget(pattern.id);
+            if (patterns.length===0) this.stop();
+        }));
 
-          this.scheduler.updateEventLength(event.id,event.length);
-        });
+        this.patternSubscriptions.push(pattern.noteInserted.subscribe((event:NoteEvent) => {
+          this.scheduler.addEvent(new SchedulerEvent(event.note,event.id, event.time, pattern.id, countInOffset,event.length),pattern.getLength());
+        }));
+        this.patternSubscriptions.push(pattern.noteUpdated.subscribe((event:NoteEvent) => {
+
+          this.scheduler.updateEventLength(event.id,event.length/1000);
+        }));
         if (this.recordSession.state.getValue() === 1) {
           this.startEventSubscription = this.scheduler.startEvent.subscribe((startTime) => {
             this.recordSession.startTime = startTime;
@@ -79,7 +85,7 @@ export class TransportSession {
           })
         }
         events = _.sortBy(events, event => event.time);
-        this.scheduler.run(events, loop, loopLength);
+        this.scheduler.run(events,countIn, loop, loopLength);
 
       })
 
@@ -89,9 +95,9 @@ export class TransportSession {
   stop(): void {
     this.running.next(false);
     this.stopEvent.emit();
-    this.metronomeSettingsSubscription.unsubscribe();
+    if (this.metronomeSettingsSubscription) this.metronomeSettingsSubscription.unsubscribe();
     this.playSubscription.unsubscribe();
-    this.tickerSubscription.unsubscribe();
+    if (this.tickerSubscription) this.tickerSubscription.unsubscribe();
     if (this.startEventSubscription) this.startEventSubscription.unsubscribe();
     this.scheduler.stop();
     if (this.recordSession.state.getValue() === 2) this.recordSession.state.next(0);

@@ -70,11 +70,16 @@ export class DeviceService {
             })
           });
 
+          push.check(); //todo: funny :)
+
         })
         .catch(error => console.error(error));
 
 
-    } else push.settingsCollection = project.pushSettings;
+    } else {
+      push.settingsCollection = project.pushSettings;
+      push.check();
+    }
 
 
   }

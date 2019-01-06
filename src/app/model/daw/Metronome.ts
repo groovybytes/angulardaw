@@ -23,7 +23,7 @@ export class Metronome {
 
     this.subscriptions.push(destroyEvent.subscribe(() => this.destroy()));
     this.subscriptions.push(events.pipe(filter((event => event.category === DawEventCategory.TICK)))
-      .subscribe((event) => this.tick(event.data)));
+      .subscribe((event) => this.tick(event.data.tick)));
 
   }
 

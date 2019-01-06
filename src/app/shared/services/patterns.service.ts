@@ -125,7 +125,7 @@ export class PatternsService {
       if (patterns.length > 0) {
         project.setChannels(patterns.map(pattern => pattern.id));
         project.activeSceneRow = row;
-        project.session.start(patterns, true,
+        project.session.start(patterns, project.getCountIn(),true,
           MusicMath.getLoopLength(patterns[0].length, project.bpm.getValue()),project.settings.metronomeSettings);
       }
     }
@@ -160,7 +160,7 @@ export class PatternsService {
     let pattern = project.patterns.find(pattern => pattern.id === patternId);
     let session = project.session;//this.transport.createSession(pattern.plugin);
     project.setChannels([patternId]);
-    session.start([pattern], true,
+    session.start([pattern], project.getCountIn(),true,
       MusicMath.getLoopLength(pattern.length, project.bpm.getValue()),project.settings.metronomeSettings);
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();

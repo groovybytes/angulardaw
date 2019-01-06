@@ -55,7 +55,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
       this.bootstrapper.loadProject(params.projectId)
         .then(project => {
           this.project = project;
-         /* this.midiBridge.createTracksFromMidi("assets/midi/songs/bach_846.mid",this.project)
+       /*   this.midiBridge.createTracksFromMidi("assets/midi/songs/bach_846.mid",this.project)
             .then(()=>{
 
             })*/

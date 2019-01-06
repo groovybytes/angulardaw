@@ -11,7 +11,7 @@ import {Track} from "../model/daw/Track";
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
+export class SequencerComponent implements OnInit, OnDestroy {
 
   @Input() project: Project;
   @Input() track: Track;
@@ -29,20 +29,11 @@ export class SequencerComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
 
 
+    this.subscriptions.push(this.pattern.onDestroy.subscribe(() => {
+      this.pattern=null;
+    }));
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.pattern) {
-      if (this.pattern) {
-        this.subscriptions.forEach(subscr => subscr.unsubscribe());
-      }
-    }
-  }
-
-  //!todo
-  /*getWindow():WindowInfo{
-    return this.layout.getWindowInfo("sequencer");
-  }*/
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscr => subscr.unsubscribe());

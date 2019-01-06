@@ -154,6 +154,10 @@ export class Project {
     return this.tracks.find(t => t.category === TrackCategory.BUS);
   }
 
+  getCountIn():number{
+    return this.settings.metronomeSettings.enabled.getValue()
+      ?this.transport.settings.global.beatUnit*this.settings.metronomeSettings.countInBars:0;
+  }
 
 }
 

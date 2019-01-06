@@ -84,11 +84,13 @@ export class DawMatrixService {
   removePattern(id: string): void {
     let project = this.daw.project.getValue();
     let selectedPattern = project.selectedPattern.getValue();
-    _.remove(project.patterns, pattern => pattern.id === id);
+    let index = project.patterns.findIndex(pattern => pattern.id === id);
+    let pattern=project.patterns[index];
+    project.patterns.splice(index,1);
     if (selectedPattern && selectedPattern.id === id) project.selectedPattern.next(null);
-
     let relevantCell = this.findCell(cell => cell.data && cell.data.id === id, project.matrix.body);
     relevantCell.data = null;
+    pattern.destroy();
 
   }
 
