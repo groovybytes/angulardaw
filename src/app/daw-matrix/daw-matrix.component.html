@@ -94,7 +94,7 @@
         </button>
       </div>
 
-        <body-cell-menu [cell]="cell" [color]="getTrack(cell.trackId).color"></body-cell-menu>
+        <body-cell-menu *ngIf="cell.patternMenu" [cell]="cell" [color]="getTrack(cell.trackId).color"></body-cell-menu>
 
     </td>
 

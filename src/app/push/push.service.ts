@@ -18,14 +18,19 @@ export class PushService {
               @Inject("Notes") private noteInfo: Notes) {
   }
 
-  setup() {
+  setup(plugin:PluginHost,settingsCollection:Array<PushSettings>) {
 
+    console.log("setup");
     if (!this.push.keyBindings || this.push.keyBindings.length === 0) {
       this.push.keyBindings = [];
       this.push.keyBindings.push(KeyBindings.default);
 
     }
-    this.setPadCollection(this.push.settings);
+    if (plugin) this.nextPlugin(plugin);
+    else {
+      this.push.settings=settingsCollection[0];
+      this.setPadCollection(this.push.settings);
+    }
 
 
   }
@@ -56,6 +61,7 @@ export class PushService {
         currentIndex++;
       }
     }
+
   }
 
 

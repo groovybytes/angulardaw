@@ -29,11 +29,11 @@ export class PushComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.push.settingsCollection = this.settingsCollection;
-    this.push.settings = this.push.settingsCollection[0];
+
     this.push.keyBindings = this.keyBindings;
     this.push.plugin=this.plugin;
     this.push.availablePlugins=this.availablePlugins;
-    this.pushService.setup();
+    this.pushService.setup(this.plugin.getValue(),   this.push.settingsCollection);
     this.push.deviceEvent.subscribe((event:DeviceEvent<any>) => {
       let plugin = this.plugin.getValue();
       if (plugin) {
@@ -43,7 +43,7 @@ export class PushComponent implements OnInit, OnDestroy {
     });
     this.push.message.next(new PushMessage("Welcome to push!"));
 
-    if (this.plugin.getValue()) this.pushService.nextPlugin(this.plugin.getValue());
+
 
 
   }
