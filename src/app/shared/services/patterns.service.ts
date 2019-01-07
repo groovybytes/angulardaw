@@ -163,7 +163,7 @@ export class PatternsService {
     project.setChannels([patternId]);
 
 
-    session.start([pattern,project.settings.metronomeSettings.pattern], project.getCountIn(),true,
+    session.start([pattern], project.getCountIn(),true,
       MusicMath.getLoopLength(pattern.length, project.bpm.getValue()),project.settings.metronomeSettings);
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();

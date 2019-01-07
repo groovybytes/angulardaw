@@ -271,7 +271,6 @@ export class ProjectsService {
           project.pluginTypes = plugins;
           let pluginPromises = [];
 
-          debugger;
           dto.tracks.forEach(t => {
             let track = this.trackService.convertTrackFromJson(t, project.nodes);
             project.tracks.push(track);

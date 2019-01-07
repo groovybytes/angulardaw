@@ -38,20 +38,15 @@ export class TransportSession {
 
   }
 
-  //returns event which provides starting time
+
   start(patterns: Array<Pattern>,countIn:number, loop: boolean, loopLength: number,
         metronomeSettings: MetronomeSettings): void {
-    // metronomeSettings.pattern.plugin.play("A0",0,0.5,null);
 
 
     if (this.running.getValue()) this.stop();
     else {
       this.running.next(true);
 
-     /* this.tickerSubscription = this.dawEvents.pipe(filter((event => event.category === DawEventCategory.TICK))).subscribe(tickerEvent => {
-        if (metronomeSettings.enabled.getValue()) metronomeSettings.pattern.plugin.play("A0", 0, 0.5, null);
-      });
-*/
 
       let countInOffset = 0;//MusicMath.getLoopLength(metronomeSettings.pattern.length,this.bpm.getValue());
       this.playSubscription = this.scheduler.playEvent

@@ -22,8 +22,8 @@ export class Metronome {
     private tockBuffer: AudioBuffer) {
 
     this.subscriptions.push(destroyEvent.subscribe(() => this.destroy()));
-  /*  this.subscriptions.push(events.pipe(filter((event => event.category === DawEventCategory.TICK)))
-      .subscribe((event) => this.tick(event.data.tick)));*/
+    this.subscriptions.push(events.pipe(filter((event => event.category === DawEventCategory.TICK)))
+      .subscribe((event) => this.tick(event.data.tick)));
 
   }
 
