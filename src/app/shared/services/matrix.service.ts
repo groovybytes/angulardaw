@@ -97,7 +97,7 @@ export class MatrixService {
       let matrix = project.matrix;
       let newColumnIndex = this.addColumn(matrix, 4);
 
-      this.trackService.addTrackWithPlugin(plugin, project)
+      this.trackService.addTrackWithPlugin(plugin.name,plugin, project)
         .then(track => {
           let header = matrix.header.find(cell => cell.column === newColumnIndex);
           header.data = track;

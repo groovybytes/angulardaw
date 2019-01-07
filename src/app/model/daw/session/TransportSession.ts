@@ -42,6 +42,8 @@ export class TransportSession {
   start(patterns: Array<Pattern>,countIn:number, loop: boolean, loopLength: number,
         metronomeSettings: MetronomeSettings): void {
     // metronomeSettings.pattern.plugin.play("A0",0,0.5,null);
+
+
     if (this.running.getValue()) this.stop();
     else {
       this.running.next(true);
@@ -54,7 +56,10 @@ export class TransportSession {
       let countInOffset = 0;//MusicMath.getLoopLength(metronomeSettings.pattern.length,this.bpm.getValue());
       this.playSubscription = this.scheduler.playEvent
         .subscribe((event: SchedulerEvent) => {
-          patterns.find(pattern => pattern.id === event.target).plugin.play(event.note, event.time, event.length/1000, this.stopEvent);
+
+          let pattern = patterns.find(pattern => pattern.id === event.target);
+
+          pattern.plugin.play(event.note, event.time, event.length/1000, this.stopEvent);
           this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_NOTE_QUEUED, event));
         });
 
@@ -70,13 +75,12 @@ export class TransportSession {
             this.scheduler.removeEventsWithTarget(pattern.id);
             if (patterns.length===0) this.stop();
         }));
-
         this.patternSubscriptions.push(pattern.noteInserted.subscribe((event:NoteEvent) => {
           this.scheduler.addEvent(new SchedulerEvent(event.note,event.id, event.time, pattern.id, countInOffset,event.length),pattern.getLength());
         }));
         this.patternSubscriptions.push(pattern.noteUpdated.subscribe((event:NoteEvent) => {
 
-          this.scheduler.updateEventLength(event.id,event.length/1000);
+          this.scheduler.updateEventLength(event.id,event.length);
         }));
         if (this.recordSession.state.getValue() === 1) {
           this.startEventSubscription = this.scheduler.startEvent.subscribe((startTime) => {
@@ -84,10 +88,11 @@ export class TransportSession {
             this.recordSession.state.next(2);
           })
         }
-        events = _.sortBy(events, event => event.time);
-        this.scheduler.run(events,countIn, loop, loopLength);
 
-      })
+
+      });
+      events = _.sortBy(events, event => event.time);
+      this.scheduler.run(events,countIn, loop, loopLength);
 
     }
   }

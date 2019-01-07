@@ -146,6 +146,7 @@ export class Scheduler {
 
   stop(): void {
     this.currentLoop = 0;
+    this.startTime=null;
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.ticker.post({command: "stop"});
     this.running = false;

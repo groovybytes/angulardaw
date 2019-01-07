@@ -54,7 +54,6 @@ export class MidiparserComponent implements OnInit {
     this.midiBridge.createTracksFromMidi(this.songFile,this.project)
       .then(()=>{
         let dto = this.projectsService.serializeProject(this.daw.project.getValue());
-        debugger;
         console.log("saving");
         this.projectsApi.update(dto)
           .then((result) => {

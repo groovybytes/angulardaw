@@ -74,7 +74,7 @@ export class MakeMusicService {
   stopPlay(note: string): void {
     let index = this.eventMarkers.findIndex(d => d.note === note);
     let marker = this.eventMarkers[index];
-    if (!marker) debugger;
+    if (!marker) console.error("no marker");
     if (marker.updater) {
       this.updateNoteEvent(this.daw.project.getValue().recordSession.pattern, marker.recordingNoteEvent, marker);
       clearInterval(marker.updater);
@@ -90,7 +90,7 @@ export class MakeMusicService {
 
   private updateNoteEvent(pattern: Pattern, noteEvent: NoteEvent, eventMarker: EventMarker): void {
 
-    noteEvent.length = this.getNoteLength(eventMarker);
+    noteEvent.length = this.getNoteLength(eventMarker)/1000;
     pattern.noteUpdated.emit(noteEvent);
   }
 

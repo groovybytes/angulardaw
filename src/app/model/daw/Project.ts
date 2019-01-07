@@ -155,7 +155,7 @@ export class Project {
   }
 
   getCountIn():number{
-    return this.settings.metronomeSettings.enabled.getValue()
+    return (this.settings.metronomeSettings.enabled.getValue()&&this.recordSession.state.getValue()!==0)
       ?this.transport.settings.global.beatUnit*this.settings.metronomeSettings.countInBars:0;
   }
 

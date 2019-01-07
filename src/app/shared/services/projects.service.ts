@@ -73,7 +73,7 @@ export class ProjectsService {
 
       //!todo t this.layout.createDefaultLayout();
 
-      let masterBus = this.trackService.createTrack(project.nodes, TrackCategory.BUS, null);
+      let masterBus = this.trackService.createTrack("master-bus",project.nodes, TrackCategory.BUS, null);
       masterBus.category = TrackCategory.BUS;
       project.tracks.push(masterBus);
 
@@ -107,13 +107,15 @@ export class ProjectsService {
           });
           Promise.all(promises)
             .then(() => {
-              this.createMetronomeTrack(project)
+              resolve(project);
+
+             /* this.createMetronomeTrack(project)
                 .then(track => {
                   project.tracks.push(track);
                   this.createMetronomePattern(project, track);
                   resolve(project);
                 })
-                .catch(error => reject(error))
+                .catch(error => reject(error))*/
             })
             .catch(error => reject(error))
         })
@@ -169,7 +171,7 @@ export class ProjectsService {
 
   }
 
-  createMetronomeTrack(project: Project): Promise<Track> {
+  /*createMetronomeTrack(project: Project): Promise<Track> {
     return new Promise((resolve, reject) => {
       let metronome = new MetronomePlugin(this.audioContext.getAudioContext(),
         this.filesService, project, this.config, this.samplesService,this.notes);
@@ -185,7 +187,7 @@ export class ProjectsService {
     })
 
   }
-
+*/
   serializeProject(project: Project): ProjectDto {
 
     let projectDto = new ProjectDto();
@@ -269,6 +271,7 @@ export class ProjectsService {
           project.pluginTypes = plugins;
           let pluginPromises = [];
 
+          debugger;
           dto.tracks.forEach(t => {
             let track = this.trackService.convertTrackFromJson(t, project.nodes);
             project.tracks.push(track);
@@ -301,8 +304,8 @@ export class ProjectsService {
                 let plugin = project.plugins.find(plugin => plugin.getInstanceId() === dto.activePlugin);
                 project.activePlugin.next(plugin);
               }
-              let metronomeTrack = project.tracks.find(track => track.category===TrackCategory.METRONOME);
-              project.settings.metronomeSettings.pattern = this.createMetronomePattern(project, metronomeTrack);
+              //let metronomeTrack = project.tracks.find(track => track.category===TrackCategory.METRONOME);
+              //project.settings.metronomeSettings.pattern = this.createMetronomePattern(project, metronomeTrack);
 
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);
@@ -344,6 +347,7 @@ export class ProjectsService {
                 project
                   .selectedTrack
                   .next(project.tracks.find(t => t.id === dto.selectedTrack));
+
 
               resolve(project);
 

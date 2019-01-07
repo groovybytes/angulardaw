@@ -28,8 +28,8 @@ import {DawEventCategory} from "../../model/daw/DawEventCategory";
 @Component({
   selector: 'event-table',
   templateUrl: './event-table.component.html',
-  styleUrls: ['./event-table.component.scss']
-//changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./event-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 

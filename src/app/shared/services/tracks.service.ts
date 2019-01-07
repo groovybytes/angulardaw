@@ -29,7 +29,7 @@ export class TracksService {
   }
 
 
-  createTrack(nodes: Array<VirtualAudioNode<AudioNode>>,  category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>): Track {
+  createTrack(trackName:string,nodes: Array<VirtualAudioNode<AudioNode>>,  category: TrackCategory, masterIn: VirtualAudioNode<AudioNode>): Track {
     let trackId = Lang.guid();// _.uniqueId("track-" + (hint ? hint : ""));
     let inputNode = <VirtualAudioNode<PannerNode>>this.audioNodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.PANNER, "track: " + trackId);
     let outputNode = <VirtualAudioNode<GainNode>>this.audioNodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.GAIN, "track: " + trackId);
@@ -46,17 +46,17 @@ export class TracksService {
     }
 
     track.category = category;
-    track.name = "default-name";
+    track.name = trackName;
     track.color = "red";
 
     return track;
   }
 
 
-  addTrackWithPlugin(plugin: PluginInfo, project: Project): Promise<Track> {
+  addTrackWithPlugin(trackName:string,plugin: PluginInfo, project: Project): Promise<Track> {
 
     return new Promise((resolve, reject) => {
-      let track: Track = this.createTrack(project.nodes,TrackCategory.DEFAULT, project.getMasterBus().inputNode);
+      let track: Track = this.createTrack(trackName,project.nodes,TrackCategory.DEFAULT, project.getMasterBus().inputNode);
       project.tracks.push(track);
       let pluginInfo = project.pluginTypes.find(p => p.id === plugin.id);
       this.pluginService.loadPluginWithInfo(Lang.guid(),null, pluginInfo, project)

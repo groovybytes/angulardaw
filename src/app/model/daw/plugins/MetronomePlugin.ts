@@ -142,9 +142,16 @@ export class MetronomePlugin extends AudioPlugin {
     return "default";
   }
 
- /* stop(): void {
+  play(note: string, time: number, length: number,stopEvent:EventEmitter<void>): void
+  {
 
-    this.accentSample.stop();
-    this.otherSample.stop();
-  }*/
+      if (note === "A0")
+      this.accentSample.trigger(time, length);
+    else this.otherSample.trigger(time, length);
+  }
+  /* stop(): void {
+
+     this.accentSample.stop();
+     this.otherSample.stop();
+   }*/
 }

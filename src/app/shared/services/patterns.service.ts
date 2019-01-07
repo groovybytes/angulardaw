@@ -155,12 +155,15 @@ export class PatternsService {
       this.startPattern(patternId, project);
     }
   }
+
   //todo: move start+stop to ......
   private startPattern(patternId: string, project: Project): void {
     let pattern = project.patterns.find(pattern => pattern.id === patternId);
     let session = project.session;//this.transport.createSession(pattern.plugin);
     project.setChannels([patternId]);
-    session.start([pattern], project.getCountIn(),true,
+
+
+    session.start([pattern,project.settings.metronomeSettings.pattern], project.getCountIn(),true,
       MusicMath.getLoopLength(pattern.length, project.bpm.getValue()),project.settings.metronomeSettings);
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();
