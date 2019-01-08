@@ -6,15 +6,11 @@ import {System} from "../system/System";
 import {DockPosition} from "angular2-desktop";
 import {DawInfo} from "../model/DawInfo";
 import {Subscription} from "rxjs";
-import {BootstrapperService} from "./bootstrapper.service";
 import {DeviceEvent} from "../model/daw/devices/DeviceEvent";
 import {DeviceService} from "./device.service";
 import {PushComponent} from "../push/push/push.component";
 import {SequencerComponent} from "../sequencer/sequencer.component";
 import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
-import {DawEvent} from "../model/daw/DawEvent";
-import {filter} from "rxjs/operators";
-import {DawEventCategory} from "../model/daw/DawEventCategory";
 import {MidiBridgeService} from "../shared/services/midi-bridge.service";
 
 
@@ -40,7 +36,6 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private deviceService: DeviceService,
     private projectsService: ProjectsService,
-    private bootstrapper: BootstrapperService,
     @Inject("daw") private daw: DawInfo,
     private midiBridge:MidiBridgeService,
     private system: System) {
@@ -52,23 +47,26 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.route.params.subscribe(params => {
       console.log("bootstrap");
-      this.bootstrapper.loadProject(params.projectId)
+      this.projectsService.getProject(params.projectId)
         .then(project => {
-          this.project = project;
-       /*   this.midiBridge.createTracksFromMidi("assets/midi/songs/bach_846.mid",this.project)
-            .then(()=>{
-
-            })*/
-          this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
-            this.deviceService.handleDeviceEvent(event);
-          }));
-          this.subscriptions.push(
-            this.project.events.pipe(filter(event => event.category === DawEventCategory.TRANSPORT_START))
-              .subscribe((event: DawEvent<any>) => {
-
+          this.projectsService.initializeProject(project)
+            .then(() => {
+              this.project=project;
+              this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
+                this.deviceService.handleDeviceEvent(event);
               }));
+
+              this.daw.ready.next(true);
+
+
+              this.daw.project.next(project);
+            })
+            .catch(error => this.system.error(error));
+
+
         })
         .catch(error => this.system.error(error));
+
 
     });
 

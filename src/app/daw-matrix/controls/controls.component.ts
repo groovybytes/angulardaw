@@ -46,11 +46,9 @@ export class ControlsComponent implements OnInit {
 
 
   save(): void {
-    let dto = this.projectsService.serializeProject(this.daw.project.getValue());
-    console.log("saving");
-    this.projectsApi.update(dto)
-      .then((result) => {
-        console.log("project saved")
+    let dto = this.projectsService.saveProject(this.daw.project.getValue())
+      .then(() => {
+        alert("project saved")
       })
       .catch(error => {
         this.system.error(error)
@@ -67,7 +65,7 @@ export class ControlsComponent implements OnInit {
   }
 
   changeTempo(bpm: SimpleSliderModel): void {
-    this.daw.project.getValue().transportSettings.global.bpm = bpm.value;
+    this.daw.project.getValue().settings.bpm.next(bpm.value);
   }
 
 }

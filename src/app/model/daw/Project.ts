@@ -23,6 +23,7 @@ import {TransportSession} from "./session/TransportSession";
 import {filter} from "rxjs/operators";
 import {DawEventCategory} from "./DawEventCategory";
 import {Metronome} from "./Metronome";
+import {TimeSignature} from "../mip/TimeSignature";
 
 
 export class Project {
@@ -30,19 +31,16 @@ export class Project {
   name: string = "default";
   events: EventEmitter<DawEvent<any>> = new EventEmitter();
   session: TransportSession;
-  //metronomeEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
   activeSceneRow: number;
   matrix: Matrix = new Matrix();
-  bpm: BehaviorSubject<number> = new BehaviorSubject(120);
+
   nodes: Array<VirtualAudioNode<AudioNode>>;
   readonly tracks: Array<Track> = [];
-  ready: boolean = false;
-  transportSettings: TransportSettings;
+
   settings: ProjectSettings = new ProjectSettings();
-  readonly transport: Transport;
   trackAdded: EventEmitter<Track> = new EventEmitter();
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
@@ -55,16 +53,14 @@ export class Project {
   pushSettings: Array<PushSettings>;
   pushKeyBindings: KeyBindings;
   readonly deviceEvents2: EventEmitter<DeviceEvent<any>> = new EventEmitter();
+  readonly channels:Array<string>=[];
 
   threads: Array<Thread> = [];
 
   constructor(
-    private audioContext: AudioContextService, transportSettings: TransportSettings) {
+    private audioContext: AudioContextService) {
 
-    this.transportSettings = transportSettings;
-    this.transport = new Transport(
-      this.audioContext.getAudioContext(),
-      transportSettings);
+
     this.settings.metronomeSettings.enabled.subscribe(isEnabled => {
       if (isEnabled) this.addChannel("_metronome");
       else this.removeChannel("_metronome");
@@ -90,55 +86,25 @@ export class Project {
   }
 
   setChannels(channels: Array<string>): void {
-    this.transport.channels.length = 0;
-    channels.concat(this.settings.metronomeSettings.enabled.getValue() ? ["_metronome"] : []).forEach(channel =>
+    this.channels.length = 0;
+    channels.forEach(channel =>
       this.addChannel(channel));
-    //this.transport.channels = channels.concat(this.metronomeEnabled.getValue() ? ["_metronome"] : []);
   }
 
   addChannel(channel: string): void {
-    this.transport.channels.push(channel);
+    this.channels.push(channel);
   }
 
   removeChannel(channel: string): void {
-    this.transport.channels.splice(this.transport.channels.indexOf(channel), 1);
+    this.channels.splice(this.channels.indexOf(channel), 1);
   }
 
   isRunningWithChannel(channel: string): boolean {
-    return this.transport.channels.indexOf(channel) >= 0;
+    return this.channels.indexOf(channel) >= 0;
   }
-
-  createTransportContext(): TransportContext {
-
-    let transportSettings = new TransportSettings();
-    transportSettings.loop = true;
-    transportSettings.loopStart = 0;
-    transportSettings.loopEnd = 8;
-    transportSettings.global = this.transportSettings.global;
-    let transportContext = new TransportContext();
-    transportContext.settings = transportSettings;
-    transportContext.time = this.transport.time;
-    transportContext.transportEnd = this.transport.transportEnd;
-    transportContext.transportStart = this.transport.transportStart;
-    transportContext.beforeStart = this.transport.beforeStart;
-
-    return transportContext;
-  }
-
-
-  /* start(): void {
-     if (this.transport.isRunning()) this.transport.stop();
-     let ticker = this.threads.find(t=>t.id==="ticker");
-     this.transport.start(ticker);
-   }*/
-
-
-  /*stop(): void {
-    this.transport.stop();
-  }*/
 
   destroy(): void {
-    this.transport.stop();
+    //todo emit daw destroy?
     this.nodes.forEach(node => node.destroy());
     this.nodes.length = 0;
     this.plugins.forEach(plugin => plugin.destroy());
@@ -146,7 +112,6 @@ export class Project {
     this.tracks.length = 0;
     this.audioContext.getAudioContext().destination.disconnect();
     this.threads.forEach(t => t.destroy());
-    //return this.audioContext.destroy();
   }
 
   getMasterBus(): Track {
@@ -155,9 +120,10 @@ export class Project {
 
   getCountIn():number{
     return (this.settings.metronomeSettings.enabled.getValue()&&this.recordSession.state.getValue()!==0)
-      ?this.transport.settings.global.beatUnit*this.settings.metronomeSettings.countInBars:0;
+      ?this.settings.signature.beatUnit*this.settings.metronomeSettings.countInBars:0;
   }
 
 }
+
 
 

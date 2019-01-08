@@ -7,7 +7,6 @@ import {Pattern} from "../../model/daw/Pattern";
 import {TransportSession} from "../../model/daw/session/TransportSession";
 import {DawInfo} from "../../model/DawInfo";
 import {MusicMath} from "../../model/utils/MusicMath";
-import {BootstrapperService} from "../../project/bootstrapper.service";
 
 @Component({
   selector: 'app-transporttest',
@@ -23,7 +22,6 @@ export class TransporttestComponent implements OnInit {
 
   constructor(
     private projectsService: ProjectsService,
-    private bootstrapper:BootstrapperService,
     @Inject("daw") private daw: DawInfo,
     private patternService: PatternsService) {
 
@@ -32,7 +30,7 @@ export class TransporttestComponent implements OnInit {
 
   ngOnInit() {
 
-    this.projectsService.initializeNewProject("tmp", "tmp", ["drumkit1"])
+   /* this.projectsService.initializeNewProject("tmp", "tmp", ["drumkit1"])
       .then(project => {
         this.bootstrapper.initializeProject(project)
           .then(()=>{
@@ -53,7 +51,7 @@ export class TransporttestComponent implements OnInit {
 
 
       })
-      .catch(error=>console.error(error));
+      .catch(error=>console.error(error));*/
   }
 
   start(): void {
@@ -62,7 +60,7 @@ export class TransporttestComponent implements OnInit {
       [this.pattern],
       4,
       true,
-      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().bpm.getValue()),this.daw.project.getValue().settings.metronomeSettings);
+      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().settings.bpm.getValue()),this.daw.project.getValue().settings.metronomeSettings);
   }
 
   stop(): void {
@@ -71,7 +69,7 @@ export class TransporttestComponent implements OnInit {
   }
 
   changeBpm(value): void {
-    this.project.bpm.next(this.project.bpm.getValue() + value);
+    this.project.settings.bpm.next(this.project.settings.bpm.getValue() + value);
   }
 }
 

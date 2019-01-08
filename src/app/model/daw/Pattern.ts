@@ -19,7 +19,6 @@ export class Pattern {
   triggers: Array<TriggerSpec> = [];
   quantizationEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   quantization: BehaviorSubject<NoteLength> = new BehaviorSubject<NoteLength>(null);
-  transportContext: TransportContext;
   marked: boolean = false;
   noteInserted: EventEmitter<NoteEvent> = new EventEmitter();
   noteUpdated: EventEmitter<NoteEvent> = new EventEmitter();
@@ -27,6 +26,7 @@ export class Pattern {
   onDestroy:EventEmitter<void>=new EventEmitter();
   beat: number = -1;
   tick: EventEmitter<number> = new EventEmitter();
+  settings: ProjectSettings;
 
   private subscriptions: Array<Subscription> = [];
   plugin: AudioPlugin;
@@ -36,14 +36,13 @@ export class Pattern {
     id: string,
     triggers: Array<TriggerSpec>,
     private ticker: Thread,
-    private projectSettings: ProjectSettings,
-    transportContext: TransportContext,
+    projectSettings: ProjectSettings,
     plugin: AudioPlugin,
     private _quantization: NoteLength
   ) {
     this.id = id;
-    this.transportContext = transportContext;
 
+    this.settings=projectSettings;
     this.triggers = triggers;
     this.quantization.next(_quantization);
     this.plugin = plugin;
@@ -88,18 +87,18 @@ export class Pattern {
   }
 
   getLengthInBars(): number {
-    return this.length / this.transportContext.settings.global.beatUnit;
+    return this.length / this.settings.signature.beatUnit;
   }
 
   getLength(): number {
 
-    return MusicMath.getLoopLength(this.length, this.transportContext.settings.global.bpm);
+    return MusicMath.getLoopLength(this.length, this.settings.bpm.getValue());
   }
 
-  setLengthInBars(bars: number): void {
+ /* setLengthInBars(bars: number): void {
     this.length = bars * this.transportContext.settings.global.beatUnit;
     this.transportContext.settings.loopEnd = this.length;
-  }
+  }*/
 
 
 

@@ -18,7 +18,6 @@ export class ProjectDto{
   tracks: Array<TrackDto> = [];
   routes:Array<{source:string,target:string}>;
   nodes:Array<AudioNodeDto>;
-  transportSettings:TransportSettings;
   pushSettings:Array<PushSettings>;
   pushKeyBindings:KeyBindings;
 }

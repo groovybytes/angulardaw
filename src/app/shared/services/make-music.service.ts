@@ -55,7 +55,7 @@ export class MakeMusicService {
       eventMarker.startTime = currentTime;
       eventMarker.recordingNoteEvent = NoteEvent.default(eventMarker.note);
 
-      let loopLength = MusicMath.getLoopLength(recordSession.pattern.length, project.bpm.getValue());
+      let loopLength = MusicMath.getLoopLength(recordSession.pattern.length, project.settings.bpm.getValue());
       let triggerTime = ((this.audioContextService.getTime() - recordSession.startTime) % loopLength) * 1000;
       eventMarker.recordingNoteEvent.time = triggerTime;
       eventMarker.recordingNoteEvent.length = 0;

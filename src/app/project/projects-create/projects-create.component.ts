@@ -1,9 +1,8 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {System} from "../../system/System";
 import {AppConfiguration} from "../../app.configuration";
 import {PluginInfo} from "../../model//daw/plugins/PluginInfo";
-import {ProjectDto} from "../../model//daw/dto/ProjectDto";
 import {ProjectsService} from "../../shared/services/projects.service";
 import {FilesApi} from "../../api/files.api";
 import {ProjectsApi} from "../../api/projects.api";
@@ -64,28 +63,22 @@ export class ProjectsCreateComponent implements OnInit, OnDestroy {
 
   }
 
-  /*  onSubmit2(): void {
-      if (this.selectedPlugins.length === 0) this.msg = "Musik machen ohne Instrument? Ist das dein Ernst?";
-      else {
-        let project = this.projectService.initializeNewProject(this.newProjectName, this.selectedPlugins);
-        this.projectService.save(project).then(() => {
-          this.projects.push(project);
-          project.destroy()
-        })
-          .catch(error => this.system.error(error));
-      }
-
-    }*/
-
   onSubmit(): void {
     if (this.selectedPlugins.length === 0) this.msg = "Musik machen ohne Instrument? Ist das dein Ernst?";
     else {
       let id = Lang.guid();
-      localStorage.setItem("new_project", JSON.stringify({
-        plugins: this.selectedPlugins.map(plugin => plugin.id)
-      }));
 
-      this.open(id);
+
+      this.projectService.createProjectSkeleton(id, this.newProjectName, this.selectedPlugins.map(plugin => plugin.id))
+        .then(project => {
+          this.projectService.saveProject(project)
+            .then(()=>{
+              this.projects.push(project);
+            })
+        })
+        .catch(error => this.system.error(error));
+
+      //this.open(id);
     }
 
   }

@@ -73,7 +73,7 @@ export class MidiBridgeService {
     return new Promise<Pattern>((resolve, reject) => {
       let project = this.daw.project.getValue();
      // console.log(midiTrack.duration);
-      let beats=MusicMath.getBeatsForDuration(project.bpm.getValue(), midiTrack.duration);
+      let beats=MusicMath.getBeatsForDuration(project.settings.bpm.getValue(), midiTrack.duration);
       let pattern = this.patternService.createPattern(project, trackId, NoteLength.Quarter, beats);
       midiTrack.notes.forEach(midiEvent => {
         let noteInfo = this.notes.notes.find(d => d.midi === midiEvent.midi);

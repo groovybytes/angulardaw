@@ -20,7 +20,6 @@ import {PadsComponent} from "./pads/pads.component";
 import {PadsModule} from "./pads/pads.module";
 import {PushModule} from "../push/push.module";
 import {PushComponent} from "../push/push/push.component";
-import {BootstrapperService} from "./bootstrapper.service";
 import {DeviceService} from "./device.service";
 import {SequencerComponent} from "../sequencer/sequencer.component";
 import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
@@ -51,7 +50,7 @@ import {DawMatrixComponent} from "../daw-matrix/daw-matrix.component";
     Angular2DesktopModule
   ],
   providers: [
-    BootstrapperService,DeviceService
+    DeviceService
   ],
   entryComponents:[PadsComponent,PushComponent,SequencerComponent,DawMatrixComponent],
   exports: []

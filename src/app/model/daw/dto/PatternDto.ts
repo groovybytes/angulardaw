@@ -10,6 +10,5 @@ export class PatternDto {
   triggers:Array<TriggerSpec>=[];
   quantization: number;
   quantizationEnabled:boolean;
-  settings: TransportSettings;
 
 }

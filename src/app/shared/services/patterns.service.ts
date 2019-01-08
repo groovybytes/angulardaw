@@ -34,15 +34,12 @@ export class PatternsService {
     let plugin = track.getMasterPlugin();
 
 
-    let transportContext = project.createTransportContext();
-    transportContext.settings.loopEnd = patternLength;
     let ticker = project.threads.find(t => t.id === "ticker");
     let pattern = new Pattern(
       patternId ? patternId : Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
       ticker,
       project.settings,
-      transportContext,
       plugin,
       quantization
     );
@@ -80,15 +77,12 @@ export class PatternsService {
     let track = project.tracks.find(track => track.id === trackId);
 
     let plugin = track.getMasterPlugin();
-    let transportContext = project.createTransportContext();
-    transportContext.settings.loopEnd = pattern.length;
     let ticker = project.threads.find(t => t.id === "ticker");
     let patternClone = new Pattern(
       Lang.guid(),
       plugin.triggers.map(trigger => trigger.spec).reverse(),
       ticker,
       project.settings,
-      transportContext,
       plugin,
       pattern.quantization.getValue()
     );
@@ -126,7 +120,7 @@ export class PatternsService {
         project.setChannels(patterns.map(pattern => pattern.id));
         project.activeSceneRow = row;
         project.session.start(patterns, project.getCountIn(),true,
-          MusicMath.getLoopLength(patterns[0].length, project.bpm.getValue()),project.settings.metronomeSettings);
+          MusicMath.getLoopLength(patterns[0].length, project.settings.bpm.getValue()),project.settings.metronomeSettings);
       }
     }
 
@@ -164,7 +158,7 @@ export class PatternsService {
 
 
     session.start([pattern], project.getCountIn(),true,
-      MusicMath.getLoopLength(pattern.length, project.bpm.getValue()),project.settings.metronomeSettings);
+      MusicMath.getLoopLength(pattern.length, project.settings.bpm.getValue()),project.settings.metronomeSettings);
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();
     } else {*/

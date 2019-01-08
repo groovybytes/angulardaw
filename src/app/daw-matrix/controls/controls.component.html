@@ -11,13 +11,13 @@
   </li>
   <li>
     <div>
-      <ng5-slider class="" [value]="daw.project.getValue()?.transportSettings.global.bpm" [options]="slider.options"
+      <ng5-slider class="" [value]="daw.project.getValue()?.settings.bpm.getValue()" [options]="slider.options"
                   (userChange)="changeTempo($event)">
       </ng5-slider>
     </div>
 
   </li>
-  <li><a href [routerLink]="">{{daw.project.getValue()?.transportSettings.global.bpm}}</a></li>
+  <li><a href [routerLink]="">{{daw.project.getValue()?.settings.bpm.getValue()}}</a></li>
   <li class="float-right"><a href [routerLink]="" (click)="close()"><i class="fas fa-times"></i></a></li>
   <li class="float-right"><a href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
 </ul>
