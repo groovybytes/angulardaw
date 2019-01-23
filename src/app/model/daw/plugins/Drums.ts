@@ -11,6 +11,8 @@ import {Trigger} from "../Trigger";
 import {TriggerSpec} from "../TriggerSpec";
 import {SampleEventInfo} from "../SampleEventInfo";
 import {Notes} from "../../mip/Notes";
+import {EventEmitter} from "@angular/core";
+import {st} from "@angular/core/src/render3";
 
 
 export class Drums extends AudioPlugin {
@@ -23,11 +25,12 @@ export class Drums extends AudioPlugin {
   constructor(
     id: string,
     private fileService: FilesApi,
+    protected audioContext: AudioContext,
     private config: AppConfiguration,
     private info: PluginInfo,
     private samplesV2Service: SamplesApi,  protected notes: Notes
   ) {
-    super(notes);
+    super(notes,audioContext);
     this.id = id;
   }
 
@@ -111,6 +114,11 @@ export class Drums extends AudioPlugin {
 
   getPushSettingsHint(): string {
     return "percussion";
+  }
+
+  play(note: string, time: number, length: number,stopEvent:EventEmitter<void>): void{
+    if (length<0.5) length=0.5;
+    super.play(note,time,length,stopEvent);
   }
 
 

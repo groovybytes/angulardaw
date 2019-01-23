@@ -12,6 +12,7 @@ import {RecordSession} from "../../model/daw/RecordSession";
 import {PatternsService} from "./patterns.service";
 import {Pattern} from "../../model/daw/Pattern";
 import {MusicMath} from "../../model/utils/MusicMath";
+import {NoteDynamics} from "../../model/mip/NoteDynamics";
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,12 @@ export class MakeMusicService {
     let currentTime = this.audioContextService.getTime() * 1000;
     let project = this.daw.project.getValue();
     let pluginTarget = project.activePlugin.getValue();
-    pluginTarget.play(note, 0, undefined, stopEvent);
+    pluginTarget.play(note,
+      this.audioContextService.getTime(),
+      undefined,
+      stopEvent,
+      new NoteDynamics(0.1,0,0,0,0),
+      true);
     let recordSession = project.recordSession;
     if (recordSession.state.getValue() === 2) {
       eventMarker.startTime = currentTime;

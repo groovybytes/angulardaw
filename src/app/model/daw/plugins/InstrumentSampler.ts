@@ -27,9 +27,10 @@ export class InstrumentSampler extends AudioPlugin {
   constructor(
     protected id: string,
     protected notes: Notes,
+    protected audioContext: AudioContext,
     private pluginInfo: PluginInfo,
     private sampleGetter: (instrumentName: string) => Promise<{ samples: Array<Sample>, baseNotes: Array<number> }>) {
-    super(notes);
+    super(notes,audioContext);
     this.id = id;
 
   }

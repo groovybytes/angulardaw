@@ -95,7 +95,9 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
         this.patternSubscriptions.forEach(subscr=>subscr.unsubscribe());
 
         this.patternSubscriptions.push(this.pattern.quantization.subscribe(nextValue => {
+
           if (nextValue) this.updateCells();
+
         }));
         this.patternSubscriptions.push(this.pattern.noteInserted.subscribe(nextValue => {
           this.sequencerService.addCellWithNote(nextValue, this.model.eventCells, this.model.specs, this.pattern);
@@ -128,6 +130,8 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
 
     newCells = this.sequencerService.createEventCells(this.pattern, this.model.specs);
     newCells.forEach(cell => this.model.eventCells.push(cell));
+
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy(): void {

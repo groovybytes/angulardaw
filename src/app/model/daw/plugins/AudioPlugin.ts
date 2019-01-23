@@ -9,6 +9,9 @@ import {PluginHost} from "./PluginHost";
 import {Lang} from "../../utils/Lang";
 import {EventEmitter} from "@angular/core";
 import {Notes} from "../../mip/Notes";
+import {ADSREnvelope} from "../../mip/ADSREnvelope";
+import set = Reflect.set;
+import {NoteDynamics} from "../../mip/NoteDynamics";
 
 export abstract class AudioPlugin implements PluginHost {
 
@@ -19,7 +22,7 @@ export abstract class AudioPlugin implements PluginHost {
   private instanceId: string;
 
 
-  constructor(protected notes:Notes) {
+  constructor(protected notes: Notes, protected audioContext: AudioContext) {
     this.instanceId = Lang.guid();
   }
 
@@ -50,6 +53,7 @@ export abstract class AudioPlugin implements PluginHost {
   abstract getInfo(): PluginInfo;
 
   abstract load(): Promise<void>;
+
   abstract getPushSettingsHint(): string;
 
   abstract getInstrumentCategory(): InstrumentCategory;
@@ -62,27 +66,39 @@ export abstract class AudioPlugin implements PluginHost {
     return this.instanceId;
   }
 
-  play(note: string, time: number, length: number,stopEvent:EventEmitter<void>): void {
+  play(note: string,
+       time: number,
+       length: number,
+       stopEvent: EventEmitter<void>,
+       dynamics?: NoteDynamics,
+       fadeOut?: boolean): void {
 
-    let stopSubscription=stopEvent?stopEvent.subscribe(() => {
+    let stopSubscription = stopEvent ? stopEvent.subscribe(() => {
       stopSubscription.unsubscribe();
       if (node) {
-        node.stop(0);
-        node.disconnect();
-        node=null;
+        if (fadeOut) {
+          let stopTime = this.audioContext.currentTime + 0.5;
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, stopTime);
+          node.stop(stopTime);
+        } else {
+          node.stop(0);
+        }
       }
-    }):null;
+    }) : null;
     let detune = 0;
     let node: AudioBufferSourceNode;
+    let gainNode: GainNode;
     let sample = this.getSample(note);
-    if (sample.baseNote) detune =  this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
+    if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
 
-    sample.trigger(time, length, null, detune)
-      .then(_node => {
-        node = _node;
+    let adsrEnvelope = dynamics ? new ADSREnvelope(dynamics) : ADSREnvelope.default(length);
+    sample.trigger(time, length, adsrEnvelope, null, detune)
+      .then((result: { node: AudioBufferSourceNode, gainNode: GainNode }) => {
+        node = result.node;
+        gainNode = result.gainNode;
         //todo: remove event listener?
         node.addEventListener("ended", () => {
-          node=null;
+          node = null;
           if (stopSubscription) stopSubscription.unsubscribe();
         });
 

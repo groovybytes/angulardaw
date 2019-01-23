@@ -11,6 +11,7 @@ import {PluginId} from "./PluginId";
 import {Notes} from "../../mip/Notes";
 import {EventEmitter} from "@angular/core";
 import {st} from "@angular/core/src/render3";
+import {ADSREnvelope} from "../../mip/ADSREnvelope";
 
 
 export class MetronomePlugin extends AudioPlugin {
@@ -25,12 +26,12 @@ export class MetronomePlugin extends AudioPlugin {
   checked: boolean = true;
 
   constructor(
-    private audioContext: AudioContext,
+    protected audioContext: AudioContext,
     private fileService: FilesApi,
     private project: Project,
     private config: AppConfiguration,
     private samplesV2Service: SamplesApi,  protected notes: Notes) {
-    super(notes);
+    super(notes,audioContext);
     /* let track = this.tracksService.createDefaultTrack(this.project.transport.masterParams);
      let tickTime =
        MusicMath.getTickTime(track.transport.getBpm(),
@@ -146,8 +147,8 @@ export class MetronomePlugin extends AudioPlugin {
   {
 
       if (note === "A0")
-      this.accentSample.trigger(time, length);
-    else this.otherSample.trigger(time, length);
+      this.accentSample.trigger(time, length,ADSREnvelope.minimal(length));
+    else this.otherSample.trigger(time, length,ADSREnvelope.minimal(length));
   }
   /* stop(): void {
 

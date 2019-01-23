@@ -1,9 +1,16 @@
-import {Loudness} from "./Loudness";
-import {NoteArticulation} from "./NoteArticulation";
-
 export class NoteDynamics {
 
-  loudness: Loudness = Loudness.mf;
-  articulation: NoteArticulation = NoteArticulation.Legato;
+  attackTime: number;
+  decayReduction: number;
+  decayTime: number;
+  releaseTime: number;
+  sustainTime: number;
 
+  constructor(attackTime: number, decayReduction: number, decayTime: number, releaseTime: number, sustainTime: number) {
+    this.attackTime = attackTime;
+    this.decayReduction = decayReduction;
+    this.decayTime = decayTime;
+    this.releaseTime = releaseTime;
+    this.sustainTime = sustainTime;
+  }
 }

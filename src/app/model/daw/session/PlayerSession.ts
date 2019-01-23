@@ -4,6 +4,7 @@ import {AudioPlugin} from "../plugins/AudioPlugin";
 import {SamplePlayer} from "./SamplePlayer";
 import {Thread} from "../Thread";
 import {Notes} from "../../mip/Notes";
+import {ADSREnvelope} from "../../mip/ADSREnvelope";
 
 export class PlayerSession {
 
@@ -29,9 +30,9 @@ export class PlayerSession {
     let node: AudioBufferSourceNode;
     let sample = plugin.getSample(note);
     if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
-    sample.trigger(time, length, null, detune)
-      .then(_node => {
-        node = _node;
+    sample.trigger(time, length, ADSREnvelope.default(length),null, detune)
+      .then((result:{node:AudioBufferSourceNode,gainNode:GainNode}) => {
+        node = result.node;
       });
 
     let stopSubscription = session.stop.subscribe(() => {

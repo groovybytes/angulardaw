@@ -1,12 +1,12 @@
-import {NoteEvent} from "./NoteEvent";
+import {NoteDynamics} from "./NoteDynamics";
 
 export class ADSREnvelope {
-  constructor(attackTime: number, decayReduction: number, decayTime: number, releaseTime: number, sustainTime: number) {
-    this.attackTime = attackTime;
-    this.decayReduction = decayReduction;
-    this.decayTime = decayTime;
-    this.releaseTime = releaseTime;
-    this.sustainTime = sustainTime;
+  constructor(dynamics:NoteDynamics) {
+    this.attackTime = dynamics.attackTime;
+    this.decayReduction = dynamics.decayReduction;
+    this.decayTime = dynamics.decayTime;
+    this.releaseTime = dynamics.releaseTime;
+    this.sustainTime = dynamics.sustainTime;
   }
 
   attackTime: number;
@@ -19,40 +19,91 @@ export class ADSREnvelope {
     return new ADSREnvelope(0.01, 0.2,0.3, 0.8, 0);
   }*/
 
-  static fromNote(note:NoteEvent):ADSREnvelope{
-    let duration=note.length/1000;
 
-    function percentage(value):number{
-      return duration*value/100;
+  static default(duration: number): ADSREnvelope {
+
+    function percentage(value): number {
+      return duration * value / 100;
+    }
+
+    let attack = percentage(10);
+    let sustain=percentage(80);
+    let release=percentage(10);
+
+    return new ADSREnvelope(new NoteDynamics(attack, 0, 0, release, sustain));
+  }
+
+  static minimal(duration: number): ADSREnvelope {
+
+    function percentage(value): number {
+      return duration * value / 100;
     }
 
 
-    let attack = percentage(1);
-    let decayReduction = percentage(5);
-    let decayTime = percentage(15);
-    let sustainTIme=percentage(60);
-    let releaseTime=percentage(29);
+    let attack = 0;//percentage(10);
+    let decayReduction = 0;
+    let decayTime = percentage(20);
+    let sustainTIme = percentage(50);
+    let releaseTime = percentage(50);
 
-  /*  console.log("note duration: "+duration);
-    console.log("attack: "+attack);
-    console.log("decayReduction: "+decayReduction);
-    console.log("decayTime: "+decayTime);
-    console.log("releaseTime: "+releaseTime);
-    console.log("sustainTIme: "+sustainTIme);*/
-    return new ADSREnvelope(attack,decayReduction,decayTime,releaseTime,sustainTIme);
-  }
-  getDuration(): number {
-    return this.attackTime + this.decayTime + this.releaseTime + this.sustainTime;
+
+    return new ADSREnvelope(new NoteDynamics(attack, decayReduction, decayTime, releaseTime, sustainTIme));
   }
 
-  apply(node: GainNode, now): void {
+
+  apply(node: GainNode, now, length: number): void {
+    let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
+    /*  let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
+      var waveArray = new Float32Array(4);
+      waveArray[0] = 1;
+      waveArray[1] = 0.4;
+      waveArray[2] = 0.3;
+      waveArray[3] = 0.01;
+
+      node.gain.setValueCurveAtTime(waveArray, now, length);*/
+
+    if (!length) //happens when live playing
+    {
+      node.gain.cancelScheduledValues(now);
+      node.gain.setValueAtTime(0, now);
+      node.gain.linearRampToValueAtTime(1,now+this.attackTime);
+    }
+    else{
+      let peakTime = now + length * 50 / 100;
+      let fadeoutTime = now + length * 80 / 100;
+      // Important! Setting a scheduled parameter value
+      node.gain.cancelScheduledValues(now);
+      node.gain.setValueAtTime(0, now);
+      node.gain.setValueAtTime(1, now+this.attackTime);
+      node.gain.setValueAtTime(1, now+this.attackTime+this.sustainTime);
+      node.gain.exponentialRampToValueAtTime(0.0001, now+this.attackTime+this.sustainTime+this.releaseTime);
+    }
+
+
+
+
+    //node.gain.setTargetAtTime(0, now+length, 0.015);
+
+  }
+
+  /*apply(node: GainNode, now): void {
+    let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
     node.gain.cancelScheduledValues(now);
     node.gain.setValueAtTime(0, now);
     node.gain.linearRampToValueAtTime(1, now + this.attackTime);
     let decayGain = 1 - this.decayReduction;
     node.gain.linearRampToValueAtTime(decayGain, now + this.attackTime + this.decayTime);
     node.gain.linearRampToValueAtTime(decayGain, now + this.attackTime + this.decayTime + this.sustainTime);
-    node.gain.linearRampToValueAtTime(0, now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime);
+    node.gain.exponentialRampToValueAtTime(0.01,now+(endTime-now)/2 );
 
+  }*/
+
+  log(): void {
+
+    console.log("attack: " + this.attackTime);
+    console.log("decayReduction: " + this.decayReduction);
+    console.log("decayTime: " + this.decayTime);
+    console.log("releaseTime: " + this.releaseTime);
+    console.log("sustainTIme: " + this.sustainTime);
   }
 }
