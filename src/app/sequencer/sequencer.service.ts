@@ -1,12 +1,11 @@
 import {Inject, Injectable} from "@angular/core";
 import {MusicMath} from "../model//utils/MusicMath";
-import {Loudness} from "../model//mip/Loudness";
 import {Pattern} from "../model//daw/Pattern";
 import {NoteCell} from "./model/NoteCell";
 import {SequencerD3Specs} from "./model/sequencer.d3.specs";
-import {TimeSignature} from "../model//mip/TimeSignature";
 import {Notes} from "../model/mip/Notes";
 import {NoteEvent} from "../model/mip/NoteEvent";
+import {NoteDynamics} from "../model/mip/NoteDynamics";
 
 
 @Injectable()
@@ -91,7 +90,7 @@ export class SequencerService {
     let notes = pattern.getNotes();
     let note = notes[rowIndex - 1];
     let noteLength = this.getNoteLength(specs.cellWidth, pattern, specs);
-    let trigger = new NoteEvent(note, noteTime, noteLength, Loudness.fff, 0);
+    let trigger = new NoteEvent(note,NoteDynamics.default(noteLength), noteTime, noteLength);
     this.initializeNoteCell(rowIndex, cell, trigger, pattern);
     cells.push(cell);
 

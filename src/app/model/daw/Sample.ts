@@ -1,5 +1,6 @@
 import {NoteInfo} from "../utils/NoteInfo";
 import {EventEmitter} from "@angular/core";
+import {NoteEvent} from "../mip/NoteEvent";
 import {ADSREnvelope} from "../mip/ADSREnvelope";
 
 export class Sample {
@@ -22,21 +23,21 @@ export class Sample {
   }
 
 
-  public trigger(time: number, length: number, adsr: ADSREnvelope, startEvent?: EventEmitter<void>, detune?: number): Promise<{node:AudioBufferSourceNode,gainNode:GainNode}> {
+  public trigger(event: NoteEvent, startEvent?: EventEmitter<void>, detune?: number): Promise<{ node: AudioBufferSourceNode, gainNode: GainNode }> {
 
-    return new Promise<{node:AudioBufferSourceNode,gainNode:GainNode}>(((resolve, reject) => {
+    return new Promise<{ node: AudioBufferSourceNode, gainNode: GainNode }>(((resolve, reject) => {
       if (startEvent) {
         let startSubscription = startEvent.subscribe(() => {
           startSubscription.unsubscribe();
-          resolve(this._trigger(time, length, adsr, detune));
+          resolve(this._trigger(event, detune));
         })
-      } else resolve(this._trigger(time, length, adsr, detune));
+      } else resolve(this._trigger(event, detune));
     }));
 
 
   }
 
-  private _trigger(time: number, length: number, adsr: ADSREnvelope, detune?: number): {node:AudioBufferSourceNode,gainNode:GainNode} {
+  private _trigger(event: NoteEvent, detune?: number): { node: AudioBufferSourceNode, gainNode: GainNode } {
 
     let sourceNode = this.node = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
@@ -45,21 +46,19 @@ export class Sample {
     sourceNode.connect(gainNode);
 
     if (detune) sourceNode.detune.value = detune;
-    if (adsr) {
-      adsr.apply(gainNode, time,length);
-    }
-    else sourceNode.connect(gainNode);
+    let adsr = new ADSREnvelope(event.dynamics);
+    adsr.apply(gainNode, event.time, event.length);
 
-    sourceNode.start(time, 0, length);
+    sourceNode.start(event.time, 0, length);
     //todo: remove event listener on destroy?
     sourceNode.addEventListener("ended", () => {
       sourceNode.disconnect();
       sourceNode = null;
       gainNode.disconnect();
-      gainNode=null;
+      gainNode = null;
     });
 
-    return {node:sourceNode,gainNode:gainNode};
+    return {node: sourceNode, gainNode: gainNode};
   }
 
   destroy(): void {

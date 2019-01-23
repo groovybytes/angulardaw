@@ -5,17 +5,18 @@ import {SamplePlayer} from "./SamplePlayer";
 import {Thread} from "../Thread";
 import {Notes} from "../../mip/Notes";
 import {ADSREnvelope} from "../../mip/ADSREnvelope";
+import {NoteEvent} from "../../mip/NoteEvent";
 
 export class PlayerSession {
 
   constructor(private ticker:Thread,private notes:Notes,private plugin:AudioPlugin,bpm:BehaviorSubject<number>){
     this.bpm=bpm;
-    this.play.subscribe((event:{note:string,time:number,length:number})=>{
-      this._play(plugin,event.note,event.time,event.length,this);
+    this.play.subscribe(event=>{
+      this._play(plugin,event,this);
     });
   }
 
-  play: EventEmitter<{ note: string, time: number, length: number }> = new EventEmitter();
+  play: EventEmitter<NoteEvent> = new EventEmitter();
   stop: EventEmitter<void> = new EventEmitter();
   subscriptions:Array<Subscription>=[];
   bpm:BehaviorSubject<number>;
@@ -24,13 +25,13 @@ export class PlayerSession {
 
   }
 
-  _play(plugin: AudioPlugin, note: string, time: number, length: number, session: PlayerSession): void {
+  _play(plugin: AudioPlugin, event:NoteEvent, session: PlayerSession): void {
 
     let detune = 0;
     let node: AudioBufferSourceNode;
-    let sample = plugin.getSample(note);
-    if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
-    sample.trigger(time, length, ADSREnvelope.default(length),null, detune)
+    let sample = plugin.getSample(event.note);
+    if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
+    sample.trigger(event,null, detune)
       .then((result:{node:AudioBufferSourceNode,gainNode:GainNode}) => {
         node = result.node;
       });

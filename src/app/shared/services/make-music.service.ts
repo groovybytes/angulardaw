@@ -50,22 +50,20 @@ export class MakeMusicService {
     let currentTime = this.audioContextService.getTime() * 1000;
     let project = this.daw.project.getValue();
     let pluginTarget = project.activePlugin.getValue();
-    pluginTarget.play(note,
-      this.audioContextService.getTime(),
-      undefined,
+    let event = new NoteEvent(note,NoteDynamics.default(0),this.audioContextService.getTime());
+    pluginTarget.play(event,
       stopEvent,
-      new NoteDynamics(0.1,0,0,0,0),
       true);
     let recordSession = project.recordSession;
     if (recordSession.state.getValue() === 2) {
       eventMarker.startTime = currentTime;
-      eventMarker.recordingNoteEvent = NoteEvent.default(eventMarker.note);
+      eventMarker.recordingNoteEvent = new NoteEvent(eventMarker.note,null);
 
       let loopLength = MusicMath.getLoopLength(recordSession.pattern.length, project.settings.bpm.getValue());
       let triggerTime = ((this.audioContextService.getTime() - recordSession.startTime) % loopLength) * 1000;
       eventMarker.recordingNoteEvent.time = triggerTime;
       eventMarker.recordingNoteEvent.length = 0;
-      eventMarker.recordingNoteEvent.loudness = 1;
+      eventMarker.recordingNoteEvent.dynamics=NoteDynamics.default(0);
 
 
       if (recordSession.pattern.insertNote(eventMarker.recordingNoteEvent)) {

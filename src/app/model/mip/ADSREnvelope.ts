@@ -20,7 +20,7 @@ export class ADSREnvelope {
   }*/
 
 
-  static default(duration: number): ADSREnvelope {
+ /* static default(duration: number): ADSREnvelope {
 
     function percentage(value): number {
       return duration * value / 100;
@@ -48,7 +48,7 @@ export class ADSREnvelope {
 
 
     return new ADSREnvelope(new NoteDynamics(attack, decayReduction, decayTime, releaseTime, sustainTIme));
-  }
+  }*/
 
 
   apply(node: GainNode, now, length: number): void {

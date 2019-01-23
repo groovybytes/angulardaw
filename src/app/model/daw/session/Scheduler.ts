@@ -7,6 +7,7 @@ import {DawEvent} from "../DawEvent";
 import {DawEventCategory} from "../DawEventCategory";
 import {SchedulerEvent} from "./SchedulerEvent";
 import * as _ from "lodash";
+import {NoteEvent} from "../../mip/NoteEvent";
 
 
 export class Scheduler {
@@ -63,16 +64,19 @@ export class Scheduler {
         let bpmFactor = 120 / this.bpm.getValue();
         let exit = false;
 
-        while (!exit && inFrame(getTriggerTime(events[position].time) + events[position].offset)) {
+        while (!exit && inFrame(getTriggerTime(events[position].noteEvent.time) + events[position].offset)) {
 
           if (!this.startTime) {
             this.startTime = this.audioContext.currentTime;
             this.startEvent.emit(this.startTime);
           }
-          let triggerTime = getTriggerTime(events[position].time) + events[position].offset;
-          this.playEvent.emit(new SchedulerEvent(events[position].note, events[position].id,
+          let triggerTime = getTriggerTime(events[position].noteEvent.time) + events[position].offset;
+          let noteEvent = new NoteEvent(
+            events[position].noteEvent.note,
+            events[position].noteEvent.dynamics,
             triggerTime,
-            events[position].target, 0, events[position].length * bpmFactor));
+            events[position].noteEvent.length * bpmFactor);
+          this.playEvent.emit(new SchedulerEvent(noteEvent, events[position].id, events[position].target, 0));
 
           position++;
           if (position === events.length) {
@@ -101,7 +105,7 @@ export class Scheduler {
         }
         this.events.emit(new DawEvent(DawEventCategory.TICK, {tick: tick, countIn: countingIn}));
 
-        if (countingIn && tick+1 === countIn) {
+        if (countingIn && tick + 1 === countIn) {
           countingIn = false;
           this.ticker.post({command: "reset"});
         }
@@ -125,7 +129,9 @@ export class Scheduler {
   }
 
   addEvent(event: SchedulerEvent, loopLength: number): void {
-    let sortedIndex = _.sortedIndexBy(this.schedulerEvents, {"time": event.time}, (event) => event.time);
+    let noteEvents = <Array<NoteEvent>>this.schedulerEvents.map(event=>event.noteEvent);
+    let sortedIndex = _.sortedIndexBy(noteEvents, { 'time': event.noteEvent.time }, o=>o.time);
+
     if (this.schedulerEvents.length === 0) {
       this.currentLoop = Math.floor((this.audioContext.currentTime - this.startTime) / loopLength) + 1;
     }
@@ -140,13 +146,13 @@ export class Scheduler {
 
   updateEventLength(eventId: string, length: number): void {
     let event = this.schedulerEvents.find(event => event.id === eventId);
-    if (event) event.length = length;
+    if (event) event.noteEvent.length = length;
     else console.warn("event not found");
   }
 
   stop(): void {
     this.currentLoop = 0;
-    this.startTime=null;
+    this.startTime = null;
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.ticker.post({command: "stop"});
     this.running = false;

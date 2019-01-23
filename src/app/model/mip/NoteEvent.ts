@@ -1,28 +1,25 @@
 import {Lang} from "../utils/Lang";
-import {Sample} from "../daw/Sample";
+import {NoteDynamics} from "./NoteDynamics";
 
 
-export class NoteEvent{
+export class NoteEvent {
   readonly id: string;
   time: number;
   note: string;
   length: number;
-  loudness: number;
-  articulation: number;
+  dynamics: NoteDynamics;
 
-  constructor(note: string,time?: number, length?: number, loudness?: number, articulation?: number) {
+  constructor(note: string, dynamics: NoteDynamics, time?: number, length?: number) {
     this.id = Lang.guid();
     this.time = time;
     this.note = note;
     this.length = length;
-    this.loudness = loudness;
-    this.articulation = articulation;
+    this.dynamics = dynamics;
   }
 
-  static default(note:string):NoteEvent{
-    return new NoteEvent(note);
-  }
-
+  /*  static default(note: string): NoteEvent {
+      return new NoteEvent(note);
+    }*/
 
 
 }

@@ -49,7 +49,8 @@ export class SchedulerService {
           }
           nextEvents.forEach(event => {
             let triggerTime = event.time*bpmFactor - (this.audioContext.getTime() - startTime);
-            session.play.emit({note: event.note, time: triggerTime, length: event.length*bpmFactor});
+            session.play.emit(new NoteEvent(event.note,null,triggerTime,event.length*bpmFactor));
+            //session.play.emit({note: event.note, time: triggerTime, length: event.length*bpmFactor});
           })
         }
 

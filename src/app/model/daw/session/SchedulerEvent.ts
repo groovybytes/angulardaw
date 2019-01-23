@@ -2,20 +2,17 @@ import {NoteEvent} from "../../mip/NoteEvent";
 
 
 export class SchedulerEvent {
-  constructor(note: string,id:string, time: number, target: string, offset: number,length:number) {
-    this.note = note;
+  constructor(noteEvent: NoteEvent, id: string, target: string, offset: number) {
+    this.noteEvent = noteEvent;
     this.id = id;
-    this.time = time;
     this.target = target;
     this.offset = offset;
-    this.length=length;
   }
 
-  note:string;
+
+  noteEvent:NoteEvent;
   id:string;
-  time:number;
   target:string;
   offset:number;
-  length:number;
 
 }

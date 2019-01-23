@@ -54,14 +54,14 @@ export class TransportSession {
 
           let pattern = patterns.find(pattern => pattern.id === event.target);
 
-          pattern.plugin.play(event.note, event.time, event.length/1000, this.stopEvent);
+          pattern.plugin.play(new NoteEvent(event.noteEvent.note,event.noteEvent.dynamics, event.noteEvent.time, event.noteEvent.length/1000), this.stopEvent);
           this.dawEvents.emit(new DawEvent(DawEventCategory.TRANSPORT_NOTE_QUEUED, event));
         });
 
       let events: Array<SchedulerEvent> = [];
       patterns.forEach(pattern => {
         pattern.events.forEach(event =>{
-          events.push(new SchedulerEvent(event.note, event.id,event.time, pattern.id, countInOffset,event.length));
+          events.push(new SchedulerEvent(event, event.id, pattern.id, countInOffset));
         });
 
         this.patternSubscriptions.push(pattern.onDestroy.subscribe(() => {
@@ -71,7 +71,7 @@ export class TransportSession {
             if (patterns.length===0) this.stop();
         }));
         this.patternSubscriptions.push(pattern.noteInserted.subscribe((event:NoteEvent) => {
-          this.scheduler.addEvent(new SchedulerEvent(event.note,event.id, event.time, pattern.id, countInOffset,event.length),pattern.getLength());
+          this.scheduler.addEvent(new SchedulerEvent(event,event.id, pattern.id, countInOffset),pattern.getLength());
         }));
         this.patternSubscriptions.push(pattern.noteUpdated.subscribe((event:NoteEvent) => {
 
@@ -86,7 +86,7 @@ export class TransportSession {
 
 
       });
-      events = _.sortBy(events, event => event.time);
+      events = _.sortBy(events, event => event.noteEvent.time);
       this.scheduler.run(events,countIn, loop, loopLength);
 
     }
