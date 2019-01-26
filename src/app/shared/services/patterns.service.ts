@@ -9,10 +9,8 @@ import {NoteEvent} from "../../model/mip/NoteEvent";
 import {Lang} from "../../model/utils/Lang";
 import {FilesApi} from "../../api/files.api";
 import {AppConfiguration} from "../../app.configuration";
-import {Cell} from "../../model/daw/matrix/Cell";
-import {bootloader} from "@angularclass/hmr";
 import {DawInfo} from "../../model/DawInfo";
-import {Matrix} from "../../model/daw/matrix/Matrix";
+import {TransportService} from "./transport.service";
 
 @Injectable()
 export class PatternsService {
@@ -20,6 +18,7 @@ export class PatternsService {
   constructor(
     private fileService: FilesApi,
     @Inject("daw") private daw: DawInfo,
+    private transport: TransportService,
     private config: AppConfiguration) {
 
   }
@@ -101,17 +100,18 @@ export class PatternsService {
   createMetronomeEvents(beatUnit: number): Array<NoteEvent> {
     let events = [];
     for (let i = 0; i < beatUnit; i++) {
-      events.push(new NoteEvent(i === 0 ? "A0" : "", i * MusicMath.getBeatTime(120),500));
+      events.push(new NoteEvent(i === 0 ? "A0" : "", true, i * MusicMath.getBeatTime(120), 500));
     }
 
     return events;
   }
 
+
   toggleScene(row: number): void {
     let project = this.daw.project.getValue();
     if (project.activeSceneRow === row) {
       project.activeSceneRow = null;
-      project.session.stop();
+      this.transport.stop();
       project.setChannels([]);
     } else {
       let matrixRow = project.matrix.body[row];
@@ -119,8 +119,8 @@ export class PatternsService {
       if (patterns.length > 0) {
         project.setChannels(patterns.map(pattern => pattern.id));
         project.activeSceneRow = row;
-        project.session.start(patterns, project.getCountIn(),true,
-          MusicMath.getLoopLength(patterns[0].length, project.settings.bpm.getValue()),project.settings.metronomeSettings);
+        this.transport.start(patterns, project.getCountIn(), true,
+          MusicMath.getLoopLength(patterns[0].length, project.settings.bpm.getValue()));
       }
     }
 
@@ -134,17 +134,15 @@ export class PatternsService {
     if (cell) {
       cell.data = pattern;
       project.selectedPattern.next(pattern);
-    }
-    else console.warn("cell not found");
+    } else console.warn("cell not found");
   }
 
-  togglePattern(patternId:string):void{
+  togglePattern(patternId: string): void {
 
     let project = this.daw.project.getValue();
-    if (project.session.running.getValue()){
+    if (this.transport.running.getValue()) {
       this.stop(project);
-    }
-    else{
+    } else {
 
       this.startPattern(patternId, project);
     }
@@ -153,12 +151,11 @@ export class PatternsService {
   //todo: move start+stop to ......
   private startPattern(patternId: string, project: Project): void {
     let pattern = project.patterns.find(pattern => pattern.id === patternId);
-    let session = project.session;//this.transport.createSession(pattern.plugin);
+    let session = this.transport;
     project.setChannels([patternId]);
 
-
-    session.start([pattern], project.getCountIn(),true,
-      MusicMath.getLoopLength(pattern.length, project.settings.bpm.getValue()),project.settings.metronomeSettings);
+    session.start([pattern], project.getCountIn(), true,
+      MusicMath.getLoopLength(pattern.length, project.settings.bpm.getValue()));
     /*if (project.isRunningWithChannel(patternId)) {
       this.eventStream.stop();
     } else {*/
@@ -175,7 +172,7 @@ export class PatternsService {
 
   private stop(project: Project): void {
     // this.eventStream.stop();
-    project.session.stop();
+    this.transport.stop();
     project.setChannels([]);
   }
 

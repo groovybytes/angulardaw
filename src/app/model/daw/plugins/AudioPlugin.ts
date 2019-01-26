@@ -9,9 +9,7 @@ import {PluginHost} from "./PluginHost";
 import {Lang} from "../../utils/Lang";
 import {EventEmitter} from "@angular/core";
 import {Notes} from "../../mip/Notes";
-import {ADSREnvelope} from "../../mip/ADSREnvelope";
-import set = Reflect.set;
-import {NoteDynamics} from "../../mip/NoteDynamics";
+import {NoteEvent} from "../../mip/NoteEvent";
 
 export abstract class AudioPlugin implements PluginHost {
 
@@ -66,12 +64,8 @@ export abstract class AudioPlugin implements PluginHost {
     return this.instanceId;
   }
 
-  play(note: string,
-       time: number,
-       length: number,
-       stopEvent: EventEmitter<void>,
-       dynamics?: NoteDynamics,
-       fadeOut?: boolean): void {
+  play(event:NoteEvent,
+       stopEvent: EventEmitter<void>,fadeOut?:boolean): void {
 
     let stopSubscription = stopEvent ? stopEvent.subscribe(() => {
       stopSubscription.unsubscribe();
@@ -88,11 +82,11 @@ export abstract class AudioPlugin implements PluginHost {
     let detune = 0;
     let node: AudioBufferSourceNode;
     let gainNode: GainNode;
-    let sample = this.getSample(note);
-    if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(note)) * 100;
+    let sample = this.getSample(event.note);
+    if (sample.baseNote) detune = this.notes.getInterval(sample.baseNote, this.notes.getNote(event.note)) * 100;
 
-    let adsrEnvelope = dynamics ? new ADSREnvelope(dynamics) : ADSREnvelope.default(length);
-    sample.trigger(time, length, adsrEnvelope, null, detune)
+
+    sample.trigger(event, null, detune)
       .then((result: { node: AudioBufferSourceNode, gainNode: GainNode }) => {
         node = result.node;
         gainNode = result.gainNode;

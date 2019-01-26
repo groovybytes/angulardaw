@@ -5,33 +5,39 @@ import {Thread} from "../Thread";
 import {EventEmitter} from "@angular/core";
 import {DawEvent} from "../DawEvent";
 import {DawEventCategory} from "../DawEventCategory";
-import {SchedulerEvent} from "./SchedulerEvent";
 import * as _ from "lodash";
+import {NoteEvent} from "../../mip/NoteEvent";
 
 
 export class Scheduler {
 
-  playEvent: EventEmitter<SchedulerEvent> = new EventEmitter();
+  playEvent: EventEmitter<NoteEvent> = new EventEmitter();
   startEvent: EventEmitter<number> = new EventEmitter();
   private running: boolean = false;
   private startTime: number;
   private currentLoop: number = 0;
-  private schedulerEvents: Array<SchedulerEvent>;
+  private NoteEvents: Array<NoteEvent>;
+  private  events: EventEmitter<DawEvent<any>>;
+  private bpm: BehaviorSubject<number>;
+  private ticker: Thread;
 
   private subscriptions: Array<Subscription> = [];
 
-  constructor(private events: EventEmitter<DawEvent<any>>,
-              private audioContext: AudioContext,
-              private bpm: BehaviorSubject<number>,
-              private ticker: Thread) {
+  constructor(private audioContext: AudioContext) {
+  }
+  
+  init( events: EventEmitter<DawEvent<any>>, bpm: BehaviorSubject<number>, ticker: Thread):void{
+    this.events=events;
+    this.bpm=bpm;
+    this.ticker=ticker;
   }
 
 
-  run(events: Array<SchedulerEvent>, countIn: number, loop?: boolean, loopLength?: number): void {
+  run(events: Array<NoteEvent>, countIn: number, loop?: boolean, loopLength?: number): void {
 
 
     if (this.running) return;
-    this.schedulerEvents = events;
+    this.NoteEvents = events;
     this.running = true;
     let position = 0;
     let countingIn = countIn > 0;
@@ -69,10 +75,11 @@ export class Scheduler {
             this.startTime = this.audioContext.currentTime;
             this.startEvent.emit(this.startTime);
           }
-          let triggerTime = getTriggerTime(events[position].time) + events[position].offset;
-          this.playEvent.emit(new SchedulerEvent(events[position].note, events[position].id,
-            triggerTime,
-            events[position].target, 0, events[position].length * bpmFactor));
+
+          let clonedEvent=NoteEvent.clone(events[position]);
+          clonedEvent.time=getTriggerTime(clonedEvent.time) + clonedEvent.offset;
+          NoteEvent.updateLength(clonedEvent,clonedEvent.length*bpmFactor);
+          this.playEvent.emit(clonedEvent);
 
           position++;
           if (position === events.length) {
@@ -124,22 +131,22 @@ export class Scheduler {
 
   }
 
-  addEvent(event: SchedulerEvent, loopLength: number): void {
-    let sortedIndex = _.sortedIndexBy(this.schedulerEvents, {"time": event.time}, (event) => event.time);
-    if (this.schedulerEvents.length === 0) {
+  addEvent(event: NoteEvent, loopLength: number): void {
+    let sortedIndex = _.sortedIndexBy(this.NoteEvents, {"time": event.time}, (event) => event.time);
+    if (this.NoteEvents.length === 0) {
       this.currentLoop = Math.floor((this.audioContext.currentTime - this.startTime) / loopLength) + 1;
     }
-    this.schedulerEvents.splice(sortedIndex, 0, event);
+    this.NoteEvents.splice(sortedIndex, 0, event);
 
   }
 
   removeEventsWithTarget(target: string): void {
-    _.remove(this.schedulerEvents, event => event.target === target);
+    _.remove(this.NoteEvents, event => event.target === target);
 
   }
 
   updateEventLength(eventId: string, length: number): void {
-    let event = this.schedulerEvents.find(event => event.id === eventId);
+    let event = this.NoteEvents.find(event => event.id === eventId);
     if (event) event.length = length;
     else console.warn("event not found");
   }

@@ -1,13 +1,9 @@
+/*
 import {NoteDynamics} from "./NoteDynamics";
+import {NoteEvent} from "./NoteEvent";
 
 export class ADSREnvelope {
-  constructor(dynamics:NoteDynamics) {
-    this.attackTime = dynamics.attackTime;
-    this.decayReduction = dynamics.decayReduction;
-    this.decayTime = dynamics.decayTime;
-    this.releaseTime = dynamics.releaseTime;
-    this.sustainTime = dynamics.sustainTime;
-  }
+
 
   attackTime: number;
   decayReduction: number;
@@ -15,12 +11,16 @@ export class ADSREnvelope {
   releaseTime: number;
   sustainTime: number;
 
-  /*static default(): ADSREnvelope {
+
+  static fromEvent(event:NoteEvent):ADSREnvelope{
+
+  }
+  /!*static default(): ADSREnvelope {
     return new ADSREnvelope(0.01, 0.2,0.3, 0.8, 0);
-  }*/
+  }*!/
 
 
-  static default(duration: number): ADSREnvelope {
+ /!* static default(duration: number): ADSREnvelope {
 
     function percentage(value): number {
       return duration * value / 100;
@@ -31,9 +31,9 @@ export class ADSREnvelope {
     let release=percentage(10);
 
     return new ADSREnvelope(new NoteDynamics(attack, 0, 0, release, sustain));
-  }
+  }*!/
 
-  static minimal(duration: number): ADSREnvelope {
+  /!*static minimal(duration: number): ADSREnvelope {
 
     function percentage(value): number {
       return duration * value / 100;
@@ -48,22 +48,23 @@ export class ADSREnvelope {
 
 
     return new ADSREnvelope(new NoteDynamics(attack, decayReduction, decayTime, releaseTime, sustainTIme));
-  }
+  }*!/
 
 
   apply(node: GainNode, now, length: number): void {
     let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
-    /*  let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
+    /!*  let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
       var waveArray = new Float32Array(4);
       waveArray[0] = 1;
       waveArray[1] = 0.4;
       waveArray[2] = 0.3;
       waveArray[3] = 0.01;
 
-      node.gain.setValueCurveAtTime(waveArray, now, length);*/
+      node.gain.setValueCurveAtTime(waveArray, now, length);*!/
 
     if (!length) //happens when live playing
     {
+
       node.gain.cancelScheduledValues(now);
       node.gain.setValueAtTime(0, now);
       node.gain.linearRampToValueAtTime(1,now+this.attackTime);
@@ -86,7 +87,7 @@ export class ADSREnvelope {
 
   }
 
-  /*apply(node: GainNode, now): void {
+  /!*apply(node: GainNode, now): void {
     let endTime = now + this.attackTime + this.decayTime + this.sustainTime + this.releaseTime;
     node.gain.cancelScheduledValues(now);
     node.gain.setValueAtTime(0, now);
@@ -96,7 +97,7 @@ export class ADSREnvelope {
     node.gain.linearRampToValueAtTime(decayGain, now + this.attackTime + this.decayTime + this.sustainTime);
     node.gain.exponentialRampToValueAtTime(0.01,now+(endTime-now)/2 );
 
-  }*/
+  }*!/
 
   log(): void {
 
@@ -107,3 +108,4 @@ export class ADSREnvelope {
     console.log("sustainTIme: " + this.sustainTime);
   }
 }
+*/

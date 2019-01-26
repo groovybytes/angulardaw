@@ -1,12 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ProjectsService} from "../../shared/services/projects.service";
 import {PatternsService} from "../../shared/services/patterns.service";
-import {TrackCategory} from "../../model/daw/TrackCategory";
 import {Project} from "../../model/daw/Project";
 import {Pattern} from "../../model/daw/Pattern";
-import {TransportSession} from "../../model/daw/session/TransportSession";
 import {DawInfo} from "../../model/DawInfo";
 import {MusicMath} from "../../model/utils/MusicMath";
+import {TransportService} from "../../shared/services/transport.service";
 
 @Component({
   selector: 'app-transporttest',
@@ -15,15 +14,14 @@ import {MusicMath} from "../../model/utils/MusicMath";
 })
 export class TransporttestComponent implements OnInit {
 
-  private session: TransportSession;
   project: Project;
   private pattern: Pattern;
 
 
   constructor(
     private projectsService: ProjectsService,
-    @Inject("daw") private daw: DawInfo,
-    private patternService: PatternsService) {
+    private session: TransportService,
+    @Inject("daw") private daw: DawInfo) {
 
   }
 
@@ -60,7 +58,7 @@ export class TransporttestComponent implements OnInit {
       [this.pattern],
       4,
       true,
-      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().settings.bpm.getValue()),this.daw.project.getValue().settings.metronomeSettings);
+      MusicMath.getLoopLength(this.pattern.length,this.daw.project.getValue().settings.bpm.getValue()));
   }
 
   stop(): void {

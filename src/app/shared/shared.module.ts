@@ -14,7 +14,7 @@ import {AppHistoryService} from "./services/app-history.service";
 import {ScaleId} from "../model/mip/scales/ScaleId";
 import {MakeMusicService} from "./services/make-music.service";
 import {MidiBridgeService} from "./services/midi-bridge.service";
-import {SchedulerService} from "./services/scheduler.service";
+import {TransportService} from "./services/transport.service";
 
 
 @NgModule({
@@ -33,8 +33,8 @@ import {SchedulerService} from "./services/scheduler.service";
     AudioContextService,
     AppHistoryService,
     MakeMusicService,
+    TransportService,
     MidiBridgeService,
-  SchedulerService,
     {
       provide: "KeyboardState",
       useClass: KeyboardState

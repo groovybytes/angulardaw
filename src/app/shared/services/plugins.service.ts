@@ -67,7 +67,7 @@ export class PluginsService {
     outputNode.connect(track.outputNode);
   }
 
-  loadPluginWithInfo(id: string, instanceId: string, info: PluginInfo, project: Project): Promise<AudioPlugin> {
+  loadPluginWithInfo(id: string, instanceId: string, info: PluginInfo): Promise<AudioPlugin> {
 
     return new Promise((resolve, reject) => {
       let plugin: AudioPlugin;
@@ -80,8 +80,6 @@ export class PluginsService {
         info,
         this.samplesV2Service,
         this.notes);
-      else if (info.id === "metronome") plugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.fileService,
-        project, this.config, this.samplesV2Service,this.notes);
       else plugin = new InstrumentSampler(
           id,
           this.notes,

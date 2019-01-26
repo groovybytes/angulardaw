@@ -91,7 +91,9 @@ export class SequencerService {
     let notes = pattern.getNotes();
     let note = notes[rowIndex - 1];
     let noteLength = this.getNoteLength(specs.cellWidth, pattern, specs);
-    let trigger = new NoteEvent(note, noteTime, noteLength, Loudness.fff, 0);
+
+    let trigger = new NoteEvent(note,true, noteTime, noteLength);
+    trigger.target=pattern.id;
     this.initializeNoteCell(rowIndex, cell, trigger, pattern);
     cells.push(cell);
 

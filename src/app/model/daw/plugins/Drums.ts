@@ -116,10 +116,6 @@ export class Drums extends AudioPlugin {
     return "percussion";
   }
 
-  play(note: string, time: number, length: number,stopEvent:EventEmitter<void>): void{
-    if (length<0.5) length=0.5;
-    super.play(note,time,length,stopEvent);
-  }
 
 
 }

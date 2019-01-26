@@ -1,6 +1,7 @@
 import {NoteInfo} from "../utils/NoteInfo";
 import {EventEmitter} from "@angular/core";
-import {ADSREnvelope} from "../mip/ADSREnvelope";
+import {NoteEvent} from "../mip/NoteEvent";
+
 
 export class Sample {
   id: string;
@@ -8,7 +9,6 @@ export class Sample {
 
 
   private destination: AudioNode;
-  private node: AudioBufferSourceNode;
   buffer: AudioBuffer;
 
   constructor(id: string, buffer: AudioBuffer, private context: AudioContext) {
@@ -22,45 +22,56 @@ export class Sample {
   }
 
 
-  public trigger(time: number, length: number, adsr: ADSREnvelope, startEvent?: EventEmitter<void>, detune?: number): Promise<{node:AudioBufferSourceNode,gainNode:GainNode}> {
+  public trigger(event: NoteEvent, startEvent?: EventEmitter<void>, detune?: number): Promise<{ node: AudioBufferSourceNode, gainNode: GainNode }> {
 
-    return new Promise<{node:AudioBufferSourceNode,gainNode:GainNode}>(((resolve, reject) => {
+    return new Promise<{ node: AudioBufferSourceNode, gainNode: GainNode }>(((resolve, reject) => {
       if (startEvent) {
         let startSubscription = startEvent.subscribe(() => {
           startSubscription.unsubscribe();
-          resolve(this._trigger(time, length, adsr, detune));
+          resolve(this._trigger(event, detune));
         })
-      } else resolve(this._trigger(time, length, adsr, detune));
+      } else resolve(this._trigger(event, detune));
     }));
 
 
   }
 
-  private _trigger(time: number, length: number, adsr: ADSREnvelope, detune?: number): {node:AudioBufferSourceNode,gainNode:GainNode} {
+  private _trigger(event: NoteEvent, detune?: number): { node: AudioBufferSourceNode, gainNode: GainNode } {
 
-    let sourceNode = this.node = this.context.createBufferSource();
+    let sourceNode = this.context.createBufferSource();
     sourceNode.buffer = this.buffer;
     let gainNode = this.context.createGain();
     gainNode.connect(this.destination);
     sourceNode.connect(gainNode);
 
     if (detune) sourceNode.detune.value = detune;
-    if (adsr) {
-      adsr.apply(gainNode, time,length);
-    }
-    else sourceNode.connect(gainNode);
 
-    sourceNode.start(time, 0, length);
+    console.log(event);
+    let time = event.time;
+    gainNode.gain.setValueAtTime(0.1, time);
+    time += event.attack / 1000;
+    gainNode.gain.exponentialRampToValueAtTime(1.0, time);
+    if (event.length) {
+      time += event.decay / 1000;
+      gainNode.gain.linearRampToValueAtTime(1 - event.decayReduction, time);
+      time += event.sustain / 1000;
+      gainNode.gain.setValueAtTime(1 - event.decayReduction, time);
+      time += event.release / 1000;
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, time);
+    }
+
+    sourceNode.start(event.time, 0, event.length);
     //todo: remove event listener on destroy?
     sourceNode.addEventListener("ended", () => {
       sourceNode.disconnect();
       sourceNode = null;
       gainNode.disconnect();
-      gainNode=null;
+      gainNode = null;
     });
 
-    return {node:sourceNode,gainNode:gainNode};
+    return {node: sourceNode, gainNode: gainNode};
   }
+
 
   destroy(): void {
     console.warn("currently we do nothing here");

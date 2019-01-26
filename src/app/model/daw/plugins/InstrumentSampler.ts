@@ -2,17 +2,11 @@ import {Sample} from "../Sample";
 import {NoteInfo} from "../../utils/NoteInfo";
 import {PluginInfo} from "./PluginInfo";
 import {VirtualAudioNode} from "../VirtualAudioNode";
-import {ADSREnvelope} from "../../mip/ADSREnvelope";
 import {Notes} from "../../mip/Notes";
 import {InstrumentCategory} from "../../mip/instruments/InstrumentCategory";
-import {NoteEvent} from "../../mip/NoteEvent";
 import {AudioPlugin} from "./AudioPlugin";
-import {EventEmitter} from "@angular/core";
-import {DeviceEvent} from "../devices/DeviceEvent";
 import {Trigger} from "../Trigger";
 import {TriggerSpec} from "../TriggerSpec";
-import {SampleEventInfo} from "../SampleEventInfo";
-import {sample} from "rxjs/operators";
 
 export class InstrumentSampler extends AudioPlugin {
 
@@ -125,38 +119,6 @@ export class InstrumentSampler extends AudioPlugin {
     this.outputNode = node;
     this.samples.forEach(sample => sample.setDestination(node.node));
   }
-
-
- /* startPlay(event: SampleEventInfo): void {
-
-    let sample = this.samples[0];//this.chooseSample(this.notes.getNote(event.note));
-    this.runningSamples.push({eventId: event.id, sample: sample});
-    sample.trigger(event);//, ADSREnvelope.fromNote(event));
-  }*/
-
-
-  /*startPlay(event: NoteEvent):AudioBufferSourceNode {
-    let t1 = performance.now();
-    let eventNote = this.notes.getNote(event.note);
-    let sample =this.chooseSample(this.notes.getNote(event.note));
-    let detune = this.notes.getInterval(sample.baseNote, eventNote) * 100;
-    this.currentPlayingNotes.push(event.note);
-    console.log(performance.now()-t1);
-    return sample.start(0, detune, ADSREnvelope.fromNote(event));
-  }*/
-
- /* stopPlay(id: string): void {
-    let index = this.runningSamples.findIndex(d => d.eventId === id);
-    if (index >= 0) {
-      this.runningSamples[0].sample.stop();
-      this.runningSamples.splice(index, 1);
-    }
-  }*/
-
- /* stop(): void {
-
-    this.samples.forEach(sample => sample.stop());
-  }*/
 
   getPushSettingsHint(): string {
     return "default";

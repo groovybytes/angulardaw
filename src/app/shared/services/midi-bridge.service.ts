@@ -33,7 +33,7 @@ export class MidiBridgeService {
       MidiConvert.load(url, (midi) => {
         let converted = midi.tracks[1].notes.map(midiEvent => {
           let noteInfo = this.notes.notes.find(d => d.midi === midiEvent.midi);
-          return new NoteEvent(noteInfo.id, null, midiEvent.time * 1000, midiEvent.duration, midiEvent.velocity);
+          return new NoteEvent(noteInfo.id,true, midiEvent.time * 1000, midiEvent.duration);
         });
         resolve(converted);
       })
@@ -77,7 +77,7 @@ export class MidiBridgeService {
       let pattern = this.patternService.createPattern(project, trackId, NoteLength.Quarter, beats);
       midiTrack.notes.forEach(midiEvent => {
         let noteInfo = this.notes.notes.find(d => d.midi === midiEvent.midi);
-        pattern.insertNote(new NoteEvent(noteInfo.id, midiEvent.time* 1000, midiEvent.duration* 1000));
+        pattern.insertNote(new NoteEvent(noteInfo.id, true,midiEvent.time* 1000, midiEvent.duration* 1000));
       });
       resolve(pattern);
 

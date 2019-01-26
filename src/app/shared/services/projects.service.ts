@@ -23,8 +23,8 @@ import {Lang} from "../../model/utils/Lang";
 import {Thread} from "../../model/daw/Thread";
 import {Notes} from "../../model/mip/Notes";
 import {ApiResponse} from "../../api/ApiResponse";
-import {TransportSession} from "../../model/daw/session/TransportSession";
-import {Metronome} from "../../model/daw/Metronome";
+import {MetronomePlugin} from "../../model/daw/plugins/MetronomePlugin";
+import {AudioNodeTypes} from "../../model/daw/AudioNodeTypes";
 
 
 @Injectable()
@@ -109,7 +109,7 @@ export class ProjectsService {
 
   }
 
-  saveProject(project:Project): Promise<void> {
+  saveProject(project: Project): Promise<void> {
     return new Promise<void>(((resolve, reject) => {
       let dto = this.serializeProject(project);
       return this.projectsApi.update(dto)
@@ -137,28 +137,15 @@ export class ProjectsService {
 
   initializeProject(project: Project): Promise<void> {
     return new Promise<void>(((resolve, reject) => {
-
-      project.session = new TransportSession(
-        project.events,
-        project.recordSession,
-        project.threads.find(t => t.id === "ticker"),
-        (note1, note2) => this.notes.getInterval(this.notes.getNote(note1), this.notes.getNote(note2)) * 100,
-        (targetId, note) => project.plugins.find(plugin => plugin.getInstanceId() === targetId).getSample(note),
-        this.audioContext.getAudioContext(),
-        project.settings.bpm);
-
-      this.samplesV2Service.getClickSamples().then(result => {
-        project.metronome = new Metronome(
-          this.audioContext.getAudioContext(),
-          project.events,
-          this.daw.destroy,
-          project.settings.metronomeSettings.enabled,
-          result.accentSample.buffer,
-          result.defaultSample.buffer);
-
-        resolve();
-      })
-        .catch(error=>reject(error));
+      project.metronomePlugin = new MetronomePlugin(this.audioContext.getAudioContext(), this.samplesV2Service, this.notes);
+      project.metronomePlugin.load()
+        .then(() => {
+          let outputNode = this.audioNodesService.createVirtualNode(Lang.guid(), AudioNodeTypes.GAIN, "");
+          project.metronomePlugin.setOutputNode(outputNode);
+          outputNode.node.connect(this.audioContext.getAudioContext().destination);
+          resolve();
+        })
+        .catch(error => reject(error));
 
     }));
 
@@ -252,7 +239,7 @@ export class ProjectsService {
               if (pluginDto.pad) {
                 pluginInfo.pad = pluginDto.pad;//override default pads
               }
-              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginDto.instanceId, pluginInfo, project);
+              let promise = this.pluginsService.loadPluginWithInfo(pluginDto.id, pluginDto.instanceId, pluginInfo);
               pluginPromises.push(promise);
               promise.then(_plugin => {
 
@@ -274,8 +261,6 @@ export class ProjectsService {
                 let plugin = project.plugins.find(plugin => plugin.getInstanceId() === dto.activePlugin);
                 project.activePlugin.next(plugin);
               }
-              //let metronomeTrack = project.tracks.find(track => track.category===TrackCategory.METRONOME);
-              //project.settings.metronomeSettings.pattern = this.createMetronomePattern(project, metronomeTrack);
 
               dto.patterns.forEach(p => {
                 let matrixCell = cells.find(cell => cell.data === p.id);

@@ -50,12 +50,12 @@ export class MakeMusicService {
     let currentTime = this.audioContextService.getTime() * 1000;
     let project = this.daw.project.getValue();
     let pluginTarget = project.activePlugin.getValue();
-    pluginTarget.play(note,
-      this.audioContextService.getTime(),
-      undefined,
-      stopEvent,
-      new NoteDynamics(0.1,0,0,0,0),
-      true);
+
+    let playEvent = NoteEvent.default(eventMarker.note);
+    playEvent.time=this.audioContextService.getTime();
+    playEvent.attack=0.1;
+
+    pluginTarget.play(playEvent,stopEvent,true);
     let recordSession = project.recordSession;
     if (recordSession.state.getValue() === 2) {
       eventMarker.startTime = currentTime;
@@ -65,7 +65,7 @@ export class MakeMusicService {
       let triggerTime = ((this.audioContextService.getTime() - recordSession.startTime) % loopLength) * 1000;
       eventMarker.recordingNoteEvent.time = triggerTime;
       eventMarker.recordingNoteEvent.length = 0;
-      eventMarker.recordingNoteEvent.loudness = 1;
+      eventMarker.recordingNoteEvent.target = recordSession.pattern.id;
 
 
       if (recordSession.pattern.insertNote(eventMarker.recordingNoteEvent)) {
@@ -80,6 +80,7 @@ export class MakeMusicService {
   stopPlay(note: string): void {
     let index = this.eventMarkers.findIndex(d => d.note === note);
     let marker = this.eventMarkers[index];
+    if (marker.recordingNoteEvent) NoteEvent.updateAdsr(marker.recordingNoteEvent);
     if (!marker) console.error("no marker");
     if (marker.updater) {
       this.updateNoteEvent(this.daw.project.getValue().recordSession.pattern, marker.recordingNoteEvent, marker);

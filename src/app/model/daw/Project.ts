@@ -19,18 +19,14 @@ import {KeyBindings} from "../../push/model/KeyBindings";
 import {RecordSession} from "./RecordSession";
 import {Thread} from "./Thread";
 import {DawEvent} from "./DawEvent";
-import {TransportSession} from "./session/TransportSession";
 import {filter} from "rxjs/operators";
 import {DawEventCategory} from "./DawEventCategory";
-import {Metronome} from "./Metronome";
-import {TimeSignature} from "../mip/TimeSignature";
 
 
 export class Project {
   id: string;
   name: string = "default";
   events: EventEmitter<DawEvent<any>> = new EventEmitter();
-  session: TransportSession;
   selectedPattern: BehaviorSubject<Pattern> = new BehaviorSubject<Pattern>(null);
   selectedTrack: BehaviorSubject<Track> = new BehaviorSubject<Track>(null);
   patterns: Array<Pattern> = [];
@@ -45,7 +41,8 @@ export class Project {
   trackRemoved: EventEmitter<Track> = new EventEmitter();
   pluginTypes: Array<PluginInfo> = [];
   plugins: Array<AudioPlugin> = [];
-  metronome: Metronome;
+  metronomePlugin:AudioPlugin;
+  //metronome: Metronome;
   activePlugin: BehaviorSubject<AudioPlugin> = new BehaviorSubject(null);
   colors = ["lightblue", "yellow", "red"];
   recordSession: RecordSession=new RecordSession();
