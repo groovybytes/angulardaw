@@ -153,7 +153,6 @@ export class PatternsService {
     let pattern = project.patterns.find(pattern => pattern.id === patternId);
     let session = this.transport;
     project.setChannels([patternId]);
-
     session.start([pattern], project.getCountIn(), true,
       MusicMath.getLoopLength(pattern.length, project.settings.bpm.getValue()));
     /*if (project.isRunningWithChannel(patternId)) {

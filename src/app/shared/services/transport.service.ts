@@ -12,9 +12,7 @@ import {NoteLength} from "../../model/mip/NoteLength";
 import {MusicMath} from "../../model/utils/MusicMath";
 import {TriggerSpec} from "../../model/daw/TriggerSpec";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TransportService {
 
   private scheduler: Scheduler;
@@ -29,13 +27,14 @@ export class TransportService {
   constructor(
     @Inject("daw") private daw: DawInfo,
     private audioContext: AudioContextService) {
-    this.scheduler = new Scheduler(this.audioContext.getAudioContext());
+
 
   }
 
-
   /// loopLength: seconds
   start(patterns: Array<Pattern>, countIn: number, loop: boolean, loopLength: number): void {
+    //important: instantiate scheduler here instead of constructor to avoid google audio problem
+    if (!this.scheduler) this.scheduler = new Scheduler(this.audioContext.getAudioContext());
     let project = this.daw.project.getValue();
 
     patterns.push(this.createMetronomePattern(patterns[0].length));
@@ -46,9 +45,9 @@ export class TransportService {
     if (this.running.getValue()) this.stop();
     else {
       this.running.next(true);
-
-
-      let countInOffset = 0;
+      //console.log(countIn);
+      //MusicMath.getLength(1, project.settings.bpm.getValue(), project.settings.signature.beatUnit)
+      let countInOffset =0;// MusicMath.getTimeAtBeat(countIn,project.settings.bpm.getValue(),project.settings.quantizationBase);
       this.playSubscription = this.scheduler.playEvent
         .subscribe((event: NoteEvent) => {
           let pattern = patterns.find(pattern => pattern.id === event.target);

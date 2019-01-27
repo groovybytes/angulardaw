@@ -124,6 +124,7 @@ export class ProjectsService {
   getProject(projectId: string): Promise<Project> {
     return new Promise<Project>(((resolve, reject) => {
       this.projectsApi.getById(projectId).then(result => {
+
         this.deSerializeProject(result.data)
           .then(project => {
             resolve(project);

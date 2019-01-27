@@ -47,26 +47,31 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.route.params.subscribe(params => {
       console.log("bootstrap");
-      this.projectsService.getProject(params.projectId)
-        .then(project => {
-          this.projectsService.initializeProject(project)
-            .then(() => {
-              this.project=project;
-              this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
-                this.deviceService.handleDeviceEvent(event);
-              }));
 
-              this.daw.ready.next(true);
+        this.projectsService.getProject(params.projectId)
+          .then(project => {
+            setTimeout(()=>{
+              // setTimeout: this is important to avoid chrome error with audioengine
+              // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
+              this.projectsService.initializeProject(project)
+                .then(() => {
+                  this.project=project;
+                  this.subscriptions.push(this.project.deviceEvents2.subscribe((event: DeviceEvent<any>) => {
+                    this.deviceService.handleDeviceEvent(event);
+                  }));
+
+                  this.daw.ready.next(true);
 
 
-              this.daw.project.next(project);
+                  this.daw.project.next(project);
+                })
+                .catch(error => this.system.error(error));
             })
-            .catch(error => this.system.error(error));
 
 
-        })
-        .catch(error => this.system.error(error));
 
+          })
+          .catch(error => this.system.error(error));
 
     });
 

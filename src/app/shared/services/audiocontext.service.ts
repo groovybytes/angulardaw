@@ -25,13 +25,16 @@ export class AudioContextService {
   }*/
 
   getAudioContext(): AudioContext {
+
     if (!this.context){
       this.context = this.create();
     }
+
     return this.context;
   }
 
   private create(): AudioContext {
+
     let ContextClass = (AudioContext || webkitAudioContext || mozAudioContext || oAudioContext || msAudioContext);
     return new ContextClass();
   }
