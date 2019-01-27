@@ -17,7 +17,7 @@ export class Scheduler {
   private startTime: number;
   private currentLoop: number = 0;
   private NoteEvents: Array<NoteEvent>;
-  private  events: EventEmitter<DawEvent<any>>;
+  private events: EventEmitter<DawEvent<any>>;
   private bpm: BehaviorSubject<number>;
   private ticker: Thread;
 
@@ -25,11 +25,11 @@ export class Scheduler {
 
   constructor(private audioContext: AudioContext) {
   }
-  
-  init( events: EventEmitter<DawEvent<any>>, bpm: BehaviorSubject<number>, ticker: Thread):void{
-    this.events=events;
-    this.bpm=bpm;
-    this.ticker=ticker;
+
+  init(events: EventEmitter<DawEvent<any>>, bpm: BehaviorSubject<number>, ticker: Thread): void {
+    this.events = events;
+    this.bpm = bpm;
+    this.ticker = ticker;
   }
 
 
@@ -43,6 +43,7 @@ export class Scheduler {
     let countingIn = countIn > 0;
     let lookAhead = 2;//seconds
 
+    let countInOffset =MusicMath.getTimeAtBeat(countIn, this.bpm.getValue(), NoteLength.Quarter);
 
     this.ticker.post(
       {
@@ -50,12 +51,8 @@ export class Scheduler {
         , params: MusicMath.getTickTime(this.bpm.getValue(), NoteLength.Quarter)
       });
 
-    let nextTick = (tick: number) => {
+    let nextTick = () => {
 
-      /*   if (loop && this.startTime) {
-           currentLoop=Math.floor((this.audioContext.currentTime-this.startTime) / loopLength);
-         }
-   */
 
       if (position < events.length) {
 
@@ -76,10 +73,12 @@ export class Scheduler {
             this.startEvent.emit(this.startTime);
           }
 
-          let clonedEvent=NoteEvent.clone(events[position]);
-          clonedEvent.time=getTriggerTime(clonedEvent.time) + clonedEvent.offset;
-          NoteEvent.updateLength(clonedEvent,clonedEvent.length*bpmFactor);
+          let clonedEvent = NoteEvent.clone(events[position]);
+          clonedEvent.time = getTriggerTime(clonedEvent.time) + clonedEvent.offset;
+          if (clonedEvent.target !== "_metronome-pattern") clonedEvent.time+=countInOffset/1000;
+          NoteEvent.updateLength(clonedEvent, clonedEvent.length * bpmFactor);
           this.playEvent.emit(clonedEvent);
+
 
           position++;
           if (position === events.length) {
@@ -92,7 +91,7 @@ export class Scheduler {
 
       } else {
         //this happens if there are no events
-        if (!this.startTime) {
+        if (!this.startTime && !countingIn) {
           this.startTime = this.audioContext.currentTime;
           this.startEvent.emit(this.startTime);
         }
@@ -103,21 +102,12 @@ export class Scheduler {
     this.subscriptions.push(this.ticker.message.subscribe(msg => {
       if (msg.data.hint === "tick") {
         let tick = msg.data.value;
-        if (!countingIn) {
-          nextTick(msg.data.value);
-        }
-        this.events.emit(new DawEvent(DawEventCategory.TICK, {tick: tick, countIn: countingIn}));
-
-        if (countingIn && tick+1 === countIn) {
-          countingIn = false;
-          this.ticker.post({command: "reset"});
-        }
-
+        nextTick();
+        countingIn=(countIn===0|| tick < countIn+1);
+        this.events.emit(new DawEvent(DawEventCategory.TICK, {tick: tick,countInOffset:countIn, countIn: tick < countIn}));
 
       }
       if (msg.data.hint === "start") {
-
-        //this.events.emit(new DawEvent(DawEventCategory.TICK, 0));
 
       }
       if (msg.data.hint === "stop") {
@@ -153,7 +143,7 @@ export class Scheduler {
 
   stop(): void {
     this.currentLoop = 0;
-    this.startTime=null;
+    this.startTime = null;
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.ticker.post({command: "stop"});
     this.running = false;

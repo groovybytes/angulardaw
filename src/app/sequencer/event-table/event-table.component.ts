@@ -71,11 +71,10 @@ export class EventTableComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.push(this.mouseEvents.dragEnd.subscribe(event => this.interaction.onDragEnd()));
     this.subscriptions.push(
       this.project.subscribe([DawEventCategory.TICK],(event => {
-
         if (!event.data.countIn){
           let ticksPerBeat=MusicMath.getBeatTicks(this.pattern.quantization.getValue());
           let loopTicks =ticksPerBeat * this.pattern.length;
-          this.tick = event.data.tick*ticksPerBeat % loopTicks;
+          this.tick = (event.data.tick-event.data.countInOffset)*ticksPerBeat % loopTicks;
           this.cdr.markForCheck();
         }
 

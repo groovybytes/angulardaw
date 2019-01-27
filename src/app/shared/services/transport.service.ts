@@ -32,6 +32,7 @@ export class TransportService {
   }
 
   /// loopLength: seconds
+  // countIn: beats
   start(patterns: Array<Pattern>, countIn: number, loop: boolean, loopLength: number): void {
     //important: instantiate scheduler here instead of constructor to avoid google audio problem
     if (!this.scheduler) this.scheduler = new Scheduler(this.audioContext.getAudioContext());
@@ -47,7 +48,7 @@ export class TransportService {
       this.running.next(true);
       //console.log(countIn);
       //MusicMath.getLength(1, project.settings.bpm.getValue(), project.settings.signature.beatUnit)
-      let countInOffset =0;// MusicMath.getTimeAtBeat(countIn,project.settings.bpm.getValue(),project.settings.quantizationBase);
+
       this.playSubscription = this.scheduler.playEvent
         .subscribe((event: NoteEvent) => {
           let pattern = patterns.find(pattern => pattern.id === event.target);
@@ -56,11 +57,14 @@ export class TransportService {
 
         });
 
+      //let countInOffset = 0;//MusicMath.getLength(1, project.settings.bpm.getValue(), project.settings.signature.beatUnit)/1000;
+
+
       let events: Array<NoteEvent> = [];
 
       patterns.forEach(pattern => {
+        //todo: use concat
         pattern.events.forEach(event => {
-          event.offset = countInOffset;
           events.push(event);
         });
 
@@ -71,7 +75,6 @@ export class TransportService {
           if (patterns.length === 0) this.stop();
         }));
         this.patternSubscriptions.push(pattern.noteInserted.subscribe((event: NoteEvent) => {
-          event.offset = countInOffset;
           this.scheduler.addEvent(event, pattern.getLength());
         }));
         this.patternSubscriptions.push(pattern.noteUpdated.subscribe((event: NoteEvent) => {
