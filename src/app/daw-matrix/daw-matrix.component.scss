@@ -1,45 +1,47 @@
-@import "variables";
-/*@import "matrix-table";*/
-@import "theme/utils";
-
-.menu-btn {
-  width: 30px;
-  height:$header-height;
-  &.menu-open {
-    filter: brightness(50%);
-  }
+.sidebar {
+  grid-area: sidebar;
+  display:grid;
 }
 
-.content-cell {
-  &:hover {
-
-    filter: brightness(95%);
-  }
-
-  background-color: $color-1;
+.content {
+  grid-area: content;
+  display:grid;
 }
 
-.cell-container {
-  width: 100%;
-  height: 100%;
-
-  &.marked {
-    border: 1px solid black;
-  }
-  &.editing {
-
-  }
-
+.header {
+  grid-area: header;
+  display:grid;
+  grid-auto-flow: column;
 }
 
-.marked{
-  background-color: contrastColor("dark", "primary") !important;
+.footer {
+  grid-area: footer;
+  display:grid;
 }
 
 
-:host {
-  height:100%;
-
-//position: absolute;
+.wrapper {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 120px 120px 120px;
+  grid-template-areas:
+    "....... header header"
+    "sidebar content content"
+    "footer  footer  footer";
+  background-color: #fff;
+  color: #444;
 }
 
+
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 150%;
+}
+
+.header,
+.footer {
+  background-color: #999;
+}
