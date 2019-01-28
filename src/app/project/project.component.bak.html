@@ -1,16 +1,147 @@
-<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
-  <form class="form-inline w-100 h-100">
-    <div class="w-25 h-100">
+<a2d-desktop *ngIf="project">
+  <!--  <div class="windows">
+      <a2d-window
+        [id]="'matrix'"
+        [title]="''"
+        [state]="WindowState.DOCKED"
+        [dockPosition]="DockPosition.TOP_LEFT"
+        [x]="400"
+        [y]="400"
+        [width]="400"
+        [height]="400">
+        <div class="header">
+          <ul class="nav">
+            <li>
+              <a [ngClass]="{'active':project?.metronomeEnabled | async}"
+                 href [routerLink]="" (click)="switchMetronome()"><img class="" src="assets/icons/metronome.png">
+              </a>
+            </li>
+            <li>
+              <a [ngClass]="{'active':project?.recording | async}"
+                 href [routerLink]="" (click)="toggleRecord()">REC
+              </a>
+            </li>
+            <li>
+              <div>
+                <ng5-slider class="" [value]="project?.transportSettings.global.bpm" [options]="slider.options"
+                            (userChange)="changeTempo($event)">
+                </ng5-slider>
+              </div>
 
-      <!--   <button class="btn  h-100" type="button"
-                 [ngClass]="{'active': project?.openedWindows.indexOf('sequencer')>=0}"
-                 (click)="toggleSequencer()">Sequencer
-         </button>
-         <button class="btn  h-100" type="button"
-                 [ngClass]="{'active': project?.openedWindows.indexOf('plugin')>=0}"
-                 (click)="togglePlugin()">Plugin
-         </button>-->
-    </div>
+            </li>
+            <li><a href [routerLink]="">{{project?.transportSettings.global.bpm}}</a></li>
+            <li class="float-right"><a href [routerLink]="" (click)="close()"><i class="fas fa-times"></i></a></li>
+            <li class="float-right"><a href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
+          </ul>
+        </div>
+        <div class="body">
+
+          <daw-matrix [project]="project"></daw-matrix>
+
+        </div>
+      </a2d-window>
+      &lt;!&ndash;<a2d-window
+        [id]="'sequencer'"
+        [title]="'sequencer'"
+        [state]="WindowState.DOCKED"
+        [dockPosition]="DockPosition.BOTTOM_LEFT"
+        [x]="400"
+        [y]="400"
+        [width]="400"
+        [height]="400">
+        <div class="header">
+
+        </div>
+        <div class="body">
+          <sequencer-footer [project]="project" *ngIf="project.selectedPattern | async" [pattern]="project.selectedPattern | async"></sequencer-footer>
+          <sequencer [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
+
+        </div>
+      </a2d-window>&ndash;&gt;
+      &lt;!&ndash;<a2d-window
+        [id]="'plugin-panel'"
+        [title]="'plugins'"
+        [state]="WindowState.DOCKED"
+        [dockPosition]="DockPosition.BOTTOM_RIGHT"
+        [x]="400"
+        [y]="400"
+        [width]="400"
+        [height]="400">
+        <div class="body">
+          <plugin-panel [project]="project" [track]="project.selectedTrack.getValue()"></plugin-panel>
+
+        </div>
+      </a2d-window>&ndash;&gt;
+    </div>-->
+  <div class="bar-left">
+
+    <button
+      type="button"
+      style=""
+      a2dShortCut
+      (initialize)="initializePush($event)"
+      [appId]="'push'">Push</button>
+
+    <!--<a2d-shortcut [appId]="'push'" [icon]="'/assets/images/push.png'"></a2d-shortcut>-->
+
+  </div>
+  <div class="bar-top">
+    <a2d-task-bar></a2d-task-bar>
+  </div>
+
+  <a2d-desktop-application
+    id="matrix"
+    title="matrix"
+    [dockPosition]="DockPosition.LEFT"
+    [singleInstanceMode]="true"
+    [open]="true"
+    [x]="300"
+    [y]="300"
+    [width]="300"
+    [height]="300"
+    (initialize)="initializeMatrix($event)"
+    [component]="DawMatrixComponent">
+
+  </a2d-desktop-application>
+
+  <a2d-desktop-application
+    id="push"
+    title="push"
+    [singleInstanceMode]="true"
+    [dockPosition]="DockPosition.RIGHT"
+    [open]="true"
+    [x]="300"
+    [y]="300"
+    [width]="300"
+    [height]="300"
+    (initialize)="initializePush($event)"
+    [component]="PushComponent">
+
+  </a2d-desktop-application>
+  <a2d-desktop-application
+    id="sequencer"
+    title="Sequencer"
+    [singleInstanceMode]="false"
+    [open]="false"
+    [x]="100"
+    [y]="100"
+    [width]="600"
+    [height]="600"
+    (initialize)="initializeSequencer($event)"
+    [component]="SequencerComponent">
+
+  </a2d-desktop-application>
+
+
+
+</a2d-desktop>
+
+<!--<recorder *ngIf="project" [project]="project"></recorder>-->
+
+
+
+<!--<nav class="navbar fixed-top top-navbar" *ngIf="project?.ready">
+  <form class="form-inline w-100 h-100">
     <div class="w-50 h-100">
       <button type="button" class="btn " [ngClass]="{'active':project?.metronomeEnabled | async}"
               (click)="switchMetronome()"><img class="icon-image" src="assets/icons/metronome.png"></button>
@@ -32,48 +163,47 @@
   </form>
 </nav>
 
-<div class="container-fluid">
-  <div class="drag-container" *ngIf="project && project.ready">
-    <div class="row main-container">
-      <div class="col-12">
-        <daw-matrix [project]="project"></daw-matrix>
-        <window [window]="sequencerWindow" *ngIf="sequencerWindow.position===0 && project.desktop.isOpen(sequencerWindow.id)">
+<div class="drag-container"  *ngIf="project && project.ready">
+  <daw-settings [project]="project"
+              [ngStyle]="{'z-index':getWindow('settings').zIndex}"
+              [ngClass]="getWindow('settings').clazz"></daw-settings>
 
-          <sequencer role="body"
-                     [project]="project"
-                     [pattern]="project.selectedPattern | async"
-                     (close)="project.desktop.closeWindow(sequencerWindow.id)"></sequencer>
-          <sequencer-footer role="footer" [project]="project"
-                            [pattern]="project.selectedPattern | async"></sequencer-footer>
+  <sequencer [ngClass]="getWindow('sequencer').clazz"
+             [ngStyle]="{'z-index':getWindow('sequencer').zIndex}"
+             [project]="project"
+             [pattern]="project.selectedPattern | async"></sequencer>
 
-        </window>
-      </div>
+ &lt;!&ndash; <pads  *ngIf="getWindow('plugin').state!= WindowState.CLOSED" class="body"  [rows]="3" [columns]="3"
+         project="project"
+         [ngStyle]="{'z-index':getWindow('plugin').zIndex}"
+         [ngClass]="getWindow('plugin').clazz"
+         [pad]="project.selectedTrack.getValue()?.plugins[0].getInfo().pad">
 
-    </div>
-    <!--  [ngStyle]="
-      {'left':sequencerWindow.x+'px',
-      'width':sequencerWindow.width+'px',
-      'height':sequencerWindow.height+'px',
-      'top':sequencerWindow.y+'px'}"-->
-    <!--
-    <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
-                  [project]="project"
-                  [window]="window"
-                  [pluginId]="window.pluginId"
-                  (positionXChanged)="window.x=$event"
-                  (positionYChanged)="window.y=$event"
-                  [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
-                  class="" interact>
-    </plugin-panel>-->
-    <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
-    <recorder [project]="project"></recorder>
-
-    <div class=" footer fixed-bottom">
-      <effects-panel *ngIf="project.selectedTrack.getValue()" class="" [project]="project"
-                     [track]="project?.selectedTrack | async"></effects-panel>
-    </div>
-  </div>
-</div>
+  </pads>&ndash;&gt;
 
 
+&lt;!&ndash;  <plugin-panel *ngFor="let track of project.tracks"
+                [project]="project"
+                [window]="window"
+                [pluginId]="track.getInstrumentPlugin().getId()"
+                [ngStyle]="{'z-index':getWindow(track.getInstrumentPlugin().getId()).zIndex}"
+                [ngClass]="getWindow(track.getInstrumentPlugin().getId()).clazz">
+  </plugin-panel>&ndash;&gt;
 
+ &lt;!&ndash; <plugin-panel *ngFor="let window of project?.desktop.getOpenWindows()"
+                [project]="project"
+                [window]="window"
+                [pluginId]="window.pluginId"
+                (positionXChanged)="window.x=$event"
+                (positionYChanged)="window.y=$event"
+                [ngStyle]="{'width':window.width+'px','height':window.height+'px'}"
+                class="" interact>
+  </plugin-panel>&ndash;&gt;
+  &lt;!&ndash;  <div class="vertical-line"></div>&ndash;&gt;
+
+
+  <project-observer [project]="project" [tracks]="project?.tracks"></project-observer>
+
+
+  <app-footer [project]="project"></app-footer>
+</div>-->
