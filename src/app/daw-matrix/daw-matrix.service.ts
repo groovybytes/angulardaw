@@ -10,7 +10,6 @@ import {PatternsService} from "../shared/services/patterns.service";
 import {NoteLength} from "../model//mip/NoteLength";
 import {KeyboardState} from "../model/KeyboardState";
 import {Cell} from "../model/daw/matrix/Cell";
-import {A2dClientService} from "angular2-desktop";
 import {SequencerComponent} from "../sequencer/sequencer.component";
 import {DawInfo} from "../model/DawInfo";
 
@@ -20,7 +19,6 @@ export class DawMatrixService {
   constructor(private trackService: TracksService,
               private patternService: PatternsService,
               private projectsService: ProjectsService,
-              private desktop: A2dClientService,
               @Inject("daw") private daw: DawInfo,
               @Inject("KeyboardState") private keyboardState: KeyboardState) {
 
@@ -54,31 +52,18 @@ export class DawMatrixService {
     if (cell.data) project.selectedPattern.next(cell.data);
   }
 
-  bodyCellMenuBtnClicked(cell: Cell<Pattern>, project: Project): void {
-
-    let nextRowCell = project.matrix.body[cell.row + 1][cell.column];
-    if (nextRowCell.patternMenu) {
-      cell.menuOpen = false;
-      nextRowCell.patternMenu = null;
-    } else {
-      nextRowCell.patternMenu = cell.data;
-      cell.menuOpen = true;
-    }
-
-  }
-
 
   onCellContainerClicked(cell: Cell<Pattern>, project: Project): void {
 
     let trackIndex = project.tracks.findIndex(t => t.id === cell.trackId);
-    this.desktop.trigger("sequencer", cell.data.plugin.getInfo().name + "(track " + trackIndex + ")", cell.data.id,
+/*    this.desktop.trigger("sequencer", cell.data.plugin.getInfo().name + "(track " + trackIndex + ")", cell.data.id,
       (component: SequencerComponent, windowId) => {
         component.project = project;
         component.pattern = cell.data;
         component.track = project.tracks[trackIndex];
 
       })
-      .catch(error => console.error(error));
+      .catch(error => console.error(error));*/
   }
 
   removePattern(id: string): void {

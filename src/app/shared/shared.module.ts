@@ -8,7 +8,6 @@ import {KeyboardState} from "../model/KeyboardState";
 import {AudioNodesService} from "./services/audionodes.service";
 import {AudioContextService} from "./services/audiocontext.service";
 import {Notes} from "../model/mip/Notes";
-import {UiModule} from "../ui/ui.module";
 import {CommonModule} from "@angular/common";
 import {AppHistoryService} from "./services/app-history.service";
 import {ScaleId} from "../model/mip/scales/ScaleId";
@@ -20,8 +19,7 @@ import {TransportService} from "./services/transport.service";
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
-    UiModule
+    CommonModule
   ],
   providers: [
     PluginsService,

@@ -5,7 +5,6 @@ import {HeaderCellMenuComponent} from "./header-cell-menu/header-cell-menu.compo
 import {BodyCellMenuComponent} from "./body-cell-menu/body-cell-menu.component";
 import {PluginDropdownComponent} from "./plugin-dropdown/plugin-dropdown.component";
 import {BrowserModule} from "@angular/platform-browser";
-import {UiModule} from "../ui/ui.module";
 import {AppRoutingModule} from "../app-routing.module";
 import {ConsoleModule} from "../console/console.module";
 import {CoreModule} from "../core/core.module";
@@ -13,6 +12,7 @@ import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
 import {Ng5SliderModule} from "ng5-slider";
 import { ControlsComponent } from './controls/controls.component';
+import {UiCoreModule} from "../ui-core/ui-core.module";
 
 
 @NgModule({
@@ -26,7 +26,7 @@ import { ControlsComponent } from './controls/controls.component';
   imports: [
     AppRoutingModule,
     BrowserModule,
-    UiModule,
+    UiCoreModule,
     ConsoleModule,
     CoreModule,
     SharedModule,

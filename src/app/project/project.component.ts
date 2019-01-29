@@ -3,7 +3,6 @@ import {Project} from "../model//daw/Project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectsService} from "../shared/services/projects.service";
 import {System} from "../system/System";
-import {DockPosition} from "angular2-desktop";
 import {DawInfo} from "../model/DawInfo";
 import {Subscription} from "rxjs";
 import {DeviceEvent} from "../model/daw/devices/DeviceEvent";
@@ -21,10 +20,6 @@ import {MidiBridgeService} from "../shared/services/midi-bridge.service";
 })
 export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  PushComponent = PushComponent;
-  DawMatrixComponent = DawMatrixComponent;
-  SequencerComponent = SequencerComponent;
-  DockPosition = DockPosition;
 
   project: Project;
 

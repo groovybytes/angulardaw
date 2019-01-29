@@ -1,28 +1,6 @@
-@import "scss/variables";
-/*@import "bootstrap.variables";*/
-/*@import "global";*/
-@import 'scss/scrollbar';
-@import 'scss/slider';
-@import 'scss/utils';
-@import 'scss/dropdowns';
-@import 'scss/buttons';
-@import 'scss/navs';
-
-
-@import "scss/common";
-//a2d fixes
-
-/*.header{
-  height:40px !important; //$header height
-}*/
-
 .window-body{
   .body{
     width:100%;
     height:100%;
   }
-
-
-  //need window min width!
-  //btn-group conflict !
 }

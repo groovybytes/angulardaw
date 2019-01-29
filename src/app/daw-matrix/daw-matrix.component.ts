@@ -89,11 +89,6 @@ export class DawMatrixComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
 
-
-  bodyCellMenuBtnClicked(cell: Cell<Pattern>): void {
-    this.dawMatrixService.bodyCellMenuBtnClicked(cell, this.project);
-  }
-
   bodyCellDblClicked(cell: Cell<Pattern>): void {
     this.dawMatrixService.bodyCellDblClicked(cell, this.project);
   }

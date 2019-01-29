@@ -12,7 +12,6 @@ import {LandingPageComponent} from "./landing-page.component";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
-import {Angular2DesktopModule, WindowComponent} from "angular2-desktop";
 import {DawInfo} from "./model/DawInfo";
 import {PrototypingModule} from "./prototyping/prototyping.module";
 
@@ -32,8 +31,7 @@ import {PrototypingModule} from "./prototyping/prototyping.module";
     HttpClientModule,
     AuthenticationModule,
     ProjectModule,
-    PrototypingModule,
-    Angular2DesktopModule
+    PrototypingModule
 
 
   ],
@@ -44,7 +42,7 @@ import {PrototypingModule} from "./prototyping/prototyping.module";
     {provide: "daw", useValue: new DawInfo()}
 
   ],
-  entryComponents:[WindowComponent],
+  entryComponents:[],
   bootstrap: [AppComponent]
 })
 export class AppModule {

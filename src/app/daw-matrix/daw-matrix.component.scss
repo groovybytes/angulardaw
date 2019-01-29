@@ -1,3 +1,8 @@
+$column-min:80px;
+$column-max:150px;
+$row-min:50px;
+$row-max:65px;
+
 .sidebar {
   grid-area: sidebar;
   display:grid;
@@ -6,12 +11,17 @@
 .content {
   grid-area: content;
   display:grid;
+  grid-gap: 5px;
+  grid-auto-rows: minmax($row-min,$row-max);
+  grid-auto-columns: minmax($column-min,$column-max);
+  overflow: hidden;
 }
 
 .header {
   grid-area: header;
   display:grid;
   grid-auto-flow: column;
+  grid-auto-columns: minmax($column-min,$column-max);
 }
 
 .footer {
@@ -19,11 +29,12 @@
   display:grid;
 }
 
-
 .wrapper {
   display: grid;
+  width:100vw;
+  height:100vh;
   grid-gap: 10px;
-  grid-template-columns: 120px 120px 120px;
+  grid-template-columns: 120px 1fr 120px;
   grid-template-areas:
     "....... header header"
     "sidebar content content"
@@ -31,7 +42,6 @@
   background-color: #fff;
   color: #444;
 }
-
 
 .box {
   background-color: #444;
@@ -44,4 +54,13 @@
 .header,
 .footer {
   background-color: #999;
+}
+
+.cell{
+
+  display:grid;
+  grid-gap: 2px;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 20px;
+
 }

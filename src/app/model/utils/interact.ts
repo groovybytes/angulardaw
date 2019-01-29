@@ -1,3 +1,4 @@
+/*
 import * as interact from "interactjs";
 
 export class Interact{
@@ -50,3 +51,4 @@ export class Interact{
     window["dragMoveListener"] = dragMoveListener;
   }
 }
+*/

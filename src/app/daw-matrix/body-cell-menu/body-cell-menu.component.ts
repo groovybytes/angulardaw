@@ -14,11 +14,6 @@ export class BodyCellMenuComponent implements OnInit {
   @Input() cell: Cell<Pattern>;
   @Input() color: string;
 
-   @HostBinding('style.display')
-   get display() {
-     return this.cell.patternMenu?"":"none";
-   }
-
 
   constructor(private dawMatrixService: DawMatrixService) {
   }
@@ -32,8 +27,7 @@ export class BodyCellMenuComponent implements OnInit {
   }*/
 
   remove(): void {
-    this.dawMatrixService.removePattern(this.cell.patternMenu.id);
-    this.cell.patternMenu=null;
+    this.dawMatrixService.removePattern(this.cell.data.id);
   }
 }
 

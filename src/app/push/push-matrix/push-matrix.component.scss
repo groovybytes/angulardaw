@@ -1,4 +1,4 @@
-@import "utils";
+
 
 $pad-color: rgba(79, 93, 117, 1);
 :host {
@@ -34,7 +34,7 @@ $pad-color: rgba(79, 93, 117, 1);
   position: relative;
 
   border: 1px solid black;
-  @include vertical-center;
+  /*@include vertical-center;*/
 
   &.active {
     background-color: lighten($pad-color, 5%);

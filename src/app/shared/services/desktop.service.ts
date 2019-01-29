@@ -1,5 +1,5 @@
+/*
 import {Injectable} from '@angular/core';
-import {A2dClientService} from "angular2-desktop";
 
 @Injectable({
   providedIn: 'root'
@@ -19,3 +19,5 @@ export class DesktopService {
       .catch(error => console.warn(error));
   }
 }
+*/
+

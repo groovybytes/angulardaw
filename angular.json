@@ -29,7 +29,6 @@
             ],
             "styles": [
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
-              "node_modules/flexboxgrid/dist/flexboxgrid.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
@@ -40,7 +39,6 @@
             "scripts": [
               "node_modules/midiconvert/build/MidiConvert.js",
               "node_modules/midi-writer-js/build/browser/index.min.js",
-              "node_modules/interactjs/dist/interact.min.js",
               "node_modules/midiutils/src/MIDIUtils.js",
               "node_modules/lodash/lodash.min.js",
               "node_modules/jquery/dist/jquery.min.js",

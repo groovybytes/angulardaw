@@ -1,35 +1,42 @@
 <div class="wrapper">
   <div class="box header">
-    <div *ngFor="let cell of project.matrix.header;let i=index"  [attr.id]="cell.id">
+    <div *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
       {{cell.data?.name}}
     </div>
   </div>
   <div class="box sidebar">
     <ng-container *ngFor="let row of project.matrix.body;let i=index">
-     <div>{{i}}</div>
+      <div>{{i}}</div>
     </ng-container>
   </div>
   <div class="box content">
 
     <ng-container *ngFor="let row of project.matrix.body;let i=index">
-      <div *ngFor="let cell of row;let j=index" [attr.id]="cell.id"
-           [ngStyle]="{'grid-column-start':j+1,'grid-column-end':j+1,'grid-row-start':i+1,'grid-row-end':i+1}">
-        <ng-container  *ngIf="cell.data && !cell.patternMenu" (dblclick)="onCellContainerClicked(cell)">
-          <button type="button"
-                  (click)="onCellBtnClicked(cell,$event)"
-                  class="btn h-100 float-left transparent">
+      <div
+        class="cell"
+        *ngFor="let cell of row;let j=index" [attr.id]="cell.id"
+        [ngStyle]="
+        {
+        'grid-column-start':j+1,
+        'grid-column-end':j+1,
+        'grid-row-start':i+1,
+        'grid-row-end':i+1}">
+
+        <ng-container *ngIf="cell.data" (dblclick)="onCellContainerClicked(cell)">
+          <div *ngIf="cell.menuOpen">
+            <body-cell-menu [cell]="cell"></body-cell-menu>
+          </div>
+
+          <uic-button [backgroundColor]="getTrack(cell.trackId)?.color"
+                      *ngIf="!cell.menuOpen"
+                      (onClick)="onCellBtnClicked(cell,$event)" [stretch]="true">
             <i class="fas fa-play fa-2x" *ngIf="!project.isRunningWithChannel(cell.data.id)"></i>
             <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunningWithChannel(cell.data.id)"></i>
-          </button>
-          <button type="button"
-                  class="btn float-right menu-btn"
-                  (click)="bodyCellMenuBtnClicked(cell)"
-                  [ngClass]="{'menu-open':cell.menuOpen}"
-                  [ngStyle]="{'background-color':getTrack(cell.trackId).color}">
-            <i class="fas fa-chevron-down" *ngIf="cell.menuOpen===false"></i>
-            <i class="fas fa-chevron-up" *ngIf="cell.menuOpen===true"></i>
-          </button>
+          </uic-button>
+          <uic-button (onClick)="cell.menuOpen=!cell.menuOpen" [stretch]="true">
+          </uic-button>
         </ng-container>
+
       </div>
     </ng-container>
 

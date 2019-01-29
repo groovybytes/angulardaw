@@ -1,5 +1,8 @@
-<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-  <button type="button" class="btn " (click)="remove()"><i class="far fa-trash-alt"></i>X</button>
-  <button type="button" class="btn "><i class="far fa-edit"></i></button>
-  <button type="button" class="btn "><i class="fas fa-ban"></i></button>
-</div>
+<uic-button (onClick)="remove()" [stretch]="true">
+  <i class="far fa-trash-alt"></i>
+</uic-button>
+<uic-button [stretch]="true">
+  <i class="far fa-edit"></i>
+</uic-button><uic-button [stretch]="true">
+  <i class="far fa-ban"></i>
+</uic-button>
