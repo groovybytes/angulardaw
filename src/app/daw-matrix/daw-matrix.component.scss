@@ -1,3 +1,5 @@
+@import "variables";
+
 $column-min:80px;
 $column-max:150px;
 $row-min:50px;
@@ -44,7 +46,7 @@ $row-max:65px;
 }
 
 .box {
-  background-color: #444;
+  background-color: $color-main;
   color: #fff;
   border-radius: 5px;
   padding: 10px;
