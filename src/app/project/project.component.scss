@@ -1,35 +1,45 @@
+@import "theme";
 
 
-/*
-.vertical-line{
-  width:100%;
-  margin:3px;
-  height:10px;
-  background-color: $secondary;
+.sidebar {
+  grid-area: sidebar;
+  display:grid;
 }
 
-
-
-
-.tab-pane {
-  height: $footer-height;
+.content {
+  grid-area: content;
 }
 
-
-.dropdown-toggle::after {
-  display: none;
+.header {
+  grid-area: header;
 }
 
-
-!*.sequencer-container, .plugin-container {
-  position: absolute;
-  z-index: $z-index-sequencer;
-}*!
-
-
-:host{
-  width: 100%;
-  height: 100%;
+.footer {
+  grid-area: footer;
+  display:grid;
 }
-*/
+
+.wrapper {
+  display: grid;
+  width:100vw;
+  height:100vh;
+  grid-gap: 5px;
+  grid-template-columns: 120px 1fr 120px;
+  grid-template-rows: 100px 1fr 100px;
+  grid-template-areas:
+    "header header header"
+    "sidebar content content"
+    "footer  footer  footer";
+  background-color: $color-tertiary;
+}
+
+.box {
+  //border-radius: 5px;
+  //padding: 10px;
+}
+
+.header,
+.footer {
+  background-color: light($color-primary);
+}
 

@@ -10,8 +10,6 @@ export class UicButtonComponent implements OnInit {
   @Input() backgroundColor:string;
   @Output() onClick:EventEmitter<void>=new EventEmitter();
 
-  @HostBinding('class.stretch') @Input() stretch: boolean=false;
-
 
  /* @HostListener('mouseover') onMouseOver() {
     let part = this.el.nativeElement.querySelector('.card-text');

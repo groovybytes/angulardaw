@@ -1,1 +1,14 @@
-<daw-matrix *ngIf="project" [project]="project"></daw-matrix>
+<div class="wrapper" *ngIf="project">
+  <div class="box header">
+
+  </div>
+  <div class="box sidebar"></div>
+
+  <div class="box content">
+    <daw-matrix [project]="project"></daw-matrix>
+  </div>
+  <div class="box footer">
+
+  </div>
+</div>
+
