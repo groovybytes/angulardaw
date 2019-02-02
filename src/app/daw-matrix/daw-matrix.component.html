@@ -16,22 +16,25 @@
       <div *ngIf="cell.menuOpen">
         <body-cell-menu [cell]="cell"></body-cell-menu>
       </div>
-      <uic-button
-        class="stretch"
-        [backgroundColor]="getTrack(cell.trackId)?.color"
+      <button
+        mat-flat-button
+        color="primary"
         *ngIf="!cell.menuOpen"
-        (onClick)="onCellBtnClicked(cell,$event)">
-        <i class="fas fa-play fa-2x" *ngIf="!project.isRunningWithChannel(cell.data.id)"></i>
-        <i class="fas fa-circle-notch fa-spin fa-2x" *ngIf="project.isRunningWithChannel(cell.data.id)"></i>
-      </uic-button>
-      <uic-button class="accent stretch" (onClick)="cell.menuOpen=!cell.menuOpen">
-      </uic-button>
+        (click)="onCellBtnClicked(cell,$event)">
+        <mat-icon *ngIf="!project.isRunningWithChannel(cell.data.id)">play_arrow</mat-icon>
+        <mat-icon *ngIf="project.isRunningWithChannel(cell.data.id)">play_arrow</mat-icon>
+      </button>
+      <button
+        mat-flat-button
+        color="accent"
+        (click)="cell.menuOpen=!cell.menuOpen">
+      </button>
     </ng-container>
     <div class="cell" *ngIf="!cell.data"></div>
 
   </div>
 </ng-container>
-<div class="cell console-cell" *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
+<div class="console-cell" *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
   <daw-console *ngIf="cell.data" [project]="project" [track]="cell.data"></daw-console>
 </div>
 

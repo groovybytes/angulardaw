@@ -17,11 +17,11 @@ export class ConsoleComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.track.controlParameters.gain);
   }
 
 
   changeGain(gain: number): void {
-    console.log(gain);
     this.track.controlParameters.gain.next(gain);
   }
 
@@ -37,6 +37,14 @@ export class ConsoleComponent implements OnInit {
   arm(): void {
     this.track.controlParameters.record.next(!this.track.controlParameters.record.getValue());
 
+  }
+
+  formatLabel(value: number | null) {
+    if (!value) {
+      return 0;
+    }
+
+    return value;
   }
 
 

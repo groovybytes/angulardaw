@@ -14,12 +14,16 @@ import {ScaleId} from "../model/mip/scales/ScaleId";
 import {MakeMusicService} from "./services/make-music.service";
 import {MidiBridgeService} from "./services/midi-bridge.service";
 import {TransportService} from "./services/transport.service";
+import {MatButtonModule, MatButtonToggleModule, MatIconModule} from "@angular/material";
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatButtonToggleModule
   ],
   providers: [
     PluginsService,
@@ -42,7 +46,7 @@ import {TransportService} from "./services/transport.service";
       useValue: new Notes(ScaleId.CHROMATIC)
     }
   ],
-  exports: []
+  exports: [MatButtonModule,MatIconModule,MatButtonToggleModule]
 })
 export class SharedModule {
 }

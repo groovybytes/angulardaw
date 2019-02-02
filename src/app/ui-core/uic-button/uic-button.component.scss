@@ -1,3 +1,4 @@
+/*
 @import "theme";
 
 button {
@@ -8,8 +9,8 @@ button {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  /*width: 50px;
-  height: 50px;*/
+  !*width: 50px;
+  height: 50px;*!
 
 
 
@@ -44,3 +45,4 @@ button {
 :host(.accent)  {
   @include color-button($color-accent);
 }
+*/
