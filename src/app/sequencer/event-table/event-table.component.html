@@ -1,0 +1,55 @@
+<div class="cell"
+     *ngFor="let cell of model.tableCells"
+     [attr.data-id]="cell.id"
+
+     [ngClass]="{
+           'header-cell':cell.row===0,
+           'row-header-cell':cell.column===0,
+           'drag-target':cell.isDragTarget,
+           'tick-active':cell.tick === tick &&clipIsRunning(),
+           'note-cell':cell.row>=1 && cell.column>=1}"
+     [ngStyle]="{
+           'left':cell.x+'px',
+           'top':cell.y+'px',
+           'width':cell.width+'px',
+           'height':cell.height+'px',
+           'line-height':cell.height+'px'}">
+
+  <span *ngIf="cell.row===0"
+        class="">{{cell.beat + 1 != 0 ? cell.beat + 1 : ""}}</span>
+  <span *ngIf="cell.column===0" class="">{{cell.trigger.label}}</span>
+</div>
+<!--<div  class="sequencer-drag-container"
+      [ngStyle]="{
+
+      'width':specs.cellWidth*specs.columns+'px',
+      'height':specs.cellHeight*specs.rows+'px'}">-->
+<div class="cell event-cell note-cell"
+     *ngFor="let cell of model.eventCells"
+     [attr.data-id]="cell.id"
+     (click)="eventCellClicked(cell)"
+     [ngClass]="{'tick-active':cell.tick === tick &&clipIsRunning()}"
+     [ngStyle]="{'left':cell.x+'px','top':cell.y+'px','width':cell.width+'px',
+           'height':cell.height+'px','line-height':cell.height+'px', 'pointer-events':cell.isDragging?'none':''}">
+  <div class="event-cell-resize-handle"></div>
+  <div class="event-cell-resize-handle right-handle"></div>
+</div>
+<!--</div>-->
+
+
+<!--'left':specs.cellWidth+'px',
+'top':specs.cellHeight+'px',-->
+
+<!--interact-resizable
+[minX]="specs.cellWidth"
+[cell]="cell"
+(resizeStart)="resizeStart()"
+(resizeEnd)="resizeEnd(cell)"
+[enabled]="cell.column>=0 && cell.row>=0 && cell.data!=null"
+parent=".sequencer-drag-container"-->
+
+
+
+
+
+

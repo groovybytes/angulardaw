@@ -1,0 +1,33 @@
+
+$black:black;
+$white:white;
+
+$color-shadow:$black;
+$color-primary:#969696;
+$color-secondary:#878787;
+$color-tertiary:rgba(79, 93, 117, 1);
+$color-accent:#FFB532;
+$color-background:red;
+$color-background-shade:red;
+$color-background-invert:red;
+$color-text:red;
+$color-text-weak:red;
+$color-text-strong:red;
+$color-text-heading:red;
+$color-text-link:red;
+$color-text-link-visited:red;
+$color-text-link-hover:red;
+$color-border:red;
+
+@function light($color) {
+  @return lighten($color,10%);
+}
+
+@function dark($color) {
+  @return darken($color,10%);
+}
+
+@mixin font-default() {
+
+}
+

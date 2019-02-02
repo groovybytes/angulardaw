@@ -1,0 +1,71 @@
+{
+  "id": "drumkit1",
+  "mappings": [
+    {
+      "instrument": "kick1",
+      "url": "kick.wav",
+      "articulation": "hit",
+      "note": "C0"
+    },
+    {
+      "instrument": "snare1",
+      "url": "snare.wav",
+      "articulation": "hit",
+      "note": "Ci0"
+    },
+    {
+      "instrument": "hihat_open",
+      "url": "hihat_open.wav",
+      "articulation": "hit",
+      "note": "D0"
+    },
+    {
+      "instrument": "hihat_pedal",
+      "url": "hihat_pedal.wav",
+      "articulation": "hit",
+      "note": "Di0"
+    },
+    {
+      "instrument": "ride",
+      "url": "ride.wav",
+      "articulation": "hit",
+      "note": "E0"
+    },
+    {
+      "instrument": "overhead1",
+      "url": "overhead1.wav",
+      "articulation": "hit",
+      "note": "F0"
+    },
+    {
+      "instrument": "overhead2",
+      "url": "overhead3.wav",
+      "articulation": "hit",
+      "note": "Fi0"
+    },
+    {
+      "instrument": "overhead3",
+      "url": "overhead3.wav",
+      "articulation": "hit",
+      "note": "G0"
+    },
+    {
+      "instrument": "tom_high",
+      "url": "tom_high.wav",
+      "articulation": "hit",
+      "note": "Gi0"
+    },
+    {
+      "instrument": "tom_mid",
+      "url": "tom_mid.wav",
+      "articulation": "hit",
+      "note": "A0"
+    },
+    {
+      "instrument": "tom_low",
+      "url": "tom_low.wav",
+      "articulation": "hit",
+      "note": "Ai0"
+    }
+  ]
+}

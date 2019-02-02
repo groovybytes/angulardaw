@@ -1,0 +1,12 @@
+<sequencer-footer [project]="project" *ngIf="project.selectedPattern | async" [pattern]="project.selectedPattern | async"></sequencer-footer>
+
+<drag-container>
+  <event-table *ngIf="pattern" [project]="project" [pattern]="pattern" [cellWidth]="cellWidth" [cellHeight]="cellHeight"
+               #et></event-table>
+</drag-container>
+
+
+
+
+
+

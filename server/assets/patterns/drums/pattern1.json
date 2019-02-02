@@ -1,0 +1,113 @@
+{
+  "bpm": 120,
+  "quantization": 0.25,
+  "length": 8,
+  "events": [
+    {
+      "note": "D0",
+      "time": 0,
+      "length": "200"
+    },
+    {
+      "note": "C0",
+      "time": 0,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 250,
+      "length": "200"
+    },
+    {
+      "note": "D0",
+      "time": 500,
+      "length": "500"
+    },
+    {
+      "note": "Ci0",
+      "time": 500,
+      "length": "500"
+    },
+
+    {
+      "note": "D0",
+      "time": 750,
+      "length": "500"
+    },
+
+    {
+      "note": "D0",
+      "time": 1000,
+      "length": "500"
+    },
+    {
+      "note": "C0",
+      "time": 1000,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 1250,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 1500,
+      "length": "500"
+    },
+    {
+      "note": "Ci0",
+      "time": 1500,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 1750,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 2000,
+      "length": "500"
+    },
+    {
+      "note": "C0",
+      "time": 2000,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 2250,
+      "length": "500"
+    }, {
+      "note": "D0",
+      "time": 2500,
+      "length": "500"
+    },
+    {
+      "note": "Ci0",
+      "time": 2500,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 2750,
+      "length": "500"
+    },
+    {
+      "note": "D0",
+      "time": 3000,
+      "length": "500"
+    },
+    {
+      "note": "C0",
+      "time": 3000,
+      "length": "500"
+    },
+    {
+      "note": "Ci0",
+      "time": 3500,
+      "length": "500"
+    }
+  ]
+}

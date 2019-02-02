@@ -1,0 +1,7 @@
+<button type="button" (click)="start()">start</button>
+<button type="button" (click)="stop()">stop</button>
+<button type="button" (click)="changeBpm(5)">+</button>
+<button type="button" (click)="changeBpm(-5)">-</button>
+{{project?.bpm.getValue()}} bpm
+
+<app-monitor></app-monitor>

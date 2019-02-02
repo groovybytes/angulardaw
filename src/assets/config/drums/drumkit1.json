@@ -1,0 +1,23 @@
+{
+  "id": "drumkit1",
+  "mappings": [
+    {
+      "instrument": "kick1",
+      "url": "kick1.wav",
+      "articulation": "hit",
+      "note": "C1"
+    },
+    {
+      "instrument": "snare1",
+      "url": "snare1.wav",
+      "articulation": "hit",
+      "note": "D1"
+    },
+    {
+      "instrument": "hihat",
+      "url": "hihat.wav",
+      "articulation": "hit",
+      "note": "E1"
+    }
+  ]
+}

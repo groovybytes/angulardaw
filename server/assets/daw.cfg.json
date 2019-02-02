@@ -1,0 +1,26 @@
+{
+  "instruments": [
+    {
+      "id": "metronome",
+      "name": "metronome",
+      "category": "system"
+    },
+    {
+      "id": "drumkit1",
+      "name": "drums",
+      "category": "percussion"
+    },
+    {
+      "id": "acoustic_bass",
+      "name": "acoustic bass",
+      "category": "bass",
+      "folder": "Acoustic Bass"
+    },
+    {
+      "id": "piano_1",
+      "name": "piano",
+      "category": "keys",
+      "folder": "Grand Piano"
+    }
+  ]
+}

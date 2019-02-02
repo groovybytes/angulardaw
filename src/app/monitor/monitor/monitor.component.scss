@@ -1,0 +1,11 @@
+.message-container{
+  width:100%;
+  height:400px;
+  overflow: auto;
+  background-color: red;
+}
+
+span{
+  display: block;
+  //white-space:nowrap;
+}

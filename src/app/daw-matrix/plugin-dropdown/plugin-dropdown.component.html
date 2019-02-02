@@ -1,0 +1,28 @@
+<!--<div class="dropdown">
+  <button class="btn naked-btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-plus"></i>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="btn  dropdown-item"
+       href
+       (click)="pluginSelected.emit(plugin)"
+       [routerLink]=""
+       [ngStyle]="{'background-color':color}"
+       *ngFor="let plugin of plugins">{{plugin.name}}</a>
+  </div>
+</div>-->
+
+
+<div class="dropdown">
+  <button class="dropbtn" type="button">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <div class="dropdown-content">
+    <a class=""
+       href
+       (click)="pluginSelected.emit(plugin)"
+       [routerLink]=""
+       *ngFor="let plugin of plugins">{{plugin.name}}</a>
+  </div>
+</div>

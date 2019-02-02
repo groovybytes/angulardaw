@@ -1,0 +1,66 @@
+[
+  {
+    "id": "drumkit1",
+    "name": "drums",
+    "category": "percussion",
+    "pad": {
+      "grid": [
+        [
+          {
+            "note": "C0",
+            "title": "bass drum",
+            "key": 66
+          },
+          {
+            "note": "Ci0",
+            "title": "snare"
+          },
+          {
+            "note": "D0",
+            "title": "hihat"
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "id": "bass_acoustic",
+    "name": "acoustic bass",
+    "category": "bass",
+    "noteRange": {
+      "start": "A0",
+      "end": "C7"
+    },
+    "folder": "Acoustic Bass"
+  },
+  {
+    "id": "piano_1",
+    "name": "piano",
+    "category": "keys",
+    "noteRange": {
+      "start": "A0",
+      "end": "C7"
+    },
+    "folder": "Grand Piano"
+  },
+  {
+    "id": "cello",
+    "name": "cello",
+    "category": "sadasdasdfd",
+    "noteRange": {
+      "start": "A0",
+      "end": "C7"
+    },
+    "folder": "Cello"
+  },
+  {
+    "id": "string_ensemble",
+    "name": "String Ensemble",
+    "category": "sadasdasdfd",
+    "noteRange": {
+      "start": "A0",
+      "end": "C7"
+    },
+    "folder": "String Ensemble"
+  }
+]

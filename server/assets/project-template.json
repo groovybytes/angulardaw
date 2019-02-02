@@ -1,0 +1,185 @@
+{
+  "tracks": [
+    {
+      "id": "34ab59ed-598a-04af-d636-9ced80c86b6d",
+      "name": "master-bus",
+      "color": "red",
+      "category": 1,
+      "plugins": [],
+      "inputNode": "6e3ba7c2-4ed1-9797-c3a5-934d113e496d",
+      "outputNode": "3e534b01-e3c3-2b38-97f0-3d2139bc3ecd",
+      "controlParameters": {
+        "gain": 100,
+        "mute": false,
+        "solo": false,
+        "record": false
+      }
+    },
+    {
+      "id": "8104a938-58df-f01f-e615-862d6bf21bb6",
+      "name": "drums",
+      "color": "red",
+      "category": 0,
+      "plugins": [
+        {
+          "id": "624afe09-e2ae-42fa-9131-be9f762bc67f",
+          "instanceId": "cf70a175-deef-0ee7-627d-8802b5d4a34f",
+          "pluginTypeId": "drumkit1",
+          "inputNode": "181564a8-dbed-7da7-6aa1-9527d4c96ad7",
+          "outputNode": "a8865b55-0d78-dcc3-e05c-bb2b5270b50a",
+          "pad": {
+            "grid": [
+              [
+                {
+                  "note": "C0",
+                  "title": "bass drum",
+                  "key": 66
+                },
+                {
+                  "note": "Ci0",
+                  "title": "snare"
+                },
+                {
+                  "note": "D0",
+                  "title": "hihat"
+                }
+              ]
+            ]
+          }
+        }
+      ],
+      "inputNode": "809af19e-26d3-284d-e5fc-ecf34e9219d8",
+      "outputNode": "f9bc56a4-36d9-a027-cb7b-4f1a496913ec",
+      "controlParameters": {
+        "gain": 100,
+        "mute": false,
+        "solo": false,
+        "record": false
+      }
+    }
+  ],
+  "activePlugin": null,
+  "metronomeEnabled": true,
+  "nodes": [
+    {
+      "id": "6e3ba7c2-4ed1-9797-c3a5-934d113e496d",
+      "nodeType": 2,
+      "status": null,
+      "meta": "track: 34ab59ed-598a-04af-d636-9ced80c86b6d"
+    },
+    {
+      "id": "3e534b01-e3c3-2b38-97f0-3d2139bc3ecd",
+      "nodeType": 1,
+      "status": null,
+      "meta": "track: 34ab59ed-598a-04af-d636-9ced80c86b6d"
+    },
+    {
+      "id": "809af19e-26d3-284d-e5fc-ecf34e9219d8",
+      "nodeType": 2,
+      "status": null,
+      "meta": "track: 8104a938-58df-f01f-e615-862d6bf21bb6"
+    },
+    {
+      "id": "f9bc56a4-36d9-a027-cb7b-4f1a496913ec",
+      "nodeType": 1,
+      "status": null,
+      "meta": "track: 8104a938-58df-f01f-e615-862d6bf21bb6"
+    },
+    {
+      "id": "181564a8-dbed-7da7-6aa1-9527d4c96ad7",
+      "nodeType": 2,
+      "status": null,
+      "meta": "plugin_drums"
+    },
+    {
+      "id": "a8865b55-0d78-dcc3-e05c-bb2b5270b50a",
+      "nodeType": 1,
+      "status": null,
+      "meta": "plugin_drums"
+    }
+  ],
+  "matrix": {
+    "body": [
+      [
+        {
+          "menuOpen": false,
+          "id": "d8580d22-37cf-1393-6b96-4bad4e66da2b",
+          "row": 0,
+          "column": 0,
+          "trackId": "8104a938-58df-f01f-e615-862d6bf21bb6"
+        }
+      ],
+      [
+        {
+          "menuOpen": false,
+          "id": "dc438779-66ea-d0d1-346f-3959d2ff7bf8",
+          "row": 1,
+          "column": 0,
+          "trackId": "8104a938-58df-f01f-e615-862d6bf21bb6"
+        }
+      ],
+      [
+        {
+          "menuOpen": false,
+          "id": "d0086cdd-655a-eec8-3fcc-d8fe255eb74d",
+          "row": 2,
+          "column": 0,
+          "trackId": "8104a938-58df-f01f-e615-862d6bf21bb6"
+        }
+      ],
+      [
+        {
+          "menuOpen": false,
+          "id": "0bfbde93-f05b-8924-7bd4-20c492452c70",
+          "row": 3,
+          "column": 0,
+          "trackId": "8104a938-58df-f01f-e615-862d6bf21bb6"
+        }
+      ]
+    ],
+    "header": [
+      {
+        "menuOpen": false,
+        "id": "85d05aff-2791-9a97-f63b-de569be20723",
+        "row": -1,
+        "column": 0,
+        "trackId": "8104a938-58df-f01f-e615-862d6bf21bb6",
+        "data": "8104a938-58df-f01f-e615-862d6bf21bb6"
+      }
+    ],
+    "rowHeader": [
+      {
+        "menuOpen": false,
+        "id": "eca1d982-23dd-af0a-2265-0ab56dd42926",
+        "row": 0,
+        "column": -1,
+        "data": "a0decbbc-3e6e-8130-4415-092c935b6782",
+        "animation": null
+      },
+      {
+        "menuOpen": false,
+        "id": "961d6a0e-6985-f3ff-44a8-fdd25fb16d8c",
+        "row": 1,
+        "column": -1,
+        "data": "1e1137ec-e19a-31e7-c834-ad78110f7144",
+        "animation": null
+      },
+      {
+        "menuOpen": false,
+        "id": "38feb483-5a75-28f9-92c7-10f77664aa20",
+        "row": 2,
+        "column": -1,
+        "data": "df80e363-2a5f-6d54-2330-298e9958901b",
+        "animation": null
+      },
+      {
+        "menuOpen": false,
+        "id": "6f7a57d9-2c8b-1f7d-1af8-a3d12b8e4b81",
+        "row": 3,
+        "column": -1,
+        "data": "34491988-9d89-d55d-af85-1863a71ca598",
+        "animation": null
+      }
+    ]
+  }
+}
