@@ -14,6 +14,7 @@ import {ProjectModule} from "./project/project.module";
 import {CoreModule} from "./core/core.module";
 import {DawInfo} from "./model/DawInfo";
 import {PrototypingModule} from "./prototyping/prototyping.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import {PrototypingModule} from "./prototyping/prototyping.module";
 
     BrowserModule,
     CoreModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

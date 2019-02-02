@@ -21,3 +21,7 @@ $row-max:50px;
   grid-template-columns: 1fr 20px;
   background-color: $color-secondary;
 }
+
+.console-cell{
+  grid-row:span 3;
+}

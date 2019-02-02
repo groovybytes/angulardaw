@@ -31,7 +31,7 @@
 
   </div>
 </ng-container>
-<div class="console-cell " *ngFor="let cell of project.matrix.header" [attr.id]="cell.id">
+<div class="cell console-cell" *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
   <daw-console *ngIf="cell.data" [project]="project" [track]="cell.data"></daw-console>
 </div>
 

@@ -10,9 +10,9 @@ import {ConsoleModule} from "../console/console.module";
 import {CoreModule} from "../core/core.module";
 import {SharedModule} from "../shared/shared.module";
 import {RouterModule} from "@angular/router";
-import {Ng5SliderModule} from "ng5-slider";
 import { ControlsComponent } from './controls/controls.component';
 import {UiCoreModule} from "../ui-core/ui-core.module";
+import {MatButtonModule} from "@angular/material";
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import {UiCoreModule} from "../ui-core/ui-core.module";
     CoreModule,
     SharedModule,
     RouterModule,
-    Ng5SliderModule],
+    MatButtonModule],
   providers: [
    DawMatrixService
   ],
