@@ -12,17 +12,16 @@
         'grid-row-start':i+2,
         'grid-row-end':i+2}">
 
-    <ng-container *ngIf="cell.data" (dblclick)="onCellContainerClicked(cell)">
+    <ng-container *ngIf="cell.data" (dblclick)="onCellContainerClicked(cell)" >
       <div *ngIf="cell.menuOpen">
         <body-cell-menu [cell]="cell"></body-cell-menu>
       </div>
       <button
-        mat-flat-button
-        color="primary"
+        type="button"
         *ngIf="!cell.menuOpen"
         (click)="onCellBtnClicked(cell,$event)">
-        <mat-icon *ngIf="!project.isRunningWithChannel(cell.data.id)">play_arrow</mat-icon>
-        <mat-icon *ngIf="project.isRunningWithChannel(cell.data.id)">play_arrow</mat-icon>
+        <i *ngIf="!project.isRunningWithChannel(cell.data.id)" class="fas fa-play fa-2x"></i>
+        <i *ngIf="project.isRunningWithChannel(cell.data.id)" class="fas fa-circle-notch fa-spin fa-2x"></i>
       </button>
       <button
         mat-flat-button
@@ -30,7 +29,7 @@
         (click)="cell.menuOpen=!cell.menuOpen">
       </button>
     </ng-container>
-    <div class="cell" *ngIf="!cell.data"></div>
+    <div class="cell"  (dblclick)="bodyCellDblClicked(cell)" *ngIf="!cell.data"></div>
 
   </div>
 </ng-container>

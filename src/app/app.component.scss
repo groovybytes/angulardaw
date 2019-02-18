@@ -1,6 +1,14 @@
-:host /deep/{
-  //@import "theme/theme";
+@import "_variables.scss";
 
+:host /deep/{
+  @import "buttons";
+  @import "font";
+  @import "effects";
+  @import "radio";
+  @import "checkbox";
+  @import "input";
+
+  color:$text-color;
   span{
     pointer-events: none;
     -webkit-touch-callout: none; /* iOS Safari */
@@ -11,7 +19,11 @@
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
   }
+
+  .selected{
+
+    background-color: lighten($site-bg,15%);
+
+  }
+
 }
-
-
-

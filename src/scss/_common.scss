@@ -17,3 +17,10 @@
   @include btn-group-vertical;
 }
 
+@mixin flex-center-container(){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
