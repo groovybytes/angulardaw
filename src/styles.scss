@@ -1,5 +1,11 @@
+@import "_variables.scss";
+@import "mixins/all";
+@import "body";
+@import "scss/boilerplate/main.css";
+@import "scss/boilerplate/normalize.css";
 
 
-body{
-  margin:0;
+body {
+ @include body();
+
 }

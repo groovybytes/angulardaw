@@ -1,29 +1,19 @@
 @import "_variables.scss";
+@import "mixins/all";
 
+.container{
+  @include main-container();
+}
 :host /deep/{
-  @import "buttons";
-  @import "font";
-  @import "effects";
-  @import "radio";
-  @import "checkbox";
-  @import "input";
+ @import "index.scss";
 
-  color:$text-color;
-  span{
-    pointer-events: none;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-  }
+
 
   .selected{
 
-    background-color: lighten($site-bg,15%);
+    background-color: lighten($default-bg,15%);
 
   }
 
 }
+

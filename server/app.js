@@ -33,7 +33,7 @@ if (cfg.production) {
 /**
  * Get port from environment and store in Express.
  */
-const port = '9001';
+const port = '9000';
 app.set('port', port);
 
 /**

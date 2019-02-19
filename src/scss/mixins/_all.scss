@@ -1,0 +1,47 @@
+@mixin center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin btn-group-vertical {
+  display: grid;
+  grid-auto-flow: row;
+  grid-row-gap: 2px;
+}
+
+@mixin main-container {
+  display: block;
+  position: absolute;
+  height: auto;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
+  min-width: 1024px;
+  min-height: 800px;
+}
+
+@mixin vertical-form {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  label{
+    justify-self: center;
+  }
+}
+
+@mixin flex-center-container() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+

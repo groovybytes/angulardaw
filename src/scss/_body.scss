@@ -1,0 +1,6 @@
+@import "variables";
+
+@mixin body() {
+  background-color: $default-bg;
+  color: $text-color;
+}
