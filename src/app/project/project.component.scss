@@ -1,6 +1,5 @@
 .sidebar {
   grid-area: sidebar;
-  display:grid;
 }
 
 .content {
@@ -13,7 +12,8 @@
 
 .footer {
   grid-area: footer;
-  display:grid;
+  overflow: auto;
+
 }
 
 .wrapper {
@@ -22,10 +22,10 @@
   height:100vh;
   grid-gap: 5px;
   grid-template-columns: 120px 1fr 120px;
-  grid-template-rows: 100px 1fr 100px;
+  grid-template-rows: 100px 1fr 1fr;
   grid-template-areas:
     "header header header"
-    "sidebar content content"
+    "content content content"
     "footer  footer  footer";
  // background-color: $color-tertiary;
 }

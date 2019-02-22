@@ -85,6 +85,9 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
+  save():void{
+    this.projectsService.saveProject(this.project);
+  }
 
   initializePush(component: PushComponent): void {
     this.deviceService.setupPush(component);

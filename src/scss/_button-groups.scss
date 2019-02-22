@@ -1,0 +1,18 @@
+.btn-group-horizontal{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  button{
+    margin-right:2px;
+  }
+}
+.btn-group-vertical{
+  display:flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  button{
+    margin-top:2px;
+  }
+}

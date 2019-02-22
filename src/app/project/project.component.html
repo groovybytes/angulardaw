@@ -1,14 +1,13 @@
 <div class="wrapper" *ngIf="project">
   <div class="box header">
+    <li class="float-right"><a href [routerLink]="" (click)="save()"><i class="far fa-save"></i></a></li>
 
   </div>
-  <div class="box sidebar"></div>
-
   <div class="box content">
     <daw-matrix [project]="project"></daw-matrix>
   </div>
   <div class="box footer">
-
+    <sequencer  [project]="project" [pattern]="project.selectedPattern | async"></sequencer>
   </div>
 </div>
 

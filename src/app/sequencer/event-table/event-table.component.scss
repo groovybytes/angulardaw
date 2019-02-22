@@ -25,6 +25,95 @@
 :host /deep/ {
 
   /*.sequencer-container {
+   position: relative;
+   height:800px;
+ }*/
+  .cell {
+    position: absolute;
+    border-width: 1px;
+    border-style: dashed;
+    /*  border-radius: 5px;*/
+    text-align: center;
+    vertical-align: middle;
+
+
+    &:hover{
+      filter:brightness(110%);
+    }
+    &.tick-active {
+      filter:brightness(90%);
+    }
+  }
+
+  .header-cell {
+    filter:brightness(120%);
+    /*&.tick-active {
+      background-color: lighten(yellow, 5%);
+    }*/
+  }
+  .row-header-cell {
+    filter:brightness(120%);
+  }
+
+
+  .fill-rect {
+    // stroke: $color2;
+  }
+
+  .header-text {
+    // fill: white;
+  }
+
+  .header {
+    .fill-rect {
+      //  fill: $color1 !important;
+    }
+  }
+
+  .note-cell {
+
+    /*.fill-rect {
+
+    }
+
+    &.active {
+      .fill-rect {
+        fill: orange;
+      }
+      cursor: pointer;
+    }
+    &.active.tick-active {
+      .fill-rect {
+        fill: lighten(orange, 5%);
+      }
+    }*/
+
+    /*&.drag-over {
+      .fill-rect {
+        fill: orange;
+      }
+    }*/
+
+    /*  &.tick-active {
+        background-color: lighten($primary, 5%);
+      }*/
+    &.drag-active {
+      //background-color: darken($primary, 10%);
+    }
+    &.drag-target {
+      background-color: darken(yellow, 10%);
+    }
+
+
+  }
+
+  /* .tick-active {
+     .fill-rect {
+       fill: lighten(green, 5%);
+     }
+   }*/
+
+  /*.sequencer-container {
     position: relative;
     height:800px;
   }*/
@@ -77,9 +166,7 @@
 
   }
 
-  .fill-rect {
-    // stroke: $color2;
-  }
+
 
   .header-text {
     // fill: white;

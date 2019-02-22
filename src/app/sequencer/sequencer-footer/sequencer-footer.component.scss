@@ -13,11 +13,11 @@
 }
 */
 
-.button-group{
+.button-group {
 
 }
 
 :host {
- /* display: grid;
-  grid-template-rows: auto;*/
+  display: flex;
+  flex-direction: column;
 }

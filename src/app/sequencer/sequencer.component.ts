@@ -29,9 +29,9 @@ export class SequencerComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
 
-    this.subscriptions.push(this.pattern.onDestroy.subscribe(() => {
+   /* this.subscriptions.push(this.pattern.onDestroy.subscribe(() => {
       this.pattern=null;
-    }));
+    }));*/
   }
 
 

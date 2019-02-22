@@ -15,10 +15,16 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  //font-size: 16px;
+  font-size: 12px;
+
 
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
+
+  &.lg{
+    width:40px;
+    height:40px;
+  }
 }
 
 /*button:hover {
