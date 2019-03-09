@@ -5,6 +5,7 @@ import {LoginComponent} from "./authentication/login/login.component";
 import {ProjectsCreateComponent} from "./project/projects-create/projects-create.component";
 import {ProjectComponent} from "./project/project.component";
 import {TransporttestComponent} from "./prototyping/transporttest/transporttest.component";
+import {DemoComponent} from "./ui-core/demo/demo.component";
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: 'prototyping/transport',
     component: TransporttestComponent
+  },
+  {
+    path: 'ui-core',
+    component: DemoComponent
   }
 ];
 

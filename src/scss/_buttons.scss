@@ -1,3 +1,4 @@
+/*
 @import "variables.scss";
 @import "effects";
 
@@ -18,7 +19,7 @@ button {
   font-size: 12px;
 
 
-  -webkit-transition-duration: 0.4s; /* Safari */
+  -webkit-transition-duration: 0.4s; !* Safari *!
   transition-duration: 0.4s;
 
   &.lg{
@@ -27,7 +28,8 @@ button {
   }
 }
 
-/*button:hover {
+!*button:hover {
   background-color: red; !* Green *!
   color: white;
-}*/
+}*!
+*/

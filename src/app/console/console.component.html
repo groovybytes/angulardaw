@@ -1,11 +1,6 @@
 <div class="btn-group-vertical">
-  <button
-    mat-flat-button
-    [color]="track.controlParameters.mute.getValue()===true?'accent':'primary'"
-    (click)="mute()">
-    M
-  </button>
-  <button
+  <uic-button (onClick)="mute()" [variant]="track.controlParameters.mute.getValue()===true?'accent':'primary'">M</uic-button>
+<!--  <button
     mat-flat-button
     [color]="track.controlParameters.solo.getValue()===true?'accent':'primary'"
     (click)="solo()">
@@ -16,8 +11,9 @@
     [color]="track.controlParameters.record.getValue()===true?'accent':'primary'"
     (click)="solo()">
     <mat-icon>fiber_manual_record</mat-icon>
-  </button>
+  </button>-->
 </div>
+<!--
 <div class="center">
   <mat-slider
     min="0"
@@ -29,6 +25,7 @@
     thumbLabel
     vertical></mat-slider>
 </div>
+-->
 
 <!--
 <div class="row">

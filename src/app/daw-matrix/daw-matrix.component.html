@@ -1,9 +1,12 @@
+<plugin-dropdown [plugins]="project.pluginTypes" (pluginSelected)="pluginSelected($event)"></plugin-dropdown>
+<br>
 <div class="cell" *ngFor="let cell of project.matrix.header;let i=index" [attr.id]="cell.id">
   {{cell.data?.name}}
 </div>
 <ng-container *ngFor="let row of project.matrix.body;let i=index">
   <div
     class="cell"
+    [ngClass]="{'selected': project.selectedPattern.getValue()?.id===cell.data?.id}"
     *ngFor="let cell of row;let j=index" [attr.id]="cell.id"
     [ngStyle]="
         {
@@ -16,13 +19,12 @@
       <div *ngIf="cell.menuOpen">
         <body-cell-menu [cell]="cell"></body-cell-menu>
       </div>
-      <button
-        type="button"
-        *ngIf="!cell.menuOpen"
-        (click)="onCellBtnClicked(cell,$event)">
+      <uic-button [block]="true"   *ngIf="!cell.menuOpen" (onClick)="onCellBtnClicked(cell,$event)">
         <i *ngIf="!project.isRunningWithChannel(cell.data.id)" class="fas fa-play fa-2x"></i>
         <i *ngIf="project.isRunningWithChannel(cell.data.id)" class="fas fa-circle-notch fa-spin fa-2x"></i>
-      </button>
+      </uic-button>
+
+      <div class="not-empty"  (click)="bodyCellClicked(cell)"></div>
       <button
         mat-flat-button
         color="accent"

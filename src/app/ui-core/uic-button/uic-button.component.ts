@@ -7,7 +7,8 @@ import {Component, EventEmitter, HostBinding, Input, OnInit, Output} from '@angu
 })
 export class UicButtonComponent implements OnInit {
 
-  @Input() backgroundColor:string;
+  @HostBinding('class.block') @Input() block:boolean=false;
+  @HostBinding('class') @Input() variant:string="primary";
   @Output() onClick:EventEmitter<void>=new EventEmitter();
 
 

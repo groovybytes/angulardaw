@@ -3,7 +3,7 @@ import {ConsoleComponent} from "./console.component";
 import {CommonModule} from "@angular/common";
 import {BrowserModule} from "@angular/platform-browser";
 import {SharedModule} from "../shared/shared.module";
-import {MatSliderModule} from "@angular/material";
+import {UiCoreModule} from "../ui-core/ui-core.module";
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import {MatSliderModule} from "@angular/material";
     CommonModule,
     BrowserModule,
     SharedModule,
-    MatSliderModule
+    UiCoreModule
 
   ],
   providers: [
